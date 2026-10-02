@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -235,12 +237,13 @@ func DumpAll(img *asm.ImageNE, sdb *typeinfo.SymbolDB, opt DumpAllOptions) (Dump
 		slog.Debug("Dumping all functions", "count", len(funcs), "outDir", opt.OutDir)
 	}
 
+	writes := machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb))
 	for _, function := range funcs {
 		if !emitFuncDumps {
 			continue
 		}
 
-		analysis, err := analyzeFunc(img, sdb, function, templates.DumpOptions{})
+		analysis, err := analyzeFunc(img, sdb, function, templates.DumpOptions{}, writes)
 		if err != nil {
 			return result, fmt.Errorf("analyze %s: %w", function.Name, err)
 		}

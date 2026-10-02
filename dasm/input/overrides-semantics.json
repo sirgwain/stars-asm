@@ -226,6 +226,358 @@
           "semantic": "record"
         }
       ]
+    },
+    {
+      "name": "CParseNumbers",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "CheckAiShdefStatus",
+      "params": [
+        {
+          "name": "piLatest",
+          "semantic": "may_be_minus_one"
+        }
+      ]
+    },
+    {
+      "name": "CostOfDevelopingItem",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "CplrBattle",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "EstimateItemProdSched",
+      "params": [
+        {
+          "name": "piFirst",
+          "semantic": "may_be_minus_one"
+        },
+        {
+          "name": "piLast",
+          "semantic": "may_be_minus_one"
+        }
+      ]
+    },
+    {
+      "name": "FCanFleetUseStargates",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "FDoCoolBattle",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "FLookupPart",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "FOpenGame",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "FWasRaceFile",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "GetCachedFleetScannerRange",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "GetFleetScannerRange",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "GetShdefScannerRange",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "ICompReport",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IDropPart",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IMsgNext",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IMsgPrev",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IPlrAlsoCheater",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IStargateFromLppl",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdFindAdjStarbase",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdGetBestScannerDest",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdNearestColonizablePlanet",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdNearestUnknownPlanet",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdRandomPlanetNearby",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdTargetArmada",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdTargetAttack",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdTargetFreighter",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdTargetMacFreighter",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdTargetScout",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdmGetMessageN",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IdplFindClosestStarbase",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IflFromLpfl",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IrcRaceDlgHitTest",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "IshFindSimilarDesign",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "ItbFromPpt",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "MdCalcStargateDamage",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "PackageUpMsg",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "PopupVCRMenu",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "PszGetTaskName",
+      "params": [
+        {
+          "name": "picr",
+          "semantic": "may_be_minus_one"
+        }
+      ]
+    },
+    {
+      "name": "PszProductionETA",
+      "params": [
+        {
+          "name": "etaFirst",
+          "semantic": "may_be_minus_one"
+        },
+        {
+          "name": "etaLast",
+          "semantic": "may_be_minus_one"
+        }
+      ]
+    },
+    {
+      "name": "ScoreFromGiveAndTakeAndTactic",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "ScoreGuessBattleDamage",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "iBuildCyberStarbase",
+      "return": "may_be_minus_one"
+    },
+    {
+      "name": "GetDeviceCaps",
+      "writes": "none"
+    },
+    {
+      "name": "GetDlgCtrlID",
+      "writes": "none"
+    },
+    {
+      "name": "GetDlgItem",
+      "writes": "none"
+    },
+    {
+      "name": "GetMenu",
+      "writes": "none"
+    },
+    {
+      "name": "GetParent",
+      "writes": "none"
+    },
+    {
+      "name": "GetStockObject",
+      "writes": "none"
+    },
+    {
+      "name": "GetSubMenu",
+      "writes": "none"
+    },
+    {
+      "name": "GetSysColor",
+      "writes": "none"
+    },
+    {
+      "name": "GetSystemMetrics",
+      "writes": "none"
+    },
+    {
+      "name": "GetTextExtent",
+      "writes": "none"
+    },
+    {
+      "name": "GetWindowLong",
+      "writes": "none"
+    },
+    {
+      "name": "GetWindowWord",
+      "writes": "none"
+    },
+    {
+      "name": "IsIconic",
+      "writes": "none"
+    },
+    {
+      "name": "IsWindow",
+      "writes": "none"
+    },
+    {
+      "name": "IsWindowEnabled",
+      "writes": "none"
+    },
+    {
+      "name": "IsWindowVisible",
+      "writes": "none"
+    },
+    {
+      "name": "IsZoomed",
+      "writes": "none"
+    },
+    {
+      "name": "lstrlen",
+      "writes": "none"
+    },
+    {
+      "name": "__aFldiv",
+      "writes": "none"
+    },
+    {
+      "name": "__aFlrem",
+      "writes": "none"
+    },
+    {
+      "name": "__aFlshl",
+      "writes": "none"
+    },
+    {
+      "name": "__aFlshr",
+      "writes": "none"
+    },
+    {
+      "name": "__aFuldiv",
+      "writes": "none"
+    },
+    {
+      "name": "__aFulmul",
+      "writes": "none"
+    },
+    {
+      "name": "__aFulrem",
+      "writes": "none"
+    },
+    {
+      "name": "__aFulshr",
+      "writes": "none"
+    },
+    {
+      "name": "abs",
+      "writes": "none"
+    },
+    {
+      "name": "labs",
+      "writes": "none"
+    },
+    {
+      "name": "strlen",
+      "writes": "none"
+    },
+    {
+      "name": "fstrlen",
+      "writes": "none"
+    },
+    {
+      "name": "strcmp",
+      "writes": "none"
+    },
+    {
+      "name": "memcmp",
+      "writes": "none"
+    },
+    {
+      "name": "fmemcmp",
+      "writes": "none"
+    },
+    {
+      "name": "strcmpi",
+      "writes": "none"
+    },
+    {
+      "name": "strnicmp",
+      "writes": "none"
+    },
+    {
+      "name": "atoi",
+      "writes": "none"
+    },
+    {
+      "name": "__ftol",
+      "writes": "none"
+    },
+    {
+      "name": "sqrt",
+      "writes": "none"
     }
   ]
 }

@@ -137,7 +137,7 @@ L_1aaa:
         goto L_1ace;
 
 L_1ace:
-    AddItemToQueue(8, LOWORD(cBuild), grobjPlanet, 0);
+    AddItemToQueue(mdIdleMine, LOWORD(cBuild), grobjPlanet, addItemFront);
     FinishProduction(1);
     PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL);
     if (etaBetterMines != -1)
@@ -155,7 +155,7 @@ L_1b29:
 
 L_1b74:
     etaBetterMines = 700;
-    AddItemToQueue(3, 1, grobjPlanet, 0);
+    AddItemToQueue(iobjAlchemy, 1, grobjPlanet, addItemFront);
     FinishProduction(1);
 
 L_1b9e:

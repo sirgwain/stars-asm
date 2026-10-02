@@ -886,7 +886,7 @@ char    rgTUTLookupTable[76] = {32, 101, 116, 111, 97, 110, 115, 114, 105, 104, 
                                 82, 39,  120, 35,  67, 65,  44,  71,  87,  80,  77,  68,  49,  48,  113, 70,  72,  79, 66,  78,  76,  50, 51,  122, 57, 73,
                                 52, 75,  53,  55,  69, 45,  86,  54,  89,  37,  85,  40,  41,  106, 33,  56,  47,  81, 88,  90,  60,  62, 63,  74};
 
-int16_t CchTutorString(char *pchOut, int16_t idt) {
+int16_t CchTutorString(char *pchOut, TutorId idt) {
     int16_t  iOffset;
     int16_t  fHigh;
     int16_t  iChunk;

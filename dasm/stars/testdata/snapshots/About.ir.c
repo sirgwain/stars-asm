@@ -11,7 +11,7 @@ L_1252:
 L_1261:
     iAbout1st = -11;
     iAboutPartial = 0;
-    SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
+    SetWindowText(GetDlgItem(hwnd, IDC_ABOUT_DEMO_TEXT), SzVersion());
     uTimerId = SetTimer(hwnd, 14, 50, NULL);
     return 1;
 
@@ -21,7 +21,7 @@ L_12a9:
     return 1;
 
 L_12d1:
-    hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
+    hwndCtl = GetDlgItem(hwnd, IDC_ABOUT_CREDITS_TEXT);
     iAboutPartial += 2;
     if (iAboutPartial < dyArial8)
         goto L_130c;
@@ -123,7 +123,7 @@ L_1473:
     return 1;
 
 L_149a:
-    if (GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP)
+    if (GET_WM_COMMAND_ID(wParam, lParam) != IDC_ABOUT_ORDER_INFO)
         goto L_1510;
     else
         goto L_14a3;

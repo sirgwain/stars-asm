@@ -1,12 +1,11 @@
 int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
-    RTBOF     rtbof;
-    StringId  ids;
-    int16_t   fCheckMulti;
-    int16_t   fRewind;
-    int16_t   fSilentSav;
-    jmp_buf  *penvMemSav;
-    jmp_buf   env;
-    MessageId t_merge_4c1e_0001;
+    RTBOF    rtbof;
+    StringId ids;
+    int16_t  fCheckMulti;
+    int16_t  fRewind;
+    int16_t  fSilentSav;
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
 
     fSilentSav = fFileErrSilent;
     ids = idsCantOpenFile;
@@ -32,10 +31,9 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     if (hdrCur.rt != rtBOF || (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2 || (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49 ||
         (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84) {
         if (hdrCur.rt == rtBOF) {
-            t_merge_4c1e_0001 =
-                (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) > 84) ? 0x2ca
-                                                                                                                                                    : 0x4d3;
-            FileError(t_merge_4c1e_0001);
+            FileError((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) > 84)
+                          ? 714
+                          : 1235);
         } else {
             FileError(idmColonistsDroppedDestroyedSpiritedFighting);
         }

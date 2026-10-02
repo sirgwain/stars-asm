@@ -1,4 +1,4 @@
-int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj) {
+int32_t ChgCargo(GrobjClass grobj, int16_t id, MineralType iSupply, int32_t dChg, void *pobj) {
     THING  *pth;
     XFER    xfer;
     int16_t i;
@@ -45,13 +45,13 @@ L_6084:
     ppl = &xfer.pl;
 
 L_609f:
-    if (iSupply > 4)
+    if (iSupply > Fuel)
         goto L_6159;
     else
         goto L_60a8;
 
 L_60a8:
-    if (iSupply != 4)
+    if (iSupply != Fuel)
         goto L_60ba;
     else
         goto L_60b1;
@@ -125,7 +125,7 @@ L_61ab:
     pth = &xfer.th;
 
 L_61c0:
-    if (iSupply < 3)
+    if (iSupply < Colonists)
         goto L_61d2;
     else
         goto L_61c9;
@@ -134,7 +134,7 @@ L_61c9:
     return 0;
 
 L_61d2:
-    if (iSupply > 4)
+    if (iSupply > Fuel)
         goto L_62f3;
     else
         goto L_61db;
@@ -217,7 +217,7 @@ L_6333:
     pfl = &xfer.fl;
 
 L_6349:
-    if (iSupply > 4)
+    if (iSupply > Fuel)
         goto L_6492;
     else
         goto L_6352;
@@ -241,7 +241,7 @@ L_63b0:
     dChg = -pfl->rgwtMin[iSupply];
 
 L_63d4:
-    if (iSupply != 3)
+    if (iSupply != Colonists)
         goto L_63f9;
     else
         goto L_63dd;
@@ -256,7 +256,7 @@ L_63ef:
     dChg = 0;
 
 L_63f9:
-    if (iSupply != 4)
+    if (iSupply != Fuel)
         goto L_6415;
     else
         goto L_6402;
@@ -278,7 +278,7 @@ L_643a:
     goto L_646f;
 
 L_6443:
-    if (iSupply != 4)
+    if (iSupply != Fuel)
         goto L_645f;
     else
         goto L_644c;

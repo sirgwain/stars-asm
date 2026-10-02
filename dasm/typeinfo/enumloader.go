@@ -179,21 +179,37 @@ func parseEnumBody(body string) ([]EnumValue, error) {
 	return vals, nil
 }
 
-// enumTypedef returns the 16-bit integer type that holds every value of an
-// enum: int16_t when any value is negative, otherwise uint16_t.
+// enumTypedef returns the integer type that holds every value of an enum:
+// the 16-bit int the original used where every value fits one, otherwise
+// 32 bits, signed when any value is negative.
 func enumTypedef(values []EnumValue) (Type, error) {
-	typ := U16
+	signed := false
 	for _, v := range values {
 		if v.Value < 0 {
-			typ = I16
+			signed = true
+		}
+	}
+	for _, typ := range []Type{U16, U32} {
+		if signed {
+			typ = map[Type]Type{U16: I16, U32: I32}[typ]
+		}
+		fits := true
+		for _, v := range values {
+			if signed && (v.Value < -1<<(8*typ.Bytes()-1) || v.Value >= 1<<(8*typ.Bytes()-1)) || !signed && v.Value >= 1<<(8*typ.Bytes()) {
+				fits = false
+				break
+			}
+		}
+		if fits {
+			return typ, nil
 		}
 	}
 	for _, v := range values {
-		if typ == I16 && (v.Value < -0x8000 || v.Value > 0x7fff) || typ == U16 && v.Value > 0xffff {
-			return nil, fmt.Errorf("%s = %d does not fit %s", v.Name, v.Value, typ)
+		if v.Value < -1<<31 || v.Value >= 1<<32 {
+			return nil, fmt.Errorf("%s = %d does not fit 32 bits", v.Name, v.Value)
 		}
 	}
-	return typ, nil
+	return nil, fmt.Errorf("enum values do not fit a signed 32-bit int")
 }
 
 func stripCComments(s string) string {
@@ -214,12 +230,14 @@ func stripCComments(s string) string {
 
 type symbolicConfigJSON struct {
 	FlagEnums       []string                `json:"flag_enums"`
+	CharEnums       []string                `json:"char_enums"`
 	Uses            []useRuleJSON           `json:"uses"`
 	Messages        []messageRuleJSON       `json:"messages"`
 	DependentEnums  []dependentEnumRuleJSON `json:"dependent_enums"`
 	WindowClasses   []windowClassJSON       `json:"window_classes"`
 	Windows         []windowRuleJSON        `json:"windows"`
 	SentMessages    []sentMessagesJSON      `json:"sent_messages"`
+	DialogControls  []dialogControlsJSON    `json:"dialog_controls"`
 	MessageHandlers []messageHandlerJSON    `json:"message_handlers"`
 }
 
@@ -260,6 +278,7 @@ type messagePayloadJSON struct {
 }
 
 type messageValueJSON struct {
+	Char     bool   `json:"char"`
 	Enum     string `json:"enum"`
 	CastType string `json:"cast_type"`
 	Get      string `json:"get"`
@@ -268,10 +287,12 @@ type messageValueJSON struct {
 }
 
 type dependentEnumRuleJSON struct {
-	Type          string            `json:"type"`
-	Target        []string          `json:"target"`
-	Discriminator []string          `json:"discriminator"`
-	EnumByValue   map[string]string `json:"enum_by_value"`
+	Type              string            `json:"type"`
+	Func              string            `json:"func"`
+	DiscriminatorEnum string            `json:"discriminator_enum"`
+	Target            []string          `json:"target"`
+	Discriminator     []string          `json:"discriminator"`
+	EnumByValue       map[string]string `json:"enum_by_value"`
 }
 
 func parseUseRuleJSON(u useRuleJSON) *EnumUseRule {
@@ -383,6 +404,12 @@ func parseMessagePayloadJSON(message, parameter string, cfg *messagePayloadJSON,
 // parseMessagePartJSON resolves one message parameter part's type and, when
 // Win32 repacked it, the cracker function reading it.
 func parseMessagePartJSON(message, path string, cfg *messageValueJSON, sdb *SymbolDB, resolver *typeResolver) (MessagePart, error) {
+	if cfg != nil && cfg.Char {
+		if cfg.Enum != "" || cfg.CastType != "" || cfg.Get != "" {
+			return MessagePart{}, fmt.Errorf("message %s %s: a char part names no enum, cast_type or cracker", message, path)
+		}
+		return MessagePart{Char: true}, nil
+	}
 	typ, err := parseMessageValueJSON(message, path, cfg, sdb, resolver)
 	if err != nil || cfg == nil {
 		return MessagePart{Type: typ}, err
@@ -440,6 +467,9 @@ func parseMessageValueJSON(message, path string, cfg *messageValueJSON, sdb *Sym
 
 // parseDependentEnumRuleJSON resolves a dependent enum JSON record to typed rule data.
 func parseDependentEnumRuleJSON(cfg dependentEnumRuleJSON, sdb *SymbolDB) (*DependentEnumRule, error) {
+	if cfg.Func != "" {
+		return parseFunctionDependentEnumRuleJSON(cfg, sdb)
+	}
 	strct := sdb.GetStruct(cfg.Type)
 	if strct == nil {
 		return nil, fmt.Errorf("dependent enum type %s not found", cfg.Type)
@@ -481,6 +511,79 @@ func parseDependentEnumRuleJSON(cfg dependentEnumRuleJSON, sdb *SymbolDB) (*Depe
 		Discriminator: append([]string(nil), cfg.Discriminator...),
 		EnumByValue:   enumByValue,
 	}, nil
+}
+
+// parseFunctionDependentEnumRuleJSON resolves a dependent enum rule rooted at
+// a function's variables, such as a report column whose enum depends on the
+// report type parameter.
+func parseFunctionDependentEnumRuleJSON(cfg dependentEnumRuleJSON, sdb *SymbolDB) (*DependentEnumRule, error) {
+	if cfg.Type != "" {
+		return nil, fmt.Errorf("dependent enum for func %s must not also name type %s", cfg.Func, cfg.Type)
+	}
+	fn := sdb.GetFunction(cfg.Func)
+	if fn == nil {
+		return nil, fmt.Errorf("dependent enum func %s not found", cfg.Func)
+	}
+	for _, path := range [][]string{cfg.Target, cfg.Discriminator} {
+		if len(path) == 0 {
+			return nil, fmt.Errorf("dependent enum for func %s has an empty path", cfg.Func)
+		}
+		typ, ok := functionVarType(fn, path[0])
+		if !ok {
+			global := sdb.GetGlobal(path[0])
+			if global == nil {
+				return nil, fmt.Errorf("dependent enum for func %s: %s is not a param, local or global", cfg.Func, path[0])
+			}
+			typ = global.Type
+		}
+		if len(path) > 1 {
+			strct, ok := namedStructTypeForDependent(typ)
+			if !ok {
+				return nil, fmt.Errorf("dependent enum for func %s: %s is not a struct", cfg.Func, path[0])
+			}
+			if _, ok := resolveStructFieldPathForEnum(strct, path[1:]); !ok {
+				return nil, fmt.Errorf("dependent enum for func %s: path %s not found", cfg.Func, strings.Join(path, "."))
+			}
+		}
+	}
+	discriminatorEnum := sdb.GetEnum(cfg.DiscriminatorEnum)
+	if discriminatorEnum == nil {
+		return nil, fmt.Errorf("dependent enum for func %s: discriminator enum %q not found", cfg.Func, cfg.DiscriminatorEnum)
+	}
+	enumByValue := make(map[int]*Enum, len(cfg.EnumByValue))
+	for valueName, enumName := range cfg.EnumByValue {
+		value, ok := enumValueByName(discriminatorEnum, valueName)
+		if !ok {
+			return nil, fmt.Errorf("dependent enum for func %s: discriminator value %s not found in %s", cfg.Func, valueName, discriminatorEnum.Name)
+		}
+		enumType := resolveDependentTargetEnum(sdb, enumName)
+		if enumType == nil {
+			return nil, fmt.Errorf("dependent enum for func %s: target enum %s not found", cfg.Func, enumName)
+		}
+		enumByValue[value.Value] = enumType
+	}
+	return &DependentEnumRule{
+		Func:              cfg.Func,
+		DiscriminatorEnum: discriminatorEnum,
+		Target:            append([]string(nil), cfg.Target...),
+		Discriminator:     append([]string(nil), cfg.Discriminator...),
+		EnumByValue:       enumByValue,
+	}, nil
+}
+
+// functionVarType returns the type of fn's param or local named name.
+func functionVarType(fn *Function, name string) (Type, bool) {
+	for _, v := range fn.Params {
+		if v.Name == name {
+			return v.Type, true
+		}
+	}
+	for _, v := range fn.Vars {
+		if v.Name == name {
+			return v.Type, true
+		}
+	}
+	return nil, false
 }
 
 // resolveDependentTargetEnum returns the enum named or value-prefixed by name.

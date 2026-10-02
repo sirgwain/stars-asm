@@ -1,5 +1,5 @@
 int16_t FIsAiAttack(FLEET *lpfl) {
-    int16_t ihul;
+    HulDef  ihul;
     int16_t i;
 
 L_4a72:
@@ -14,13 +14,13 @@ L_4a83:
 
 L_4aa0:
     ihul = rgshdef[i].hul.ihuldef;
-    if (ihul <= 5)
+    if ((int16_t)ihul <= ihuldefFrigate)
         goto L_4ac7;
     else
         goto L_4ab8;
 
 L_4ab8:
-    if (ihul > 10)
+    if ((int16_t)ihul > ihuldefDreadnought)
         goto L_4ac7;
     else
         goto L_4ac1;
@@ -29,7 +29,7 @@ L_4ac1:
     return 1;
 
 L_4ac7:
-    if (ihul != 5)
+    if (ihul != ihuldefFrigate)
         goto L_4b11;
     else
         goto L_4ad0;
@@ -49,13 +49,13 @@ L_4b0e:
     return 0;
 
 L_4b11:
-    if (ihul == 31)
+    if (ihul == ihuldefMetaMorph)
         goto L_4b23;
     else
         goto L_4b1a;
 
 L_4b1a:
-    if (ihul != 29)
+    if (ihul != ihuldefNubian)
         goto L_4b81;
     else
         goto L_4b23;

@@ -1,0 +1,832 @@
+/*
+PszFormatString  (msg)
+  addr: 0007:85cc  len=2459
+  sig:  char * PszFormatString(char *pszFormat, int16_t *pParamsReal)
+  params:
+    char *           pszFormat      [BP+0x6]
+    int16_t *        pParamsReal    [BP+0x8]
+  locals:
+    char *           pch            [BP-0x1f4]
+    uint16_t         w              [BP-0x1f2]
+    char[480]        szBuf          [BP-0x1f0]
+    char *           pchT           [BP-0x10]
+    int16_t *        pParams        [BP-0xe]
+    int16_t          i              [BP-0xa]
+    int16_t          c              [BP-0x8]
+    int16_t          cOut           [BP-0x6]
+    int16_t          iMineral       [BP-0x4]
+    block 0007:8B5E  len=0x8E
+      PART             part           [BP-0x1fc]
+    block 0007:8CFD  len=0xB8
+      int32_t          l              [BP-0x1f8]
+    block 0007:8DB5  len=0x102
+      SHDEF *          lpshdef        [BP-0x1f8]
+
+  stats: blocks=3  labels=6
+    DoPlanet: L_8ad8
+    DoFleet: L_8b26
+    LThingName: L_8bec
+    DoInt: L_87c9
+    FinishString: L_8ae9
+    DoNothing: L_8b07
+*/
+block L_85cc:
+  insts 0..10  off 0x85cc..0x85eb
+  succs: L_85ec
+  effects:
+    85d5  store[2] [bp-iMineral] = 0xffff
+    85e0  store[2] [bp-pParams] = load([bp+pParamsReal])
+    85e3  store[2] [bp-pParams+0x2] = load([bp+pParamsReal+0x2])
+    85e6  store[2] [bp-pch] = szMsgBuf
+
+block L_85ec:
+  insts 11..15  off 0x85ec..0x85f6
+  preds: L_85cc, L_8f4d
+  succs: L_85fa, L_8f54
+  effects:
+    85f5  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x0 ? L_8f54 : L_85fa
+
+block L_85fa:
+  insts 17..21  off 0x85fa..0x8604
+  preds: L_85ec
+  succs: L_8608, L_861b
+  effects:
+    8603  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x5c ? L_861b : L_8608
+
+block L_8608:
+  insts 23..28  off 0x8608..0x861a
+  preds: L_85fa
+  succs: L_8f4d
+  effects:
+    8611  store[2] [bp-pch] = (load([bp-pch]) + 0x1)
+    8616  store[1] byte ds:[load([bp-pch])] = load(byte ds:[load([bp+pszFormat])])
+    8618  goto L_8f4d
+
+block L_861b:
+  insts 29..33  off 0x861b..0x8627
+  preds: L_85fa
+  succs: L_8ecd
+  effects:
+    861b  store[2] [bp+pszFormat] = (load([bp+pszFormat]) + 0x1)
+    8625  goto L_8ecd
+
+block L_8628:
+  insts 34..44  off 0x8628..0x864a
+  preds: L_8ed8
+  succs: L_8f4d
+  effects:
+    8630  call strcpy(load@862c/src([bp-pch]), 0x57a4) -> callresult(char *)
+    863c  call strlen(0x57a4) -> callresult(uint16_t)
+    8644  store[2] [bp-pch] = (load@8644/dst([bp-pch]) + callresult(uint16_t))
+    8648  goto L_8f4d
+
+block L_864b:
+  insts 45..58  off 0x864b..0x8673
+  preds: L_8ed8
+  succs: L_8727
+  effects:
+    8653  call strcpy(load@864f/src([bp-pch]), 0x56a2) -> callresult(char *)
+    865f  call strlen(0x56a2) -> callresult(uint16_t)
+    8667  store[2] [bp-pch] = (load@8667/dst([bp-pch]) + callresult(uint16_t))
+    8671  goto L_8727
+
+block L_8674:
+  insts 59..60  off 0x8674..0x867a
+  preds: L_8727
+  succs: L_867e, L_86a2
+  effects:
+    8679  branch load([idPlayer]) == 0xffff ? L_86a2 : L_867e
+
+block L_867e:
+  insts 62..76  off 0x867e..0x86a1
+  preds: L_8674
+  succs: L_87c9
+  effects:
+    8694  call _wsprintf(words(ds, load([bp-pch])), words(ds, 0xb54), (load([idPlayer]) + 0x1)) -> callresult(int16_t)
+    869c  store[2] [bp-c] = callresult(int16_t)
+    869f  goto L_87c9
+
+block L_86a2:
+  insts 77..78  off 0x86a2..0x86a8
+  preds: L_8674, L_873f
+  succs: L_86ac, L_86d0
+  effects:
+    86a7  branch load([idPlayer]) == 0xffff ? L_86d0 : L_86ac
+
+block L_86ac:
+  insts 80..94  off 0x86ac..0x86cf
+  preds: L_86a2
+  succs: L_87c9
+  effects:
+    86c2  call _wsprintf(words(ds, load([bp-pch])), words(ds, 0xb59), (load([idPlayer]) + 0x1)) -> callresult(int16_t)
+    86ca  store[2] [bp-c] = callresult(int16_t)
+    86cd  goto L_87c9
+
+block L_86d0:
+  insts 95..101  off 0x86d0..0x86e7
+  preds: L_86a2, L_872f
+  succs: L_8f4d
+  effects:
+    86d8  call strcat(load@86d4/src([bp-pch]), 0xb5e) -> callresult(char *)
+    86e0  store[2] [bp-pch] = (load@86e0/dst([bp-pch]) + 0x4)
+    86e5  goto L_8f4d
+
+block L_86e8:
+  insts 102..116  off 0x86e8..0x870b
+  preds: L_8737
+  succs: L_87c9
+  effects:
+    86fe  call _wsprintf(words(ds, load([bp-pch])), words(ds, 0xb63), (load([idPlayer]) + 0x1)) -> callresult(int16_t)
+    8706  store[2] [bp-c] = callresult(int16_t)
+    8709  goto L_87c9
+
+block L_870c:
+  insts 117..123  off 0x870c..0x8723
+  preds: L_874c
+  succs: L_8f4d
+  effects:
+    8714  call strcat(load@8710/src([bp-pch]), 0xb68) -> callresult(char *)
+    871c  store[2] [bp-pch] = (load@871c/dst([bp-pch]) + 0x3)
+    8721  goto L_8f4d
+
+block L_8727:
+  insts 124..125  off 0x8727..0x872b
+  preds: L_864b
+  succs: L_8674, L_872f
+  effects:
+    872a  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x66 ? L_8674 : L_872f
+
+block L_872f:
+  insts 127..128  off 0x872f..0x8733
+  preds: L_8727
+  succs: L_86d0, L_8737
+  effects:
+    8732  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x68 ? L_86d0 : L_8737
+
+block L_8737:
+  insts 130..131  off 0x8737..0x873b
+  preds: L_872f
+  succs: L_86e8, L_873f
+  effects:
+    873a  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x72 ? L_86e8 : L_873f
+
+block L_873f:
+  insts 133..134  off 0x873f..0x8743
+  preds: L_8737
+  succs: L_86a2, L_8747
+  effects:
+    8742  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x74 ? L_86a2 : L_8747
+
+block L_8747:
+  insts 136..137  off 0x8747..0x874b
+  preds: L_873f
+  succs: L_874c, L_8f4d
+  effects:
+    874a  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) != 0x79 ? L_8f4d : L_874c
+
+block L_874c:
+  insts 138..138  off 0x874c..0x874e
+  preds: L_8747
+  succs: L_870c
+  effects:
+    874c  goto L_870c
+
+block L_8755:
+  insts 141..146  off 0x8755..0x8766
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8761  store[2] [bp-pchT] = load(ds:[(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) << 0x1)+0x47e])
+    8764  goto L_8ae9
+
+block L_8767:
+  insts 147..161  off 0x8767..0x8790
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8783  call PszCalcEnvVar((((load@8774/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) >> 0x8) & 0xff) & 0xff), (load@876a/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0xff)) -> callresult(char *)
+    878b  store[2] [bp-pchT] = callresult(char *)
+    878e  goto L_8ae9
+
+block L_8791:
+  insts 162..169  off 0x8791..0x87a8
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    879b  call PszGetCompressedString((load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) + 0x544)) -> callresult(char *)
+    87a3  store[2] [bp-pchT] = callresult(char *)
+    87a6  goto L_8ae9
+
+block L_87a9:
+  insts 170..182  off 0x87a9..0x87c8
+  preds: L_8ed8
+  succs: L_87c9
+  effects:
+    87be  call _wsprintf(words(ds, load([bp-pch])), words(ds, load([PCTD])), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) -> callresult(int16_t)
+    87c6  store[2] [bp-c] = callresult(int16_t)
+
+block DoInt:
+  insts 183..186  off 0x87c9..0x87d6
+  preds: L_867e, L_86ac, L_86e8, L_87a9
+  succs: L_8f4d
+  effects:
+    87cc  store[2] [bp-pch] = (load([bp-pch]) + load([bp-c]))
+    87d0  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    87d4  goto L_8f4d
+
+block L_87d7:
+  insts 187..199  off 0x87d7..0x87f7
+  preds: L_8ed8
+  succs: L_87fb, L_8801
+  effects:
+    87f6  branch (load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0x20) == 0x0 ? L_8801 : L_87fb
+
+block L_87fb:
+  insts 201..202  off 0x87fb..0x8800
+  preds: L_87d7
+  succs: L_8804
+  effects:
+    87fe  goto L_8804
+
+block L_8801:
+  insts 203..203  off 0x8801..0x8803
+  preds: L_87d7
+  succs: L_8804
+
+block L_8804:
+  insts 204..209  off 0x8804..0x8812
+  preds: L_87fb, L_8801
+  succs: L_8816, L_881c
+  effects:
+    8811  branch (load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0x10) == 0x0 ? L_881c : L_8816
+
+block L_8816:
+  insts 211..212  off 0x8816..0x881b
+  preds: L_8804
+  succs: L_881f
+  effects:
+    8819  goto L_881f
+
+block L_881c:
+  insts 213..213  off 0x881c..0x881e
+  preds: L_8804
+  succs: L_881f
+
+block L_881f:
+  insts 214..219  off 0x881f..0x882a
+  preds: L_8816, L_881c
+  succs: L_882e, L_8834
+  effects:
+    8829  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) != 0x4c ? L_8834 : L_882e
+
+block L_882e:
+  insts 221..222  off 0x882e..0x8833
+  preds: L_881f
+  succs: L_8837
+  effects:
+    8831  goto L_8837
+
+block L_8834:
+  insts 223..223  off 0x8834..0x8836
+  preds: L_881f
+  succs: L_8837
+
+block L_8837:
+  insts 224..232  off 0x8837..0x884f
+  preds: L_882e, L_8834
+  succs: L_8ae9
+  effects:
+    8842  call PszPlayerName((load@883b/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0xf), merge(Join: L_8837, (L_882e:0x1, L_8834:0x0)), merge(Join: L_881f, (L_8816:0x1, L_881c:0x0)), merge(Join: L_8804, (L_87fb:0x1, L_8801:0x0)), ((load@87de/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0xc0) sar 0x6), 0x0) -> callresult(char *)
+    884a  store[2] [bp-pchT] = callresult(char *)
+    884d  goto L_8ae9
+
+block L_8850:
+  insts 233..237  off 0x8850..0x8860
+  preds: L_8ed8
+  succs: L_8867, L_8f4d
+  effects:
+    8856  store[2] [bp-w] = load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+    885f  branch load([bp-w]) == 0x0 ? L_8f4d : L_8867
+
+block L_8867:
+  insts 240..244  off 0x8867..0x8876
+  preds: L_8850
+  succs: L_887a, L_88c1
+  effects:
+    8875  branch ((load@8867/src([bp-w]) + 0xffff) & load@886e/src([bp-w])) != 0x0 ? L_88c1 : L_887a
+
+block L_887a:
+  insts 246..246  off 0x887a..0x887e
+  preds: L_8867
+  succs: L_887f
+  effects:
+    887a  store[2] [bp-c] = 0x0
+
+block L_887f:
+  insts 247..250  off 0x887f..0x888a
+  preds: L_887a, L_888e
+  succs: L_888e, L_889c
+  effects:
+    8889  branch (load([bp-w]) & 0x1) != 0x0 ? L_889c : L_888e
+
+block L_888e:
+  insts 252..255  off 0x888e..0x889b
+  preds: L_887f
+  succs: L_887f
+  effects:
+    888e  store[2] [bp-c] = (load([bp-c]) + 0x1)
+    8895  store[2] [bp-w] = (load([bp-w]) >> 0x1)
+    8899  goto L_887f
+
+block L_889c:
+  insts 256..270  off 0x889c..0x88c0
+  preds: L_887f
+  succs: L_8ae9
+  effects:
+    88b3  call PszPlayerName(load([bp-c]), 0x0, 0x1, 0x1, 0x0, 0x0) -> callresult(char *)
+    88bb  store[2] [bp-pchT] = callresult(char *)
+    88be  goto L_8ae9
+
+block L_88c1:
+  insts 271..273  off 0x88c1..0x88cd
+  preds: L_8867
+  succs: L_88e0
+  effects:
+    88c1  store[2] [bp-cOut] = 0x0
+    88c6  store[2] [bp-i] = 0x0
+    88cb  goto L_88e0
+
+block L_88ce:
+  insts 274..278  off 0x88ce..0x88df
+  preds: L_88eb, L_8944
+  succs: L_88e0
+  effects:
+    88d1  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    88d8  store[2] [bp-w] = (load([bp-w]) >> 0x1)
+
+block L_88e0:
+  insts 279..281  off 0x88e0..0x88e7
+  preds: L_88c1, L_88ce
+  succs: L_88eb, L_8b07
+  effects:
+    88e6  branch load([bp-i]) >= load([game+0x8]) ? L_8b07 : L_88eb
+
+block L_88eb:
+  insts 283..286  off 0x88eb..0x88f6
+  preds: L_88e0
+  succs: L_88ce, L_88fd
+  effects:
+    88f5  branch (load([bp-w]) & 0x1) == 0x0 ? L_88ce : L_88fd
+
+block L_88fd:
+  insts 289..290  off 0x88fd..0x8902
+  preds: L_88eb
+  succs: L_8906, L_8944
+  effects:
+    8901  branch load([bp-cOut]) <= 0x0 ? L_8944 : L_8906
+
+block L_8906:
+  insts 292..295  off 0x8906..0x8911
+  preds: L_88fd
+  succs: L_8915, L_8930
+  effects:
+    8910  branch (load([bp-w]) & 0xfffe) == 0x0 ? L_8930 : L_8915
+
+block L_8915:
+  insts 297..303  off 0x8915..0x892f
+  preds: L_8906
+  succs: L_8944
+  effects:
+    8919  store[2] [bp-pch] = (load@8919/dst([bp-pch]) + 0x1)
+    891e  store[1] byte ds:[load([bp-pch])] = 0x2c
+    8925  store[2] [bp-pch] = (load@8925/dst([bp-pch]) + 0x1)
+    892a  store[1] byte ds:[load([bp-pch])] = 0x20
+    892d  goto L_8944
+
+block L_8930:
+  insts 304..309  off 0x8930..0x8943
+  preds: L_8906
+  succs: L_8944
+  effects:
+    8938  call CchGetString(0x259, load@8930/src([bp-pch])) -> callresult(int16_t)
+    8940  store[2] [bp-pch] = (load@8940/dst([bp-pch]) + callresult(int16_t))
+
+block L_8944:
+  insts 310..333  off 0x8944..0x898a
+  preds: L_88fd, L_8915, L_8930
+  succs: L_88ce
+  effects:
+    895b  call PszPlayerName(load([bp-i]), 0x0, 0x1, 0x1, 0x0, 0x0) -> callresult(char *)
+    8963  store[2] [bp-pchT] = callresult(char *)
+    896d  call strcpy(load@8969/src([bp-pch]), load@8966/src([bp-pchT])) -> callresult(char *)
+    8978  call strlen(load@8975/src([bp-pchT])) -> callresult(uint16_t)
+    8980  store[2] [bp-pch] = (load@8980/dst([bp-pch]) + callresult(uint16_t))
+    8984  store[2] [bp-cOut] = (load([bp-cOut]) + 0x1)
+    8988  goto L_88ce
+
+block L_898e:
+  insts 335..338  off 0x898e..0x8998
+  preds: L_8ed8
+  succs: L_899f, L_8b07
+  effects:
+    8997  branch load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) == load([idPlayer]) ? L_8b07 : L_899f
+
+block L_899f:
+  insts 341..378  off 0x899f..0x8a08
+  preds: L_898e
+  succs: L_8ae9
+  effects:
+    89a8  call CchGetString(0x546, addr([bp-szBuf])) -> callresult(int16_t)
+    89ca  call PszPlayerName(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]), 0x0, 0x0, 0x0, 0x0, 0x0) -> callresult(char *)
+    89d2  store[2] [bp-pchT] = callresult(char *)
+    89dd  call strcat(addr([bp-szBuf]), load([bp-pchT])) -> callresult(char *)
+    89e9  call PszGetCompressedString(0x547) -> callresult(char *)
+    89f7  call strcat(addr([bp-szBuf]), callresult(char *)) -> callresult(char *)
+    8a03  store[2] [bp-pchT] = addr([bp-szBuf])
+    8a06  goto L_8ae9
+
+block L_8a09:
+  insts 379..386  off 0x8a09..0x8a20
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8a0f  store[2] [bp-iMineral] = load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+    8a1b  store[2] [bp-pchT] = load(ds:[(load([bp-iMineral]) << 0x1)+0x4cc])
+    8a1e  goto L_8ae9
+
+block L_8a21:
+  insts 387..392  off 0x8a21..0x8a32
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8a2d  store[2] [bp-pchT] = load(ds:[(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) << 0x1)+0x4f2])
+    8a30  goto L_8ae9
+
+block L_8a33:
+  insts 393..408  off 0x8a33..0x8a5b
+  preds: L_8ed8
+  succs: L_8a5f, L_8a89
+  effects:
+    8a40  store[2] ss:[bp-0x1fc] = (words(signhiword(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) / 0x64)
+    8a44  store[2] ss:[bp-0x1fa] = signhiword((words(signhiword(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) / 0x64))
+    8a5a  branch (long double)load(dword ss:[bp-0x1fc]) < (long double)10 ? L_8a89 : L_8a5f
+
+block L_8a5f:
+  insts 410..427  off 0x8a5f..0x8a88
+  preds: L_8a33
+  succs: L_8aca
+  effects:
+    8a7b  call _wsprintf(words(ds, load([bp-pch])), words(ds, load([PCTDPCTPCT])), (words(signhiword(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) / 0x64)) -> callresult(int16_t)
+    8a83  store[2] [bp-c] = callresult(int16_t)
+    8a86  goto L_8aca
+
+block L_8a89:
+  insts 428..455  off 0x8a89..0x8ac9
+  preds: L_8a33
+  succs: L_8aca
+  effects:
+    8abf  call _wsprintf(words(ds, load([bp-pch])), words(ds, load([PCTDXPCTDPCTPCT])), (words(signhiword(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) / 0x64), (load@8a9d/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) - loword(((words(signhiword(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) / 0x64) * 0x64)))) -> callresult(int16_t)
+    8ac7  store[2] [bp-c] = callresult(int16_t)
+
+block L_8aca:
+  insts 456..459  off 0x8aca..0x8ad7
+  preds: L_8a5f, L_8a89
+  succs: L_8f4d
+  effects:
+    8acd  store[2] [bp-pch] = (load([bp-pch]) + load([bp-c]))
+    8ad1  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8ad5  goto L_8f4d
+
+block DoPlanet:
+  insts 460..464  off 0x8ad8..0x8ae8
+  preds: L_8c8a, L_8ed8
+  succs: L_8ae9
+  effects:
+    8ade  call PszGetPlanetName(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) -> callresult(char *)
+    8ae6  store[2] [bp-pchT] = callresult(char *)
+
+block FinishString:
+  insts 465..472  off 0x8ae9..0x8b06
+  preds: L_8755, L_8767, L_8791, L_8837, L_889c, L_899f, L_8a09, L_8a21, L_8ad8, L_8b11, L_8b26, L_8b46, L_8bec, L_8c51, L_8c96
+  succs: L_8b07
+  effects:
+    8af0  call strcpy(load@8aec/src([bp-pch]), load@8ae9/src([bp-pchT])) -> callresult(char *)
+    8afb  call strlen(load@8af8/src([bp-pchT])) -> callresult(uint16_t)
+    8b03  store[2] [bp-pch] = (load@8b03/dst([bp-pch]) + callresult(uint16_t))
+
+block DoNothing:
+  insts 473..474  off 0x8b07..0x8b0d
+  preds: L_88e0, L_898e, L_8ae9, L_8ed8
+  succs: L_8f4d
+  effects:
+    8b07  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8b0b  goto L_8f4d
+
+block L_8b11:
+  insts 476..482  off 0x8b11..0x8b25
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8b18  call PszFleetNameFromWord(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) -> callresult(char *)
+    8b20  store[2] [bp-pchT] = callresult(char *)
+    8b23  goto L_8ae9
+
+block DoFleet:
+  insts 483..492  off 0x8b26..0x8b45
+  preds: L_8c7c, L_8ed8
+  succs: L_8ae9
+  effects:
+    8b2f  store[2] [bp-w] = (load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) | 0x8000)
+    8b38  call PszGetFleetName(load([bp-w])) -> callresult(char *)
+    8b40  store[2] [bp-pchT] = callresult(char *)
+    8b43  goto L_8ae9
+
+block L_8b46:
+  insts 493..500  off 0x8b46..0x8b5d
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8b50  call PszGetCompressedString((load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) + 0x54)) -> callresult(char *)
+    8b58  store[2] [bp-pchT] = callresult(char *)
+    8b5b  goto L_8ae9
+
+block L_8b5e:
+  insts 501..520  off 0x8b5e..0x8b9e
+  preds: L_8ed8
+  succs: L_8ba2, L_8ba8
+  effects:
+    8b64  store[2] [bp-part] = load@8b61/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+    8b68  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8b72  store[2] ss:[bp-0x1fe] = load@8b6f/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+    8b87  store[2] [bp-part+0x2] = ((load([bp-part+0x2]) & 0xff00) | (load(ss:[bp-0x1fe]) & 0xff))
+    8b92  call FLookupPart(addr([bp-part])) -> callresult(int16_t)
+    8b9d  branch callresult(int16_t) <= 0x0 ? L_8ba8 : L_8ba2
+
+block L_8ba2:
+  insts 522..523  off 0x8ba2..0x8ba7
+  preds: L_8b5e
+  succs: L_8bab
+  effects:
+    8ba5  goto L_8bab
+
+block L_8ba8:
+  insts 524..524  off 0x8ba8..0x8baa
+  preds: L_8b5e
+  succs: L_8bab
+
+block L_8bab:
+  insts 525..547  off 0x8bab..0x8beb
+  preds: L_8ba2, L_8ba8
+  succs: L_8f4d
+  effects:
+    8bc2  call fstrcpy(words(ds, load([bp-pch])), words(load([bp-part+0x6]), (load([bp-part+0x4]) + 0x8))) -> callresult(char *)
+    8bd9  call fstrlen(words(load([bp-part+0x6]), (load([bp-part+0x4]) + 0x8))) -> callresult(uint16_t)
+    8be1  store[2] [bp-pch] = (load@8be1/dst([bp-pch]) + callresult(uint16_t))
+    8be5  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8be9  goto L_8f4d
+
+block LThingName:
+  insts 548..553  off 0x8bec..0x8bff
+  preds: L_8c3b, L_8ed8
+  succs: L_8ae9
+  effects:
+    8bf2  call PszGetThingName(load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) -> callresult(char *)
+    8bfa  store[2] [bp-pchT] = callresult(char *)
+    8bfd  goto L_8ae9
+
+block L_8c00:
+  insts 554..567  off 0x8c00..0x8c2e
+  preds: L_8ed8
+  succs: L_8f4d
+  effects:
+    8c06  store[2] [bp-w] = load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+    8c16  call CchGetString((load([bp-w]) + 0x4e2), load@8c0a/src([bp-pch])) -> callresult(int16_t)
+    8c1e  store[2] [bp-c] = callresult(int16_t)
+    8c24  store[2] [bp-pch] = (load@8c24/dst([bp-pch]) + load([bp-c]))
+    8c28  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8c2c  goto L_8f4d
+
+block L_8c2f:
+  insts 568..570  off 0x8c2f..0x8c37
+  preds: L_8ed8
+  succs: L_8c3b, L_8c45
+  effects:
+    8c36  branch load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) != 0xfffe ? L_8c45 : L_8c3b
+
+block L_8c3b:
+  insts 572..573  off 0x8c3b..0x8c41
+  preds: L_8c2f
+  succs: L_8bec
+  effects:
+    8c3b  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8c3f  goto L_8bec
+
+block L_8c45:
+  insts 574..576  off 0x8c45..0x8c4d
+  preds: L_8c2f
+  succs: L_8c51, L_8c78
+  effects:
+    8c4c  branch load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) == 0xffff ? L_8c78 : L_8c51
+
+block L_8c51:
+  insts 578..590  off 0x8c51..0x8c77
+  preds: L_8c45
+  succs: L_8ae9
+  effects:
+    8c66  call PszGetLocName(0x0, 0xffff, load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))+0x2])) -> callresult(char *)
+    8c6e  store[2] [bp-pchT] = callresult(char *)
+    8c71  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8c75  goto L_8ae9
+
+block L_8c78:
+  insts 591..591  off 0x8c78..0x8c7b
+  preds: L_8c45
+  succs: L_8c7c
+  effects:
+    8c78  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+
+block L_8c7c:
+  insts 592..596  off 0x8c7c..0x8c89
+  preds: L_8c78, L_8ed8
+  succs: L_8b26, L_8c8a
+  effects:
+    8c88  branch (load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0x8000) != 0x0 ? L_8b26 : L_8c8a
+
+block L_8c8a:
+  insts 597..597  off 0x8c8a..0x8c8c
+  preds: L_8c7c
+  succs: L_8ad8
+  effects:
+    8c8a  goto L_8ad8
+
+block L_8c96:
+  insts 600..621  off 0x8c96..0x8cce
+  preds: L_8ed8
+  succs: L_8ae9
+  effects:
+    8ca4  store[2] [bp-w] = ((load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) >> 0x9) & 0xf)
+    8cc1  call PszPlayerName(load([bp-w]), 0x0, 0x0, 0x0, 0x0, 0x0) -> callresult(char *)
+    8cc9  store[2] [bp-pchT] = callresult(char *)
+    8ccc  goto L_8ae9
+
+block L_8ccf:
+  insts 622..638  off 0x8ccf..0x8cfc
+  preds: L_8ed8
+  succs: L_8f4d
+  effects:
+    8ce4  call _wsprintf(words(ds, load([bp-pch])), words(ds, 0xb6c), load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])) -> callresult(int16_t)
+    8cec  store[2] [bp-c] = callresult(int16_t)
+    8cf2  store[2] [bp-pch] = (load@8cf2/dst([bp-pch]) + load([bp-c]))
+    8cf6  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8cfa  goto L_8f4d
+
+block L_8cfd:
+  insts 639..676  off 0x8cfd..0x8d6d
+  preds: L_8ed8
+  succs: L_8d71, L_8f4d
+  effects:
+    8d0d  store[2] ss:[bp-0x1fc] = load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+    8d11  store[2] ss:[bp-0x1fa] = 0x0
+    8d1d  call __aFlshl(words(0x0, load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))+0x2])), 0x10) -> callresult(int32_t)
+    8d2e  store[2] [bp-l] = (loword(callresult(int32_t)) | load(ss:[bp-0x1fc]))
+    8d32  store[2] [bp-l+0x2] = (hiword(callresult(int32_t)) | load(ss:[bp-0x1fa]))
+    8d36  store[2] [bp-pParams] = (load([bp-pParams]) + 0x4)
+    8d51  call _wsprintf(words(ds, load([bp-pch])), words(ds, load([PCTLD])), load([bp-l]), load([bp-l+0x2])) -> callresult(int16_t)
+    8d59  store[2] [bp-c] = callresult(int16_t)
+    8d5f  store[2] [bp-pch] = (load@8d5f/dst([bp-pch]) + load([bp-c]))
+    8d6c  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) == 0x76 ? L_8f4d : L_8d71
+
+block L_8d71:
+  insts 678..682  off 0x8d71..0x8d7b
+  preds: L_8cfd
+  succs: L_8d7f, L_8d88
+  effects:
+    8d7a  branch sext8to16(load(byte ds:[load([bp+pszFormat])])) != 0x56 ? L_8d88 : L_8d7f
+
+block L_8d7f:
+  insts 684..686  off 0x8d7f..0x8d87
+  preds: L_8d71
+  succs: L_8d88
+  effects:
+    8d85  store[2] [bp-iMineral] = load(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))])
+
+block L_8d88:
+  insts 687..698  off 0x8d88..0x8db1
+  preds: L_8d71, L_8d7f
+  succs: L_8db2
+  effects:
+    8d91  store[2] [bp-pchT] = load(ds:[(load([bp-iMineral]) << 0x1)+0xb48])
+    8d9b  call strcpy(load@8d97/src([bp-pch]), load@8d94/src([bp-pchT])) -> callresult(char *)
+    8da6  call strlen(load@8da3/src([bp-pchT])) -> callresult(uint16_t)
+    8dae  store[2] [bp-pch] = (load@8dae/dst([bp-pch]) + callresult(uint16_t))
+
+block L_8db2:
+  insts 699..699  off 0x8db2..0x8db4
+  preds: L_8d88
+  succs: L_8f4d
+  effects:
+    8db2  goto L_8f4d
+
+block L_8db5:
+  insts 700..713  off 0x8db5..0x8ddb
+  preds: L_8ed8
+  succs: L_8ddf, L_8e07
+  effects:
+    8dc5  store[2] [bp-c] = (((((load@8db8/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) sar 0x1) sar 0x1) sar 0x1) sar 0x1) sar 0x1)
+    8dd1  store[2] [bp-w] = (load@8dcb/src(farseg(load(dword [bp-pParams])):[faroff(load(dword [bp-pParams]))]) & 0x1f)
+    8dda  branch load([bp-w]) < 0x10 ? L_8e07 : L_8ddf
+
+block L_8ddf:
+  insts 715..727  off 0x8ddf..0x8e06
+  preds: L_8db5
+  succs: L_8e27
+  effects:
+    8dfc  store[2] [bp-lpshdef] = (load(ds:[((load([bp-c]) << 0x1) << 0x1)+0x14c]) + loword(((load([bp-w]) + 0xfff0) * 0x93)))
+    8e00  store[2] [bp-lpshdef+0x2] = load(ds:[((load([bp-c]) << 0x1) << 0x1)+0x14e])
+    8e04  goto L_8e27
+
+block L_8e07:
+  insts 728..737  off 0x8e07..0x8e26
+  preds: L_8db5
+  succs: L_8e27
+  effects:
+    8e1f  store[2] [bp-lpshdef] = (load(ds:[((load([bp-c]) << 0x1) << 0x1)+0xfe]) + loword((0x93 * load([bp-w]))))
+    8e23  store[2] [bp-lpshdef+0x2] = load(ds:[((load([bp-c]) << 0x1) << 0x1)+0x100])
+
+block L_8e27:
+  insts 738..740  off 0x8e27..0x8e2e
+  preds: L_8ddf, L_8e07
+  succs: L_8e32, L_8e84
+  effects:
+    8e2d  branch load([bp-c]) == load([idPlayer]) ? L_8e84 : L_8e32
+
+block L_8e32:
+  insts 742..776  off 0x8e32..0x8e83
+  preds: L_8e27
+  succs: L_8ea3
+  effects:
+    8e49  call PszPlayerName(load([bp-c]), 0x0, 0x0, 0x1, 0x0, 0x0) -> callresult(char *)
+    8e51  store[2] [bp-pchT] = callresult(char *)
+    8e79  call _wsprintf(words(ds, load([bp-pch])), words(ds, 0xb6f), load([bp-pchT]), ds, (load([bp-lpshdef]) + 0x8), load([bp-lpshdef+0x2])) -> callresult(int16_t)
+    8e81  goto L_8ea3
+
+block L_8e84:
+  insts 777..788  off 0x8e84..0x8ea2
+  preds: L_8e27
+  succs: L_8ea3
+  effects:
+    8e9b  call fstrcpy(words(ds, load([bp-pch])), words(load([bp-lpshdef+0x2]), (load([bp-lpshdef]) + 0x8))) -> callresult(char *)
+
+block L_8ea3:
+  insts 789..794  off 0x8ea3..0x8eb9
+  preds: L_8e32, L_8e84
+  succs: L_8f4d
+  effects:
+    8ea7  call strlen(load@8ea3/src([bp-pch])) -> callresult(uint16_t)
+    8eaf  store[2] [bp-pch] = (load@8eaf/dst([bp-pch]) + callresult(uint16_t))
+    8eb3  store[2] [bp-pParams] = (load([bp-pParams]) + 0x2)
+    8eb7  goto L_8f4d
+
+block L_8eba:
+  insts 795..800  off 0x8eba..0x8ecc
+  preds: L_8ecd, L_8ed8
+  succs: L_8f4d
+  effects:
+    8ec3  store[2] [bp-pch] = (load([bp-pch]) + 0x1)
+    8ec8  store[1] byte ds:[load([bp-pch])] = load(byte ds:[load([bp+pszFormat])])
+    8eca  goto L_8f4d
+
+block L_8ecd:
+  insts 801..803  off 0x8ecd..0x8ed4
+  preds: L_861b
+  succs: L_8eba, L_8ed8
+  effects:
+    8ed3  branch (sext8to16(load(byte ds:[load([bp+pszFormat])])) - 0x45) > 0x35 ? L_8eba : L_8ed8
+
+block L_8ed8:
+  insts 805..807  off 0x8ed8..0x8ee0
+  preds: L_8ecd
+  succs: L_8628, L_864b, L_8755, L_8767, L_8791, L_87a9, L_87d7, L_8850, L_898e, L_8a09, L_8a21, L_8a33, L_8ad8, L_8b07, L_8b11, L_8b26, L_8b46, L_8b5e, L_8bec, L_8c00, L_8c2f, L_8c7c, L_8c96, L_8ccf, L_8cfd, L_8db5, L_8eba
+  effects:
+    8edc  tablejump ((sext8to16(load(byte ds:[load([bp+pszFormat])])) - 0x45) << 0x1) [L_8767, L_8b11, L_8c00, L_8eba, L_8791, L_8eba, L_8eba, L_87d7, L_8a21, L_8eba, L_8c96, L_8a33, L_8eba, L_8eba, L_898e, L_8eba, L_8cfd, L_8cfd, L_8eba, L_8b07, L_8eba, L_8850, L_8eba, L_8eba, L_8eba, L_8eba, L_8eba, L_8eba, L_8eba, L_8eba, L_8eba, L_8eba, L_8755, L_864b, L_8bec, L_864b, L_87a9, L_8b46, L_8b5e, L_87d7, L_8a09, L_8c2f, L_8c7c, L_8ad8, L_8eba, L_864b, L_8b26, L_864b, L_8ccf, L_8cfd, L_8628, L_8eba, L_864b, L_8db5]
+
+block L_8f4d:
+  insts 862..863  off 0x8f4d..0x8f53
+  preds: L_8608, L_8628, L_86d0, L_870c, L_8747, L_87c9, L_8850, L_8aca, L_8b07, L_8bab, L_8c00, L_8ccf, L_8cfd, L_8db2, L_8ea3, L_8eba
+  succs: L_85ec
+  effects:
+    8f4d  store[2] [bp+pszFormat] = (load([bp+pszFormat]) + 0x1)
+    8f51  goto L_85ec
+
+block L_8f54:
+  insts 864..866  off 0x8f54..0x8f60
+  preds: L_85ec
+  succs: L_8f61
+  effects:
+    8f58  store[1] byte ds:[load([bp-pch])] = 0x0
+
+block L_8f61:
+  insts 868..872  off 0x8f61..0x8f66
+  preds: L_8f54
+  effects:
+    8f66  return szMsgBuf

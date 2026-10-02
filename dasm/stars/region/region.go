@@ -75,6 +75,8 @@ type Loop struct {
 	Post   *ir.Assign
 	// Latch is the label of a for loop's latch block when the block was
 	// reduced to Post and removed, so continue now stands for jumps to it.
+	// The label stays as the last node of Body while gotos from nested loops
+	// still reach it.
 	Latch string
 	Body  []Node
 }
@@ -166,7 +168,7 @@ func Build(fn ir.Func) (Func, error) {
 	for _, l := range fn.Locals {
 		locals[l.Name] = l.Type
 	}
-	out.Body = foldAssignments(duplicateReturns(pruneLabels(body)), locals)
+	out.Body = foldAssignments(guardShortElse(duplicateReturns(pruneLabels(body))), locals)
 	forwardFoldedTemps(out.Body, out.Body, locals)
 	// Forwarding can leave merge temps with nothing to declare them for.
 	out.Locals = slices.DeleteFunc(slices.Clone(fn.Locals), func(l ir.Local) bool {
@@ -282,7 +284,11 @@ func tableCases(t *ir.TableJump) (ir.Expr, []caseGroup) {
 	byLabel := map[string]int{}
 	for i, label := range t.Labels {
 		v := base + int64(i)*step
-		groups = addCase(groups, byLabel, label, &ir.IntConst{Value: uint64(v), Text: strconv.FormatInt(v, 10)})
+		c := &ir.IntConst{Value: uint64(v), Text: strconv.FormatInt(v, 10)}
+		if step == 1 {
+			c = t.CaseConst(v)
+		}
+		groups = addCase(groups, byLabel, label, c)
 	}
 	return index, groups
 }

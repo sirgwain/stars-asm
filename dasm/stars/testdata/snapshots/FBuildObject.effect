@@ -25,9 +25,9 @@ FBuildObject  (turn2)
       int16_t[3]       rgwt           [BP-0x2c]
       int16_t          cSize          [BP-0x26]
       int16_t          iWarpAsked     [BP-0x24]
-      int16_t          raMajor        [BP-0x22]
+      RaceAttribute    raMajor        [BP-0x22]
       THING *          lpth           [BP-0x20]
-      int16_t          iDecayRate     [BP-0x1c]
+      PacketDecay      iDecayRate     [BP-0x1c]
       int16_t          iWarp          [BP-0x1a]
       THING *          lpthMac        [BP-0x18]
       block 0018:2785  len=0x4B

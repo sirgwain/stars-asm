@@ -81,7 +81,7 @@ PUSH      ax
 PUSH      [bp-i]                    ; [bp-0x10]
 MOV       bx, [vprptCur]            ; bx, [0x15ac]
 PUSH      [bx+0x4]            
-CALLF     DxReportColHdr            ; int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, HDC hdc)
+CALLF     DxReportColHdr            ; int16_t DxReportColHdr(ReportType irpt, int16_t iCol, char *psz, HDC hdc)
 ADD       sp, 0x0008          
 MOV       [bp-dx], ax               ; [bp-0x12], ax
                                     ; report.c:137
@@ -107,7 +107,7 @@ MOV       bx, [vprptCur]            ; bx, [0x15ac]
 PUSH      [bx+0xa]            
 MOV       bx, [vprptCur]            ; bx, [0x15ac]
 PUSH      [bx+0x4]            
-CALLF     SortReportCache           ; void SortReportCache(int16_t irpt, int16_t icol)
+CALLF     SortReportCache           ; void SortReportCache(ReportType irpt, int16_t icol)
 ADD       sp, 0x0004          
                                     ; report.c:145
 PUSH      [bp+hwnd]                 ; [bp+0xe]
@@ -559,7 +559,7 @@ MOV       bx, [vprptCur]            ; bx, [0x15ac]
 PUSH      [bx+0x4]            
 PUSH      [bp-pt+0x2]               ; [bp-0x10]
 PUSH      [bp-pt]                   ; [bp-0x12]
-CALLF     ExecuteReportClick        ; void ExecuteReportClick(POINT16 pt, int16_t irpt, int16_t icol, int16_t irow)
+CALLF     ExecuteReportClick        ; void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
 ADD       sp, 0x000a          
 
 L_04e1:                             ; report.c:264
@@ -991,7 +991,7 @@ MOV       [fBrowserValid], 0x0000   ; [0x0d22], 0x0000
 MOV       ax, 0x0004          
 PUSH      ax                  
 PUSH      [hwndFrame]               ; [0x258c]
-CALLF     GetASubMenu               ; HMENU GetASubMenu(HWND hwnd, int16_t iMenu)
+CALLF     GetASubMenu               ; HMENU GetASubMenu(HWND hwnd, MainMenu iMenu)
 ADD       sp, 0x0004          
 MOV       [bp-hmenu], ax            ; [bp-0x6], ax
                                     ; report.c:404
@@ -1041,7 +1041,7 @@ MOV       ax, [bp-idm]              ; ax, [bp-0x10]
 PUSH      ax                  
 MOV       ax, 0x0000          
 PUSH      ax                  
-CALLF     CheckMenuItem             ; int16_t CheckMenuItem(HMENU arg1, uint16_t arg2, uint16_t arg3)
+CALLF     CheckMenuItem             ; int16_t CheckMenuItem(HMENU arg1, ControlId arg2, uint16_t arg3)
                                     ; report.c:424
 MOV       [vprptCur], 0x0000        ; [0x15ac], 0x0000
                                     ; report.c:425

@@ -1,9 +1,9 @@
 /*
 ExecuteButton  (tb)
   addr: 000e:0db6  len=2250
-  sig:  void ExecuteButton(int16_t itb, int16_t fDown)
+  sig:  void ExecuteButton(ToolbarButton itb, int16_t fDown)
   params:
-    int16_t          itb            [BP+0x6]
+    ToolbarButton    itb            [BP+0x6]
     int16_t          fDown          [BP+0x8]
   locals:
     uint16_t         grbitNew       [BP-0x4]

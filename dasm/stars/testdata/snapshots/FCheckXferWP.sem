@@ -43,7 +43,7 @@ L_72d8:
     return 0
 
 L_72de:
-    branch FCheckFleetWP(ifl, iord, grobj, id, 1, iWarp) != 0 ? L_7308 : L_7302
+    branch FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) != 0 ? L_7308 : L_7302
 
 L_7302:
     return 0
@@ -51,7 +51,7 @@ L_7302:
 L_7308:
     ord = lpfl->lpplord->rgord[iord]
     piaCur = ord.txp.rgia
-    tutor.idh = 1519
+    tutor.idh = idhWaypointTaskTile
     i = 0
     goto L_7361
 
@@ -70,7 +70,7 @@ L_738c:
     branch piaCur->iAction == iActionNone ? L_73fa : L_73a1
 
 L_73a1:
-    call TutorError(616) -> callresult(void)
+    call TutorError(idsTutorialHaveGivenIncorrectTransferOrderPlease) -> callresult(void)
 
 L_73ad:
     goto L_73fa

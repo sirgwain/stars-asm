@@ -61,18 +61,22 @@ var procs = []string{
 	"LphuldefFromId",
 	"LpscannerFromId",
 	"LogChangeThing",
+	"MessageWndProc",
 	"MineClick",
 	"NybbleFromCh",
 	"PopRandom",
 	"Popup",
 	"PopupMenu",
+	"PszFormatString",
 	"PszNameProdItem",
 	"ReadPlayerMessages",
+	"ReportColumnPopup",
 	"ReportDlg",
 	"PushRandom",
 	"SzVersion",
 	"WrapTextOut",
 	"WritePlayerMessages",
+	"WtMaxShdefStat",
 }
 
 // TestDASM_BitfieldUpdateSnapshots verifies the reported compiler patterns and

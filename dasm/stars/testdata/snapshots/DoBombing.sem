@@ -356,8 +356,8 @@ L_b939:
     branch pctTot <= 0 ? L_b9d4 : L_b942
 
 L_b942:
-    call FSendPlrMsg(lpfl->iPlayer, (fMulti == 0 ? 302 : 378), (lpfl->id | 0x8000), lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
-    call FSendPlrMsg(lppl->iPlayer, (fMulti == 0 ? 302 : 379), lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lpfl->iPlayer, (fMulti == 0 ? idmHasRetroBombedUndoingTerraforming : idmFleetsHaveRetroBombedUndoingTerraforming), (lpfl->id | 0x8000), lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, (fMulti == 0 ? idmHasRetroBombedUndoingTerraforming : idmFleetsHaveRetroBombedUndoingTerraforming2), lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0) -> callresult(int16_t)
 
 
 

@@ -283,7 +283,7 @@ INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
         if (IS_WM_CTLCOLOR(message) == 0) {
             if (message == WM_INITDIALOG) {
                 SetWindowPos(hwnd, NULL, 256, 256, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-                SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
+                SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0x1f, 0);
                 return 1;
             }
             if (message == WM_COMMAND && (GET_WM_COMMAND_ID(wParam, lParam) == IDOK || GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL)) {
@@ -440,10 +440,10 @@ char *PszGetCompressedPlanet(int16_t id) {
         iBuild += i;
         if (i != 15) {
             *pszOut = rgPNLookupTable[iBuild];
-            if (fCap != 0 && (int16_t)(int8_t)*pszOut >= 97 && (int16_t)(int8_t)*pszOut <= 122) {
+            if (fCap != 0 && (int16_t)(int8_t)*pszOut >= 'a' && (int16_t)(int8_t)*pszOut <= 'z') {
                 *pszOut -= ' ';
             }
-            if ((int16_t)(int8_t)*pszOut == 32 || (int16_t)(int8_t)*pszOut == 45) {
+            if ((int16_t)(int8_t)*pszOut == ' ' || (int16_t)(int8_t)*pszOut == '-') {
                 fCap = 1;
             } else {
                 fCap = 0;
@@ -489,7 +489,7 @@ void StarsCopyFile(char *szSrc, char *szDst) {
     penvSav = penvMem;
     penvMem = &env;
     if (setjmp(env) == 0) {
-        StreamOpen(szSrc, 32);
+        StreamOpen(szSrc, mdRead);
         hfDst = OpenFile(szDst, &of, 4114);
         if (hfDst == -1) {
             StreamClose();
@@ -707,27 +707,27 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
 }
 
 void AddBackTrailingSpaces(char **ppch, char *pchEnd) {
-    while (*ppch < pchEnd && (int16_t)(int8_t)**ppch == 32) {
+    while (*ppch < pchEnd && (int16_t)(int8_t)**ppch == ' ') {
         (*ppch)++;
     }
     return;
 }
 
 void ChopLastWord(char *pBeg, char **ppEnd) {
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == 32) {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
         (*ppEnd)--;
     }
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] != 32) {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] != ' ') {
         (*ppEnd)--;
     }
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == 32) {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
         (*ppEnd)--;
     }
     return;
 }
 
 void ChopTrailingSpaces(char *pBeg, char **ppEnd) {
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == 32) {
+    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
         (*ppEnd)--;
     }
     return;
@@ -1082,8 +1082,6 @@ void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
     int16_t  dxyT;
     int16_t  bkMode;
     HFONT    hfontSav;
-    int16_t  t_merge_3f88_0001;
-    int16_t  t_merge_3f9d_0001;
 
     fDisabled = bt & 4;
     rc = *prc;
@@ -1199,9 +1197,8 @@ void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
                 }
             }
             if (fNoShaft == 0) {
-                t_merge_3f88_0001 = rgptDraw[3].x >= rgptDraw[4].x ? rgptDraw[4].x : rgptDraw[3].x;
-                t_merge_3f9d_0001 = rgptDraw[3].y >= rgptDraw[4].y ? rgptDraw[4].y : rgptDraw[3].y;
-                SetRect(&rc, t_merge_3f88_0001, t_merge_3f9d_0001, (rgptDraw[3].x <= rgptDraw[4].x ? rgptDraw[4].x : rgptDraw[3].x) + 1,
+                SetRect(&rc, rgptDraw[3].x >= rgptDraw[4].x ? rgptDraw[4].x : rgptDraw[3].x, rgptDraw[3].y >= rgptDraw[4].y ? rgptDraw[4].y : rgptDraw[3].y,
+                        (rgptDraw[3].x <= rgptDraw[4].x ? rgptDraw[4].x : rgptDraw[3].x) + 1,
                         (rgptDraw[3].y <= rgptDraw[4].y ? rgptDraw[4].y : rgptDraw[3].y) + 1);
                 FillRect(hdc, &rc, hbrCur);
             }
@@ -1316,7 +1313,6 @@ HBRUSH HbrGet(COLORREF cr) {
     int16_t iFree;
     int16_t i;
     HBRUSH  hbr;
-    int16_t t_44f1;
 
     iFree = -1;
     for (i = 0; i < chbrCache; i++) {
@@ -1335,9 +1331,7 @@ HBRUSH HbrGet(COLORREF cr) {
         if (chbrCache >= 32) {
             return hbr;
         }
-        t_44f1 = chbrCache;
-        chbrCache++;
-        iFree = t_44f1;
+        iFree = chbrCache++;
     }
     rghbrCacheUse[iFree] = 1;
     rghbrCache[iFree] = hbr;
@@ -1897,7 +1891,7 @@ INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     }
     if (IS_WM_CTLCOLOR(message) == 0) {
         if (message == WM_INITDIALOG) {
-            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xf, 0);
+            SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0xf, 0);
             SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsEnterPassword));
             return 1;
         }
@@ -1918,14 +1912,14 @@ INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                         Delay(vcPasswordFailures < 10 ? 1000 : vcPasswordFailures < 100 ? 5000 : 10000);
                         AlertSz(PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, NULL), MB_ICONHAND);
                         SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-                        SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0, -1);
+                        SendDlgItemMessage(hwnd, IDC_EDIT1, EM_SETSEL, 0, -1);
                         break;
                     }
                 }
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
                 return 1;
             case IDC_HELP:
-                WinHelp(hwnd, szHelpFile, 1, 1089);
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, 1089);
                 return 1;
             }
         }
@@ -1949,8 +1943,8 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     }
     if (IS_WM_CTLCOLOR(message) == 0) {
         if (message == WM_INITDIALOG) {
-            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x10, 0);
-            SendDlgItemMessage(hwnd, 269, EM_LIMITTEXT, 0x10, 0);
+            SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0x10, 0);
+            SendDlgItemMessage(hwnd, IDC_PASSWORD_CONFIRM, EM_LIMITTEXT, 0x10, 0);
             if (idPlayer == -1) {
                 SetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_STATUS_TEXT), PszGetCompressedString(idsNotePasswordEffectiveImmediately));
                 SetWindowText(hwnd, PszGetCompressedString(idsChangeHostPassword));
@@ -1966,16 +1960,16 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
                     GetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szPass, 18);
                     lSalt = LSaltFromSz(szPass);
-                    GetWindowText(GetDlgItem(hwnd, IDC_U16_0x010D), szPass, 18);
+                    GetWindowText(GetDlgItem(hwnd, IDC_PASSWORD_CONFIRM), szPass, 18);
                     lSalt2 = LSaltFromSz(szPass);
                     if (lSalt != lSalt2) {
                         AlertSz(PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, NULL), MB_ICONHAND);
                         SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
-                        SendDlgItemMessage(hwnd, 268, EM_SETSEL, 0, -1);
+                        SendDlgItemMessage(hwnd, IDC_EDIT1, EM_SETSEL, 0, -1);
                         break;
                     }
                     if (idPlayer != -1) {
-                        WriteMemRt(36, 4, &lSalt);
+                        WriteMemRt(rtChgPassword, 4, &lSalt);
                     } else {
                         lSaltCur = lSalt;
                         if (FWriteDataFile(szBase, idPlayer, 0) != 0) {
@@ -1989,7 +1983,7 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
                 return 1;
             case IDC_HELP:
-                WinHelp(hwnd, szHelpFile, 1, 1084);
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhChangePassword);
                 return 1;
             }
         }
@@ -2088,14 +2082,14 @@ void HideProgressGauge() {
     return;
 }
 
-void UpdateProgressGauge(int16_t pctX10) {
+void UpdateProgressGauge(ProgressStep pctX10) {
     int16_t iNum;
 
     if (hwndProgressGauge != 0) {
         iNum = 0;
-        if (pctX10 == -926) {
+        if (pctX10 == progressStep4) {
             pctX10 = vpctProgressGauge + 4;
-        } else if (pctX10 == -927) {
+        } else if (pctX10 == progressStep1) {
             pctX10 = vpctProgressGauge + 1;
         } else if (pctX10 < 0) {
             pctX10 = 0;
@@ -2132,7 +2126,7 @@ INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 dy = GetSystemMetrics(SM_CYSCREEN);
                 psz = PszGetCompressedString(idsGeneratingDataYearD);
                 _wsprintf(szWork, psz, game.turn + 2401);
-                SetWindowText(GetDlgItem(hwnd, IDC_NEXT), szWork);
+                SetWindowText(GetDlgItem(hwnd, IDC_GAUGE_TEXT), szWork);
                 GetWindowRect(hwnd, &rc);
                 rc.left = (dx - (rc.right - rc.left)) >> 1;
                 rc.top = (dy - (rc.bottom - rc.top)) >> 1;
@@ -2226,7 +2220,7 @@ char *PszGetLine(char **ppszBeg) {
     char *pszStart;
     char *psz;
 
-    for (psz = *ppszBeg; (int16_t)(int8_t)*psz == 32; psz++) {
+    for (psz = *ppszBeg; (int16_t)(int8_t)*psz == ' '; psz++) {
     }
     pszStart = psz;
     while (1) {
@@ -2235,13 +2229,13 @@ char *PszGetLine(char **ppszBeg) {
             psz++;
             continue;
         case 0:
-        case 10:
-        case 13:
+        case '\n':
+        case '\r':
             break;
         }
         break;
     }
-    if ((int16_t)(int8_t)*psz == 13 && (int16_t)(int8_t)psz[1] == 10) {
+    if ((int16_t)(int8_t)*psz == '\r' && (int16_t)(int8_t)psz[1] == '\n') {
         *ppszBeg = psz + 2;
     } else {
         *ppszBeg = psz + 1;
@@ -2259,10 +2253,10 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
     lNum = 0;
     fValid = 0;
     for (; iRead < cMax && (int16_t)(int8_t)*psz != 0; psz++) {
-        if ((int16_t)(int8_t)*psz != 32 && ((int16_t)(int8_t)*psz < 48 || (int16_t)(int8_t)*psz > 57)) {
+        if ((int16_t)(int8_t)*psz != ' ' && ((int16_t)(int8_t)*psz < '0' || (int16_t)(int8_t)*psz > '9')) {
             return -1;
         }
-        if ((int16_t)(int8_t)*psz != 32) {
+        if ((int16_t)(int8_t)*psz != ' ') {
             fValid = 1;
             lNum = (uint32_t)(lNum * 10) + (int16_t)((int16_t)(int8_t)*psz - 48);
         } else if (fValid != 0) {

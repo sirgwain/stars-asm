@@ -67,11 +67,11 @@ L_4bfd:
     branch ((*&rgbCur[8] >> 5) & 0x7f) <= 84 ? L_4c1b : L_4c15
 
 L_4c15:
-    t_merge_4c1e_0001 = 0x2ca
+    t_merge_4c1e_0001 = 714
     goto L_4c1e
 
 L_4c1b:
-    t_merge_4c1e_0001 = 0x4d3
+    t_merge_4c1e_0001 = 1235
 
 L_4c1e:
     call FileError(t_merge_4c1e_0001) -> callresult(void)

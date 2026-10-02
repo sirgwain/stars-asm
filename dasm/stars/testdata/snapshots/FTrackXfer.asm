@@ -309,7 +309,7 @@ SHL       ax, cx
 MOV       bx, [pxfer]               ; bx, [0x4a68]
 ADD       bx, ax              
 PUSH      [bx+0x2]            
-CALLF     ChgCargo                  ; int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj)
+CALLF     ChgCargo                  ; int32_t ChgCargo(GrobjClass grobj, int16_t id, MineralType iSupply, int32_t dChg, void *pobj)
 ADD       sp, 0x000c          
 MOV       [bp-cCur], ax             ; [bp-0x2a], ax
 MOV       [bp-cCur+0x2], dx         ; [bp-0x28], dx
@@ -344,7 +344,7 @@ L_5cf0:
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [bp-iVal]                 ; [bp-0x30]
-CALLF     XferSupply                ; int32_t XferSupply(int16_t iSupply, int32_t cQuan)
+CALLF     XferSupply                ; int32_t XferSupply(MineralType iSupply, int32_t cQuan)
 ADD       sp, 0x0006          
 CMP       ax, 0x0000          
 JNZ       L_5d0d              
@@ -360,7 +360,7 @@ PUSH      ax
 MOV       ax, 0x0000          
 PUSH      ax                  
 PUSH      [bp+hwnd]                 ; [bp+0x6]
-CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)
+CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, MineralType iSupply)
 ADD       sp, 0x0008          
 
 L_5d23:                             ; ship.c:2280
@@ -586,7 +586,7 @@ LEA       ax, [bp-rc]               ; ax, [bp-0x4a]
 PUSH      ax                  
 PUSH      [bp-btnt+0x2]             ; [bp-0x24]
 PUSH      [bp+hwnd]                 ; [bp+0x6]
-CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)
+CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, MineralType iSupply)
 ADD       sp, 0x0008          
 
 L_5efe:                             ; ship.c:2306
@@ -624,7 +624,7 @@ L_5f3b:
 PUSH      dx                  
 PUSH      ax                  
 PUSH      [bp-iVal]                 ; [bp-0x30]
-CALLF     XferSupply                ; int32_t XferSupply(int16_t iSupply, int32_t cQuan)
+CALLF     XferSupply                ; int32_t XferSupply(MineralType iSupply, int32_t cQuan)
 ADD       sp, 0x0006          
 CMP       ax, 0x0000          
 JNZ       L_5f58              
@@ -639,7 +639,7 @@ LEA       ax, [bp-rc]               ; ax, [bp-0x4a]
 PUSH      ax                  
 PUSH      [bp-btnt+0x2]             ; [bp-0x24]
 PUSH      [bp+hwnd]                 ; [bp+0x6]
-CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)
+CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, MineralType iSupply)
 ADD       sp, 0x0008          
 
 L_5f6d:                             ; ship.c:2311
@@ -655,7 +655,7 @@ PUSH      ax
 MOV       ax, 0x0000          
 PUSH      ax                  
 PUSH      [bp+hwnd]                 ; [bp+0x6]
-CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)
+CALLF     DrawXferDlg               ; void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, MineralType iSupply)
 ADD       sp, 0x0008          
                                     ; ship.c:2317
 MOV       ax, 0x0001          

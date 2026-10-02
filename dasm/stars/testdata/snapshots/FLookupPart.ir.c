@@ -1,6 +1,6 @@
 int16_t FLookupPart(PART *ppart) {
-    int16_t raMajor;
-    HS      hs;
+    RaceAttribute raMajor;
+    HS            hs;
 
 L_524e:
     raMajor = GetRaceStat(&rgplr[idPlayer], rsMajorAdv);
@@ -33,7 +33,7 @@ L_52c6:
         goto L_52d4;
 
 L_52d4:
-    if (raMajor == 0)
+    if (raMajor == raCheapCol)
         goto L_52e6;
     else
         goto L_52dd;
@@ -130,7 +130,7 @@ L_53e8:
         goto L_5411;
 
 L_5411:
-    if (raMajor == 1)
+    if (raMajor == raStealth)
         goto L_5423;
     else
         goto L_541a;
@@ -145,7 +145,7 @@ L_5423:
         goto L_5431;
 
 L_5431:
-    if (raMajor == 4)
+    if (raMajor == raDefend)
         goto L_5443;
     else
         goto L_543a;
@@ -191,7 +191,7 @@ L_54a6:
         goto L_54b4;
 
 L_54b4:
-    if (raMajor == 0)
+    if (raMajor == raCheapCol)
         goto L_54c6;
     else
         goto L_54bd;
@@ -212,7 +212,7 @@ L_54d4:
         goto L_54e2;
 
 L_54e2:
-    if (raMajor == 4)
+    if (raMajor == raDefend)
         goto L_54f4;
     else
         goto L_54eb;
@@ -293,7 +293,7 @@ L_55b8:
         goto L_55c6;
 
 L_55c6:
-    if (raMajor == 2)
+    if (raMajor == raAttack)
         goto L_55d8;
     else
         goto L_55cf;
@@ -308,7 +308,7 @@ L_55d8:
         goto L_55e6;
 
 L_55e6:
-    if (raMajor == 1)
+    if (raMajor == raStealth)
         goto L_55f8;
     else
         goto L_55ef;
@@ -323,7 +323,7 @@ L_55f8:
         goto L_5606;
 
 L_5606:
-    if (raMajor == 1)
+    if (raMajor == raStealth)
         goto L_5618;
     else
         goto L_560f;
@@ -344,7 +344,7 @@ L_5626:
         goto L_5634;
 
 L_5634:
-    if (raMajor == 5)
+    if (raMajor == raMines)
         goto L_5646;
     else
         goto L_563d;
@@ -362,7 +362,7 @@ L_5659:
     return -1;
 
 L_5662:
-    if (hs.iItem < 5)
+    if (hs.iItem < isbhullCount)
         goto L_5676;
     else
         goto L_5670;
@@ -378,13 +378,13 @@ L_5676:
         goto L_569b;
 
 L_569b:
-    if (hs.iItem == 1)
+    if (hs.iItem == isbhullSpaceDock)
         goto L_56b7;
     else
         goto L_56a9;
 
 L_56a9:
-    if (hs.iItem != 3)
+    if (hs.iItem != isbhullUltraStation)
         goto L_56de;
     else
         goto L_56b7;
@@ -399,13 +399,13 @@ L_56d8:
     return -1;
 
 L_56de:
-    if (hs.iItem != 4)
+    if (hs.iItem != isbhullDeathStar)
         goto L_609c;
     else
         goto L_56ec;
 
 L_56ec:
-    if (raMajor == 8)
+    if (raMajor == raMacintosh)
         goto L_609c;
     else
         goto L_56f5;
@@ -430,7 +430,7 @@ L_5712:
         goto L_573b;
 
 L_573b:
-    if (raMajor == 1)
+    if (raMajor == raStealth)
         goto L_574d;
     else
         goto L_5744;
@@ -445,7 +445,7 @@ L_574d:
         goto L_575b;
 
 L_575b:
-    if (raMajor == 4)
+    if (raMajor == raDefend)
         goto L_576d;
     else
         goto L_5764;
@@ -491,7 +491,7 @@ L_57db:
     goto L_5841;
 
 L_57e4:
-    if (raMajor == 1)
+    if (raMajor == raStealth)
         goto L_609c;
     else
         goto L_57ed;
@@ -500,7 +500,7 @@ L_57ed:
     return -1;
 
 L_57f6:
-    if (raMajor == 5)
+    if (raMajor == raMines)
         goto L_609c;
     else
         goto L_57ff;
@@ -509,7 +509,7 @@ L_57ff:
     return -1;
 
 L_5808:
-    if (raMajor == 7)
+    if (raMajor == raStargate)
         goto L_609c;
     else
         goto L_5811;
@@ -518,7 +518,7 @@ L_5811:
     return -1;
 
 L_581a:
-    if (raMajor == 0)
+    if (raMajor == raCheapCol)
         goto L_609c;
     else
         goto L_5823;
@@ -527,7 +527,7 @@ L_5823:
     return -1;
 
 L_582c:
-    if (raMajor == 4)
+    if (raMajor == raDefend)
         goto L_609c;
     else
         goto L_5835;
@@ -611,7 +611,7 @@ L_58c9:
         goto L_58d7;
 
 L_58d7:
-    if (raMajor != 8)
+    if (raMajor != raMacintosh)
         goto L_58e9;
     else
         goto L_58e0;
@@ -626,7 +626,7 @@ L_58e9:
         goto L_58f7;
 
 L_58f7:
-    if (raMajor == 8)
+    if (raMajor == raMacintosh)
         goto L_609c;
     else
         goto L_5900;
@@ -675,7 +675,7 @@ L_596c:
         goto L_597a;
 
 L_597a:
-    if (raMajor == 6)
+    if (raMajor == raMassAccel)
         goto L_609c;
     else
         goto L_5983;
@@ -696,7 +696,7 @@ L_599a:
         goto L_59a8;
 
 L_59a8:
-    if (raMajor == 7)
+    if (raMajor == raStargate)
         goto L_59d3;
     else
         goto L_59b1;
@@ -717,7 +717,7 @@ L_59cd:
     return -1;
 
 L_59d3:
-    if (raMajor != 0)
+    if (raMajor != raCheapCol)
         goto L_609c;
     else
         goto L_59dc;
@@ -790,7 +790,7 @@ L_5a80:
         goto L_5a8e;
 
 L_5a8e:
-    if (raMajor == 5)
+    if (raMajor == raMines)
         goto L_5aa0;
     else
         goto L_5a97;
@@ -805,13 +805,13 @@ L_5aa0:
         goto L_5aae;
 
 L_5aae:
-    if (raMajor == 5)
+    if (raMajor == raMines)
         goto L_5ac9;
     else
         goto L_5ab7;
 
 L_5ab7:
-    if (raMajor == 4)
+    if (raMajor == raDefend)
         goto L_5ac9;
     else
         goto L_5ac0;
@@ -826,7 +826,7 @@ L_5ac9:
         goto L_5ad7;
 
 L_5ad7:
-    if (raMajor != 2)
+    if (raMajor != raAttack)
         goto L_609c;
     else
         goto L_5ae0;
@@ -917,7 +917,7 @@ L_5bd8:
         goto L_5be6;
 
 L_5be6:
-    if (raMajor == 3)
+    if (raMajor == raTerra)
         goto L_5bf8;
     else
         goto L_5bef;
@@ -996,7 +996,7 @@ L_5cbd:
         goto L_5ccb;
 
 L_5ccb:
-    if (raMajor == 1)
+    if (raMajor == raStealth)
         goto L_609c;
     else
         goto L_5cd4;
@@ -1021,7 +1021,7 @@ L_5cf1:
         goto L_5d1a;
 
 L_5d1a:
-    if (raMajor == 4)
+    if (raMajor == raDefend)
         goto L_5d29;
     else
         goto L_5d23;
@@ -1042,7 +1042,7 @@ L_5d37:
         goto L_5d45;
 
 L_5d45:
-    if (raMajor == 2)
+    if (raMajor == raAttack)
         goto L_5d57;
     else
         goto L_5d4e;
@@ -1113,7 +1113,7 @@ L_5e0f:
         goto L_5e1d;
 
 L_5e1d:
-    if (raMajor != 4)
+    if (raMajor != raDefend)
         goto L_5e2f;
     else
         goto L_5e26;
@@ -1128,7 +1128,7 @@ L_5e2f:
         goto L_5e3d;
 
 L_5e3d:
-    if (raMajor == 3)
+    if (raMajor == raTerra)
         goto L_5e4f;
     else
         goto L_5e46;
@@ -1201,7 +1201,7 @@ L_5f05:
         goto L_5f13;
 
 L_5f13:
-    if (raMajor != 8)
+    if (raMajor != raMacintosh)
         goto L_5f22;
     else
         goto L_5f1c;
@@ -1222,7 +1222,7 @@ L_5f30:
         goto L_5f3e;
 
 L_5f3e:
-    if (raMajor != 8)
+    if (raMajor != raMacintosh)
         goto L_5f4d;
     else
         goto L_5f47;
@@ -1243,7 +1243,7 @@ L_5f5b:
         goto L_5f69;
 
 L_5f69:
-    if (raMajor != 2)
+    if (raMajor != raAttack)
         goto L_5f7b;
     else
         goto L_5f72;

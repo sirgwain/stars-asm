@@ -1,0 +1,1840 @@
+/*
+MessageWndProc  (msg)
+  addr: 0007:5c92  len=5510
+  sig:  LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+  params:
+    HWND             hwnd           [BP+0xe]
+    UINT             message        [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
+  locals:
+    PAINTSTRUCT      ps             [BP-0x28]
+    char *           psz            [BP-0x8]
+    int16_t          i              [BP-0x6]
+    HDC              hdc            [BP-0x4]
+    block 0007:5EF1  len=0x165
+      RECT             rc             [BP-0x34]
+      int16_t          dx             [BP-0x2c]
+      int16_t          dy             [BP-0x2a]
+    block 0007:6059  len=0x2B
+      RECT             rc             [BP-0x30]
+    block 0007:6084  len=0x4B
+      HCURSOR          hcs            [BP-0x2e]
+      POINT16          pt             [BP-0x2c]
+    block 0007:60CF  len=0x30E
+      HtMsgType        ht             [BP-0x2e]
+      POINT16          pt             [BP-0x2c]
+      block 0007:6109  len=0xB7
+        MessageId        idm            [BP-0x32]
+        int16_t          fSet           [BP-0x30]
+      block 0007:62C6  len=0xAB
+        MSGPLR *         lpmpSrc        [BP-0x36]
+        MSGPLR *         lpmp           [BP-0x32]
+    block 0007:643A  len=0x63C
+      RECT             rc             [BP-0x72]
+      char[32]         szT            [BP-0x6a]
+      int16_t          iMode          [BP-0x4a]
+      int16_t          cch            [BP-0x48]
+      int16_t          dx             [BP-0x46]
+      RECT             rcActual       [BP-0x44]
+      int16_t          idm            [BP-0x3c]
+      COLORREF         crBack         [BP-0x3a]
+      int16_t          dy             [BP-0x36]
+      int16_t          dxMax          [BP-0x34]
+      COLORREF         crFore         [BP-0x32]
+      HBRUSH           hbrSav         [BP-0x2e]
+      char *           lpsz           [BP-0x2c]
+      block 0007:65EC  len=0x1A7
+        MSGPLR *         lpmsgplr       [BP-0x76]
+    block 0007:6AFF  len=0x4E
+      int16_t          i              [BP-0x2a]
+    block 0007:6DB8  len=0xB6
+      int16_t          idm            [BP-0x2a]
+    block 0007:6EA6  len=0x5F
+      THING *          lpth           [BP-0x2c]
+      block 0007:6ECA  len=0x38
+        SCAN             scan           [BP-0x3c]
+    block 0007:6FEE  len=0xC2
+      int16_t          fRet           [BP-0x2e]
+      FARPROC          lpProc         [BP-0x2c]
+      block 0007:704C  len=0x64
+        int32_t          lSerial        [BP-0x32]
+    block 0007:70FD  len=0x15
+
+  stats: blocks=15  labels=8
+    SetupNewMsg: L_6c2a
+    Default: L_718a
+    CheckBox: L_6109
+    ZoomBox: L_61cc
+    NextMsg: L_6ca9
+    PrevMsg: L_6ba0
+    ToggleMsgMode: L_6298
+    GotoMsg: L_6d8d
+*/
+block L_5c92:
+  insts 0..6  off 0x5c92..0x5ca0
+  succs: L_71a4
+  effects:
+    5c9e  goto L_71a4
+
+block L_5ca1:
+  insts 7..8  off 0x5ca1..0x5ca8
+  preds: L_71a4
+  succs: L_5d3c
+  effects:
+    5ca1  store[2] [bp-i] = 0x0
+    5ca6  goto L_5d3c
+
+block L_5ca9:
+  insts 9..32  off 0x5ca9..0x5cde
+  preds: L_5d3c
+  succs: L_5ce2, L_5ce8
+  effects:
+    5cac  store[2] [hwndMessage] = load([bp+hwnd])
+    5cbd  call PszGetCompressedString((load@5cb6/src([bp-i]) + 0x54c)) -> callresult(char *)
+    5cdd  branch load@5cd9/dst([bp-i]) != 0x3 ? L_5ce8 : L_5ce2
+
+block L_5ce2:
+  insts 34..35  off 0x5ce2..0x5ce7
+  preds: L_5ca9
+  succs: L_5ceb
+  effects:
+    5ce5  goto L_5ceb
+
+block L_5ce8:
+  insts 36..36  off 0x5ce8..0x5cea
+  preds: L_5ca9
+  succs: L_5ceb
+
+block L_5ceb:
+  insts 37..66  off 0x5ceb..0x5d3b
+  preds: L_5ce2, L_5ce8
+  succs: L_5d3c
+  effects:
+    5d0c  call CreateWindow(words(ds, 0xb14), words(ds, callresult(char *)), words(0x4000, 0x0), 0x64, 0x64, merge(Join: L_5ceb, (L_5ce2:0x32, L_5ce8:0x2c)), ((loword((0x3 * load([dyArial8]))) sar 0x1) + 0xffff), load([bp+hwnd]), 0x0, load([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    5d16  store[2] ds:[(load([bp-i]) << 0x1)+0x4b84] = callresult(HWND)
+    5d33  call SendMessage(load(ds:[(load([bp-i]) << 0x1)+0x4b84]), 0x30, load([rghfontArial8+0x2]), words(0x0, 0x0)) -> callresult(LRESULT)
+    5d38  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5d3c:
+  insts 67..68  off 0x5d3c..0x5d41
+  preds: L_5ca1, L_5ceb
+  succs: L_5ca9, L_5d45
+  effects:
+    5d40  branch load([bp-i]) < 0x4 ? L_5ca9 : L_5d45
+
+block L_5d45:
+  insts 70..205  off 0x5d45..0x5e88
+  preds: L_5d3c
+  succs: L_5e8d
+  effects:
+    5d7e  call CreateWindow(words(ds, 0xb21), words(ds, 0xb1b), words(0x4020, 0x3), 0x64, 0x64, 0xc8, 0x50, load@5d6b/src([bp+hwnd]), 0x0, load@5d72/src([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    5d83  store[2] [hwndMsgDrop] = callresult(HWND)
+    5d9a  call SendMessage(load@5d86/src([hwndMsgDrop]), 0x30, load@5d8e/src([rghfontArial8+0x2]), words(0x0, 0x0)) -> callresult(LRESULT)
+    5dd9  call CreateWindow(words(ds, 0xb2a), words(0x0, 0x0), words(0x4080, 0x44), 0x64, 0x64, 0xc8, 0x32, load@5dc6/src([bp+hwnd]), 0x0, load@5dcd/src([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    5dde  store[2] [hwndMsgEdit] = callresult(HWND)
+    5df5  call SendMessage(load@5de1/src([hwndMsgEdit]), 0x415, 0x3c8, words(0x0, 0x0)) -> callresult(LRESULT)
+    5e0e  call SendMessage(load@5dfa/src([hwndMsgEdit]), 0x30, load@5e02/src([rghfontArial8+0x2]), words(0x0, 0x0)) -> callresult(LRESULT)
+    5e4d  call CreateWindow(words(ds, 0xb2f), words(0x0, 0x0), words(0x40a0, 0x844), 0x64, 0x64, 0xc8, 0x32, load@5e3a/src([bp+hwnd]), 0x0, load@5e41/src([hInst]), words(0x0, 0x0)) -> callresult(HWND)
+    5e52  store[2] [hwndMsgScroll] = callresult(HWND)
+    5e58  call SetMsgTitle(load@5e55/src([bp+hwnd])) -> callresult(void)
+    5e70  call PszGetCompressedString(0x549) -> callresult(char *)
+    5e7c  call SendMessage(load@5e60/src([hwndMsgDrop]), 0x403, 0x0, words(ds, callresult(char *))) -> callresult(LRESULT)
+    5e81  store[2] [bp-i] = 0x0
+    5e86  goto L_5e8d
+
+block L_5e89:
+  insts 206..206  off 0x5e89..0x5e8c
+  preds: L_5e98
+  succs: L_5e8d
+  effects:
+    5e89  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_5e8d:
+  insts 207..209  off 0x5e8d..0x5e94
+  preds: L_5d45, L_5e89
+  succs: L_5e98, L_5ed5
+  effects:
+    5e93  branch load([bp-i]) >= load([game+0x8]) ? L_5ed5 : L_5e98
+
+block L_5e98:
+  insts 211..235  off 0x5e98..0x5ed4
+  preds: L_5e8d
+  succs: L_5e89
+  effects:
+    5eaf  call PszPlayerName(load([bp-i]), 0x1, 0x1, 0x1, 0x0, 0x0) -> callresult(char *)
+    5eb7  store[2] [bp-psz] = callresult(char *)
+    5ecd  call SendMessage(load([hwndMsgDrop]), 0x403, 0x0, words(ds, load([bp-psz]))) -> callresult(LRESULT)
+    5ed2  goto L_5e89
+
+block L_5ed5:
+  insts 236..246  off 0x5ed5..0x5ef0
+  preds: L_5e8d
+  succs: L_7207
+  effects:
+    5ee9  call SendMessage(load([hwndMsgDrop]), 0x40e, 0x0, words(0x0, 0x0)) -> callresult(LRESULT)
+    5eee  goto L_7207
+
+block L_5ef1:
+  insts 247..258  off 0x5ef1..0x5f18
+  preds: L_71ac
+  succs: L_5f62
+  effects:
+    5ef7  store[2] [bp-dx] = load@5ef1/src([bp+lParam])
+    5f03  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    5f0e  store[2] [bp-dy] = (loword(callresult(uint32_t)) & 0xffff)
+    5f11  store[2] [bp-i] = 0x0
+    5f16  goto L_5f62
+
+block L_5f19:
+  insts 259..286  off 0x5f19..0x5f61
+  preds: L_5f62
+  succs: L_5f62
+  effects:
+    5f32  store[2] ss:[bp-0x36] = (load@5f2d/src([dyArial8]) << 0x1)
+    5f59  call SetWindowPos(load(ds:[(load([bp-i]) << 0x1)+0x4b84]), 0x0, (load([bp-dx]) + 0xffd0), ((loword((((loword((0x3 * load([dyArial8]))) sar 0x1) + 0x2) * load([bp-i]))) + 0x3) + load(ss:[bp-0x36])), 0x0, 0x0, 0x55) -> callresult(int16_t)
+    5f5e  store[2] [bp-i] = (load@5f5e/dst([bp-i]) + 0x1)
+
+block L_5f62:
+  insts 287..288  off 0x5f62..0x5f67
+  preds: L_5ef1, L_5f19
+  succs: L_5f19, L_5f6b
+  effects:
+    5f66  branch load([bp-i]) < 0x3 ? L_5f19 : L_5f6b
+
+block L_5f6b:
+  insts 290..388  off 0x5f6b..0x6058
+  preds: L_5f62
+  succs: L_718a
+  effects:
+    5f8d  call SetRect(words(ds, 0x22b2), 0x4, ((load@5f76/src([dyArial8]) << 0x1) + 0x3), (load@5f7f/src([bp-dx]) + 0xffcc), (load([bp-dy]) + 0xfffc)) -> callresult(void)
+    5fb1  call SetRect(words(ds, 0x494a), 0x4, 0x4, (load@5fa1/src([bp-dx]) + 0xfffc), ((load@5fa8/src([dyArial8]) << 0x1) + 0xfffc)) -> callresult(void)
+    5fbe  copy[0x2] *addr(ss:[addr([bp-rc])]) = *addr([rcMsgText])
+    5fbf  copy[0x2] *addr(ss:[(addr([bp-rc]) + 0x2)]) = *addr([rcMsgText+0x2])
+    5fc0  copy[0x2] *addr(ss:[(addr([bp-rc]) + 0x4)]) = *addr([rcMsgText+0x4])
+    5fc1  copy[0x2] *addr(ss:[(addr([bp-rc]) + 0x6)]) = *addr([rcMsgText+0x6])
+    5fd1  call ExpandRc(addr([bp-rc]), 0xfffc, 0xfffc) -> callresult(void)
+    6000  call SetWindowPos(load([hwndMsgDrop]), 0x0, (load@5fe1/src([bp-rc]) + 0x1e), load@5fe8/src([bp-rc+0x2]), ((load@5feb/src([bp-rc+0x4]) - load@5fee/src([bp-rc])) + 0xffac), (load@5ff5/src([bp-rc+0x6]) - load@5ff8/src([bp-rc+0x2])), 0x4) -> callresult(int16_t)
+    6023  call SetWindowPos(load([rghwndMsgBtn+0x6]), 0x0, (load@600d/src([bp-rc+0x4]) + 0xffce), load@6014/src([bp-rc+0x2]), 0x0, 0x0, 0x5) -> callresult(int16_t)
+    602e  store[2] [bp-rc+0x2] = (load@602e/dst([bp-rc+0x2]) + (load([dyShipDD]) + 0x3))
+    6051  call SetWindowPos(load([hwndMsgEdit]), 0x0, load@6039/src([bp-rc]), load@603c/src([bp-rc+0x2]), (load@603f/src([bp-rc+0x4]) - load@6042/src([bp-rc])), (load@6046/src([bp-rc+0x6]) - load@6049/src([bp-rc+0x2])), 0x4) -> callresult(int16_t)
+    6056  goto L_718a
+
+block L_6059:
+  insts 389..404  off 0x6059..0x6083
+  preds: L_71bc
+  succs: L_7210
+  effects:
+    6063  call GetClientRect(load([bp+hwnd]), words(ss, addr([bp-rc]))) -> callresult(void)
+    6076  call FillRect(load([bp+wParam]), words(ss, addr([bp-rc])), load([hbrButtonFace])) -> callresult(int16_t)
+    6081  goto L_7210
+
+block L_6084:
+  insts 405..422  off 0x6084..0x60b6
+  preds: L_71cc
+  succs: L_60ba, L_718a
+  effects:
+    6084  store[2] [bp-hcs] = 0x0
+    6090  call GetCursorPos(words(ss, addr([bp-pt]))) -> callresult(void)
+    609f  call ScreenToClient(load([bp+hwnd]), words(ss, addr([bp-pt]))) -> callresult(void)
+    60aa  call HtMsgBox(words(load([bp-pt+0x2]), load([bp-pt]))) -> callresult(HtMsgType)
+    60b5  branch callresult(HtMsgType) == 0x0 ? L_718a : L_60ba
+
+block L_60ba:
+  insts 424..428  off 0x60ba..0x60cb
+  preds: L_6084
+  succs: L_7210
+  effects:
+    60be  call SetCursor(load([hcurHand])) -> callresult(HCURSOR)
+    60c9  goto L_7210
+
+block L_60cf:
+  insts 430..446  off 0x60cf..0x6105
+  preds: L_71f4, L_7201
+  succs: L_6109, L_61c3
+  effects:
+    60d5  store[2] [bp-pt] = load@60cf/src([bp+lParam])
+    60e1  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    60ec  store[2] [bp-pt+0x2] = (loword(callresult(uint32_t)) & 0xffff)
+    60f5  call HtMsgBox(words(load([bp-pt+0x2]), load([bp-pt]))) -> callresult(HtMsgType)
+    60fd  store[2] [bp-ht] = callresult(HtMsgType)
+    6104  branch load([bp-ht]) != 0x1 ? L_61c3 : L_6109
+
+block CheckBox:
+  insts 448..449  off 0x6109..0x610f
+  preds: L_60cf, L_6ae7
+  succs: L_6116, L_7207
+  effects:
+    610e  branch load([iMsgCur]) < 0x0 ? L_7207 : L_6116
+
+block L_6116:
+  insts 452..471  off 0x6116..0x614e
+  preds: L_6109
+  succs: L_6152, L_6158
+  effects:
+    611a  call IdmGetMessageN(load([iMsgCur])) -> callresult(int16_t)
+    6122  store[2] [bp-idm] = callresult(int16_t)
+    613d  store[2] ss:[bp-0x34] = (0x1 << (load([bp-idm]) & 0x7))
+    614d  branch (load(byte ds:[(((load([bp-idm]) sar 0x1) sar 0x1) sar 0x1)+0x5324]) & load(ss:[bp-0x34])) == 0x0 ? L_6158 : L_6152
+
+block L_6152:
+  insts 473..474  off 0x6152..0x6157
+  preds: L_6116
+  succs: L_615b
+  effects:
+    6155  goto L_615b
+
+block L_6158:
+  insts 475..475  off 0x6158..0x615a
+  preds: L_6116
+  succs: L_615b
+
+block L_615b:
+  insts 476..478  off 0x615b..0x6163
+  preds: L_6152, L_6158
+  succs: L_6167, L_616d
+  effects:
+    615b  store[2] [bp-fSet] = merge(Join: L_615b, (L_6152:0x1, L_6158:0x0))
+    6162  branch load([bp-fSet]) != 0x0 ? L_616d : L_6167
+
+block L_6167:
+  insts 480..481  off 0x6167..0x616c
+  preds: L_615b
+  succs: L_6170
+  effects:
+    616a  goto L_6170
+
+block L_616d:
+  insts 482..482  off 0x616d..0x616f
+  preds: L_615b
+  succs: L_6170
+
+block L_6170:
+  insts 483..496  off 0x6170..0x6197
+  preds: L_6167, L_616d
+  succs: L_619b, L_61a0
+  effects:
+    6174  call SetFilteringGroups(load([bp-idm]), merge(Join: L_6170, (L_6167:0x1, L_616d:0x0))) -> callresult(void)
+    6180  call DirtyGame(0x1) -> callresult(void)
+    6196  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_61a0 : L_619b
+
+block L_619b:
+  insts 498..498  off 0x619b..0x619f
+  preds: L_6170
+  succs: L_61a0
+  effects:
+    619b  call AdvanceTutor() -> callresult(void)
+
+block L_61a0:
+  insts 499..510  off 0x61a0..0x61c2
+  preds: L_6170, L_619b
+  succs: L_7207
+  effects:
+    61b0  call InvalidateRect(load([hwndMessage]), words(0x0, 0x0), 0x1) -> callresult(void)
+    61b8  call SetMsgTitle(load([bp+hwnd])) -> callresult(void)
+    61c0  goto L_7207
+
+block L_61c3:
+  insts 511..512  off 0x61c3..0x61c8
+  preds: L_60cf
+  succs: L_61cc, L_628f
+  effects:
+    61c7  branch load([bp-ht]) != 0x2 ? L_628f : L_61cc
+
+block ZoomBox:
+  insts 514..515  off 0x61cc..0x61d2
+  preds: L_61c3, L_6b3f
+  succs: L_61d6, L_61dc
+  effects:
+    61d1  branch load([fViewFilteredMsg]) != 0x0 ? L_61dc : L_61d6
+
+block L_61d6:
+  insts 517..518  off 0x61d6..0x61db
+  preds: L_61cc
+  succs: L_61df
+  effects:
+    61d9  goto L_61df
+
+block L_61dc:
+  insts 519..519  off 0x61dc..0x61de
+  preds: L_61cc
+  succs: L_61df
+
+block L_61df:
+  insts 520..522  off 0x61df..0x61e8
+  preds: L_61d6, L_61dc
+  succs: L_61ec, L_623f
+  effects:
+    61df  store[2] [fViewFilteredMsg] = merge(Join: L_61df, (L_61d6:0x1, L_61dc:0x0))
+    61e7  branch load([iMsgCur]) < 0x0 ? L_623f : L_61ec
+
+block L_61ec:
+  insts 524..544  off 0x61ec..0x6229
+  preds: L_61df
+  succs: L_622d, L_6233
+  effects:
+    61f0  call IdmGetMessageN(load@61ec/src([iMsgCur])) -> callresult(int16_t)
+    6202  store[2] ss:[bp-0x30] = (0x1 << (callresult(int16_t) & 0x7))
+    6209  call IdmGetMessageN(load@6205/src([iMsgCur])) -> callresult(int16_t)
+    6228  branch (load(byte ds:[(((callresult(int16_t) sar 0x1) sar 0x1) sar 0x1)+0x5324]) & load(ss:[bp-0x30])) == 0x0 ? L_6233 : L_622d
+
+block L_622d:
+  insts 546..547  off 0x622d..0x6232
+  preds: L_61ec
+  succs: L_6236
+  effects:
+    6230  goto L_6236
+
+block L_6233:
+  insts 548..548  off 0x6233..0x6235
+  preds: L_61ec
+  succs: L_6236
+
+block L_6236:
+  insts 549..550  off 0x6236..0x623b
+  preds: L_622d, L_6233
+  succs: L_623f, L_626c
+  effects:
+    623a  branch merge(Join: L_6236, (L_622d:0x1, L_6233:0x0)) == load([fViewFilteredMsg]) ? L_626c : L_623f
+
+block L_623f:
+  insts 552..557  off 0x623f..0x6253
+  preds: L_61df, L_6236
+  succs: L_6257, L_6266
+  effects:
+    6243  call IMsgNext(load([fViewFilteredMsg])) -> callresult(int16_t)
+    624b  store[2] [bp-i] = callresult(int16_t)
+    6252  branch load([bp-i]) != 0xffff ? L_6266 : L_6257
+
+block L_6257:
+  insts 559..562  off 0x6257..0x6265
+  preds: L_623f
+  succs: L_6266
+  effects:
+    625b  call IMsgPrev(load([fViewFilteredMsg])) -> callresult(int16_t)
+    6263  store[2] [bp-i] = callresult(int16_t)
+
+block L_6266:
+  insts 563..564  off 0x6266..0x626b
+  preds: L_623f, L_6257
+  succs: L_626c
+  effects:
+    6269  store[2] [iMsgCur] = load([bp-i])
+
+block L_626c:
+  insts 565..576  off 0x626c..0x628e
+  preds: L_6236, L_6266
+  succs: L_7207
+  effects:
+    627c  call InvalidateRect(load([hwndMessage]), words(0x0, 0x0), 0x1) -> callresult(void)
+    6284  call SetMsgTitle(load([bp+hwnd])) -> callresult(void)
+    628c  goto L_7207
+
+block L_628f:
+  insts 577..578  off 0x628f..0x6294
+  preds: L_61c3
+  succs: L_6298, L_7207
+  effects:
+    6293  branch load([bp-ht]) != 0x3 ? L_7207 : L_6298
+
+block ToggleMsgMode:
+  insts 580..585  off 0x6298..0x62a7
+  preds: L_628f, L_6d8d, L_6da0
+  succs: L_62ab, L_62ba
+  effects:
+    62a6  branch ((load([gd]) >> 0x8) & 0x1) == 0x0 ? L_62ba : L_62ab
+
+block L_62ab:
+  insts 587..591  off 0x62ab..0x62b9
+  preds: L_6298
+  succs: L_637a
+  effects:
+    62af  call FFinishPlrMsgEntry(0x0) -> callresult(int16_t)
+    62b7  goto L_637a
+
+block L_62ba:
+  insts 592..594  off 0x62ba..0x62c2
+  preds: L_6298
+  succs: L_62c6, L_6374
+  effects:
+    62c1  branch load([iMsgCur]) < load([cMsg]) ? L_6374 : L_62c6
+
+block L_62c6:
+  insts 596..602  off 0x62c6..0x62dc
+  preds: L_62ba
+  succs: L_62dd
+  effects:
+    62cd  store[2] [bp-lpmpSrc] = load([vlpmsgplrIn])
+    62d0  store[2] [bp-lpmpSrc+0x2] = load([vlpmsgplrIn+0x2])
+    62da  store[2] [bp-i] = (load([iMsgCur]) - load([cMsg]))
+
+block L_62dd:
+  insts 603..606  off 0x62dd..0x62e8
+  preds: L_62c6, L_62ec
+  succs: L_62ec, L_62ff
+  effects:
+    62e0  store[2] [bp-i] = (load@62e0/dst([bp-i]) - 0x1)
+    62e7  branch load@62dd/src([bp-i]) == 0x0 ? L_62ff : L_62ec
+
+block L_62ec:
+  insts 608..613  off 0x62ec..0x62fe
+  preds: L_62dd
+  succs: L_62dd
+  effects:
+    62f6  store[2] [bp-lpmpSrc] = load(farseg(load(dword [bp-lpmpSrc])):[faroff(load(dword [bp-lpmpSrc]))])
+    62f9  store[2] [bp-lpmpSrc+0x2] = load(farseg(load(dword [bp-lpmpSrc])):[faroff(load(dword [bp-lpmpSrc]))+0x2])
+    62fc  goto L_62dd
+
+block L_62ff:
+  insts 614..619  off 0x62ff..0x6314
+  preds: L_62dd
+  succs: L_6352
+  effects:
+    6306  store[2] [bp-lpmp] = load([vlpmsgplrOut])
+    6309  store[2] [bp-lpmp+0x2] = load([vlpmsgplrOut+0x2])
+    630c  store[2] [iMsgSendCur] = 0x0
+    6312  goto L_6352
+
+block L_6315:
+  insts 620..625  off 0x6315..0x6327
+  preds: L_6352, L_635b
+  succs: L_632b, L_633d
+  effects:
+    6326  branch (load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x6]) + 0xffff) != load(farseg(load(dword [bp-lpmpSrc])):[faroff(load(dword [bp-lpmpSrc]))+0x4]) ? L_633d : L_632b
+
+block L_632b:
+  insts 627..630  off 0x632b..0x6336
+  preds: L_6315
+  succs: L_633d, L_6364
+  effects:
+    6335  branch load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x8]) == load([iMsgCur]) ? L_6364 : L_633d
+
+block L_633d:
+  insts 633..638  off 0x633d..0x6351
+  preds: L_6315, L_632b
+  succs: L_6352
+  effects:
+    6347  store[2] [bp-lpmp] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))])
+    634a  store[2] [bp-lpmp+0x2] = load(farseg(load(dword [bp-lpmp])):[faroff(load(dword [bp-lpmp]))+0x2])
+    634d  store[2] [iMsgSendCur] = (load([iMsgSendCur]) + 0x1)
+
+block L_6352:
+  insts 639..640  off 0x6352..0x6357
+  preds: L_62ff, L_633d
+  succs: L_6315, L_635b
+  effects:
+    6356  branch load([bp-lpmp]) != 0x0 ? L_6315 : L_635b
+
+block L_635b:
+  insts 642..643  off 0x635b..0x6360
+  preds: L_6352
+  succs: L_6315, L_6364
+  effects:
+    635f  branch load([bp-lpmp+0x2]) != 0x0 ? L_6315 : L_6364
+
+block L_6364:
+  insts 645..649  off 0x6364..0x6373
+  preds: L_632b, L_635b
+  succs: L_637a
+  effects:
+    636e  store[2] [viInRe] = (load(farseg(load(dword [bp-lpmpSrc])):[faroff(load(dword [bp-lpmpSrc]))+0x4]) + 0x1)
+    6371  goto L_637a
+
+block L_6374:
+  insts 650..650  off 0x6374..0x6379
+  preds: L_62ba
+  succs: L_637a
+  effects:
+    6374  store[2] [viInRe] = 0x0
+
+block L_637a:
+  insts 651..656  off 0x637a..0x6389
+  preds: L_62ab, L_6364, L_6374
+  succs: L_638d, L_6393
+  effects:
+    6388  branch ((load([gd]) >> 0x8) & 0x1) != 0x0 ? L_6393 : L_638d
+
+block L_638d:
+  insts 658..659  off 0x638d..0x6392
+  preds: L_637a
+  succs: L_6396
+  effects:
+    6390  goto L_6396
+
+block L_6393:
+  insts 660..660  off 0x6393..0x6395
+  preds: L_637a
+  succs: L_6396
+
+block L_6396:
+  insts 661..683  off 0x6396..0x63dc
+  preds: L_638d, L_6393
+  succs: L_63dd
+  effects:
+    6396  store[2] ss:[bp-0x30] = merge(Join: L_6396, (L_638d:0x1, L_6393:0x0))
+    63ae  store[2] [gd] = ((load([gd]) & 0xfeff) | ((load(ss:[bp-0x30]) & 0x1) << 0x8))
+    63c4  call InvalidateRect(load([hwndMessage]), words(0x0, 0x0), 0x1) -> callresult(void)
+    63cc  call SetMsgTitle(load([bp+hwnd])) -> callresult(void)
+    63d8  call SetFocus(load([hwndMsgEdit])) -> callresult(HWND)
+
+block L_63dd:
+  insts 684..684  off 0x63dd..0x63df
+  preds: L_6396
+  succs: L_7207
+  effects:
+    63dd  goto L_7207
+
+block L_63e0:
+  insts 685..700  off 0x63e0..0x640e
+  preds: L_71d4
+  succs: L_718a
+  effects:
+    63f0  store[2] load([bp+lParam+0x2]):[load([bp+lParam])+0xc] = ((load([dxWinFrame]) << 0x1) + 0xc6)
+    6408  store[2] load([bp+lParam+0x2]):[load([bp+lParam])+0xe] = ((loword((0xd * load([dyArial8]))) sar 0x1) + 0x16)
+    640c  goto L_718a
+
+block L_640f:
+  insts 701..704  off 0x640f..0x641a
+  preds: L_71c4
+  succs: L_641e, L_718a
+  effects:
+    6419  branch load([bp+lParam]) != load([hwndMsgScroll]) ? L_718a : L_641e
+
+block L_641e:
+  insts 706..712  off 0x641e..0x6436
+  preds: L_640f
+  succs: L_7210
+  effects:
+    6429  call SetBkColor(load([bp+wParam]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
+    6434  goto L_7210
+
+block L_643a:
+  insts 714..748  off 0x643a..0x64a6
+  preds: L_71b4
+  succs: L_64a7
+  effects:
+    6444  call BeginPaint(load([bp+hwnd]), words(ss, addr([bp-ps]))) -> callresult(HDC)
+    6449  store[2] [bp-hdc] = callresult(HDC)
+    6457  call _Draw3dFrame(load@6454/src([bp-hdc]), 0x494a, 0x0) -> callresult(void)
+    646a  call SetTextColor(load@645f/src([bp-hdc]), words(load([crButtonText+0x2]), load([crButtonText]))) -> callresult(COLORREF)
+    646f  store[2] [bp-crFore] = loword(callresult(COLORREF))
+    6472  store[2] [bp-crFore+0x2] = hiword(callresult(COLORREF))
+    6480  call SetBkColor(load@6475/src([bp-hdc]), words(load([crButtonFace+0x2]), load([crButtonFace]))) -> callresult(COLORREF)
+    6485  store[2] [bp-crBack] = loword(callresult(COLORREF))
+    6488  store[2] [bp-crBack+0x2] = hiword(callresult(COLORREF))
+    648f  call strlen(0x484c) -> callresult(uint16_t)
+    6497  store[2] [bp-cch] = callresult(uint16_t)
+    64a4  store[2] [bp-dxMax] = ((load([rcMsgTitle+0x4]) - load([rcMsgTitle])) + 0xffd0)
+
+block L_64a7:
+  insts 749..750  off 0x64a7..0x64ac
+  preds: L_643a, L_64ca
+  succs: L_64b0, L_64d1
+  effects:
+    64ab  branch load([bp-cch]) <= 0x0 ? L_64d1 : L_64b0
+
+block L_64b0:
+  insts 752..760  off 0x64b0..0x64c6
+  preds: L_64a7
+  succs: L_64ca, L_64d1
+  effects:
+    64bd  call GetTextExtent(load([bp-hdc]), words(ds, 0x484c), load([bp-cch])) -> callresult(uint32_t)
+    64c5  branch loword(callresult(uint32_t)) <= load([bp-dxMax]) ? L_64d1 : L_64ca
+
+block L_64ca:
+  insts 762..763  off 0x64ca..0x64d0
+  preds: L_64b0
+  succs: L_64a7
+  effects:
+    64ca  store[2] [bp-cch] = (load([bp-cch]) - 0x1)
+    64ce  goto L_64a7
+
+block L_64d1:
+  insts 764..863  off 0x64d1..0x65dc
+  preds: L_64a7, L_64b0
+  succs: L_65e0, L_69ee
+  effects:
+    64df  call RcCtrTextOut(load@64dc/src([bp-hdc]), 0x494a, 0x484c, load([bp-cch])) -> callresult(void)
+    64ee  call DecorateMsgTitleBar(load@64eb/src([bp-hdc]), 0x494a) -> callresult(void)
+    64fe  copy[0x2] *addr(ss:[addr([bp-rc])]) = *addr([rcMsgText])
+    64ff  copy[0x2] *addr(ss:[(addr([bp-rc]) + 0x2)]) = *addr([rcMsgText+0x2])
+    6500  copy[0x2] *addr(ss:[(addr([bp-rc]) + 0x4)]) = *addr([rcMsgText+0x4])
+    6501  copy[0x2] *addr(ss:[(addr([bp-rc]) + 0x6)]) = *addr([rcMsgText+0x6])
+    650b  store[2] [bp-dx] = (load@6505/src([bp-rc+0x4]) - load@6508/src([bp-rc]))
+    6514  store[2] [bp-dy] = (load@650e/src([bp-rc+0x6]) - load@6511/src([bp-rc+0x2]))
+    651e  call SelectObject(load@6517/src([bp-hdc]), load([hbrButtonShadow])) -> callresult(HGDIOBJ)
+    6523  store[2] [bp-hbrSav] = callresult(HGDIOBJ)
+    653e  call PatBlt(load@6526/src([bp-hdc]), load@6529/src([bp-rc]), load@652c/src([bp-rc+0x2]), load@652f/src([bp-dx]), 0x1, words(0xf0, 0x21)) -> callresult(int16_t)
+    655b  call PatBlt(load@6543/src([bp-hdc]), load@6546/src([bp-rc]), load@6549/src([bp-rc+0x2]), 0x1, load@6550/src([bp-dy]), words(0xf0, 0x21)) -> callresult(int16_t)
+    6567  call SelectObject(load@6560/src([bp-hdc]), load([hbrButtonHilite])) -> callresult(HGDIOBJ)
+    6588  call PatBlt(load@656c/src([bp-hdc]), load@656f/src([bp-rc]), (load@6572/src([bp-rc+0x6]) + 0xffff), load@6579/src([bp-dx]), 0x1, words(0xf0, 0x21)) -> callresult(int16_t)
+    65a9  call PatBlt(load@658d/src([bp-hdc]), (load@6590/src([bp-rc+0x4]) + 0xffff), load@6597/src([bp-rc+0x2]), 0x1, load@659e/src([bp-dy]), words(0xf0, 0x21)) -> callresult(int16_t)
+    65b4  call SelectObject(load@65ae/src([bp-hdc]), load([bp-hbrSav])) -> callresult(HGDIOBJ)
+    65c5  call ExpandRc(addr([bp-rc]), 0xfffc, 0xfffc) -> callresult(void)
+    65db  branch ((load([gd]) >> 0x8) & 0x1) != 0x0 ? L_69ee : L_65e0
+
+block L_65e0:
+  insts 865..867  off 0x65e0..0x65e8
+  preds: L_64d1
+  succs: L_65ec, L_6796
+  effects:
+    65e7  branch load([iMsgCur]) < load([cMsg]) ? L_6796 : L_65ec
+
+block L_65ec:
+  insts 869..875  off 0x65ec..0x6601
+  preds: L_65e0
+  succs: L_6616
+  effects:
+    65f3  store[2] [bp-lpmsgplr] = load([vlpmsgplrIn])
+    65f6  store[2] [bp-lpmsgplr+0x2] = load([vlpmsgplrIn+0x2])
+    65fc  store[2] [bp-i] = load([cMsg])
+    65ff  goto L_6616
+
+block L_6602:
+  insts 876..881  off 0x6602..0x6615
+  preds: L_6616
+  succs: L_6616
+  effects:
+    660c  store[2] [bp-lpmsgplr] = load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))])
+    660f  store[2] [bp-lpmsgplr+0x2] = load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))+0x2])
+    6612  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_6616:
+  insts 882..884  off 0x6616..0x661d
+  preds: L_65ec, L_6602
+  succs: L_6602, L_6621
+  effects:
+    661c  branch load([bp-i]) < load([iMsgCur]) ? L_6602 : L_6621
+
+block L_6621:
+  insts 886..893  off 0x6621..0x6635
+  preds: L_6616
+  succs: L_6639, L_663f
+  effects:
+    6629  call CchGetString(0x54a, addr([bp-szT])) -> callresult(int16_t)
+    6634  branch callresult(int16_t) >= 0x20 ? L_663f : L_6639
+
+block L_6639:
+  insts 895..896  off 0x6639..0x663e
+  preds: L_6621
+  succs: L_6642
+  effects:
+    663c  goto L_6642
+
+block L_663f:
+  insts 897..897  off 0x663f..0x6641
+  preds: L_6621
+  succs: L_6642
+
+block L_6642:
+  insts 898..935  off 0x6642..0x669f
+  preds: L_6639, L_663f
+  succs: L_66a3, L_66a9
+  effects:
+    6665  call PszPlayerName(load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))+0x4]), 0x1, 0x1, 0x1, 0x0, 0x0) -> callresult(char *)
+    6680  call _wsprintf(words(load([lpb2k+0x2]), load([lpb2k])), words(ss, addr([bp-szT])), callresult(char *), ds, 0xd, 0xa) -> callresult(int16_t)
+    6688  store[2] [bp-cch] = callresult(int16_t)
+    6693  call CchGetString(0x54b, addr([bp-szT])) -> callresult(int16_t)
+    669e  branch callresult(int16_t) >= 0x20 ? L_66a9 : L_66a3
+
+block L_66a3:
+  insts 937..938  off 0x66a3..0x66a8
+  preds: L_6642
+  succs: L_66ac
+  effects:
+    66a6  goto L_66ac
+
+block L_66a9:
+  insts 939..939  off 0x66a9..0x66ab
+  preds: L_6642
+  succs: L_66ac
+
+block L_66ac:
+  insts 940..946  off 0x66ac..0x66bd
+  preds: L_66a3, L_66a9
+  succs: L_66c1, L_66d2
+  effects:
+    66bc  branch load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))+0x6]) != 0x0 ? L_66d2 : L_66c1
+
+block L_66c1:
+  insts 948..953  off 0x66c1..0x66d1
+  preds: L_66ac
+  succs: L_66fb
+  effects:
+    66c5  call PszGetCompressedString(0x549) -> callresult(char *)
+    66cf  goto L_66fb
+
+block L_66d2:
+  insts 954..970  off 0x66d2..0x66fa
+  preds: L_66ac
+  succs: L_66fb
+  effects:
+    66f1  call PszPlayerName((load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))+0x6]) + 0xffff), 0x1, 0x1, 0x1, 0x0, 0x0) -> callresult(char *)
+
+block L_66fb:
+  insts 971..988  off 0x66fb..0x6727
+  preds: L_66c1, L_66d2
+  succs: L_672b, L_6762
+  effects:
+    6713  call _wsprintf(words(load([lpb2k+0x2]), (load([lpb2k]) + load([bp-cch]))), words(ss, addr([bp-szT])), merge(Join: L_66fb, (L_66c1:callresult(char *), L_66d2:callresult(char *))), ds, 0xd, 0xa) -> callresult(int16_t)
+    671b  store[2] [bp-cch] = (load@671b/dst([bp-cch]) + callresult(int16_t))
+    6726  branch load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))+0xa]) < 0x0 ? L_6762 : L_672b
+
+block L_672b:
+  insts 990..1009  off 0x672b..0x6761
+  preds: L_66fb
+  succs: L_6786
+  effects:
+    672b  store[2] [bp-i] = 0x3e8
+    6757  call FDecompressUserString(words(load([bp-lpmsgplr+0x2]), (load([bp-lpmsgplr]) + 0xc)), load(farseg(load(dword [bp-lpmsgplr])):[faroff(load(dword [bp-lpmsgplr]))+0xa]), words(load([lpb2k+0x2]), (load([lpb2k]) + load([bp-cch]))), addr([bp-i])) -> callresult(int16_t)
+    675f  goto L_6786
+
+block L_6762:
+  insts 1010..1023  off 0x6762..0x6785
+  preds: L_66fb
+  succs: L_6786
+  effects:
+    677e  call fstrcpy(words(load([lpb2k+0x2]), (load([lpb2k]) + load([bp-cch]))), words(load([bp-lpmsgplr+0x2]), (load([bp-lpmsgplr]) + 0xc))) -> callresult(char *)
+
+block L_6786:
+  insts 1024..1028  off 0x6786..0x6795
+  preds: L_672b, L_6762
+  succs: L_683c
+  effects:
+    678d  store[2] [bp-lpsz] = load([lpb2k])
+    6790  store[2] [bp-lpsz+0x2] = load([lpb2k+0x2])
+    6793  goto L_683c
+
+block L_6796:
+  insts 1029..1034  off 0x6796..0x67ab
+  preds: L_65e0
+  succs: L_67af, L_67d0
+  effects:
+    679a  call IdmGetMessageN(load@6796/src([iMsgCur])) -> callresult(int16_t)
+    67a2  store[2] [bp-idm] = callresult(int16_t)
+    67aa  branch load@67a5/dst([iMsgCur]) >= 0x0 ? L_67d0 : L_67af
+
+block L_67af:
+  insts 1036..1037  off 0x67af..0x67b5
+  preds: L_6796
+  succs: L_67b9, L_67d0
+  effects:
+    67b4  branch load([cMsg]) <= 0x0 ? L_67d0 : L_67b9
+
+block L_67b9:
+  insts 1039..1046  off 0x67b9..0x67cf
+  preds: L_67af
+  succs: L_683c
+  effects:
+    67bd  call PszGetCompressedString(0x22) -> callresult(char *)
+    67c7  store[2] [bp-lpsz] = callresult(char *)
+    67ca  store[2] [bp-lpsz+0x2] = ds
+    67cd  goto L_683c
+
+block L_67d0:
+  insts 1047..1048  off 0x67d0..0x67d6
+  preds: L_6796, L_67af
+  succs: L_67da, L_6828
+  effects:
+    67d5  branch load([iMsgCur]) < 0x0 ? L_6828 : L_67da
+
+block L_67da:
+  insts 1050..1065  off 0x67da..0x6803
+  preds: L_67d0
+  succs: L_6807, L_6828
+  effects:
+    67f2  store[2] ss:[bp-0x74] = (0x1 << (load([bp-idm]) & 0x7))
+    6802  branch (load(byte ds:[(((load([bp-idm]) sar 0x1) sar 0x1) sar 0x1)+0x5324]) & load(ss:[bp-0x74])) == 0x0 ? L_6828 : L_6807
+
+block L_6807:
+  insts 1067..1068  off 0x6807..0x680d
+  preds: L_67da
+  succs: L_6811, L_6828
+  effects:
+    680c  branch load([fViewFilteredMsg]) != 0x0 ? L_6828 : L_6811
+
+block L_6811:
+  insts 1070..1077  off 0x6811..0x6827
+  preds: L_6807
+  succs: L_683c
+  effects:
+    6815  call PszGetCompressedString(0x21) -> callresult(char *)
+    681f  store[2] [bp-lpsz] = callresult(char *)
+    6822  store[2] [bp-lpsz+0x2] = ds
+    6825  goto L_683c
+
+block L_6828:
+  insts 1078..1083  off 0x6828..0x683b
+  preds: L_67d0, L_67da, L_6807
+  succs: L_683c
+  effects:
+    682c  call PszGetMessageN(load([iMsgCur])) -> callresult(char *)
+    6836  store[2] [bp-lpsz] = callresult(char *)
+    6839  store[2] [bp-lpsz+0x2] = ds
+
+block L_683c:
+  insts 1084..1096  off 0x683c..0x6861
+  preds: L_6786, L_67b9, L_6811, L_6828
+  succs: L_6865, L_686f
+  effects:
+    6847  call SetTextColor(load@683c/src([bp-hdc]), words(0xff, 0xffff)) -> callresult(COLORREF)
+    6853  call SetBkMode(load@684c/src([bp-hdc]), 0x1) -> callresult(int16_t)
+    6858  store[2] [bp-iMode] = callresult(int16_t)
+    6860  branch load([iMsgCur]) >= 0x0 ? L_686f : L_6865
+
+block L_6865:
+  insts 1098..1099  off 0x6865..0x686b
+  preds: L_683c
+  succs: L_686f, L_68c6
+  effects:
+    686a  branch load([cMsg]) > 0x0 ? L_68c6 : L_686f
+
+block L_686f:
+  insts 1101..1102  off 0x686f..0x6875
+  preds: L_683c, L_6865
+  succs: L_6879, L_6903
+  effects:
+    6874  branch load([iMsgCur]) < 0x0 ? L_6903 : L_6879
+
+block L_6879:
+  insts 1104..1106  off 0x6879..0x6881
+  preds: L_686f
+  succs: L_6885, L_6903
+  effects:
+    6880  branch load([iMsgCur]) >= load([cMsg]) ? L_6903 : L_6885
+
+block L_6885:
+  insts 1108..1128  off 0x6885..0x68c2
+  preds: L_6879
+  succs: L_68c6, L_6903
+  effects:
+    6889  call IdmGetMessageN(load@6885/src([iMsgCur])) -> callresult(int16_t)
+    689b  store[2] ss:[bp-0x74] = (0x1 << (callresult(int16_t) & 0x7))
+    68a2  call IdmGetMessageN(load@689e/src([iMsgCur])) -> callresult(int16_t)
+    68c1  branch (load(byte ds:[(((callresult(int16_t) sar 0x1) sar 0x1) sar 0x1)+0x5324]) & load(ss:[bp-0x74])) == 0x0 ? L_6903 : L_68c6
+
+block L_68c6:
+  insts 1130..1150  off 0x68c6..0x6902
+  preds: L_6865, L_6885
+  succs: L_6903
+  effects:
+    68ce  call CchGetString(0x548, 0x57a4) -> callresult(int16_t)
+    68d6  store[2] [bp-cch] = callresult(int16_t)
+    68e7  call DiaganolTextOut(load([bp-hdc]), addr([bp-rc]), 0x57a4, load([bp-cch])) -> callresult(void)
+    68f3  call PszGetMessageN(load([iMsgCur])) -> callresult(char *)
+    68fd  store[2] [bp-lpsz] = callresult(char *)
+    6900  store[2] [bp-lpsz+0x2] = ds
+
+block L_6903:
+  insts 1151..1181  off 0x6903..0x6951
+  preds: L_686f, L_6879, L_6885, L_68c6
+  succs: L_6955, L_6998
+  effects:
+    690e  call SetTextColor(load@6903/src([bp-hdc]), words(load([crButtonText+0x2]), load([crButtonText]))) -> callresult(COLORREF)
+    691b  copy[0x2] *addr(ss:[addr([bp-rcActual])]) = *addr(ds:[addr([bp-rc])])
+    691c  copy[0x2] *addr(ss:[(addr([bp-rcActual]) + 0x2)]) = *addr(ds:[(addr([bp-rc]) + 0x2)])
+    691d  copy[0x2] *addr(ss:[(addr([bp-rcActual]) + 0x4)]) = *addr(ds:[(addr([bp-rc]) + 0x4)])
+    691e  copy[0x2] *addr(ss:[(addr([bp-rcActual]) + 0x6)]) = *addr(ds:[(addr([bp-rc]) + 0x6)])
+    6931  call fstrlen(words(load([bp-lpsz+0x2]), load([bp-lpsz]))) -> callresult(uint16_t)
+    6945  call DrawText(load@6922/src([bp-hdc]), words(load([bp-lpsz+0x2]), load([bp-lpsz])), callresult(uint16_t), words(ss, addr([bp-rcActual])), 0xc10) -> callresult(int16_t)
+    6950  branch load([bp-rcActual+0x6]) > load([bp-rc+0x6]) ? L_6998 : L_6955
+
+block L_6955:
+  insts 1183..1185  off 0x6955..0x695c
+  preds: L_6903
+  succs: L_6960, L_6998
+  effects:
+    695b  branch load([bp-rcActual+0x4]) > load([bp-rc+0x4]) ? L_6998 : L_6960
+
+block L_6960:
+  insts 1187..1206  off 0x6960..0x6997
+  preds: L_6955
+  succs: L_69e0
+  effects:
+    6968  call ShowWindow(load([hwndMsgScroll]), 0x0) -> callresult(int16_t)
+    697c  call fstrlen(words(load([bp-lpsz+0x2]), load([bp-lpsz]))) -> callresult(uint16_t)
+    6990  call DrawText(load([bp-hdc]), words(load([bp-lpsz+0x2]), load([bp-lpsz])), callresult(uint16_t), words(ss, addr([bp-rc])), 0x810) -> callresult(int16_t)
+    6995  goto L_69e0
+
+block L_6998:
+  insts 1207..1232  off 0x6998..0x69df
+  preds: L_6903, L_6955
+  succs: L_69e0
+  effects:
+    69a2  call SetWindowText(load@6998/src([hwndMsgScroll]), words(load([bp-lpsz+0x2]), load([bp-lpsz]))) -> callresult(void)
+    69b3  call ExpandRc(addr([bp-rc]), 0x4, 0x4) -> callresult(void)
+    69db  call SetWindowPos(load@69bb/src([hwndMsgScroll]), 0x0, load@69c3/src([bp-rc]), load@69c6/src([bp-rc+0x2]), (load([bp-rc+0x4]) - load@69cc/src([bp-rc])), (load([bp-rc+0x6]) - load@69d3/src([bp-rc+0x2])), 0x44) -> callresult(int16_t)
+
+block L_69e0:
+  insts 1233..1236  off 0x69e0..0x69ed
+  preds: L_6960, L_6998
+  succs: L_6a4b
+  effects:
+    69e6  call SetBkMode(load([bp-hdc]), load([bp-iMode])) -> callresult(int16_t)
+    69eb  goto L_6a4b
+
+block L_69ee:
+  insts 1237..1267  off 0x69ee..0x6a4a
+  preds: L_64d1
+  succs: L_6a4b
+  effects:
+    69f5  call SetBkMode(load@69ee/src([bp-hdc]), 0x1) -> callresult(int16_t)
+    69fa  store[2] [bp-iMode] = callresult(int16_t)
+    6a08  call SetTextColor(load@69fd/src([bp-hdc]), words(load([crButtonText+0x2]), load([crButtonText]))) -> callresult(COLORREF)
+    6a15  call CchGetString(0x536, addr([bp-szT])) -> callresult(int16_t)
+    6a1d  store[2] [bp-cch] = callresult(int16_t)
+    6a38  call RightTextOut(load@6a35/src([bp-hdc]), (load([bp-rc]) + 0x1a), load([bp-rc+0x2]), addr([bp-szT]), load([bp-cch]), 0x0) -> callresult(void)
+    6a46  call SetBkMode(load@6a40/src([bp-hdc]), load([bp-iMode])) -> callresult(int16_t)
+
+block L_6a4b:
+  insts 1268..1282  off 0x6a4b..0x6a78
+  preds: L_69e0, L_69ee
+  succs: L_7207
+  effects:
+    6a54  call SetTextColor(load@6a4b/src([bp-hdc]), words(load([bp-crFore+0x2]), load([bp-crFore]))) -> callresult(COLORREF)
+    6a62  call SetBkColor(load@6a59/src([bp-hdc]), words(load([bp-crBack+0x2]), load([bp-crBack]))) -> callresult(COLORREF)
+    6a71  call EndPaint(load([bp+hwnd]), words(ss, addr([bp-ps]))) -> callresult(void)
+    6a76  goto L_7207
+
+block L_6a79:
+  insts 1283..1284  off 0x6a79..0x6a7e
+  preds: L_71dc
+  succs: L_6a88, L_6ca9
+  effects:
+    6a7d  branch load([bp+wParam]) == 0x28 ? L_6ca9 : L_6a88
+
+block L_6a88:
+  insts 1287..1288  off 0x6a88..0x6a8d
+  preds: L_6a79
+  succs: L_6a94, L_6ba0
+  effects:
+    6a8c  branch load([bp+wParam]) == 0x26 ? L_6ba0 : L_6a94
+
+block L_6a94:
+  insts 1291..1296  off 0x6a94..0x6aa3
+  preds: L_6a88
+  succs: L_6aaa, L_718a
+  effects:
+    6aa2  branch ((load([gd]) >> 0x8) & 0x1) != 0x0 ? L_718a : L_6aaa
+
+block L_6aaa:
+  insts 1299..1300  off 0x6aaa..0x6aaf
+  preds: L_6a94
+  succs: L_6ab3, L_6abf
+  effects:
+    6aae  branch load([bp+wParam]) != 0x24 ? L_6abf : L_6ab3
+
+block L_6ab3:
+  insts 1302..1303  off 0x6ab3..0x6abb
+  preds: L_6aaa
+  succs: L_6ca9
+  effects:
+    6ab3  store[2] [iMsgCur] = 0xffff
+    6ab9  goto L_6ca9
+
+block L_6abf:
+  insts 1304..1305  off 0x6abf..0x6ac4
+  preds: L_6aaa
+  succs: L_6ac8, L_7207
+  effects:
+    6ac3  branch load([bp+wParam]) != 0x23 ? L_7207 : L_6ac8
+
+block L_6ac8:
+  insts 1307..1310  off 0x6ac8..0x6ad4
+  preds: L_6abf
+  succs: L_6ba0
+  effects:
+    6acf  store[2] [iMsgCur] = (load([cMsg]) + load([vcmsgplrIn]))
+    6ad2  goto L_6ba0
+
+block L_6ad8:
+  insts 1312..1313  off 0x6ad8..0x6add
+  preds: L_71e4
+  succs: L_6ae7, L_6d8d
+  effects:
+    6adc  branch load([bp+wParam]) == 0xd ? L_6d8d : L_6ae7
+
+block L_6ae7:
+  insts 1316..1317  off 0x6ae7..0x6aec
+  preds: L_6ad8
+  succs: L_6109, L_6af6
+  effects:
+    6aeb  branch load([bp+wParam]) == 0x2b ? L_6109 : L_6af6
+
+block L_6af6:
+  insts 1320..1321  off 0x6af6..0x6afb
+  preds: L_6ae7
+  succs: L_6aff, L_7207
+  effects:
+    6afa  branch load([bp+wParam]) != 0x2d ? L_7207 : L_6aff
+
+block L_6aff:
+  insts 1323..1324  off 0x6aff..0x6b06
+  preds: L_6af6
+  succs: L_6b34
+  effects:
+    6aff  store[2] [bp-i] = 0x0
+    6b04  goto L_6b34
+
+block L_6b07:
+  insts 1325..1336  off 0x6b07..0x6b29
+  preds: L_6b34
+  succs: L_6b30, L_6b3f
+  effects:
+    6b18  store[2] ss:[bp-0x2c] = load(byte ds:[load([bp-i])+0x5324])
+    6b28  branch (load(byte ds:[load([bp-i])+0x516a]) & load(ss:[bp-0x2c])) != 0x0 ? L_6b3f : L_6b30
+
+block L_6b30:
+  insts 1339..1339  off 0x6b30..0x6b33
+  preds: L_6b07
+  succs: L_6b34
+  effects:
+    6b30  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_6b34:
+  insts 1340..1342  off 0x6b34..0x6b3b
+  preds: L_6aff, L_6b30
+  succs: L_6b07, L_6b3f
+  effects:
+    6b3a  branch load([bp-i]) < 0x31 ? L_6b07 : L_6b3f
+
+block L_6b3f:
+  insts 1344..1346  off 0x6b3f..0x6b46
+  preds: L_6b07, L_6b34
+  succs: L_61cc, L_6b47
+  effects:
+    6b45  branch load([bp-i]) != 0x31 ? L_61cc : L_6b47
+
+block L_6b47:
+  insts 1347..1347  off 0x6b47..0x6b49
+  preds: L_6b3f
+  succs: L_7207
+  effects:
+    6b47  goto L_7207
+
+block L_6b50:
+  insts 1350..1357  off 0x6b50..0x6b68
+  preds: L_71ec
+  succs: L_6b6c, L_6b75
+  effects:
+    6b59  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    6b67  branch (loword(callresult(uint32_t)) & 0xffff) != 0x0 ? L_6b75 : L_6b6c
+
+block L_6b6c:
+  insts 1359..1360  off 0x6b6c..0x6b74
+  preds: L_6b50
+  succs: L_6b75
+  effects:
+    6b70  call SetFocus(load([hwndFrame])) -> callresult(HWND)
+
+block L_6b75:
+  insts 1361..1364  off 0x6b75..0x6b80
+  preds: L_6b50, L_6b6c
+  succs: L_6b84, L_6c7e
+  effects:
+    6b7f  branch load([bp+lParam]) != load([rghwndMsgBtn]) ? L_6c7e : L_6b84
+
+block L_6b84:
+  insts 1366..1373  off 0x6b84..0x6b9c
+  preds: L_6b75
+  succs: L_6ba0, L_6c7e
+  effects:
+    6b8d  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    6b9b  branch (loword(callresult(uint32_t)) & 0xffff) != 0x0 ? L_6c7e : L_6ba0
+
+block PrevMsg:
+  insts 1375..1380  off 0x6ba0..0x6baf
+  preds: L_6a88, L_6ac8, L_6b84
+  succs: L_6bb3, L_6bc2
+  effects:
+    6bae  branch ((load([gd]) >> 0x8) & 0x1) == 0x0 ? L_6bc2 : L_6bb3
+
+block L_6bb3:
+  insts 1382..1386  off 0x6bb3..0x6bc1
+  preds: L_6ba0
+  succs: L_6c2a
+  effects:
+    6bb7  call FFinishPlrMsgEntry(0xffff) -> callresult(int16_t)
+    6bbf  goto L_6c2a
+
+block L_6bc2:
+  insts 1387..1392  off 0x6bc2..0x6bd2
+  preds: L_6ba0
+  succs: L_6bd6, L_6bee
+  effects:
+    6bc6  call GetAsyncKeyState(0x10) -> callresult(int16_t)
+    6bd1  branch (callresult(int16_t) & 0xfffe) == 0x0 ? L_6bee : L_6bd6
+
+block L_6bd6:
+  insts 1394..1400  off 0x6bd6..0x6bed
+  preds: L_6bc2
+  succs: L_6bfd
+  effects:
+    6bd6  store[2] [iMsgCur] = 0xffff
+    6be0  call IMsgNext(0x0) -> callresult(int16_t)
+    6be8  store[2] [bp-i] = callresult(int16_t)
+    6beb  goto L_6bfd
+
+block L_6bee:
+  insts 1401..1405  off 0x6bee..0x6bfc
+  preds: L_6bc2
+  succs: L_6bfd
+  effects:
+    6bf2  call IMsgPrev(0x0) -> callresult(int16_t)
+    6bfa  store[2] [bp-i] = callresult(int16_t)
+
+block L_6bfd:
+  insts 1406..1407  off 0x6bfd..0x6c02
+  preds: L_6bd6, L_6bee
+  succs: L_6c06, L_6c0f
+  effects:
+    6c01  branch load([bp-i]) == 0xffff ? L_6c0f : L_6c06
+
+block L_6c06:
+  insts 1409..1411  off 0x6c06..0x6c0e
+  preds: L_6bfd
+  succs: L_6c2a
+  effects:
+    6c09  store[2] [iMsgCur] = load([bp-i])
+    6c0c  goto L_6c2a
+
+block L_6c0f:
+  insts 1412..1415  off 0x6c0f..0x6c1b
+  preds: L_6bfd
+  succs: L_6c1f, L_7207
+  effects:
+    6c1a  branch load([iMsgCur]) != (load([cMsg]) + load([vcmsgplrIn])) ? L_7207 : L_6c1f
+
+block L_6c1f:
+  insts 1417..1417  off 0x6c1f..0x6c26
+  preds: L_6c0f
+  succs: L_6c2a
+  effects:
+    6c1f  store[2] [iMsgCur] = (load([iMsgCur]) - 0x1)
+
+block SetupNewMsg:
+  insts 1420..1440  off 0x6c2a..0x6c63
+  preds: L_6bb3, L_6c06, L_6c1f, L_6cbc, L_6d13, L_6d50
+  succs: L_6c67, L_7207
+  effects:
+    6c33  store[2] [gd] = (load@6c2a/src([gd]) & 0xefff)
+    6c39  call SetMsgTitle(load@6c36/src([bp+hwnd])) -> callresult(void)
+    6c4f  call InvalidateRect(load@6c41/src([bp+hwnd]), words(ds, 0x22b2), 0x1) -> callresult(void)
+    6c62  branch ((load@6c57/src([gd]) >> 0xb) & 0x1) == 0x0 ? L_7207 : L_6c67
+
+block L_6c67:
+  insts 1442..1446  off 0x6c67..0x6c77
+  preds: L_6c2a
+  succs: L_6c78
+  effects:
+    6c70  store[2] [tutor] = ((load([tutor]) & 0xfffb) | 0x4)
+    6c73  call AdvanceTutor() -> callresult(void)
+
+block L_6c78:
+  insts 1447..1447  off 0x6c78..0x6c7a
+  preds: L_6c67
+  succs: L_7207
+  effects:
+    6c78  goto L_7207
+
+block L_6c7e:
+  insts 1448..1451  off 0x6c7e..0x6c89
+  preds: L_6b75, L_6b84
+  succs: L_6c8d, L_6d25
+  effects:
+    6c88  branch load([bp+lParam]) != load([rghwndMsgBtn+0x4]) ? L_6d25 : L_6c8d
+
+block L_6c8d:
+  insts 1453..1460  off 0x6c8d..0x6ca5
+  preds: L_6c7e
+  succs: L_6ca9, L_6d25
+  effects:
+    6c96  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    6ca4  branch (loword(callresult(uint32_t)) & 0xffff) != 0x0 ? L_6d25 : L_6ca9
+
+block NextMsg:
+  insts 1462..1467  off 0x6ca9..0x6cb8
+  preds: L_6a79, L_6ab3, L_6c8d
+  succs: L_6cbc, L_6ccb
+  effects:
+    6cb7  branch ((load([gd]) >> 0x8) & 0x1) == 0x0 ? L_6ccb : L_6cbc
+
+block L_6cbc:
+  insts 1469..1473  off 0x6cbc..0x6cca
+  preds: L_6ca9
+  succs: L_6c2a
+  effects:
+    6cc0  call FFinishPlrMsgEntry(0x1) -> callresult(int16_t)
+    6cc8  goto L_6c2a
+
+block L_6ccb:
+  insts 1474..1479  off 0x6ccb..0x6cdb
+  preds: L_6ca9
+  succs: L_6cdf, L_6cfb
+  effects:
+    6ccf  call GetAsyncKeyState(0x10) -> callresult(int16_t)
+    6cda  branch (callresult(int16_t) & 0xfffe) == 0x0 ? L_6cfb : L_6cdf
+
+block L_6cdf:
+  insts 1481..1489  off 0x6cdf..0x6cfa
+  preds: L_6ccb
+  succs: L_6d0a
+  effects:
+    6ce6  store[2] [iMsgCur] = (load([cMsg]) + load([vcmsgplrIn]))
+    6ced  call IMsgPrev(0x0) -> callresult(int16_t)
+    6cf5  store[2] [bp-i] = callresult(int16_t)
+    6cf8  goto L_6d0a
+
+block L_6cfb:
+  insts 1490..1494  off 0x6cfb..0x6d09
+  preds: L_6ccb
+  succs: L_6d0a
+  effects:
+    6cff  call IMsgNext(0x0) -> callresult(int16_t)
+    6d07  store[2] [bp-i] = callresult(int16_t)
+
+block L_6d0a:
+  insts 1495..1496  off 0x6d0a..0x6d0f
+  preds: L_6cdf, L_6cfb
+  succs: L_6d13, L_7207
+  effects:
+    6d0e  branch load([bp-i]) == 0xffff ? L_7207 : L_6d13
+
+block L_6d13:
+  insts 1498..1500  off 0x6d13..0x6d1b
+  preds: L_6d0a
+  succs: L_6c2a
+  effects:
+    6d16  store[2] [iMsgCur] = load([bp-i])
+    6d19  goto L_6c2a
+
+block L_6d25:
+  insts 1503..1506  off 0x6d25..0x6d30
+  preds: L_6c7e, L_6c8d
+  succs: L_6d34, L_6d62
+  effects:
+    6d2f  branch load([bp+lParam]) != load([rghwndMsgBtn+0x6]) ? L_6d62 : L_6d34
+
+block L_6d34:
+  insts 1508..1515  off 0x6d34..0x6d4c
+  preds: L_6d25
+  succs: L_6d50, L_6d62
+  effects:
+    6d3d  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    6d4b  branch (loword(callresult(uint32_t)) & 0xffff) != 0x0 ? L_6d62 : L_6d50
+
+block L_6d50:
+  insts 1517..1521  off 0x6d50..0x6d5e
+  preds: L_6d34
+  succs: L_6c2a
+  effects:
+    6d54  call FFinishPlrMsgEntry(0x3e8) -> callresult(int16_t)
+    6d5c  goto L_6c2a
+
+block L_6d62:
+  insts 1522..1525  off 0x6d62..0x6d6d
+  preds: L_6d25, L_6d34
+  succs: L_6d71, L_718a
+  effects:
+    6d6c  branch load([bp+lParam]) != load([rghwndMsgBtn+0x2]) ? L_718a : L_6d71
+
+block L_6d71:
+  insts 1527..1534  off 0x6d71..0x6d89
+  preds: L_6d62
+  succs: L_6d8d, L_718a
+  effects:
+    6d7a  call __aFulshr(words(load([bp+lParam+0x2]), load([bp+lParam])), 0x10) -> callresult(uint32_t)
+    6d88  branch (loword(callresult(uint32_t)) & 0xffff) != 0x0 ? L_718a : L_6d8d
+
+block GotoMsg:
+  insts 1536..1541  off 0x6d8d..0x6d9c
+  preds: L_6ad8, L_6d71
+  succs: L_6298, L_6da0
+  effects:
+    6d9b  branch ((load([gd]) >> 0x8) & 0x1) != 0x0 ? L_6298 : L_6da0
+
+block L_6da0:
+  insts 1543..1545  off 0x6da0..0x6da8
+  preds: L_6d8d
+  succs: L_6298, L_6daf
+  effects:
+    6da7  branch load([iMsgCur]) >= load([cMsg]) ? L_6298 : L_6daf
+
+block L_6daf:
+  insts 1548..1549  off 0x6daf..0x6db4
+  preds: L_6da0
+  succs: L_713a
+  effects:
+    6db2  goto L_713a
+
+block L_6db8:
+  insts 1551..1573  off 0x6db8..0x6dfe
+  preds: L_7142
+  succs: L_6e02, L_6e1f
+  effects:
+    6dc0  call SelectAdjPlanet(0x0, load([idMsgObj])) -> callresult(void)
+    6dcc  call UpdateWindow(load@6dc8/src([hwndScanner])) -> callresult(void)
+    6de5  call SendMessage(load@6dd1/src([hwndScanner]), 0x102, 0x76, words(0x0, 0x0)) -> callresult(LRESULT)
+    6dee  call IdmGetMessageN(load([iMsgCur])) -> callresult(int16_t)
+    6df6  store[2] [bp-idm] = callresult(int16_t)
+    6dfd  branch load([bp-idm]) == 0x3e ? L_6e1f : L_6e02
+
+block L_6e02:
+  insts 1575..1576  off 0x6e02..0x6e07
+  preds: L_6db8
+  succs: L_6e0b, L_6e1f
+  effects:
+    6e06  branch load([bp-idm]) == 0x3f ? L_6e1f : L_6e0b
+
+block L_6e0b:
+  insts 1578..1579  off 0x6e0b..0x6e11
+  preds: L_6e02
+  succs: L_6e15, L_7163
+  effects:
+    6e10  branch load([bp-idm]) < 0xaf ? L_7163 : L_6e15
+
+block L_6e15:
+  insts 1581..1582  off 0x6e15..0x6e1b
+  preds: L_6e0b
+  succs: L_6e1f, L_7163
+  effects:
+    6e1a  branch load([bp-idm]) > 0xb4 ? L_7163 : L_6e1f
+
+block L_6e1f:
+  insts 1584..1589  off 0x6e1f..0x6e2e
+  preds: L_6db8, L_6e02, L_6e15
+  succs: L_6e32, L_6e4c
+  effects:
+    6e2d  branch ((load([gd]) >> 0xc) & 0x1) != 0x0 ? L_6e4c : L_6e32
+
+block L_6e32:
+  insts 1591..1598  off 0x6e32..0x6e4b
+  preds: L_6e1f
+  succs: L_7163
+  effects:
+    6e3b  store[2] [gd] = ((load([gd]) & 0xefff) | 0x1000)
+    6e41  call SetMsgTitle(load([bp+hwnd])) -> callresult(void)
+    6e49  goto L_7163
+
+block L_6e4c:
+  insts 1599..1600  off 0x6e4c..0x6e52
+  preds: L_6e1f
+  succs: L_6e56, L_7163
+  effects:
+    6e51  branch load([sel+0x4]) != 0x1 ? L_7163 : L_6e56
+
+block L_6e56:
+  insts 1602..1604  off 0x6e56..0x6e5e
+  preds: L_6e4c
+  succs: L_6e62, L_7163
+  effects:
+    6e5d  branch load([sel+0x8]) != load([idMsgObj]) ? L_7163 : L_6e62
+
+block L_6e62:
+  insts 1606..1609  off 0x6e62..0x6e6d
+  preds: L_6e56
+  succs: L_6e6e
+  effects:
+    6e66  call ChangeProduction(0x0) -> callresult(int16_t)
+
+block L_6e6e:
+  insts 1610..1610  off 0x6e6e..0x6e70
+  preds: L_6e62
+  succs: L_7163
+  effects:
+    6e6e  goto L_7163
+
+block L_6e71:
+  insts 1611..1628  off 0x6e71..0x6ea5
+  preds: L_7142
+  succs: L_7163
+  effects:
+    6e79  call SelectAdjFleet(0x0, load([idMsgObj])) -> callresult(void)
+    6e85  call UpdateWindow(load@6e81/src([hwndScanner])) -> callresult(void)
+    6e9e  call SendMessage(load@6e8a/src([hwndScanner]), 0x102, 0x76, words(0x0, 0x0)) -> callresult(LRESULT)
+    6ea3  goto L_7163
+
+block L_6ea6:
+  insts 1629..1635  off 0x6ea6..0x6ebd
+  preds: L_7142
+  succs: L_6ec1, L_6eca
+  effects:
+    6eaa  call LpthFromId(load([vptMsg])) -> callresult(THING *)
+    6eb2  store[2] [bp-lpth] = faroff(callresult(THING *))
+    6eb5  store[2] [bp-lpth+0x2] = farseg(callresult(THING *))
+    6ebc  branch load([bp-lpth]) != 0x0 ? L_6eca : L_6ec1
+
+block L_6ec1:
+  insts 1637..1638  off 0x6ec1..0x6ec6
+  preds: L_6ea6
+  succs: L_6eca, L_7163
+  effects:
+    6ec5  branch load([bp-lpth+0x2]) == 0x0 ? L_7163 : L_6eca
+
+block L_6eca:
+  insts 1640..1657  off 0x6eca..0x6f01
+  preds: L_6ea6, L_6ec1
+  succs: L_6f02
+  effects:
+    6ed5  store[2] [bp-scan] = load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x2])
+    6ed8  store[2] [bp-scan+0x2] = load(farseg(load(dword [bp-lpth])):[faroff(load(dword [bp-lpth]))+0x4])
+    6edb  store[2] [bp-scan+0x4] = 0x8
+    6ee8  call ChangeScanSel(addr([bp-scan]), 0x0) -> callresult(void)
+    6efa  call CtrPointScan(words(load([bp-scan+0x2]), load([bp-scan])), 0x1) -> callresult(void)
+
+block L_6f02:
+  insts 1658..1658  off 0x6f02..0x6f04
+  preds: L_6eca
+  succs: L_7163
+  effects:
+    6f02  goto L_7163
+
+block L_6f05:
+  insts 1659..1668  off 0x6f05..0x6f20
+  preds: L_7142
+  succs: L_6f24, L_6f33
+  effects:
+    6f09  call SelectOursAtObject(0x3edc) -> callresult(void)
+    6f1f  branch ((load([gd]) >> 0xc) & 0x1) == 0x0 ? L_6f33 : L_6f24
+
+block L_6f24:
+  insts 1670..1673  off 0x6f24..0x6f32
+  preds: L_6f05
+  succs: L_7163
+  effects:
+    6f28  call BattleVCR(load([idMsgObj])) -> callresult(void)
+    6f30  goto L_7163
+
+block L_6f33:
+  insts 1674..1680  off 0x6f33..0x6f49
+  preds: L_6f05
+  succs: L_6f4a
+  effects:
+    6f3c  store[2] [gd] = ((load([gd]) & 0xefff) | 0x1000)
+    6f42  call SetMsgTitle(load([bp+hwnd])) -> callresult(void)
+
+block L_6f4a:
+  insts 1681..1681  off 0x6f4a..0x6f4c
+  preds: L_6f33
+  succs: L_7163
+  effects:
+    6f4a  goto L_7163
+
+block L_6f4d:
+  insts 1682..1692  off 0x6f4d..0x6f68
+  preds: L_7142
+  succs: L_7163
+  effects:
+    6f61  call PostMessage(load([hwndFrame]), 0x111, 0x7e, words(0x0, 0x0)) -> callresult(int16_t)
+    6f66  goto L_7163
+
+block L_6f69:
+  insts 1693..1703  off 0x6f69..0x6f84
+  preds: L_7142
+  succs: L_7163
+  effects:
+    6f7d  call PostMessage(load([hwndFrame]), 0x111, 0x5f, words(0x0, 0x0)) -> callresult(int16_t)
+    6f82  goto L_7163
+
+block L_6f85:
+  insts 1704..1714  off 0x6f85..0x6fa0
+  preds: L_7142
+  succs: L_7163
+  effects:
+    6f99  call PostMessage(load([hwndFrame]), 0x111, 0x7d, words(0x0, 0x0)) -> callresult(int16_t)
+    6f9e  goto L_7163
+
+block L_6fa1:
+  insts 1715..1725  off 0x6fa1..0x6fbc
+  preds: L_7142
+  succs: L_7163
+  effects:
+    6fb5  call PostMessage(load([hwndFrame]), 0x111, 0x7de, words(0x0, 0x0)) -> callresult(int16_t)
+    6fba  goto L_7163
+
+block L_6fbd:
+  insts 1726..1727  off 0x6fbd..0x6fc3
+  preds: L_7142
+  succs: L_6fc7, L_6fd2
+  effects:
+    6fc2  branch load([hwndReportDlg]) == 0x0 ? L_6fd2 : L_6fc7
+
+block L_6fc7:
+  insts 1729..1730  off 0x6fc7..0x6fce
+  preds: L_6fbd
+  succs: L_6fd2, L_7163
+  effects:
+    6fcd  branch load([vprptCur]) == vrptBattle ? L_7163 : L_6fd2
+
+block L_6fd2:
+  insts 1732..1741  off 0x6fd2..0x6fea
+  preds: L_6fbd, L_6fc7
+  succs: L_6feb
+  effects:
+    6fe6  call PostMessage(load([hwndFrame]), 0x111, 0x901, words(0x0, 0x0)) -> callresult(int16_t)
+
+block L_6feb:
+  insts 1742..1742  off 0x6feb..0x6fed
+  preds: L_6fd2
+  succs: L_7163
+  effects:
+    6feb  goto L_7163
+
+block L_6fee:
+  insts 1743..1758  off 0x6fee..0x701c
+  preds: L_7142
+  succs: L_7020, L_7026
+  effects:
+    6fee  store[1] byte [szWork+0xc8] = 0x2
+    6fff  call MakeProcInstance(words(0x6f45, 0x8f68), load([hInst])) -> callresult(FARPROC)
+    7004  store[2] [bp-lpProc] = faroff(callresult(FARPROC))
+    7007  store[2] [bp-lpProc+0x2] = farseg(callresult(FARPROC))
+    701b  branch load([hwndTitle]) == 0x0 ? L_7026 : L_7020
+
+block L_7020:
+  insts 1760..1761  off 0x7020..0x7025
+  preds: L_6fee
+  succs: L_7029
+  effects:
+    7023  goto L_7029
+
+block L_7026:
+  insts 1762..1762  off 0x7026..0x7028
+  preds: L_6fee
+  succs: L_7029
+
+block L_7029:
+  insts 1763..1772  off 0x7029..0x7048
+  preds: L_7020, L_7026
+  succs: L_704c, L_7163
+  effects:
+    7030  call DialogBox(load([hInst]), words(0x0, 0x56), merge(Join: L_7029, (L_7020:load(ds:[0x0352]), L_7026:load(ds:[0x258c]))), words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(int16_t)
+    7035  store[2] [bp-fRet] = callresult(int16_t)
+    703e  call FreeProcInstance(words(load([bp-lpProc+0x2]), load([bp-lpProc]))) -> callresult(void)
+    7047  branch load([bp-fRet]) == 0x0 ? L_7163 : L_704c
+
+block L_704c:
+  insts 1774..1781  off 0x704c..0x7060
+  preds: L_7029
+  succs: L_7064, L_7088
+  effects:
+    7054  call FValidSerialNo(0x57a4, addr([bp-lSerial])) -> callresult(int16_t)
+    705f  branch callresult(int16_t) == 0x0 ? L_7088 : L_7064
+
+block L_7064:
+  insts 1783..1795  off 0x7064..0x7087
+  preds: L_704c
+  succs: L_7163
+  effects:
+    706a  store[2] [vSerialNumber] = load([bp-lSerial])
+    706d  store[2] [vSerialNumber+0x2] = load([bp-lSerial+0x2])
+    707d  call memcpy(0x519e, 0x5468, 0xb) -> callresult(void *)
+    7085  goto L_7163
+
+block L_7088:
+  insts 1796..1797  off 0x7088..0x708e
+  preds: L_704c
+  succs: L_7092, L_7163
+  effects:
+    708d  branch load([vSerialNumber]) != 0x0 ? L_7163 : L_7092
+
+block L_7092:
+  insts 1799..1800  off 0x7092..0x7098
+  preds: L_7088
+  succs: L_709c, L_7163
+  effects:
+    7097  branch load([vSerialNumber+0x2]) != 0x0 ? L_7163 : L_709c
+
+block L_709c:
+  insts 1802..1809  off 0x709c..0x70af
+  preds: L_7092
+  succs: L_70b0
+  effects:
+    70a8  call memcpy(0x519e, 0x5468, 0xb) -> callresult(void *)
+
+block L_70b0:
+  insts 1810..1810  off 0x70b0..0x70b2
+  preds: L_709c
+  succs: L_7163
+  effects:
+    70b0  goto L_7163
+
+block L_70b3:
+  insts 1811..1834  off 0x70b3..0x70f9
+  preds: L_7142
+  succs: L_70fd, L_7115
+  effects:
+    70c5  store[2] [vpartBrowser] = (0x1 << ((load@70b6/src([idMsgObj]) sar 0x8) & 0xf))
+    70ce  store[2] ss:[bp-0x2a] = (load@70c8/src([idMsgObj]) & 0xff)
+    70e1  store[2] [vpartBrowser+0x2] = ((load([vpartBrowser+0x2]) & 0xff00) | (load(ss:[bp-0x2a]) & 0xff))
+    70eb  call FLookupPart(0x22aa) -> callresult(int16_t)
+    70f8  branch load([hwndBrowser]) == 0x0 ? L_7115 : L_70fd
+
+block L_70fd:
+  insts 1836..1844  off 0x70fd..0x7114
+  preds: L_70b3
+  succs: L_7163
+  effects:
+    710d  call InvalidateRect(load([hwndBrowserChild]), words(0x0, 0x0), 0x1) -> callresult(void)
+    7112  goto L_7163
+
+block L_7115:
+  insts 1845..1855  off 0x7115..0x7133
+  preds: L_70b3
+  succs: L_7134
+  effects:
+    7115  store[2] [fBrowserValid] = 0x1
+    712f  call PostMessage(load([hwndFrame]), 0x111, 0x100, words(0x0, 0x0)) -> callresult(int16_t)
+
+block L_7134:
+  insts 1856..1856  off 0x7134..0x7136
+  preds: L_7115
+  succs: L_7163
+  effects:
+    7134  goto L_7163
+
+block L_713a:
+  insts 1857..1858  off 0x713a..0x713e
+  preds: L_6daf
+  succs: L_7142, L_7163
+  effects:
+    713d  branch load([mdMsgObj]) > 0xb ? L_7163 : L_7142
+
+block L_7142:
+  insts 1860..1862  off 0x7142..0x714a
+  preds: L_713a
+  succs: L_6db8, L_6e71, L_6ea6, L_6f05, L_6f4d, L_6f69, L_6f85, L_6fa1, L_6fbd, L_6fee, L_70b3, L_7163
+  effects:
+    7146  tablejump (load([mdMsgObj]) << 0x1) [L_7163, L_6db8, L_6e71, L_6f4d, L_70b3, L_6f85, L_6f05, L_6fa1, L_6f69, L_6fee, L_6ea6, L_6fbd]
+
+block L_7163:
+  insts 1875..1880  off 0x7163..0x7172
+  preds: L_6e0b, L_6e15, L_6e32, L_6e4c, L_6e56, L_6e6e, L_6e71, L_6ec1, L_6f02, L_6f24, L_6f4a, L_6f4d, L_6f69, L_6f85, L_6fa1, L_6fc7, L_6feb, L_7029, L_7064, L_7088, L_7092, L_70b0, L_70fd, L_7134, L_713a, L_7142
+  succs: L_7176, L_7207
+  effects:
+    7171  branch ((load([gd]) >> 0xb) & 0x1) == 0x0 ? L_7207 : L_7176
+
+block L_7176:
+  insts 1882..1886  off 0x7176..0x7186
+  preds: L_7163
+  succs: L_7187
+  effects:
+    717f  store[2] [tutor] = ((load([tutor]) & 0xfffb) | 0x4)
+    7182  call AdvanceTutor() -> callresult(void)
+
+block L_7187:
+  insts 1887..1887  off 0x7187..0x7189
+  preds: L_7176
+  succs: L_7207
+  effects:
+    7187  goto L_7207
+
+block Default:
+  insts 1888..1894  off 0x718a..0x71a0
+  preds: L_5f6b, L_6084, L_63e0, L_640f, L_6a94, L_6d62, L_6d71, L_71fc
+  succs: L_7210
+  effects:
+    7199  call DefWindowProc(load([bp+hwnd]), load([bp+message]), load([bp+wParam]), words(load([bp+lParam+0x2]), load([bp+lParam]))) -> callresult(LRESULT)
+    719e  goto L_7210
+
+block L_71a4:
+  insts 1895..1896  off 0x71a4..0x71a8
+  preds: L_5c92
+  succs: L_5ca1, L_71ac
+  effects:
+    71a7  branch load([bp+message]) == 0x1 ? L_5ca1 : L_71ac
+
+block L_71ac:
+  insts 1898..1899  off 0x71ac..0x71b0
+  preds: L_71a4
+  succs: L_5ef1, L_71b4
+  effects:
+    71af  branch load([bp+message]) == 0x5 ? L_5ef1 : L_71b4
+
+block L_71b4:
+  insts 1901..1902  off 0x71b4..0x71b8
+  preds: L_71ac
+  succs: L_643a, L_71bc
+  effects:
+    71b7  branch load([bp+message]) == 0xf ? L_643a : L_71bc
+
+block L_71bc:
+  insts 1904..1905  off 0x71bc..0x71c0
+  preds: L_71b4
+  succs: L_6059, L_71c4
+  effects:
+    71bf  branch load([bp+message]) == 0x14 ? L_6059 : L_71c4
+
+block L_71c4:
+  insts 1907..1908  off 0x71c4..0x71c8
+  preds: L_71bc
+  succs: L_640f, L_71cc
+  effects:
+    71c7  branch load([bp+message]) == 0x19 ? L_640f : L_71cc
+
+block L_71cc:
+  insts 1910..1911  off 0x71cc..0x71d0
+  preds: L_71c4
+  succs: L_6084, L_71d4
+  effects:
+    71cf  branch load([bp+message]) == 0x20 ? L_6084 : L_71d4
+
+block L_71d4:
+  insts 1913..1914  off 0x71d4..0x71d8
+  preds: L_71cc
+  succs: L_63e0, L_71dc
+  effects:
+    71d7  branch load([bp+message]) == 0x24 ? L_63e0 : L_71dc
+
+block L_71dc:
+  insts 1916..1917  off 0x71dc..0x71e0
+  preds: L_71d4
+  succs: L_6a79, L_71e4
+  effects:
+    71df  branch load([bp+message]) == 0x100 ? L_6a79 : L_71e4
+
+block L_71e4:
+  insts 1919..1920  off 0x71e4..0x71e8
+  preds: L_71dc
+  succs: L_6ad8, L_71ec
+  effects:
+    71e7  branch load([bp+message]) == 0x102 ? L_6ad8 : L_71ec
+
+block L_71ec:
+  insts 1922..1923  off 0x71ec..0x71f0
+  preds: L_71e4
+  succs: L_6b50, L_71f4
+  effects:
+    71ef  branch load([bp+message]) == 0x111 ? L_6b50 : L_71f4
+
+block L_71f4:
+  insts 1925..1926  off 0x71f4..0x71f8
+  preds: L_71ec
+  succs: L_60cf, L_71fc
+  effects:
+    71f7  branch load([bp+message]) == 0x201 ? L_60cf : L_71fc
+
+block L_71fc:
+  insts 1928..1929  off 0x71fc..0x7200
+  preds: L_71f4
+  succs: L_718a, L_7201
+  effects:
+    71ff  branch load([bp+message]) != 0x203 ? L_718a : L_7201
+
+block L_7201:
+  insts 1930..1930  off 0x7201..0x7203
+  preds: L_71fc
+  succs: L_60cf
+  effects:
+    7201  goto L_60cf
+
+block L_7207:
+  insts 1932..1933  off 0x7207..0x720f
+  preds: L_5ed5, L_6109, L_61a0, L_626c, L_628f, L_63dd, L_6a4b, L_6abf, L_6af6, L_6b47, L_6c0f, L_6c2a, L_6c78, L_6d0a, L_7163, L_7187
+  succs: L_7210
+
+block L_7210:
+  insts 1935..1939  off 0x7210..0x7217
+  preds: L_6059, L_60ba, L_641e, L_718a, L_7207
+  effects:
+    7215  return merge(Join: L_7210, (L_6059:words(0x0, 0x1), L_60ba:words(0x0, 0x1), L_641e:words(0x0, load(ds:[0x0010])), L_718a:words(hiword(callresult(LRESULT)), loword(callresult(LRESULT))), L_7207:words(0x0, 0x0)))

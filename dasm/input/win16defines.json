@@ -320,7 +320,11 @@
         "VK_F9",
         "VK_F10",
         "VK_F11",
-        "VK_F12"
+        "VK_F12",
+        "VK_OEM_COMMA = 0xBC",
+        "VK_OEM_PERIOD = 0xBE",
+        "VK_OEM_4 = 0xDB",
+        "VK_OEM_6 = 0xDD"
       ]
     },
     {
@@ -527,6 +531,32 @@
       "members": ["HELP_CONTEXT", "HELP_QUIT", "HELP_INDEX"]
     },
     {
+      "name": "SysColorIndex",
+      "members": [
+        "COLOR_SCROLLBAR",
+        "COLOR_BACKGROUND",
+        "COLOR_ACTIVECAPTION",
+        "COLOR_INACTIVECAPTION",
+        "COLOR_MENU",
+        "COLOR_WINDOW",
+        "COLOR_WINDOWFRAME",
+        "COLOR_MENUTEXT",
+        "COLOR_WINDOWTEXT",
+        "COLOR_CAPTIONTEXT",
+        "COLOR_ACTIVEBORDER",
+        "COLOR_INACTIVEBORDER",
+        "COLOR_APPWORKSPACE",
+        "COLOR_HIGHLIGHT",
+        "COLOR_HIGHLIGHTTEXT",
+        "COLOR_BTNFACE",
+        "COLOR_BTNSHADOW",
+        "COLOR_GRAYTEXT",
+        "COLOR_BTNTEXT",
+        "COLOR_INACTIVECAPTIONTEXT",
+        "COLOR_BTNHIGHLIGHT"
+      ]
+    },
+    {
       "name": "StockObjectId",
       "members": [
         "WHITE_BRUSH",
@@ -554,6 +584,26 @@
     {
       "name": "Rop2",
       "members": ["R2_BLACK", "R2_NOTMERGEPEN", "R2_MASKNOTPEN", "R2_NOTCOPYPEN", "R2_MASKPENNOT", "R2_NOT", "R2_XORPEN", "R2_NOTMASKPEN", "R2_MASKPEN", "R2_NOTXORPEN", "R2_NOP", "R2_MERGENOTPEN", "R2_COPYPEN", "R2_MERGEPENNOT", "R2_MERGEPEN", "R2_WHITE"]
+    },
+    {
+      "name": "OwnerDrawAction",
+      "kind": "flags",
+      "members": [
+        "ODA_DRAWENTIRE",
+        "ODA_SELECT",
+        "ODA_FOCUS"
+      ]
+    },
+    {
+      "name": "OwnerDrawState",
+      "kind": "flags",
+      "members": [
+        "ODS_SELECTED",
+        "ODS_GRAYED",
+        "ODS_DISABLED",
+        "ODS_CHECKED",
+        "ODS_FOCUS"
+      ]
     },
     {
       "name": "DrawTextFlags",

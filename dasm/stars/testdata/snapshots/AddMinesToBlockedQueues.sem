@@ -113,7 +113,7 @@ L_1aaa:
 
 
 L_1ace:
-    call AddItemToQueue(8, LOWORD(cBuild), grobjPlanet, 0) -> callresult(void)
+    call AddItemToQueue(mdIdleMine, LOWORD(cBuild), grobjPlanet, addItemFront) -> callresult(void)
     call FinishProduction(1) -> callresult(void)
     call PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL) -> callresult(char *)
     branch etaBetterMines != -1 ? L_1b29 : L_1b23
@@ -128,7 +128,7 @@ L_1b29:
 
 L_1b74:
     etaBetterMines = 700
-    call AddItemToQueue(3, 1, grobjPlanet, 0) -> callresult(void)
+    call AddItemToQueue(iobjAlchemy, 1, grobjPlanet, addItemFront) -> callresult(void)
     call FinishProduction(1) -> callresult(void)
 
 L_1b9e:

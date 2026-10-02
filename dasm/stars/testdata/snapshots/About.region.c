@@ -15,11 +15,11 @@ INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
         case WM_INITDIALOG:
             iAbout1st = -11;
             iAboutPartial = 0;
-            SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
+            SetWindowText(GetDlgItem(hwnd, IDC_ABOUT_DEMO_TEXT), SzVersion());
             uTimerId = SetTimer(hwnd, 14, 50, NULL);
             return 1;
         case WM_TIMER:
-            hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
+            hwndCtl = GetDlgItem(hwnd, IDC_ABOUT_CREDITS_TEXT);
             iAboutPartial += 2;
             if (iAboutPartial >= dyArial8) {
                 iAboutPartial = 0;
@@ -58,7 +58,7 @@ INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 uTimerId = 0;
                 EndDialog(hwnd, 1);
                 return 1;
-            case IDC_HELP:
+            case IDC_ABOUT_ORDER_INFO:
                 lpProc = MakeProcInstance(OrderInfoDlg, hInst);
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc);
                 FreeProcInstance(lpProc);

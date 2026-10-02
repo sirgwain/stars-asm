@@ -23,10 +23,10 @@ void             FileError(MessageId ids);
 void             GetFileStatus(int16_t dt, int16_t iPlayer);
 int16_t          FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md);
 int16_t          FNewTurnAvail(int16_t idPlayer);
-int16_t          FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md);
+int16_t          FCheckFile(DtFileType dt, int16_t iPlayer, MdMark md);
 void             ReadRt();
 int16_t          FBadFileError(StringId ids);
-void             StreamOpen(char *szFile, int16_t mdOpen);
+void             StreamOpen(char *szFile, MdOpenFlags mdOpen);
 void             StreamClose();
 void             RgFromStream(void *rg, uint16_t cb);
 

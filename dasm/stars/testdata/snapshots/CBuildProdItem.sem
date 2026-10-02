@@ -411,7 +411,7 @@ L_17c9:
     branch gd.fGeneratingTurn == 0 ? L_17fb : L_17d9
 
 L_17d9:
-    call FSendPlrMsg2(lppl->iPlayer, 140, lppl->id, lppl->id, cAlchemy) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmScientistsHaveTransmutedCommonMaterialsKtEach, lppl->id, lppl->id, cAlchemy) -> callresult(int16_t)
 
 L_17fb:
     branch pmdStatus == 0 ? L_18d1 : L_1804

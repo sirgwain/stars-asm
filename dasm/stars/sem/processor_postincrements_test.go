@@ -7,11 +7,12 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-// TestPostIncrementsProcessor verifies which saved-then-stepped locals fold
-// into their use as x++ or x--.
+// TestPostIncrementsProcessor verifies which saved-then-stepped locals and
+// globals fold into their use as x++ or x--.
 func TestPostIncrementsProcessor(t *testing.T) {
 	charPtr := &typeinfo.Pointer{Elem: &typeinfo.Primitive{TypeKind: typeinfo.KInt, Name: "char", Size: 1, Signed: true}, Class: typeinfo.PtrFar}
 	n := testLocal("n", typeinfo.I16)
+	gCount := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "gCount", Type: typeinfo.I16}}
 	src := testLocal("pszT", charPtr)
 	dst := testLocal("psz", charPtr)
 	saveN := &Temp{Name: "t_5cb7", TypeInfo: typeinfo.I16}
@@ -49,6 +50,24 @@ func TestPostIncrementsProcessor(t *testing.T) {
 				&Assign{Dst: deref(saveDst), Src: deref(saveSrc)},
 			},
 			want: []string{"*psz++ = *pszT++"},
+		},
+		{
+			name: "global increment folded into the next effect",
+			effects: []Effect{
+				&Assign{Dst: saveN, Src: gCount},
+				&Assign{Dst: gCount, Src: &Binary{TypeInfo: typeinfo.I16, Op: OpAdd, LHS: gCount, RHS: one}},
+				&Assign{Dst: n, Src: saveN},
+			},
+			want: []string{"n = gCount++"},
+		},
+		{
+			name: "global kept when a call in the use runs before the step",
+			effects: []Effect{
+				&Assign{Dst: saveN, Src: gCount},
+				&Assign{Dst: gCount, Src: &Binary{TypeInfo: typeinfo.I16, Op: OpAdd, LHS: gCount, RHS: one}},
+				&Assign{Dst: n, Src: &Binary{TypeInfo: typeinfo.I16, Op: OpAdd, LHS: saveN, RHS: &Call{Function: &typeinfo.Function{Name: "Touch"}, Target: &FunctionRef{Function: &typeinfo.Function{Name: "Touch"}}}}},
+			},
+			want: []string{"t_5cb7 = gCount", "gCount = (gCount + 1)", "n = (t_5cb7 + Touch())"},
 		},
 		{
 			name: "kept when the use also reads the local",

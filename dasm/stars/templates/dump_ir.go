@@ -330,10 +330,10 @@ func formatIRExprText(expr ir.Expr) (string, int) {
 		} else if text == "" {
 			text = fmt.Sprintf("0x%x", e.Value)
 		}
-		return text, signedLiteralPrec(text)
+		return text, literalPrec(text)
 	case *ir.FloatConst:
 		text := sem.FormatFloat(e.Value)
-		return text, signedLiteralPrec(text)
+		return text, literalPrec(text)
 	case *ir.StringConst:
 		return e.Value, precPostfix
 	case *ir.SizeOf:
@@ -444,9 +444,13 @@ func isCInt(expr ir.Expr) bool {
 	return false
 }
 
-// signedLiteralPrec returns the precedence of a numeric literal's text: a
-// leading sign makes it a unary expression.
-func signedLiteralPrec(text string) int {
+// literalPrec returns the precedence of a constant's text: a set of flag
+// enum names joined by | is a bitwise-or expression, and a leading sign makes
+// a numeric literal a unary expression.
+func literalPrec(text string) int {
+	if strings.Contains(text, "|") && !strings.HasPrefix(text, "'") {
+		return precBitOr
+	}
 	if strings.HasPrefix(text, "-") || strings.HasPrefix(text, "+") {
 		return precUnary
 	}

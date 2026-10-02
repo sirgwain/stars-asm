@@ -35,7 +35,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
     if ((uint16_t)(GlobalPD.grPopup - 1) <= 13) {
         switch (GlobalPD.grPopup) {
-        case 1:
+        case grPopupMineral:
             psz = PszGetCompressedString(idsMineralConcentration0000000kt);
             dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
             dy = 3 * dyArial8 + 8;
@@ -43,7 +43,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
                 break;
             dy += dyArial8;
             break;
-        case 2:
+        case grPopupPlayer:
             SelectObject(hdc, rghfontArial8[1]);
             psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL);
             dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
@@ -53,7 +53,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
             }
             dy = dyArial8 * 2 + 8;
             break;
-        case 3:
+        case grPopupFleet:
             dxR = 0;
             dxDamage = 0;
             dy = dyArial8 + 8;
@@ -84,7 +84,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
             GlobalPD.dxDamage = dxDamage;
             dx = dxL + dxR + 16 + dxDamage;
             break;
-        case 4:
+        case grPopupUnknownObj:
             SelectObject(hdc, rghfontArial8[1]);
             dy = dyArial8 * 4 + 8;
             psz = PszGetCompressedString(idsPlanet);
@@ -95,30 +95,30 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
             dxCoord = LOWORD(GetTextExtent(hdc, PszGetCompressedString(idsN9999), 4));
             dx += dxName <= dxCoord ? dxCoord : dxName;
             break;
-        case 5:
+        case grPopupPlanetEnv:
             ptT = PtDisplayPlanetStateInfo(hdc, 0);
             goto SetDxDy;
-        case 6:
+        case grPopupShipOrders:
             ptT = PtDisplayZipOrdInfo(hdc, 0, 0);
             goto SetDxDy;
-        case 7:
+        case grPopupPlanet:
             ptT = PtDisplayPlanetPopInfo(hdc, 0);
             goto SetDxDy;
-        case 12:
+        case grPopupResources:
             ptT = PtDisplayResourceInfo(hdc, 200, 0);
             goto SetDxDy;
-        case 8:
+        case grPopupPlanetIndustry:
             ptT = PtDisplayFactoryMineInfo(hdc, 200, 0);
             goto SetDxDy;
-        case 9:
+        case grPopupComponent:
             dx = (dyArial8 <= 14 ? 0 : 40) + 344;
             dy = dyArial10 + 72 + 12 * dyArial8 + 6;
             break;
-        case 10:
+        case grPopupString:
             ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0);
             goto SetDxDy;
-        case 11:
-        case 14:
+        case grPopupShdef:
+        case grPopupShdefSB:
             mdBuild = GlobalPD.grPopup == grPopupShdef ? mdBuildShdef : mdBuildHuldef;
             lpshdefBuild = GlobalPD.lpshdef;
             UpdateSlotGlobals();
@@ -128,7 +128,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
                 break;
             dy += 3 * dyArial8;
             break;
-        case 13:
+        case grPopupUnknown:
             dx = 120;
             dy = 80;
         }

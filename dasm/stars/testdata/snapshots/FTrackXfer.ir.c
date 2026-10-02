@@ -264,6 +264,6 @@ L_5f6d:
 
 FinishUp:
     UpdateXferBtns();
-    DrawXferDlg(hwnd, NULL, &rc, -2);
+    DrawXferDlg(hwnd, NULL, &rc, SupplyButtonsOnly);
     return 1;
 }

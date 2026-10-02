@@ -86,7 +86,7 @@ func retargetJump(stmt ir.Stmt, resolve func(string) string) ir.Stmt {
 			changed = changed || labels[i] != label
 		}
 		if changed {
-			return &ir.TableJump{Index: s.Index, Labels: labels}
+			return &ir.TableJump{Index: s.Index, Labels: labels, Enums: s.Enums, Char: s.Char}
 		}
 	}
 	return nil

@@ -153,6 +153,25 @@ func TestBuildLoopForms(t *testing.T) {
 			want: "for (i=0; i<n; i=i+1;) { if !a { d=d+1; } else { if x { continue; } } j=j+1; } return;",
 		},
 		{
+			// The jump to the latch from inside the nested loop keeps its
+			// goto and the label, but the one at the outer loop's level still
+			// becomes continue.
+			name: "for with continue and a nested loop goto",
+			blocks: []ir.Block{
+				testBlock(entry, &ir.Assign{Dst: &ir.Var{Name: "i"}, Src: &ir.IntConst{Value: 0}}, &ir.Goto{Label: head.String()}),
+				testBlock(latch, testIncrement("i")),
+				testBlock(head, &ir.IfGoto{Cond: lessThan, TrueLabel: body.String(), FalseLabel: done.String()}),
+				testBlock(body, testIfGoto("a", c, head2)),
+				testBlock(c, testIfGoto("x", latch, join)),
+				testBlock(head2, testIfGoto("y", latch, body2)),
+				testBlock(body2, testIfGoto("z", join, latch2)),
+				testBlock(latch2, testIncrement("k"), &ir.Goto{Label: head2.String()}),
+				testBlock(join, testIncrement("j"), &ir.Goto{Label: latch.String()}),
+				testBlock(done, &ir.Return{}),
+			},
+			want: "for (i=0; i<n; i=i+1;) { if a { if x { continue; } } else { while 1 { if y { goto L_0020; } if z { break; } k=k+1; } } j=j+1; L_0020: } return;",
+		},
+		{
 			// The code after the loop only the found test reaches moves into
 			// the loop, leaving the bound as the loop condition.
 			name: "search loop returning what it found",

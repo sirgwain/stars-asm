@@ -7,8 +7,10 @@ package resources
 
 import (
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
@@ -18,8 +20,7 @@ import (
 // Enums naming the IDs of each kind of resource.
 const (
 	dialogEnum      = "DialogId"
-	controlEnum     = "ControlId"
-	commandEnum     = "WParamMessageId"
+	controlEnum     = typeinfo.ControlEnumName
 	cursorEnum      = "CursorId"
 	bitmapEnum      = "BitmapId"
 	acceleratorEnum = "AcceleratorId"
@@ -32,7 +33,7 @@ const (
 var resourceFileDirs = []string{"icons", "cursors", "bitmaps", "data"}
 
 // resourceHeaderEnums are the enums written to resource.h.
-var resourceHeaderEnums = []string{dialogEnum, controlEnum, commandEnum, cursorEnum, bitmapEnum, acceleratorEnum, dataEnum}
+var resourceHeaderEnums = []string{dialogEnum, controlEnum, cursorEnum, bitmapEnum, acceleratorEnum, dataEnum}
 
 // Menu item options and their resource script keywords.
 var menuOptions = []styleFlag{
@@ -99,9 +100,17 @@ func (w *writer) resourceHeader() string {
 	var b strings.Builder
 	b.WriteString("/* Resource IDs for the resource compiler, generated from enums.h. */\n")
 	b.WriteString("#ifndef STARS_RESOURCE_H\n#define STARS_RESOURCE_H\n")
+	enums := make([]*typeinfo.Enum, 0, len(resourceHeaderEnums)+len(w.sdb.DialogControls))
 	for _, name := range resourceHeaderEnums {
-		fmt.Fprintf(&b, "\n/* %s */\n", name)
-		for _, v := range w.sdb.GetEnum(name).Values {
+		enums = append(enums, w.sdb.GetEnum(name))
+	}
+	dialogs := slices.Sorted(maps.Keys(w.sdb.DialogControls))
+	for _, dialog := range dialogs {
+		enums = append(enums, w.sdb.DialogControls[dialog])
+	}
+	for _, enum := range enums {
+		fmt.Fprintf(&b, "\n/* %s */\n", enum.Name)
+		for _, v := range enum.Values {
 			fmt.Fprintf(&b, "#undef %s\n#define %s %d\n", v.Name, v.Name, v.Value)
 		}
 	}
@@ -266,7 +275,7 @@ func (w *writer) menuItems(b *strings.Builder, items []asm.MenuItem, depth int) 
 			}
 			continue
 		}
-		fmt.Fprintf(b, "%s    MENUITEM %s, %s%s\n", indent, rcString(item.Text), w.enumName(commandEnum, int(item.ID)), options)
+		fmt.Fprintf(b, "%s    MENUITEM %s, %s%s\n", indent, rcString(item.Text), w.enumName(controlEnum, int(item.ID)), options)
 	}
 	fmt.Fprintf(b, "%sEND\n", indent)
 	return nil
@@ -281,7 +290,7 @@ func (w *writer) accelerators(b *strings.Builder, t *asm.AcceleratorTable) error
 		if err != nil {
 			return fmt.Errorf("accelerators %s: %w", t.Name, err)
 		}
-		fmt.Fprintf(b, "    %s, %s, %s%s\n", key, w.enumName(commandEnum, int(e.ID)), kind, options)
+		fmt.Fprintf(b, "    %s, %s, %s%s\n", key, w.enumName(controlEnum, int(e.ID)), kind, options)
 	}
 	b.WriteString("END\n")
 	return nil
@@ -337,7 +346,7 @@ func (w *writer) dialog(b *strings.Builder, d *asm.Dialog) {
 			style += " | NOT WS_CHILD"
 		}
 		fmt.Fprintf(b, "    CONTROL %s, %s, %s, %s, %d, %d, %d, %d\n",
-			w.controlText(c.Text), w.controlID(c.ID), rcString(class), style, c.X, c.Y, c.CX, c.CY)
+			w.controlText(c.Text), w.controlID(d.Name, c.ID), rcString(class), style, c.X, c.Y, c.CX, c.CY)
 	}
 	b.WriteString("END\n")
 }
@@ -351,11 +360,21 @@ func (w *writer) controlText(text asm.ResourceKey) string {
 	return rcString(text.Name)
 }
 
-// controlID renders a control id by its ControlId name, with -1 for the
-// 0xFFFF id of controls the dialog never addresses.
-func (w *writer) controlID(id uint16) string {
+// controlID renders a control id by its name in the dialog's own control
+// enum, or else its shared ControlId name, with -1 for the 0xFFFF id of
+// controls the dialog never addresses.
+func (w *writer) controlID(dialog asm.ResourceKey, id uint16) string {
 	if id == 0xffff {
 		return "-1"
+	}
+	if dialog.Ordinal {
+		if controls := w.sdb.DialogControls[int(dialog.ID)]; controls != nil {
+			for _, v := range controls.Values {
+				if v.Value == int(id) {
+					return v.Name
+				}
+			}
+		}
 	}
 	return w.enumName(controlEnum, int(id))
 }

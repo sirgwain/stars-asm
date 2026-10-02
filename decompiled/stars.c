@@ -33,11 +33,11 @@ L_0121:
     while ((int16_t)(int8_t)*lpT != 0) {
         while (1) {
             switch ((int16_t)(int8_t)*lpT) {
-            case 32:
+            case ' ':
                 lpT++;
                 continue;
-            case 45:
-            case 47:
+            case '-':
+            case '/':
                 goto L_0164;
             default:
                 goto L_0517;
@@ -45,51 +45,51 @@ L_0121:
             goto L_0121;
         }
     L_0164:
-        for (lpT++; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32; lpT++) {
+        for (lpT++; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' '; lpT++) {
             if ((uint16_t)((int16_t)(int8_t)*lpT - 65) <= 55) {
                 switch ((int16_t)(int8_t)*lpT) {
-                case 87:
-                case 119:
+                case 'W':
+                case 'w':
                     ini.fWait = 1;
                     break;
-                case 68:
-                case 100:
+                case 'D':
+                case 'd':
                     lpT++;
                     while (1) {
                         switch ((int16_t)(int8_t)*lpT) {
-                        case 70:
-                        case 102:
+                        case 'F':
+                        case 'f':
                             ini.fDumpFleets = 1;
                             goto L_0231;
-                        case 80:
-                        case 112:
+                        case 'P':
+                        case 'p':
                             ini.fDumpPlanets = 1;
                             goto L_0231;
-                        case 77:
-                        case 109:
+                        case 'M':
+                        case 'm':
                             ini.fDumpMap = 1;
                         default:
                         L_0231:
                             lpT++;
                             continue;
                         case 0:
-                        case 32:
+                        case ' ':
                             break;
                         }
                         break;
                     }
                     lpT--;
                     break;
-                case 71:
-                case 103:
+                case 'G':
+                case 'g':
                     ini.fGen = 1;
                     i = 0;
-                    while ((int16_t)(int8_t)lpT[1] >= 48 && (int16_t)(int8_t)lpT[1] <= 57) {
+                    while ((int16_t)(int8_t)lpT[1] >= '0' && (int16_t)(int8_t)lpT[1] <= '9') {
                         lpT++;
                         i = 10 * i + (int16_t)(int8_t)*lpT - 48;
                         if (i > 1000) {
                             i = 1000;
-                            for (; (int16_t)(int8_t)lpT[1] >= 48 && (int16_t)(int8_t)lpT[1] <= 57; lpT++) {
+                            for (; (int16_t)(int8_t)lpT[1] >= '0' && (int16_t)(int8_t)lpT[1] <= '9'; lpT++) {
                             }
                             break;
                         }
@@ -98,24 +98,24 @@ L_0121:
                         break;
                     ini.cTurnGen = i - 1;
                     break;
-                case 65:
-                case 97:
+                case 'A':
+                case 'a':
                     ini.fNewGame = 1;
                     break;
-                case 72:
-                case 104:
+                case 'H':
+                case 'h':
                     gd.fHotSeat = 1;
                     break;
-                case 88:
-                case 120:
+                case 'X':
+                case 'x':
                     gd.fExitWindows = 1;
                     break;
-                case 66:
-                case 98:
-                    for (lpT++; (int16_t)(int8_t)*lpT == 32; lpT++) {
+                case 'B':
+                case 'b':
+                    for (lpT++; (int16_t)(int8_t)*lpT == ' '; lpT++) {
                     }
                     pch = szBase;
-                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32; lpT++) {
+                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' '; lpT++) {
                         *pch = *lpT;
                         pch++;
                     }
@@ -128,28 +128,28 @@ L_0121:
                     ini.fStartupFile = 1;
                     ini.fCmdLine = 1;
                     break;
-                case 86:
-                case 118:
+                case 'V':
+                case 'v':
                     ini.fValidate = 1;
                     break;
-                case 76:
-                case 108:
+                case 'L':
+                case 'l':
                     ini.fLogging = 1;
                     break;
-                case 84:
-                case 116:
+                case 'T':
+                case 't':
                     ini.fTry = 1;
                     break;
-                case 67:
-                case 99:
+                case 'C':
+                case 'c':
                     ini.fCmdLine = (int16_t)(int8_t)szBase[0] == 0 ? 0 : 1;
                     break;
-                case 80:
-                case 112:
-                    for (lpT++; (int16_t)(int8_t)*lpT == 32; lpT++) {
+                case 'P':
+                case 'p':
+                    for (lpT++; (int16_t)(int8_t)*lpT == ' '; lpT++) {
                     }
                     pch = szPassLast;
-                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32 && pch < &szPassLast[15]; lpT++) {
+                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' ' && pch < &szPassLast[15]; lpT++) {
                         *pch = *lpT;
                         pch++;
                     }
@@ -162,7 +162,7 @@ L_0121:
         continue;
     L_0517:
         pch = szBase;
-        while ((int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != 32) {
+        while ((int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' ') {
             *pch = *lpT;
             lpT++;
             pch++;
@@ -199,13 +199,13 @@ int16_t FSetUpBatchProcessing() {
     fSuccess = 0;
     penvMem = &env;
     if (setjmp(env) == 0) {
-        StreamOpen(szBase, 32);
+        StreamOpen(szBase, mdRead);
         cb = LOWORD(filelength(hf));
         lpchBatch = LpAlloc(cb, htPerm);
         RgFromStream(lpchBatch, cb);
         lpchBatchMac = lpchBatch + cb;
         pch = szBase;
-        while ((int16_t)(int8_t)*lpchBatch != 10 && lpchBatch != lpchBatchMac) {
+        while ((int16_t)(int8_t)*lpchBatch != '\n' && lpchBatch != lpchBatchMac) {
             *pch = *lpchBatch;
             lpchBatch++;
             pch++;
@@ -266,19 +266,19 @@ int16_t FGetSystemColors() {
     if (hbrDesktop != 0) {
         FreeHbr(hbrDesktop);
     }
-    crButtonFace = GetSysColor(15);
+    crButtonFace = GetSysColor(COLOR_BTNFACE);
     hbrButtonFace = HbrGet(crButtonFace);
-    crButtonHilite = GetSysColor(20);
+    crButtonHilite = GetSysColor(COLOR_BTNHIGHLIGHT);
     hbrButtonHilite = HbrGet(crButtonHilite);
-    crButtonShadow = GetSysColor(16);
+    crButtonShadow = GetSysColor(COLOR_BTNSHADOW);
     hbrButtonShadow = HbrGet(crButtonShadow);
-    crButtonText = GetSysColor(18);
+    crButtonText = GetSysColor(COLOR_BTNTEXT);
     hbrButtonText = HbrGet(crButtonText);
-    hbrWindowFrame = HbrGet(GetSysColor(6));
-    hbrDesktop = HbrGet(GetSysColor(1));
-    crWindow = GetSysColor(5);
+    hbrWindowFrame = HbrGet(GetSysColor(COLOR_WINDOWFRAME));
+    hbrDesktop = HbrGet(GetSysColor(COLOR_BACKGROUND));
+    crWindow = GetSysColor(COLOR_WINDOW);
     hbrWindow = HbrGet(crWindow);
-    crWindowText = GetSysColor(8);
+    crWindowText = GetSysColor(COLOR_WINDOWTEXT);
     hbrWindowText = HbrGet(crWindowText);
     dyTitleBar = GetSystemMetrics(SM_CYCAPTION);
     dxWinFrame = GetSystemMetrics(SM_CXFRAME);
@@ -373,7 +373,7 @@ void FreeStuff() {
     }
     DeleteObject(hrgnHuge);
     DeleteObject(hrgnScratch);
-    SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(0x7f00)));
+    SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32512)));
     DestroyCursor(hcurScanner);
     DestroyCursor(hcurOpenGrab);
     DestroyCursor(hcurCloseGrab);
@@ -496,11 +496,11 @@ INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
         case WM_INITDIALOG:
             iAbout1st = -11;
             iAboutPartial = 0;
-            SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion());
+            SetWindowText(GetDlgItem(hwnd, IDC_ABOUT_DEMO_TEXT), SzVersion());
             uTimerId = SetTimer(hwnd, 14, 50, NULL);
             return 1;
         case WM_TIMER:
-            hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F);
+            hwndCtl = GetDlgItem(hwnd, IDC_ABOUT_CREDITS_TEXT);
             iAboutPartial += 2;
             if (iAboutPartial >= dyArial8) {
                 iAboutPartial = 0;
@@ -539,7 +539,7 @@ INT_PTR CALLBACK About(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 uTimerId = 0;
                 EndDialog(hwnd, 1);
                 return 1;
-            case IDC_HELP:
+            case IDC_ABOUT_ORDER_INFO:
                 lpProc = MakeProcInstance(OrderInfoDlg, hInst);
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ORDER_INFO), hwnd, lpProc);
                 FreeProcInstance(lpProc);
@@ -586,36 +586,36 @@ int16_t FHandleChar(HWND hwnd, uint16_t ch, int32_t lParam) {
 }
 
 int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
-    HWND     hwndF;
-    POINT16  pt;
-    HWND     hwndOver;
-    int16_t  i;
-    int16_t  itb;
-    uint16_t md;
-    int16_t  iWarp;
-    int16_t  iwp;
-    POINT    t_pt_1779;
+    HWND          hwndF;
+    POINT16       pt;
+    HWND          hwndOver;
+    int16_t       i;
+    ToolbarButton itb;
+    uint16_t      md;
+    int16_t       iWarp;
+    int16_t       iwp;
+    POINT         t_pt_1779;
 
-    if (iMsg == 256) {
-        if (iKey == 27 && hwndBrowser != 0 && GetActiveWindow() == hwndBrowser) {
+    if (iMsg == WM_KEYDOWN) {
+        if (iKey == VK_ESCAPE && hwndBrowser != 0 && GetActiveWindow() == hwndBrowser) {
             DestroyWindow(hwndBrowser);
             return 1;
         }
-        if (iKey == 27 && hwndPopup != 0) {
+        if (iKey == VK_ESCAPE && hwndPopup != 0) {
             SendMessage(hwndPopup, WM_LBUTTONUP, 0, 0);
             return 1;
         }
-        if (iKey == 27 && hwndReportDlg != 0) {
+        if (iKey == VK_ESCAPE && hwndReportDlg != 0) {
             DestroyWindow(hwndReportDlg);
             return 1;
         }
-    } else if (iMsg == 257 && hwndTb != 0 && (iKey == 27 || iKey == 13)) {
+    } else if (iMsg == WM_KEYUP && hwndTb != 0 && (iKey == VK_ESCAPE || iKey == VK_RETURN)) {
         hwndF = GetParent(GetFocus());
         if (hwndF == hwndTb || GetParent(hwndF) == hwndTb) {
-            TerminateToolbarFocus(iKey == 27 ? 1 : 0);
+            TerminateToolbarFocus(iKey == VK_ESCAPE ? 1 : 0);
         }
     }
-    if (iKey == 16 && hwndScanner != 0) {
+    if (iKey == VK_SHIFT && hwndScanner != 0) {
         GetCursorPos(&t_pt_1779);
         pt = PointTo16(t_pt_1779);
         hwndOver = WindowFromPoint(PointFrom16(pt));
@@ -623,28 +623,28 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
             SendMessage(hwndOver, WM_SETCURSOR, (WPARAM)hwndOver, 0);
         }
     }
-    if (iMsg != 256) {
+    if (iMsg != WM_KEYDOWN) {
         return 0;
     }
     switch (iKey) {
     default:
-        if (iKey < 48 || iKey > 57) {
+        if (iKey < '0' || iKey > '9') {
             switch (iKey) {
             default:
                 return 0;
-            case 188:
-            case 190:
-            case 219:
-            case 221:
+            case VK_OEM_COMMA:
+            case VK_OEM_PERIOD:
+            case VK_OEM_4:
+            case VK_OEM_6:
                 break;
             }
         }
-    case 8:
-    case 46:
-    case 40:
-    case 38:
-    case 36:
-    case 35:
+    case VK_BACK:
+    case VK_DELETE:
+    case VK_DOWN:
+    case VK_UP:
+    case VK_HOME:
+    case VK_END:
         hwndF = GetFocus();
         if (hwndMessage != 0) {
             if (hwndTb != 0 && (hwndTb == hwndF || GetParent(hwndF) == hwndTb || GetParent(GetParent(hwndF)) == hwndTb)) {
@@ -659,35 +659,35 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
                 hwndF == hwndMsgScroll || hwndF == hwndFleetCompLB || hwndF == hwndShipDD) {
                 return 0;
             }
-            if (hwndBrowser == 0 || hwndF != GetDlgItem(hwndBrowser, IDC_U16_0x010B))
+            if (hwndBrowser == 0 || hwndF != GetDlgItem(hwndBrowser, IDC_BROWSER_COMPONENT_CATEGORY))
                 goto L_1939;
             return 0;
         }
     L_1939:
-        if (iKey >= 48 && iKey <= 57) {
-            if (iKey >= 49 && iKey <= 54) {
+        if (iKey >= '0' && iKey <= '9') {
+            if (iKey >= '1' && iKey <= '6') {
                 md = iKey - 49;
-                if (md != (grbitScan & 0xf)) {
+                if (md != (grbitScan & grbitScanViewMask)) {
                     ExecuteButton(iKey - 49, 1);
                     InvalidateRect(hwndTb, NULL, 0);
                 }
                 return 1;
             }
             switch (iKey) {
-            case 55:
-                itb = 7;
+            case '7':
+                itb = tbScannerCoverage;
                 break;
-            case 56:
-                itb = 8;
+            case '8':
+                itb = tbMineFields;
                 break;
-            case 57:
-                itb = 9;
+            case '9':
+                itb = tbFleetPaths;
                 break;
-            case 48:
+            case '0':
                 if (GetKeyState(VK_SHIFT) < 0) {
-                    itb = 17;
+                    itb = tbShipCounts;
                 } else {
-                    itb = 11;
+                    itb = tbPlanetNames;
                 }
             }
             ExecuteButton(itb, FIsButtonDown(itb) == 0 ? 1 : 0);
@@ -697,28 +697,28 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
         switch (iKey) {
         default:
             return 0;
-        case 8:
-        case 46:
+        case VK_BACK:
+        case VK_DELETE:
             if (sel.grobj != grobjFleet)
                 break;
-            iKey = 8;
+            iKey = VK_BACK;
             DeleteCurWayPoint(8);
             break;
-        case 35:
-        case 36:
-        case 38:
-        case 40:
+        case VK_END:
+        case VK_HOME:
+        case VK_UP:
+        case VK_DOWN:
             if (hwndF == hwndShipLB) {
                 return 0;
             }
             SendMessage(hwndMessage, WM_KEYDOWN, iKey, dw);
             break;
-        case 188:
-        case 190:
+        case VK_OEM_COMMA:
+        case VK_OEM_PERIOD:
             if (sel.grobj == grobjFleet && (sel.iwpAct > 0 || sel.fl.cord > 1)) {
                 iwp = sel.iwpAct <= 0 ? 1 : sel.iwpAct;
                 iWarp = sel.fl.lpplord->rgord[iwp].iWarp;
-                if (iKey == 188) {
+                if (iKey == VK_OEM_COMMA) {
                     iWarp--;
                 } else {
                     iWarp++;
@@ -726,15 +726,15 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
                 if (iWarp >= 0 && iWarp <= 11) {
                     sel.fl.lpplord->rgord[iwp].iWarp = iWarp;
                     FLookupFleet(-1, &sel.fl);
-                    DrawPlanShip(NULL, 16928);
+                    DrawPlanShip(NULL, tileFleetOrders | tileFleetComp | tileMinimized);
                 }
             }
             return 1;
-        case 219:
-        case 221:
+        case VK_OEM_4:
+        case VK_OEM_6:
             pt.x = 0;
             pt.y = 0;
-            ExecuteReportClick(pt, 2, 0, iKey == 219 ? -2 : -1);
+            ExecuteReportClick(pt, rptEnemyFleets, 0, iKey == VK_OEM_4 ? -2 : -1);
             return 1;
         }
         return 1;

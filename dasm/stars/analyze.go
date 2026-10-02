@@ -20,13 +20,14 @@ type FuncAnalysis struct {
 	IRAnalysis  ir.AnalyzeResult
 }
 
-// analyzeFunc decodes a function and derives its CFG, machine effects, and semantic effects.
-func analyzeFunc(img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpOptions) (FuncAnalysis, error) {
-	return analyzeFuncWithSemPassSnapshots(img, sdb, fs, opt, nil)
+// analyzeFunc decodes a function and derives its CFG, machine effects, and
+// semantic effects. writes summarizes what the program's calls store to.
+func analyzeFunc(img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpOptions, writes *machine.WriteSummaries) (FuncAnalysis, error) {
+	return analyzeFuncWithSemPassSnapshots(img, sdb, fs, opt, writes, nil)
 }
 
 // analyzeFuncWithSemPassSnapshots decodes and analyzes a function, reporting semantic pass snapshots.
-func analyzeFuncWithSemPassSnapshots(img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpOptions, onPass func(sem.PassSnapshot, *machine.FuncEffects) error) (FuncAnalysis, error) {
+func analyzeFuncWithSemPassSnapshots(img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpOptions, writes *machine.WriteSummaries, onPass func(sem.PassSnapshot, *machine.FuncEffects) error) (FuncAnalysis, error) {
 	// decode asm
 	asmCtx := asm.NewFuncContext(img, fs)
 	decoded, err := asm.DecodeFunc(asmCtx)
@@ -55,7 +56,7 @@ func analyzeFuncWithSemPassSnapshots(img *asm.ImageNE, sdb *typeinfo.SymbolDB, f
 	}
 
 	// run sem passes
-	semCtx := sem.NewFuncContext(img, sdb, res, fs).WithOptions(opt.FromAddr, opt.ToAddr)
+	semCtx := sem.NewFuncContext(img, sdb, res, fs, writes).WithOptions(opt.FromAddr, opt.ToAddr)
 	semFunc, annotations, err := sem.Lower(semCtx, effects, func(snapshot sem.PassSnapshot) error {
 		if onPass == nil {
 			return nil

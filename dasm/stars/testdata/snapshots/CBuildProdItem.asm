@@ -1268,7 +1268,7 @@ MOV       ax, 0x008c
 PUSH      ax                  
 LES       bx, [bp+lppl]             ; bx, [bp+0x6]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg2              ; int16_t FSendPlrMsg2(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2)
+CALLF     FSendPlrMsg2              ; int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2)
 ADD       sp, 0x000a          
 
 L_17fb:                             ; turn2.c:489

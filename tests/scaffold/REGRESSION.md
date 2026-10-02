@@ -195,10 +195,16 @@ Cybertron histories decode as `CYBERINFO`; Robotoid, Turindrone, Automitron,
 and Rototill histories decode as `AIHIST`. Without a companion turn file, the
 history is reported only as a changed payload. Some storage is never read:
 `AIHIST` freighter slots at or past `cFreighter` on both sides (stale heap data
-moved by `ValidateStarbaseHistory`) and the reserved `CYBERINFO` byte. Changes
-there are listed as `unused ...`. If they are a file's only differences, `save compare`
+moved by `ValidateStarbaseHistory`) and the reserved `CYBERINFO` byte. In fleet
+orders (`rtOrderA`/`rtOrderB`), `fUnused` is never read and `fNoAutoTrack` is
+cleared when fleets load. Task-union words past those the order's `grTask`
+reads are stale too. Xfer reads all five, Patrol two, and LayMines and Give one;
+`tlm.cTimeOld` is write-only. Changes in unused storage are listed as `unused ...`. If they are a file's only differences, `save compare`
 exits 0 with `MATCH with warnings`. The regression report then records
 `"match": true, "warning": true` and counts these files as warnings, not failures.
+Its detail keeps only the summary line: native unused storage holds stale heap
+and stack bytes that change between runs, so the values would make the
+checked-in report shift. Run `save compare` on the files to see them.
 
 This is strict record comparison, not a complete semantic interpretation. A
 reported difference needs inspection: padding or environment-specific fields
@@ -223,6 +229,70 @@ marks turn zero as a reference input. Comparisons skip that checkpoint rather
 than count it as successful native creation. Native turns are still compared
 normally. Use `--resume` for a subsequent attempt from a completed checkpoint;
 `--baseline` is only for a fresh scenario.
+
+### Separate logic differences from inherited state
+
+`crossfeed` copies saves from any directory and generates `--turns` turns with
+the engine and executable of a prepared `--work` run. It writes them to
+`<work>/<scenario>/xfeed/<from>_<to>/`, and `--expect` compares the result
+against another directory of saves. Two tests classify a native difference:
+
+```sh
+# A. Logic: native, starting from the original's exact state.
+python3 tests/scaffold/regression.py crossfeed --work starsbox/c_drive/native \
+  --scenario oneai6 --input starsbox/c_drive/REGTEST/oneai6/checkpoints/025 \
+  --turns 25 --expect starsbox/c_drive/REGTEST/oneai6/checkpoints/050
+
+# B. Inertness: the original, starting from native's state.
+python3 tests/scaffold/regression.py crossfeed --work starsbox/c_drive/REGTEST \
+  --scenario oneai6 --input starsbox/c_drive/native/oneai6/checkpoints/025 \
+  --turns 25 --expect starsbox/c_drive/REGTEST/oneai6/checkpoints/050
+```
+
+Test A isolates native turn generation over that span. If test B matches, the
+stored difference has no effect on the original. The startup seed resets on
+every launch. Match an original launch span (`--turns` from a checkpoint) when
+comparing against its checkpoints. To narrow a span, crossfeed the same input
+with both engines using a smaller `--turns`, then compare the two `xfeed`
+outputs with `--expect`. An existing output is reused only when its input files
+and executable match; otherwise remove it to rerun.
+
+`bisect` runs both engines from the same input and binary-searches `-gK` for the
+first divergent turn. A `-gK` launch reproduces the first K turns of a longer
+launch from the same input. Each search needs about log2(turns) launches per engine:
+
+```sh
+python3 tests/scaffold/regression.py bisect --original starsbox/c_drive/REGTEST \
+  --native starsbox/c_drive/native --scenario oneai6 \
+  --input starsbox/c_drive/REGTEST/oneai6/checkpoints/025 --turns 25
+```
+
+Stars! keeps the last generated turn's inputs and AI order logs (`.xN`) in
+`backup/`. Compare them between engines. Matching inputs with differing logs
+place the divergence in that AI's decisions. `.xN` record 1 (`RTLOGHDR`) holds
+the installation serial and environment fingerprint, so it always differs.
+
+### Trace native RNG draws
+
+Configure a separate build with `-DSTARS_TEST_TRACE=ON` and prepare a native run
+from it. The linker wraps `Random` and `PctPlanetCapacity`
+(`tests/scaffold/regression_trace.c`). The trace build behaves identically.
+With `--trace`, `crossfeed` and `bisect` set `STARS_TRACE` and write
+`trace.log` beside the output. Each `Random` line records the turn, player, AI flag,
+range, result, caller address, and RNG seeds before the draw. Seeds allow replaying
+the stream at any offset. `trace` resolves caller addresses to source lines:
+
+```sh
+cmake --preset mingw-debug -B dist/regression-trace -DSTARS_TEST_SEED=12345 -DSTARS_TEST_TRACE=ON
+cmake --build dist/regression-trace
+python3 tests/scaffold/regression.py prepare --engine native --seed 12345 \
+  --exe dist/regression-trace/bin/stars.exe --work starsbox/c_drive/ntrace
+python3 tests/scaffold/regression.py trace <dir>/trace.log \
+  --exe dist/regression-trace/bin/stars.exe --turn 32 --player 1
+```
+
+The original cannot be traced. Compare its AI logs with the native trace,
+then replay the native seeds at nearby offsets to locate an extra or missing draw.
 
 For confidence in the harness, first run the original twice into fresh folders
 and compare those runs. Matching original-to-original checkpoints establishes a

@@ -34,12 +34,12 @@ void ShowMainControls(HWND hwnd, int16_t sw) {
     ShowWindow(GetDlgItem(hwnd, IDC_IMPORT), sw);
     ShowWindow(GetDlgItem(hwnd, IDC_EDIT), sw);
     ShowWindow(GetDlgItem(hwnd, IDC_DELETE), sw);
-    ShowWindow(GetDlgItem(hwnd, IDC_PREV), sw);
-    ShowWindow(GetDlgItem(hwnd, IDC_NEXT2), sw);
-    ShowWindow(GetDlgItem(hwnd, IDC_FIRST), sw);
-    ShowWindow(GetDlgItem(hwnd, IDC_LAST), sw);
-    ShowWindow(GetDlgItem(hwnd, IDC_UP), sw);
-    ShowWindow(GetDlgItem(hwnd, IDC_DOWN), sw);
+    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_SHIPS), sw);
+    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_STARBASES), sw);
+    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_EXISTING), sw);
+    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_HULLS), sw);
+    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_ENEMY_HULLS), sw);
+    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENTS), sw);
     ShowWindow(GetDlgItem(hwnd, IDOK), sw == SW_SHOW ? SW_HIDE : SW_SHOW);
     SetDlgItemText(hwnd, IDCANCEL, PszGetCompressedString(sw == SW_SHOW ? idsDone : idsCancel));
     return;
@@ -54,7 +54,6 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit) {
     char    *t_merge_0342_0001;
     char    *t_merge_036d_0001;
     char    *t_merge_03ca_0001;
-    char    *t_merge_03e2_0001;
     char    *t_merge_043f_0001;
 
     cshQueued = CshQueued(lpshdef->ishdef, &fProgress, fEdit);
@@ -71,8 +70,7 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit) {
             _wsprintf(szWork, PszGetCompressedString(ids), LOWORD(lpshdef->cExist), lpshdef->hul.szClass, t_merge_036d_0001, cshQueued, t_merge_0342_0001);
         } else if (cshQueued != 0) {
             t_merge_03ca_0001 = fProgress == 0 ? "" : rgch;
-            t_merge_03e2_0001 = cshQueued == 1 ? "" : "s";
-            _wsprintf(szWork, PszGetCompressedString(ids + 1), cshQueued, lpshdef->hul.szClass, t_merge_03e2_0001, t_merge_03ca_0001);
+            _wsprintf(szWork, PszGetCompressedString(ids + 1), cshQueued, lpshdef->hul.szClass, cshQueued == 1 ? "" : "s", t_merge_03ca_0001);
         } else {
             t_merge_043f_0001 = lpshdef->cExist == 1 ? "" : "s";
             _wsprintf(szWork, PszGetCompressedString(ids + 2), LOWORD(lpshdef->cExist), lpshdef->hul.szClass, t_merge_043f_0001);
@@ -113,8 +111,6 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     PART               part;
     int16_t            cshQueued;
     int16_t            j;
-    HWND               t_scratch_m4e;
-    HWND               t_scratch_m4e_2;
     POINT              t_pt_0900;
     POINT              t_pt_090f_1;
     HWND               t_call_1152;
@@ -124,9 +120,9 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
         if (mdBuild != mdBuildEdit) {
-            GetWindowRect(GetDlgItem(hwnd, IDC_PREV), &rcGBox);
+            GetWindowRect(GetDlgItem(hwnd, IDC_DESIGNER_SHIPS), &rcGBox);
             ScreenToClient(hwnd, (POINT *)&rcGBox);
-            GetWindowRect(GetDlgItem(hwnd, IDC_NEXT2), &rc);
+            GetWindowRect(GetDlgItem(hwnd, IDC_DESIGNER_STARBASES), &rc);
             ScreenToClient(hwnd, (POINT *)&rc.right);
             rcGBox.right = rc.right;
             rcGBox.bottom = rc.bottom;
@@ -137,9 +133,9 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             cch = CchGetString(idsDesign, szWork);
             TextOut(hdc, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 1), szWork, cch);
             SelectObject(hdc, rghfontArial8[0]);
-            GetWindowRect(GetDlgItem(hwnd, IDC_FIRST), &rcGBox);
+            GetWindowRect(GetDlgItem(hwnd, IDC_DESIGNER_EXISTING), &rcGBox);
             ScreenToClient(hwnd, (POINT *)&rcGBox);
-            GetWindowRect(GetDlgItem(hwnd, IDC_DOWN), &rc);
+            GetWindowRect(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENTS), &rc);
             ScreenToClient(hwnd, (POINT *)&rc.right);
             rcGBox.right = rc.right;
             rcGBox.bottom = rc.bottom;
@@ -164,19 +160,13 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
         return 1;
     }
     if (IS_WM_CTLCOLOR(message) != 0) {
-        for (i = 2064; i <= 2069; i++) {
-            t_scratch_m4e = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_m4e == GetDlgItem(hwnd, i))
-                break;
+        for (i = 2064; i <= 2069 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
-        if (i > 2069) {
-            t_scratch_m4e_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_m4e_2 != GetDlgItem(hwnd, IDC_SHIPLIST)) {
-                return 0;
-            }
+        if (i <= 2069 || GET_WM_CTLCOLOR_HWND(wParam, lParam) == GetDlgItem(hwnd, IDC_SHIPLIST)) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
         }
-        SetBkColor((HDC)wParam, crButtonFace);
-        return (INT_PTR)hbrButtonFace;
+        return 0;
     }
     switch (message) {
     case WM_INITDIALOG:
@@ -188,14 +178,14 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                      SWP_NOMOVE | SWP_NOZORDER);
         StickyDlgPos(hwnd, &ptStickySlotDlg, 1);
         UpdateSlotGlobals();
-        hwndItem = GetDlgItem(hwnd, IDC_U16_0x080C);
+        hwndItem = GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST);
         SetWindowPos(hwndItem, NULL, ptslotGlob.x - 256, 32, 240, 266, SWP_NOZORDER);
         FillBuildPartsLB(hwndItem, rggrbitParts[0]);
         yBuildInfoSum = 340;
         lpfnRealListProc = GetWindowLong(hwndItem, GWL_WNDPROC);
         SetWindowLong(hwndItem, GWL_WNDPROC, lpfnFakeListProc);
-        CheckRadioButton(hwnd, 2064, 2065, 2064);
-        CheckRadioButton(hwnd, 2066, 2069, 2066);
+        CheckRadioButton(hwnd, IDC_DESIGNER_SHIPS, IDC_DESIGNER_STARBASES, IDC_DESIGNER_SHIPS);
+        CheckRadioButton(hwnd, IDC_DESIGNER_EXISTING, IDC_DESIGNER_COMPONENTS, IDC_DESIGNER_EXISTING);
         mdBuild = mdBuildShdef;
         hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
         SetWindowPos(hwndItem, NULL, ptslotGlob.x - 264, 8, 240, 100, SWP_NOZORDER);
@@ -217,13 +207,13 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             HandleFocusState(lpdis, -2);
         } else {
             switch (lpdis->itemAction) {
-            case 1:
+            case ODA_DRAWENTIRE:
                 DrawDlgLBEntireItem(lpdis, -4);
                 break;
-            case 2:
+            case ODA_SELECT:
                 DrawDlgLBEntireItem(lpdis, -4);
                 break;
-            case 4:
+            case ODA_FOCUS:
                 DrawDlgLBEntireItem(lpdis, -4);
             }
         }
@@ -247,7 +237,8 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     case WM_RBUTTONDOWN:
         return FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, 0, message == WM_RBUTTONDOWN ? 1 : 0);
     case WM_COMMAND:
-        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_PREV && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_NEXT2) {
+        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_DESIGNER_SHIPS &&
+            GET_WM_COMMAND_ID(wParam, lParam) <= IDC_DESIGNER_STARBASES) {
             fStarbaseMode = GET_WM_COMMAND_ID(wParam, lParam) - 2064;
             wParam = mdBuild + 2066;
             GetClientRect(hwnd, &rc);
@@ -256,12 +247,13 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             lpshdefBuild = NULL;
             fHullCopy = 0;
             lSel = fStarbaseMode == 0 ? (uint32_t)rggrbitParts[0] : (uint32_t)rggrbitPartsSB[0];
-            FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), LOWORD(lSel));
+            FillBuildPartsLB(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST), LOWORD(lSel));
             hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
             FillBuildDD(hwndItem, mdBuild);
             SendMessage(hwndItem, CB_SETCURSEL, 0, 0);
         } else {
-            if (GET_WM_COMMAND_CMD(wParam, lParam) != 0 || GET_WM_COMMAND_ID(wParam, lParam) < IDC_FIRST || GET_WM_COMMAND_ID(wParam, lParam) > IDC_DOWN) {
+            if (GET_WM_COMMAND_CMD(wParam, lParam) != 0 || GET_WM_COMMAND_ID(wParam, lParam) < IDC_DESIGNER_EXISTING ||
+                GET_WM_COMMAND_ID(wParam, lParam) > IDC_DESIGNER_COMPONENTS) {
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_EDITNAME && GET_WM_COMMAND_CMD(wParam, lParam) == 0x400 && fInEditUpdate == 0) {
                     fInEditUpdate = 1;
                     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
@@ -284,7 +276,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         return 0;
                     }
                     goto FixupShip;
-                case IDC_U16_0x080C:
+                case IDC_DESIGNER_COMPONENT_LIST:
                     if (GET_WM_COMMAND_CMD(wParam, lParam) != 1) {
                         return 0;
                     }
@@ -296,7 +288,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     }
                     fProgress = 0;
                     cshQueued = 0;
-                    if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(0) == 0) {
+                    if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbDelete) == 0) {
                         return 0;
                     }
                     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
@@ -340,7 +332,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         AdvanceTutor();
                         return 0;
                     }
-                    if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(1) == 0) {
+                    if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbCopy) == 0) {
                         return 0;
                     }
                     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
@@ -422,7 +414,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         lpshdef->det = detAll;
                         fmemset(lpshdef->hul.rghs, 0, 64);
                     }
-                    CheckRadioButton(hwnd, 2066, 2069, 2066);
+                    CheckRadioButton(hwnd, IDC_DESIGNER_EXISTING, IDC_DESIGNER_COMPONENTS, IDC_DESIGNER_EXISTING);
                     lpshdef->turn = game.turn;
                     lpshdef->ishdef = (fStarbaseMode == 0 ? 0 : 16) + i;
                     UpdateShdefCost(lpshdef);
@@ -440,7 +432,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     fHullCopy = 1;
                     break;
                 case IDC_EDIT:
-                    if ((gd.fTutorial != 0 && FTutorialEnabledShipBuilder(2) == 0) ||
+                    if ((gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbEdit) == 0) ||
                         (fStarbaseMode != 0 && lpshdefBuild->ishdef == 16 && GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMacintosh)) {
                         return 0;
                     }
@@ -469,7 +461,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                             AlertSz(PszFormatIds(idsShipDesignDoesHaveAnyEnginesMust, NULL), MB_ICONHAND);
                             return 0;
                         }
-                        if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(3) == 0) {
+                        if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbAccept) == 0) {
                             return 0;
                         }
                         GetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass, 32);
@@ -496,19 +488,19 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                                 }
                             }
                         }
-                    } else if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(4) == 0) {
+                    } else if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbCancelEdit) == 0) {
                         return 0;
                     }
                     InvalidateRect(hwnd, NULL, 1);
                     ShowMainControls(hwnd, SW_SHOW);
                     ShowWindow(GetDlgItem(hwnd, IDC_EDITNAME), SW_HIDE);
-                    hwndItem = GetDlgItem(hwnd, IDC_U16_0x080C);
+                    hwndItem = GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST);
                     FillBuildPartsLB(hwndItem, fStarbaseMode == 0 ? rggrbitParts[0] : rggrbitPartsSB[0]);
                     SetWindowPos(hwndItem, NULL, ptslotGlob.x - 256, 32, 240, 266, SWP_NOZORDER);
-                    ShowWindow(GetDlgItem(hwnd, IDC_U16_0x080C), SW_HIDE);
+                    ShowWindow(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST), SW_HIDE);
                     if (fHullCopy != 0) {
                         if (GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL && fStarbaseMode == 0 && lpshdefBuild->hul.rghs[0].cItem == 0) {
-                            wParam = 2;
+                            wParam = IDCANCEL;
                         }
                         if (GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL) {
                             if (fStarbaseMode != 0) {
@@ -523,10 +515,10 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                             }
                         }
                     }
-                    wParam = 2066;
+                    wParam = IDC_DESIGNER_EXISTING;
                     goto LRestart;
                 case IDC_HELP:
-                    WinHelp(hwnd, szHelpFile, 1, (uint32_t)(mdBuild == mdBuildEdit ? 3039 : 1066));
+                    WinHelp(hwnd, szHelpFile, HELP_CONTEXT, (uint32_t)(mdBuild == mdBuildEdit ? 3039 : 1066));
                     return 1;
                 default:
                     return 0;
@@ -539,10 +531,10 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 shdefBuild = *lpshdefBuild;
                 lpshdefBuild = &shdefBuild;
                 t_merge_1fe4_0001 = fStarbaseMode == 0 ? 6655 : 2620;
-                FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), t_merge_1fe4_0001);
+                FillBuildPartsLB(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST), t_merge_1fe4_0001);
                 FillBuildDD(GetDlgItem(hwnd, IDC_COMBOBOX), mdBuild);
                 ShowMainControls(hwnd, SW_HIDE);
-                SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x080C), NULL, 16, 32, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+                SetWindowPos(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST), NULL, 16, 32, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
                 SetWindowPos(GetDlgItem(hwnd, IDC_COMBOBOX), NULL, 16, 8, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
                 SetWindowPos(GetDlgItem(hwnd, IDC_EDITNAME), NULL, ptslotGlob.x - 264, 8, 240, 3 * dyArial8 >> 1, SWP_NOZORDER | SWP_SHOWWINDOW);
                 SetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass);
@@ -561,7 +553,8 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             UpdateSlotGlobals();
             FillBuildDD(hwndItem, mdBuild);
             SendMessage(hwndItem, CB_SETCURSEL, LOWORD(lSel), 0);
-            SetWindowPos(hwndItem, NULL, ptslotGlob.x - 256 - (GET_WM_COMMAND_ID(wParam, lParam) == IDC_DOWN ? 0 : 8), 8, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+            SetWindowPos(hwndItem, NULL, ptslotGlob.x - 256 - (GET_WM_COMMAND_ID(wParam, lParam) == IDC_DESIGNER_COMPONENTS ? 0 : 8), 8, 0, 0,
+                         SWP_NOSIZE | SWP_NOZORDER);
             GetClientRect(hwnd, &rc);
             left = rc.left;
             rc.left = rc.right >> 1 >= rc.right - 352 ? rc.right - 352 : rc.right >> 1;
@@ -570,9 +563,9 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             rc.left = left;
             rc.top = yBuildInfoSum;
             InvalidateRect(hwnd, &rc, 1);
-            hwndItem = GetDlgItem(hwnd, IDC_U16_0x080C);
+            hwndItem = GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST);
             ShowWindow(hwndItem, mdBuild == mdBuildComp ? SW_SHOW : SW_HIDE);
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_DOWN) {
+            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_DESIGNER_COMPONENTS) {
                 if (gd.fTutorial == 0)
                     break;
                 AdvanceTutor();
@@ -590,7 +583,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             } else {
                 lSel = fStarbaseMode == 0 ? (uint32_t)rggrbitParts[lSel] : (uint32_t)rggrbitPartsSB[lSel];
             }
-            FillBuildPartsLB(GetDlgItem(hwnd, IDC_U16_0x080C), LOWORD(lSel));
+            FillBuildPartsLB(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST), LOWORD(lSel));
             break;
         case mdBuildShdef:
         case mdBuildHuldef:
@@ -784,7 +777,7 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
                 ibmp = IEmptyBmpFromGrhst(lphuldef->hul.rghs[i].grhst);
                 BitBlt(hdc, vrgrcSlot[i].left, vrgrcSlot[i].top, 64, 64, hdcMem, (ibmp & 7) * 0x40, (ibmp >> 3 & 3) * 0x40, SRCCOPY);
                 iInventSel = -1;
-                if ((lphuldef->hul.rghs[i].grhst & 1) != 0) {
+                if ((lphuldef->hul.rghs[i].grhst & hstEngine) != 0) {
                     c = _wsprintf(szWork, PszGetCompressedString(idsNeedsD), lphuldef->hul.rghs[i].cItem);
                 } else {
                     c = _wsprintf(szWork, PszGetCompressedString(idsD3), lphuldef->hul.rghs[i].cItem);
@@ -954,7 +947,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
             Popup(hwnd, x, y);
             return 1;
         }
-        if (hs.grhst == hstSpecialE && hs.iItem == ispecialETransportCloaking && LphuldefFromId(lpshdefBuild->hul.ihuldef)->imdAttack != 0) {
+        if (hs.grhst == hstSpecialE && hs.iItem == ispecialETransportCloaking && LphuldefFromId(lpshdefBuild->hul.ihuldef)->imdAttack != hullAttackNone) {
             GlobalPD.grPopup = grPopupString;
             GlobalPD.dxOut = 180;
             GlobalPD.psz = szPopupBuffer;
@@ -1041,7 +1034,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
             }
             i = IDropPart(pt, hs, iSrc, 1);
             if (i < 0 || i == 2) {
-                SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(0x7f00)));
+                SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32512)));
             } else if (i == 1 && iSrc >= 0) {
                 SetCursor(hcurTrashCan);
             } else {
@@ -1086,8 +1079,6 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     int16_t  iSel;
     char    *pch;
     HULDEF  *t_call_3c58;
-    uint32_t t_fields_1;
-    uint32_t t_fields_2;
     int16_t  t_top_3f19;
 
     fCreatedDC = 0;
@@ -1109,10 +1100,10 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     }
     if (iselSlot != -2) {
         if (iselSlot == -1) {
-            iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), LB_GETCURSEL, 0, 0));
+            iSel = LOWORD(SendMessage(GetDlgItem(hwndSlotDlg, IDC_DESIGNER_COMPONENT_LIST), LB_GETCURSEL, 0, 0));
             if (iSel == -1)
                 goto Restore;
-            SendMessage(GetDlgItem(hwndSlotDlg, IDC_U16_0x080C), LB_GETTEXT, iSel, (LPARAM)szWork);
+            SendMessage(GetDlgItem(hwndSlotDlg, IDC_DESIGNER_COMPONENT_LIST), LB_GETTEXT, iSel, (LPARAM)szWork);
             hsShip.cItem = 1;
             hsShip.grhst = 1 << ((int16_t)(int8_t)szWork[0] - 0x41);
             hsShip.iItem = (int16_t)(int8_t)szWork[1] - 65;
@@ -1122,12 +1113,10 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
             hsShip = lpshdefBuild->hul.rghs[iselSlot];
             t_call_3c58 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
             hsHul.grhst = t_call_3c58->hul.rghs[iselSlot].grhst;
-            t_fields_1 = t_call_3c58->hul.rghs[iselSlot].iItem;
-            t_fields_2 = t_call_3c58->hul.rghs[iselSlot].cItem;
-            hsHul.iItem = t_fields_1;
-            hsHul.cItem = t_fields_2;
+            hsHul.iItem = t_call_3c58->hul.rghs[iselSlot].iItem;
+            hsHul.cItem = t_call_3c58->hul.rghs[iselSlot].cItem;
             if (hsShip.cItem == 0) {
-                i = CchGetString((hsHul.grhst & 1) == 0 ? idsCanHold : idsRequiresExactly, szWork);
+                i = CchGetString((hsHul.grhst & hstEngine) == 0 ? idsCanHold : idsRequiresExactly, szWork);
                 fPlural = hsHul.cItem == 1 ? 0 : 1;
                 if (fPlural == 0) {
                     i += CchGetString(idsOne, &szWork[i]);
@@ -1144,16 +1133,16 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
                     }
                     cch = CchGetString(rgidsCat[i], szWord);
                     if (fPlural == 0) {
-                        if ((int16_t)(int8_t)szWord[cch - 1] == 115) {
-                            if ((int16_t)(int8_t)szWord[cch - 2] == 101 && (int16_t)(int8_t)szWord[cch - 3] == 111) {
+                        if ((int16_t)(int8_t)szWord[cch - 1] == 's') {
+                            if ((int16_t)(int8_t)szWord[cch - 2] == 'e' && (int16_t)(int8_t)szWord[cch - 3] == 'o') {
                                 szWord[cch - 2] = 0;
                             } else {
                                 szWord[cch - 1] = 0;
                             }
                         } else {
-                            for (pch = &szWord[cch - 1]; pch > szWord && (int16_t)(int8_t)*pch != 40; pch--) {
+                            for (pch = &szWord[cch - 1]; pch > szWord && (int16_t)(int8_t)*pch != '('; pch--) {
                             }
-                            if ((int16_t)(int8_t)*pch == 40 && pch > &szWord[1] && (int16_t)(int8_t)pch[-1] == 32 && (int16_t)(int8_t)pch[-2] == 115) {
+                            if ((int16_t)(int8_t)*pch == '(' && pch > &szWord[1] && (int16_t)(int8_t)pch[-1] == ' ' && (int16_t)(int8_t)pch[-2] == 's') {
                                 strcpy(pch + -2, pch + -1);
                             }
                         }
@@ -1558,15 +1547,13 @@ void SetBuildSelection(int16_t iSrc) {
 }
 
 int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
-    int16_t  cSlot;
-    int16_t  cNew;
-    int16_t  i;
-    HS       hsHul;
-    HS       hsDst;
-    RECT     rc;
-    HULDEF  *t_call_5761;
-    uint32_t t_fields_1;
-    uint32_t t_fields_2;
+    int16_t cSlot;
+    int16_t cNew;
+    int16_t i;
+    HS      hsHul;
+    HS      hsDst;
+    RECT    rc;
+    HULDEF *t_call_5761;
 
     GetClientRect(hwndSlotDlg, &rc);
     if ((GetAsyncKeyState(VK_CONTROL) & 0xfffe) != 0) {
@@ -1586,7 +1573,7 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     if (i == cSlot) {
         if (pt.x < rc.right >> 1) {
             if (fNoModify == 0 && iSrc >= 0) {
-                if ((lpshdefBuild->hul.rghs[iSrc].grhst & 1) != 0) {
+                if ((lpshdefBuild->hul.rghs[iSrc].grhst & hstEngine) != 0) {
                     hsSrc.cItem = 100;
                 }
                 lpshdefBuild->hul.rghs[iSrc].cItem =
@@ -1609,11 +1596,9 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     hsDst = lpshdefBuild->hul.rghs[i];
     t_call_5761 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
     hsHul.grhst = t_call_5761->hul.rghs[i].grhst;
-    t_fields_1 = t_call_5761->hul.rghs[i].iItem;
-    t_fields_2 = t_call_5761->hul.rghs[i].cItem;
-    hsHul.iItem = t_fields_1;
-    hsHul.cItem = t_fields_2;
-    if ((hsHul.grhst & 1) != 0) {
+    hsHul.iItem = t_call_5761->hul.rghs[i].iItem;
+    hsHul.cItem = t_call_5761->hul.rghs[i].cItem;
+    if ((hsHul.grhst & hstEngine) != 0) {
         hsSrc.cItem = 100;
     }
     if (i == iSrc) {
@@ -1622,7 +1607,7 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     if (hsDst.cItem >= hsHul.cItem ||
         ((hsDst.cItem > 0 && (hsDst.grhst != hsSrc.grhst || hsDst.iItem != hsSrc.iItem)) || (hsDst.cItem == 0 && (hsSrc.grhst & hsHul.grhst) == 0))) {
         if (fNoModify == 0) {
-            MessageBeep(0);
+            MessageBeep(MB_OK);
         }
         return 3;
     }
@@ -1655,14 +1640,14 @@ void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
     RECT     rc;
 
     CopyRect(&rc, &lpdis->rcItem);
-    FillRect(lpdis->hDC, &lpdis->rcItem, GetStockObject((lpdis->itemState & 0x10) == 0 ? WHITE_BRUSH : BLACK_BRUSH));
+    FillRect(lpdis->hDC, &lpdis->rcItem, GetStockObject((lpdis->itemState & ODS_FOCUS) == 0 ? WHITE_BRUSH : BLACK_BRUSH));
     InflateRect(&rc, -2, -1);
     SendMessage(lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM)szWork);
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
     ibmp = (int16_t)(int8_t)szWork[2] - 65 + ((int16_t)(int8_t)szWork[3] - 65) * 26;
     DibBlt(lpdis->hDC, rc.left, rc.top, 64, 64, rghdibInventory[ibmp >> 5], (ibmp & 7) * 0x40, (3 - (ibmp >> 3) & 3) * 0x40, 64, 64, 13369376);
-    cr = (lpdis->itemState & 0x10) != 0 ? crWindow : crWindow == 0 ? 0xffffff : 0;
+    cr = (lpdis->itemState & ODS_FOCUS) != 0 ? crWindow : crWindow == 0 ? 0xffffff : 0;
     crForeSav = SetTextColor(lpdis->hDC, cr);
     bkSav = SetBkMode(lpdis->hDC, TRANSPARENT);
     TextOut(lpdis->hDC, rc.left + 66, rc.top + 0x20 - (dyArial8 >> 1), &szWork[4], strlen(&szWork[4]));
@@ -1829,16 +1814,16 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
 }
 
 void FillBuildPartsLB(HWND hwndLB, int16_t grbit) {
-    int16_t mdAvail;
-    int16_t i;
-    char    sz[200];
-    int16_t grbitCur;
-    PART    part;
+    int16_t      mdAvail;
+    int16_t      i;
+    char         sz[200];
+    HullSlotType grbitCur;
+    PART         part;
 
-    grbitCur = 1;
+    grbitCur = hstEngine;
     sz[0] = 'A';
     SendMessage(hwndLB, LB_RESETCONTENT, 0, 0);
-    while (grbitCur != 0) {
+    while (grbitCur != hstNone) {
         if ((grbitCur & grbit) != 0) {
             i = 0;
             part.hs.grhst = grbitCur;
@@ -1847,7 +1832,7 @@ void FillBuildPartsLB(HWND hwndLB, int16_t grbit) {
                 mdAvail = FLookupPart(&part);
                 if (mdAvail == 0)
                     break;
-                if (fStarbaseMode != 0 && grbitCur == 2048 && (i == 15 || i == 16)) {
+                if (fStarbaseMode != 0 && grbitCur == hstSpecialE && (i == 15 || i == 16)) {
                     mdAvail = -1;
                 }
                 if (mdAvail == 1) {
@@ -1965,9 +1950,9 @@ void MakeNewName(char *lpsz) {
 
     cLen = fstrlen(lpsz);
     if (cLen <= 27) {
-        if ((int16_t)(int8_t)lpsz[cLen - 1] != 41 || isdigit((int16_t)(int8_t)lpsz[cLen - 2]) == 0 || (int16_t)(int8_t)lpsz[cLen - 3] != 40) {
+        if ((int16_t)(int8_t)lpsz[cLen - 1] != ')' || isdigit((int16_t)(int8_t)lpsz[cLen - 2]) == 0 || (int16_t)(int8_t)lpsz[cLen - 3] != '(') {
             fstrcpy(lpsz + cLen, " (2)");
-        } else if ((int16_t)(int8_t)lpsz[cLen - 2] == 57) {
+        } else if ((int16_t)(int8_t)lpsz[cLen - 2] == '9') {
             lpsz[cLen - 2] = '0';
         } else {
             lpsz[cLen - 2] = lpsz[cLen - 2] + 1;

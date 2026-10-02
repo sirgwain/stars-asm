@@ -1,4 +1,4 @@
-void ExecuteButton(int16_t itb, int16_t fDown) {
+void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     uint16_t grbitNew;
     POINT16  pt;
     char    *rgszScan[12];
@@ -29,7 +29,7 @@ L_0dd4:
         goto L_0de0;
 
 L_0de0:
-    grbitScan = itb + (grbitScan & 0x3ff0);
+    grbitScan = itb + (grbitScan & grbitScanToggleMask);
     goto L_1644;
 
 L_0df2:
@@ -82,7 +82,7 @@ L_0e46:
 L_0e4e:
     grbit = 1;
     c = 0;
-    if ((grbitScan & 0x40) != 0)
+    if ((grbitScan & grbitScanMineFields) != 0)
         goto L_0e6c;
     else
         goto L_0e66;
@@ -183,7 +183,7 @@ L_1047:
         goto L_1051;
 
 L_1051:
-    grbitScan |= 0x40;
+    grbitScan |= grbitScanMineFields;
     goto L_105e;
 
 L_1059:
@@ -284,7 +284,7 @@ L_122d:
     grbitScanShip = 0;
 
 L_1233:
-    if ((grbitScan & 0x200) != 0)
+    if ((grbitScan & grbitScanDesignFilter) != 0)
         goto L_12e6;
     else
         goto L_1241;
@@ -327,7 +327,7 @@ L_1294:
 
 L_129d:
     grbitScanShip ^= 1 << ish;
-    if ((grbitScan & 0x200) != 0)
+    if ((grbitScan & grbitScanDesignFilter) != 0)
         goto L_12e6;
     else
         goto L_12b7;
@@ -339,11 +339,11 @@ L_12b7:
         goto LInvalS;
 
 LInvalS:
-    grbitScan |= 0x200;
+    grbitScan |= grbitScanDesignFilter;
     InvalidateRect(hwndTb, NULL, 1);
 
 L_12e6:
-    if ((grbitScan & 0x200) == 0)
+    if ((grbitScan & grbitScanDesignFilter) == 0)
         goto L_167a;
     else
         goto L_12f1;
@@ -431,7 +431,7 @@ L_1494:
     grbitScanEShip = 0;
 
 L_149a:
-    if ((grbitScan & 0x800) != 0)
+    if ((grbitScan & grbitScanEnemyFilter) != 0)
         goto L_1505;
     else
         goto L_14a8;
@@ -448,7 +448,7 @@ L_14af:
 L_14b8:
     iSel -= 4;
     grbitScanEShip ^= 1 << iSel;
-    if ((grbitScan & 0x800) != 0)
+    if ((grbitScan & grbitScanEnemyFilter) != 0)
         goto L_1505;
     else
         goto L_14d6;
@@ -460,11 +460,11 @@ L_14d6:
         goto LInvalE;
 
 LInvalE:
-    grbitScan |= 0x800;
+    grbitScan |= grbitScanEnemyFilter;
     InvalidateRect(hwndTb, NULL, 1);
 
 L_1505:
-    if ((grbitScan & 0x800) == 0)
+    if ((grbitScan & grbitScanEnemyFilter) == 0)
         goto L_167a;
     else
         goto L_1510;
@@ -506,7 +506,7 @@ L_15f6:
     goto L_167a;
 
 L_160f:
-    if ((uint16_t)itb > 17)
+    if ((uint16_t)itb > tbShipCounts)
         goto L_167a;
     else
         goto L_1617;
@@ -552,7 +552,7 @@ L_1617:
     }
 
 L_1644:
-    if (itb == 6)
+    if (itb == tbAddWaypoints)
         goto L_1662;
     else
         goto L_164d;

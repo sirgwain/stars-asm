@@ -75,6 +75,7 @@ void DoMacintiAiTurn(PROD *rgprod) {
     int16_t  dx;
     ORDER    ord;
     PLANET  *lpplDrop;
+    uint8_t  rgSplitShdef[16];
 
     iAiLvl = rgplr[idPlayer].lvlAi;
     iPlanet = rgplr[idPlayer].idPlanetHome;
@@ -154,20 +155,20 @@ L_03c3:
     CheckAiShdefStatus(5, ishLastBattle, cRecyclePeriod, &iLatestBattle, rgRecycleShdef);
     if (game.turn > 80) {
         SplitOutShdefs(rgRecycleShdef);
-        memset(rgRecycleSBShdef, 0, 10);
-        rgRecycleSBShdef[0] = 2;
-        SplitOutShdefs(rgRecycleSBShdef);
-        memset(rgRecycleSBShdef, 0, 10);
-        rgRecycleSBShdef[1] = 2;
-        SplitOutShdefs(rgRecycleSBShdef);
-        memset(rgRecycleSBShdef, 0, 10);
-        l = (int32_t)(((uint32_t)l & 0xffff00ff) | ((uint32_t)2 & 0xff) << 8);
-        l = (int32_t)(((uint32_t)l & 0xffffff00) | ((uint32_t)2 & 0xff));
-        SplitOutShdefs(rgRecycleSBShdef);
-        memset(rgRecycleSBShdef, 0, 10);
-        fTonsOfMinerals = (int16_t)(((uint16_t)fTonsOfMinerals & 0xff) | ((uint16_t)2 & 0xff) << 8);
-        fTonsOfMinerals = (int16_t)(((uint16_t)fTonsOfMinerals & 0xff00) | ((uint16_t)2 & 0xff));
-        SplitOutShdefs(rgRecycleSBShdef);
+        memset(rgSplitShdef, 0, 16);
+        rgSplitShdef[0] = 2;
+        SplitOutShdefs(rgSplitShdef);
+        memset(rgSplitShdef, 0, 16);
+        rgSplitShdef[1] = 2;
+        SplitOutShdefs(rgSplitShdef);
+        memset(rgSplitShdef, 0, 16);
+        rgSplitShdef[15] = 2;
+        rgSplitShdef[14] = 2;
+        SplitOutShdefs(rgSplitShdef);
+        memset(rgSplitShdef, 0, 16);
+        rgSplitShdef[11] = 2;
+        rgSplitShdef[10] = 2;
+        SplitOutShdefs(rgSplitShdef);
     }
     EnsureMacintiShdefs();
     EnsureMacintiStarbaseDesigns(rgRecycleSBShdef);
@@ -245,7 +246,7 @@ L_03c3:
     } else {
         cGenesis = 0;
     }
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
@@ -312,7 +313,7 @@ L_03c3:
                                     l = 20000;
                                 }
                                 l = (int32_t)(l / 100);
-                                AddItemToQueue(i + 14, LOWORD(l), grobjPlanet, 1);
+                                AddItemToQueue(i + 14, LOWORD(l), grobjPlanet, addItemEnd);
                                 FinishProduction(1);
                                 sel.pl.iWarpFling = 7;
                                 sel.pl.idFling = lpplBest->id + 1;
@@ -324,7 +325,7 @@ L_03c3:
                 LTryCargo:
                     if (iLatestCargo != -1 && cFlCargo < 64 && cFlCargo < rgplr[idPlayer].cPlanet / 4 && Random(3) == 0) {
                         cFlCargo++;
-                        AddItemToQueue(iLatestCargo, 1, grobjFleet, 1);
+                        AddItemToQueue(iLatestCargo, 1, grobjFleet, addItemEnd);
                         fWrite = 1;
                     }
                     if (((fShouldColonize != 0 && (cColFleet <= 40 || (game.turn <= 120 && cColFleet <= 100))) || Random(100) < 8) &&
@@ -335,16 +336,16 @@ L_03c3:
                         }
                         if (FShouldPlanetBuildColonizer(lppl) != 0) {
                             cColFleet++;
-                            AddItemToQueue(iLatestColony, 1, grobjFleet, 1);
+                            AddItemToQueue(iLatestColony, 1, grobjFleet, addItemEnd);
                             fWrite = 1;
                             if (game.turn < 5)
                                 goto FinishProd;
                             l = (uint32_t)(lppl->rgwtMin[3] * PctTrueMaxGrowth(idPlayer));
                             if (l > 2300 && cRes > 35 && iAiLvl > 0) {
                                 cColFleet++;
-                                AddItemToQueue(iLatestColony, 1, grobjFleet, 1);
+                                AddItemToQueue(iLatestColony, 1, grobjFleet, addItemEnd);
                                 if (l > 3600 && cRes > 50 && iAiLvl > 1) {
-                                    AddItemToQueue(iLatestColony, 1, grobjFleet, 1);
+                                    AddItemToQueue(iLatestColony, 1, grobjFleet, addItemEnd);
                                 }
                             }
                         }
@@ -369,12 +370,15 @@ L_03c3:
                             cFr = 3 * cFr;
                             if ((cMine < cFr && cFr > 150) || (cFlMiners < 30 && Random(10) != 0)) {
                                 cFlMiners++;
-                                AddItemToQueue(iLatestMiner, 1, grobjFleet, 1);
+                                AddItemToQueue(iLatestMiner, 1, grobjFleet, addItemEnd);
                                 fWrite = 1;
                             }
                         }
                     }
-                    if (rgshdef[0].hul.ihuldef == ihuldefFrigate && cFlMineLayers < 60 && rgshdef[iLatestMiner].cExist < 7500 && Random(4) == 0) {
+                    if (rgshdef[0].hul.ihuldef == ihuldefFrigate && cFlMineLayers < 60 &&
+                        (iLatestMiner != -1 ? rgshdef[iLatestMiner].cExist
+                                            : (uint32_t)((uint32_t)(uint16_t)vtimer.mdForce | (uint32_t)(uint16_t)vtimer.fAutoGenWhenIn << 16)) < 7500 &&
+                        Random(4) == 0) {
                         id = lppl->id;
                         cFr = 0;
                         for (ifl = 0; ifl < cFleet; ifl++) {
@@ -388,7 +392,7 @@ L_03c3:
                         }
                         if ((cFr < 10 || (cFr < 17 && Random(10) == 0)) && Random(cFr * 2 + 1) == 0) {
                             cFlMineLayers += 3;
-                            AddItemToQueue(0, 4, grobjFleet, 1);
+                            AddItemToQueue(0, 4, grobjFleet, addItemEnd);
                             fWrite = 1;
                         }
                     }
@@ -413,7 +417,7 @@ L_03c3:
                                 goto L_15e8;
                         }
                         cFlArmadas += 2;
-                        AddItemToQueue(iLatestBomber, fTonsOfMinerals == 0 ? 4 : 12, grobjFleet, 1);
+                        AddItemToQueue(iLatestBomber, fTonsOfMinerals == 0 ? 4 : 12, grobjFleet, addItemEnd);
                         fWrite = 1;
                         goto FinishProd;
                     }
@@ -434,8 +438,8 @@ L_03c3:
                                 }
                                 if (cConc < 15 || (cConc < 30 && Random(3) != 0) || (cConc < 60 && Random(5) != 0)) {
                                     cGenesis--;
-                                    AddItemToQueue(13, 1, grobjPlanet, 1);
-                                    AddItemToQueue(12, 75, grobjPlanet, 1);
+                                    AddItemToQueue(iobjGenesis, 1, grobjPlanet, addItemEnd);
+                                    AddItemToQueue(mdIdleTerraform, 75, grobjPlanet, addItemEnd);
                                     fWrite = 1;
                                 }
                             }
@@ -449,7 +453,7 @@ L_03c3:
                             iLatest = iLatestCruiser;
                         }
                         cFlArmadas++;
-                        AddItemToQueue(iLatest, fTonsOfMinerals == 0 ? 2 : 10, grobjFleet, 1);
+                        AddItemToQueue(iLatest, fTonsOfMinerals == 0 ? 2 : 10, grobjFleet, addItemEnd);
                         fWrite = 1;
                         if (fTonsOfMinerals != 0)
                             goto FinishProd;
@@ -474,7 +478,7 @@ L_03c3:
                         }
                         if (i > 0) {
                             fWrite = 1;
-                            AddItemToQueue(iLatestDestroyer, i, grobjFleet, 1);
+                            AddItemToQueue(iLatestDestroyer, i, grobjFleet, addItemEnd);
                             cFlDestroyers++;
                         }
                     }
@@ -484,7 +488,7 @@ L_03c3:
             }
         }
     }
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     lpflAttack = NULL;
     lpflEnemy = NULL;
     for (ifl = 0; ifl < cFleet; ifl++) {
@@ -646,7 +650,7 @@ L_03c3:
                         } else {
                             l = 0;
                         }
-                        XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, LOWORD(l));
+                        XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, Colonists, LOWORD(l));
                         FLookupFleet(lpfl->id, &sel.fl);
                     }
                     if (idPlanDst != -1) {
@@ -675,7 +679,7 @@ L_03c3:
             IdTargetMacFreighter(lpfl);
         }
     }
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
         if (rglpfl[ifl] == 0)
@@ -712,7 +716,8 @@ L_03c3:
             }
             if (i > 9 && FIsAiAttack(lpfl) != 0 && (lpfl->cord <= 1 || lpfl->lpplord->rgord[1].grobj != grobjFleet) &&
                 ((cFlDestroyers <= (game.turn <= 120 ? 70 : 50) && (cFlDestroyers <= (game.turn <= 120 ? 60 : 40) || Random(3) != 0)) ||
-                 ((lpfl->rgcsh[iLatestDestroyer] >= 20 && Random(20) != 0) || FFindBuddyAndJoinUp(lpfl, 12, 13, 36, 72) == 0))) {
+                 (((iLatestDestroyer != -1 ? lpfl->rgcsh[iLatestDestroyer] : lpfl->pt.y) >= 20 && Random(20) != 0) ||
+                  FFindBuddyAndJoinUp(lpfl, 12, 13, 36, 72) == 0))) {
                 IdTargetAttack(lpfl, lpflAttack, lpflEnemy, game.fAisBand);
             }
         }
@@ -736,28 +741,28 @@ void EnsureMacintiShdefs() {
             if ((fAdvanced == 0 || ish != 15 || rgplr[idPlayer].rgTech[3] >= 15) &&
                 FCreateAiShdef(ish, 24 - (fAdvanced == 0 ? 1 : 0), &vrgMacAip[vrgMacIshAip[fAdvanced + 21]]) == 0 && ish == 14) {
                 if (fAdvanced != 0) {
-                    FCreateAiShdef(ish, 22, &vrgMacAip[vrgMacIshAip[22]]);
+                    FCreateAiShdef(ish, ihuldefMiner, &vrgMacAip[vrgMacIshAip[22]]);
                 } else {
-                    FCreateAiShdef(ish, 21, &vrgMacAip[vrgMacIshAip[23]]);
+                    FCreateAiShdef(ish, ihuldefMiniMiner, &vrgMacAip[vrgMacIshAip[23]]);
                 }
             }
         }
     }
     if (rgshdef[12].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 5 && rgplr[idPlayer].rgTech[2] >= 6 &&
-        FCreateAiShdef(12, 29, &vrgMacAip[vrgMacIshAip[30]]) == 0) {
-        for (i = 0; i < 5 && FCreateAiShdef(12, 6, &vrgMacAip[vrgMacIshAip[Random(4)]]) == 0; i++) {
+        FCreateAiShdef(12, ihuldefNubian, &vrgMacAip[vrgMacIshAip[30]]) == 0) {
+        for (i = 0; i < 5 && FCreateAiShdef(12, ihuldefDestroyer, &vrgMacAip[vrgMacIshAip[Random(4)]]) == 0; i++) {
         }
     }
     if (rgshdef[13].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 10 && rgplr[idPlayer].rgTech[2] >= 9 &&
-        FCreateAiShdef(13, 29, &vrgMacAip[vrgMacIshAip[30]]) == 0) {
-        for (i = 0; i < 5 && FCreateAiShdef(13, 6, &vrgMacAip[vrgMacIshAip[Random(4) + 4]]) == 0; i++) {
+        FCreateAiShdef(13, ihuldefNubian, &vrgMacAip[vrgMacIshAip[30]]) == 0) {
+        for (i = 0; i < 5 && FCreateAiShdef(13, ihuldefDestroyer, &vrgMacAip[vrgMacIshAip[Random(4) + 4]]) == 0; i++) {
         }
     }
-    if (rgshdef[10].fFree != 0 && FCreateAiShdef(10, 2, &vrgMacAip[vrgMacIshAip[24]]) == 0) {
-        FCreateAiShdef(10, 1, &vrgMacAip[vrgMacIshAip[24]]);
+    if (rgshdef[10].fFree != 0 && FCreateAiShdef(10, ihuldefLargeFreighter, &vrgMacAip[vrgMacIshAip[24]]) == 0) {
+        FCreateAiShdef(10, ihuldefMediumFreighter, &vrgMacAip[vrgMacIshAip[24]]);
     }
     if (rgshdef[11].fFree != 0) {
-        FCreateAiShdef(11, 2, &vrgMacAip[vrgMacIshAip[24]]);
+        FCreateAiShdef(11, ihuldefLargeFreighter, &vrgMacAip[vrgMacIshAip[24]]);
     }
     if (game.turn < 20 && rgshdef[2].fFree == 0 && rgshdef[2].cExist == 0) {
         shdef = rgshdef[2];
@@ -766,18 +771,18 @@ void EnsureMacintiShdefs() {
     }
     for (ish = 2; ish <= 4; ish++) {
         if (rgshdef[ish].fFree != 0 && (ish == 2 || (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 20)) {
-            for (i = 0; i < 5 && FCreateAiShdef(ish, 7, &vrgMacAip[vrgMacIshAip[Random(4) + 25]]) == 0; i++) {
+            for (i = 0; i < 5 && FCreateAiShdef(ish, ihuldefCruiser, &vrgMacAip[vrgMacIshAip[Random(4) + 25]]) == 0; i++) {
             }
         }
     }
     if (game.turn < 40 && rgshdef[7].fFree != 0) {
-        FCreateAiShdef(7, 15, &vrgMacAip[vrgMacIshAip[20]]);
+        FCreateAiShdef(7, ihuldefColonyShip, &vrgMacAip[vrgMacIshAip[20]]);
     }
     if (FLookupPartX(&part, 1, 15) == 1 && rgshdef[1].fFree == 0 && rgshdef[1].cExist == 0 && rgshdef[1].hul.rghs[0].iItem != 15) {
         shdef = rgshdef[1];
         shdef.fFree = 1;
         FChangeAiShdef(&shdef, 1);
-        FCreateAiShdef(1, 15, &vrgMacAip[vrgMacIshAip[20]]);
+        FCreateAiShdef(1, ihuldefColonyShip, &vrgMacAip[vrgMacIshAip[20]]);
     }
     for (ish = 5; ish <= 7; ish++) {
         if (rgshdef[ish].fFree != 0 && (ish == 5 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 20))) {
@@ -785,8 +790,8 @@ void EnsureMacintiShdefs() {
             if (ish == 7) {
                 shBase = Random(2) == 0 ? 15 : 11;
             }
-            if (Random(3) == 0 || FCreateAiShdef(ish, 29, &vrgMacAip[vrgMacIshAip[29]]) == 0) {
-                for (i = 0; i < 5 && FCreateAiShdef(ish, 9, &vrgMacAip[vrgMacIshAip[Random(4) + shBase]]) == 0; i++) {
+            if (Random(3) == 0 || FCreateAiShdef(ish, ihuldefNubian, &vrgMacAip[vrgMacIshAip[29]]) == 0) {
+                for (i = 0; i < 5 && FCreateAiShdef(ish, ihuldefBattleship, &vrgMacAip[vrgMacIshAip[Random(4) + shBase]]) == 0; i++) {
                 }
             }
         }
@@ -794,8 +799,8 @@ void EnsureMacintiShdefs() {
     for (ish = 8; ish <= 9; ish++) {
         if (rgshdef[ish].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 14 &&
             ((ish == 8 || (rgshdef[ish - 1].fFree == 0 && (uint16_t)(game.turn - rgshdef[ish - 1].turn) > 15)) &&
-             FCreateAiShdef(ish, 9, &vrgMacAip[vrgMacIshAip[19]]) == 0)) {
-            FCreateAiShdef(ish, 19, &vrgMacAip[vrgMacIshAip[ish == 8 ? 8 : 9]]);
+             FCreateAiShdef(ish, ihuldefBattleship, &vrgMacAip[vrgMacIshAip[19]]) == 0)) {
+            FCreateAiShdef(ish, ihuldefB52Bomber, &vrgMacAip[vrgMacIshAip[ish == 8 ? 8 : 9]]);
         }
     }
     if (rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > lvlAiStandard && rgshdef[0].cExist == 0 && rgplr[idPlayer].rgTech[5] >= 4 &&
@@ -803,7 +808,7 @@ void EnsureMacintiShdefs() {
         shdef = rgshdef[0];
         shdef.fFree = 1;
         FChangeAiShdef(&shdef, 0);
-        FCreateAiShdef(0, 5, &vrgMacAip[vrgMacIshAip[10]]);
+        FCreateAiShdef(0, ihuldefFrigate, &vrgMacAip[vrgMacIshAip[10]]);
     }
     return;
 }
@@ -919,7 +924,7 @@ int16_t IdTargetMacFreighter(FLEET *lpfl) {
                     if (lpplBest != 0 && cResGainMost >= cResLost + 5 && (cResGainMost >= cResLost + 10 || game.turn <= 80) &&
                         (cResGainMost >= cResLost + 15 || game.turn <= 160)) {
                         ChangeMainObjSel(grobjFleet, lpfl->id);
-                        XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, LOWORD(cColHaul));
+                        XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, Colonists, LOWORD(cColHaul));
                         FLookupFleet(lpfl->id, &sel.fl);
                         vlpbAiPlanet[lpplBest->id * 16 + 14] = vlpbAiPlanet[lpplBest->id * 16 + 0xe] | 1;
                         goto LMoveToLpplBest;

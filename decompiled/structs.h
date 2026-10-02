@@ -154,17 +154,17 @@ struct _armor {
 }; /* size=0x36 */
 
 struct _beam {
-    int16_t  id;             /* +0x0000 (2) */
-    int8_t   rgTech[6];      /* +0x0002 (6) */
-    char     szName[32];     /* +0x0008 (32) */
-    int16_t  cMass;          /* +0x0028 (2) */
-    uint16_t resCost;        /* +0x002A (2) */
-    int16_t  rgwtOreCost[3]; /* +0x002C (6) */
-    int16_t  ibmp;           /* +0x0032 (2) */
-    int16_t  dRangeMax;      /* +0x0034 (2) */
-    int16_t  dp;             /* +0x0036 (2) */
-    int16_t  init;           /* +0x0038 (2) */
-    int16_t  grfAbilities;   /* +0x003A (2) */
+    int16_t     id;             /* +0x0000 (2) */
+    int8_t      rgTech[6];      /* +0x0002 (6) */
+    char        szName[32];     /* +0x0008 (32) */
+    int16_t     cMass;          /* +0x0028 (2) */
+    uint16_t    resCost;        /* +0x002A (2) */
+    int16_t     rgwtOreCost[3]; /* +0x002C (6) */
+    int16_t     ibmp;           /* +0x0032 (2) */
+    int16_t     dRangeMax;      /* +0x0034 (2) */
+    int16_t     dp;             /* +0x0036 (2) */
+    int16_t     init;           /* +0x0038 (2) */
+    BeamAbility grfAbilities;   /* +0x003A (2) */
 }; /* size=0x3c */
 
 struct _bomb {
@@ -256,15 +256,15 @@ struct _dv {
 }; /* size=0x2 */
 
 struct _engine {
-    int16_t  id;              /* +0x0000 (2) */
-    int8_t   rgTech[6];       /* +0x0002 (6) */
-    char     szName[32];      /* +0x0008 (32) */
-    int16_t  cMass;           /* +0x0028 (2) */
-    uint16_t resCost;         /* +0x002A (2) */
-    int16_t  rgwtOreCost[3];  /* +0x002C (6) */
-    int16_t  ibmp;            /* +0x0032 (2) */
-    int16_t  grfAbilities;    /* +0x0034 (2) */
-    int16_t  rgcFuelUsed[12]; /* +0x0036 (24) */
+    int16_t       id;              /* +0x0000 (2) */
+    int8_t        rgTech[6];       /* +0x0002 (6) */
+    char          szName[32];      /* +0x0008 (32) */
+    int16_t       cMass;           /* +0x0028 (2) */
+    uint16_t      resCost;         /* +0x002A (2) */
+    int16_t       rgwtOreCost[3];  /* +0x002C (6) */
+    int16_t       ibmp;            /* +0x0032 (2) */
+    EngineAbility grfAbilities;    /* +0x0034 (2) */
+    int16_t       rgcFuelUsed[12]; /* +0x0036 (24) */
 }; /* size=0x4e */
 
 struct _fleetid {
@@ -288,13 +288,13 @@ struct _framestuff {
 }; /* size=0x16 */
 
 struct _game {
-    int32_t lid;         /* +0x0000 (4) */
-    int16_t mdSize;      /* +0x0004 (2) */
-    int16_t mdDensity;   /* +0x0006 (2) */
-    int16_t cPlayer;     /* +0x0008 (2) */
-    int16_t cPlanMax;    /* +0x000A (2) */
-    int16_t mdStartDist; /* +0x000C (2) */
-    int16_t fDirty;      /* +0x000E (2) */
+    int32_t         lid;         /* +0x0000 (4) */
+    UniverseSize    mdSize;      /* +0x0004 (2) */
+    UniverseDensity mdDensity;   /* +0x0006 (2) */
+    int16_t         cPlayer;     /* +0x0008 (2) */
+    int16_t         cPlanMax;    /* +0x000A (2) */
+    StartDistance   mdStartDist; /* +0x000C (2) */
+    int16_t         fDirty;      /* +0x000E (2) */
     union {
         struct {
             uint16_t fExtraFuel : 1, /* +0x0010 (2) @bit0 */
@@ -509,14 +509,14 @@ struct _mining {
 
 struct _msgbig {
     int16_t iMsg;       /* +0x0000 (2) */
-    int16_t wGoto;      /* +0x0002 (2) */
+    MsgGoto wGoto;      /* +0x0002 (2) */
     int16_t rgParam[7]; /* +0x0004 (14) */
 }; /* size=0x12 */
 
 struct _msghdr {
     uint16_t iMsg : 9, /* +0x0000 (2) @bit0 */
         grWord : 7;    /* @bit9 */
-    int16_t wGoto;     /* +0x0002 (2) */
+    MsgGoto wGoto;     /* +0x0002 (2) */
 }; /* size=0x4 */
 
 struct _msgplr {
@@ -856,23 +856,23 @@ struct _drawcir {
 }; /* size=0x18 */
 
 struct _rpt {
-    int32_t grbitVisible; /* +0x0000 (4) */
-    int16_t irpt;         /* +0x0004 (2) */
-    int16_t cFields;      /* +0x0006 (2) */
-    int16_t cFieldFirst;  /* +0x0008 (2) */
-    int16_t icolSort;     /* +0x000A (2) */
-    int16_t fAscending;   /* +0x000C (2) */
-    int16_t irowFirst;    /* +0x000E (2) */
-    POINT16 ptDlg;        /* +0x0010 (4) */
-    POINT16 ptSize;       /* +0x0014 (4) */
-    int16_t fCached;      /* +0x0018 (2) */
-    uint8_t rgbdx[16];    /* +0x001A (16) */
-    int16_t cRows;        /* +0x002A (2) */
-    int16_t cRowsVis;     /* +0x002C (2) */
-    int16_t iSubsort;     /* +0x002E (2) */
-    HWND    hwndVScroll;  /* +0x0030 (2) */
-    HWND    hwndHScroll;  /* +0x0032 (2) */
-    int16_t cColScroll;   /* +0x0034 (2) */
+    int32_t    grbitVisible; /* +0x0000 (4) */
+    ReportType irpt;         /* +0x0004 (2) */
+    int16_t    cFields;      /* +0x0006 (2) */
+    int16_t    cFieldFirst;  /* +0x0008 (2) */
+    int16_t    icolSort;     /* +0x000A (2) */
+    int16_t    fAscending;   /* +0x000C (2) */
+    int16_t    irowFirst;    /* +0x000E (2) */
+    POINT16    ptDlg;        /* +0x0010 (4) */
+    POINT16    ptSize;       /* +0x0014 (4) */
+    int16_t    fCached;      /* +0x0018 (2) */
+    uint8_t    rgbdx[16];    /* +0x001A (16) */
+    int16_t    cRows;        /* +0x002A (2) */
+    int16_t    cRowsVis;     /* +0x002C (2) */
+    int16_t    iSubsort;     /* +0x002E (2) */
+    HWND       hwndVScroll;  /* +0x0030 (2) */
+    HWND       hwndHScroll;  /* +0x0032 (2) */
+    int16_t    cColScroll;   /* +0x0034 (2) */
 }; /* size=0x36 */
 
 struct _rtbof {
@@ -1052,15 +1052,15 @@ struct _scan {
 }; /* size=0x10 */
 
 struct _scanner {
-    int16_t  id;             /* +0x0000 (2) */
-    int8_t   rgTech[6];      /* +0x0002 (6) */
-    char     szName[32];     /* +0x0008 (32) */
-    int16_t  cMass;          /* +0x0028 (2) */
-    uint16_t resCost;        /* +0x002A (2) */
-    int16_t  rgwtOreCost[3]; /* +0x002C (6) */
-    int16_t  ibmp;           /* +0x0032 (2) */
-    int16_t  dRange;         /* +0x0034 (2) */
-    int16_t  grfAbilities;   /* +0x0036 (2) */
+    int16_t        id;             /* +0x0000 (2) */
+    int8_t         rgTech[6];      /* +0x0002 (6) */
+    char           szName[32];     /* +0x0008 (32) */
+    int16_t        cMass;          /* +0x0028 (2) */
+    uint16_t       resCost;        /* +0x002A (2) */
+    int16_t        rgwtOreCost[3]; /* +0x002C (6) */
+    int16_t        ibmp;           /* +0x0032 (2) */
+    int16_t        dRange;         /* +0x0034 (2) */
+    ScannerAbility grfAbilities;   /* +0x0036 (2) */
 }; /* size=0x38 */
 
 struct _score {
@@ -1246,12 +1246,12 @@ struct _thpack {
 }; /* size=0xa */
 
 struct _thtrader {
-    POINT16  ptDest;      /* +0x0000 (4) */
-    uint16_t iWarp : 4,   /* +0x0004 (2) @bit0 */
-        fInclude : 1,     /* @bit4 */
-        unused : 11;      /* @bit5 */
-    uint16_t grbitPlr;    /* +0x0006 (2) */
-    uint16_t grbitTrader; /* +0x0008 (2) */
+    POINT16  ptDest;         /* +0x0000 (4) */
+    uint16_t iWarp : 4,      /* +0x0004 (2) @bit0 */
+        fInclude : 1,        /* @bit4 */
+        unused : 11;         /* @bit5 */
+    uint16_t    grbitPlr;    /* +0x0006 (2) */
+    GrbitTrader grbitTrader; /* +0x0008 (2) */
 }; /* size=0xa */
 
 struct _thworm {
@@ -1297,20 +1297,20 @@ struct _sel {
 }; /* size=0xe2 */
 
 struct _tile {
-    int16_t      yTop;     /* +0x0000 (2) */
-    int16_t      dyFull;   /* +0x0002 (2) */
-    int16_t      grbit;    /* +0x0004 (2) */
-    TILEDRAWPROC pfn;      /* +0x0006 (4) */
-    uint16_t     iCol : 3, /* +0x000A (2) @bit0 */
-        id : 4,            /* @bit3 */
-        fPopped : 1,       /* @bit7 */
-        fNullPtr : 1,      /* @bit8 */
-        fMinTitle : 1,     /* @bit9 */
-        fErase : 1,        /* @bit10 */
-        fFixCtls : 1,      /* @bit11 */
-        fMinDraw : 1;      /* @bit12 */
-    uint16_t fUnused : 4;  /* +0x000C (2) @bit0 */
-    uint16_t idh;          /* +0x000E (2) */
+    int16_t      yTop;         /* +0x0000 (2) */
+    int16_t      dyFull;       /* +0x0002 (2) */
+    TileBits     grbit;        /* +0x0004 (2) */
+    TILEDRAWPROC pfn;          /* +0x0006 (4) */
+    uint16_t     iCol : 3,     /* +0x000A (2) @bit0 */
+        id : 4,                /* @bit3 */
+        fPopped : 1,           /* @bit7 */
+        fNullPtr : 1,          /* @bit8 */
+        fMinTitle : 1,         /* @bit9 */
+        fErase : 1,            /* @bit10 */
+        fFixCtls : 1,          /* @bit11 */
+        fMinDraw : 1;          /* @bit12 */
+    uint16_t      fUnused : 4; /* +0x000C (2) @bit0 */
+    HelpContextId idh;         /* +0x000E (2) */
 }; /* size=0x10 */
 
 struct _timer {
@@ -1492,21 +1492,21 @@ struct _player {
         };
         uint16_t wMdPlr; /* +0x0006 (2) */
     };
-    int16_t  idPlanetHome;   /* +0x0008 (2) */
-    uint16_t wScore;         /* +0x000A (2) */
-    int32_t  lSalt;          /* +0x000C (4) */
-    int8_t   rgEnvVar[3];    /* +0x0010 (3) */
-    int8_t   rgEnvVarMin[3]; /* +0x0013 (3) */
-    int8_t   rgEnvVarMax[3]; /* +0x0016 (3) */
-    int8_t   pctIdealGrowth; /* +0x0019 (1) */
-    int8_t   rgTech[6];      /* +0x001A (6) */
-    uint32_t rgResSpent[6];  /* +0x0020 (24) */
-    int8_t   pctResearch;    /* +0x0038 (1) */
-    int8_t   iTechCur;       /* +0x0039 (1) */
-    int32_t  lResLastYear;   /* +0x003A (4) */
-    int8_t   rgAttr[16];     /* +0x003E (16) */
-    uint32_t grbitAttr;      /* +0x004E (4) */
-    uint16_t grbitTrader;    /* +0x0052 (2) */
+    int16_t       idPlanetHome;   /* +0x0008 (2) */
+    uint16_t      wScore;         /* +0x000A (2) */
+    int32_t       lSalt;          /* +0x000C (4) */
+    int8_t        rgEnvVar[3];    /* +0x0010 (3) */
+    int8_t        rgEnvVarMin[3]; /* +0x0013 (3) */
+    int8_t        rgEnvVarMax[3]; /* +0x0016 (3) */
+    int8_t        pctIdealGrowth; /* +0x0019 (1) */
+    int8_t        rgTech[6];      /* +0x001A (6) */
+    uint32_t      rgResSpent[6];  /* +0x0020 (24) */
+    int8_t        pctResearch;    /* +0x0038 (1) */
+    int8_t        iTechCur;       /* +0x0039 (1) */
+    int32_t       lResLastYear;   /* +0x003A (4) */
+    int8_t        rgAttr[16];     /* +0x003E (16) */
+    RaceTraitBits grbitAttr;      /* +0x004E (4) */
+    GrbitTrader   grbitTrader;    /* +0x0052 (2) */
     union {
         struct {
             uint16_t fDead : 1, /* +0x0054 (2) @bit0 */
@@ -1544,15 +1544,15 @@ struct _tutor {
                 unused : 1;        /* @bit15 */
         };
     };
-    int16_t   idt;       /* +0x0002 (2) */
-    int16_t   idtBold;   /* +0x0004 (2) */
-    int16_t   idh;       /* +0x0006 (2) */
-    int16_t   idsError;  /* +0x0008 (2) */
-    int16_t   iScanZoom; /* +0x000A (2) */
-    int16_t   icolFSort; /* +0x000C (2) */
-    uint16_t  grbitScan; /* +0x000E (2) */
-    HWND      hwnd;      /* +0x0010 (2) */
-    ZIPPRODQ1 zpq;       /* +0x0012 (26) */
+    TutorId       idt;       /* +0x0002 (2) */
+    TutorId       idtBold;   /* +0x0004 (2) */
+    HelpContextId idh;       /* +0x0006 (2) */
+    int16_t       idsError;  /* +0x0008 (2) */
+    ScanZoom      iScanZoom; /* +0x000A (2) */
+    int16_t       icolFSort; /* +0x000C (2) */
+    uint16_t      grbitScan; /* +0x000E (2) */
+    HWND          hwnd;      /* +0x0010 (2) */
+    ZIPPRODQ1     zpq;       /* +0x0012 (26) */
 }; /* size=0x2c */
 
 struct _zipprodq {

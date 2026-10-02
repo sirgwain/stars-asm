@@ -1351,6 +1351,18 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #ifndef VK_F12
 #define VK_F12 0x007B
 #endif
+#ifndef VK_OEM_COMMA
+#define VK_OEM_COMMA 0x00BC
+#endif
+#ifndef VK_OEM_PERIOD
+#define VK_OEM_PERIOD 0x00BE
+#endif
+#ifndef VK_OEM_4
+#define VK_OEM_4 0x00DB
+#endif
+#ifndef VK_OEM_6
+#define VK_OEM_6 0x00DD
+#endif
 #ifndef CTLCOLOR_MSGBOX
 #define CTLCOLOR_MSGBOX 0x0000
 #endif
@@ -1852,6 +1864,69 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #ifndef HELP_INDEX
 #define HELP_INDEX 0x0003
 #endif
+#ifndef COLOR_SCROLLBAR
+#define COLOR_SCROLLBAR 0x0000
+#endif
+#ifndef COLOR_BACKGROUND
+#define COLOR_BACKGROUND 0x0001
+#endif
+#ifndef COLOR_ACTIVECAPTION
+#define COLOR_ACTIVECAPTION 0x0002
+#endif
+#ifndef COLOR_INACTIVECAPTION
+#define COLOR_INACTIVECAPTION 0x0003
+#endif
+#ifndef COLOR_MENU
+#define COLOR_MENU 0x0004
+#endif
+#ifndef COLOR_WINDOW
+#define COLOR_WINDOW 0x0005
+#endif
+#ifndef COLOR_WINDOWFRAME
+#define COLOR_WINDOWFRAME 0x0006
+#endif
+#ifndef COLOR_MENUTEXT
+#define COLOR_MENUTEXT 0x0007
+#endif
+#ifndef COLOR_WINDOWTEXT
+#define COLOR_WINDOWTEXT 0x0008
+#endif
+#ifndef COLOR_CAPTIONTEXT
+#define COLOR_CAPTIONTEXT 0x0009
+#endif
+#ifndef COLOR_ACTIVEBORDER
+#define COLOR_ACTIVEBORDER 0x000A
+#endif
+#ifndef COLOR_INACTIVEBORDER
+#define COLOR_INACTIVEBORDER 0x000B
+#endif
+#ifndef COLOR_APPWORKSPACE
+#define COLOR_APPWORKSPACE 0x000C
+#endif
+#ifndef COLOR_HIGHLIGHT
+#define COLOR_HIGHLIGHT 0x000D
+#endif
+#ifndef COLOR_HIGHLIGHTTEXT
+#define COLOR_HIGHLIGHTTEXT 0x000E
+#endif
+#ifndef COLOR_BTNFACE
+#define COLOR_BTNFACE 0x000F
+#endif
+#ifndef COLOR_BTNSHADOW
+#define COLOR_BTNSHADOW 0x0010
+#endif
+#ifndef COLOR_GRAYTEXT
+#define COLOR_GRAYTEXT 0x0011
+#endif
+#ifndef COLOR_BTNTEXT
+#define COLOR_BTNTEXT 0x0012
+#endif
+#ifndef COLOR_INACTIVECAPTIONTEXT
+#define COLOR_INACTIVECAPTIONTEXT 0x0013
+#endif
+#ifndef COLOR_BTNHIGHLIGHT
+#define COLOR_BTNHIGHLIGHT 0x0014
+#endif
 #ifndef WHITE_BRUSH
 #define WHITE_BRUSH 0x0000
 #endif
@@ -1953,6 +2028,30 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 #endif
 #ifndef R2_WHITE
 #define R2_WHITE 0x0010
+#endif
+#ifndef ODA_DRAWENTIRE
+#define ODA_DRAWENTIRE 0x0001
+#endif
+#ifndef ODA_SELECT
+#define ODA_SELECT 0x0002
+#endif
+#ifndef ODA_FOCUS
+#define ODA_FOCUS 0x0004
+#endif
+#ifndef ODS_SELECTED
+#define ODS_SELECTED 0x0001
+#endif
+#ifndef ODS_GRAYED
+#define ODS_GRAYED 0x0002
+#endif
+#ifndef ODS_DISABLED
+#define ODS_DISABLED 0x0004
+#endif
+#ifndef ODS_CHECKED
+#define ODS_CHECKED 0x0008
+#endif
+#ifndef ODS_FOCUS
+#define ODS_FOCUS 0x0010
 #endif
 #ifndef DT_CENTER
 #define DT_CENTER 0x0001

@@ -366,7 +366,7 @@ MOV       dx, [bp-0xe]
 PUSH      ax                  
 MOV       ax, 0x0008          
 PUSH      ax                  
-CALLF     AddItemToQueue            ; void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, int16_t mdAddItem)
+CALLF     AddItemToQueue            ; void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, AddItemMode mdAddItem)
 ADD       sp, 0x0008          
                                     ; aiutil.c:980
 MOV       ax, 0x0001          
@@ -431,7 +431,7 @@ MOV       ax, 0x0001
 PUSH      ax                  
 MOV       ax, 0x0003          
 PUSH      ax                  
-CALLF     AddItemToQueue            ; void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, int16_t mdAddItem)
+CALLF     AddItemToQueue            ; void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, AddItemMode mdAddItem)
 ADD       sp, 0x0008          
                                     ; aiutil.c:995
 MOV       ax, 0x0001          

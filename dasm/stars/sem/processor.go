@@ -219,6 +219,13 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "dialog-controls",
+			Purpose: "Name control ids by the control enum of the dialog they belong to.",
+			Sem: func(ctx *FuncContext) SemBlockProcessor {
+				return &dialogControlsProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "coalesce-word-copies",
 			Purpose: "Join adjacent low/high word copies of one 32-bit value into one assignment.",
 			Sem: func(*FuncContext) SemBlockProcessor {
@@ -337,9 +344,23 @@ func ProcessorSpecs() []Processor {
 		},
 		{
 			Name:    "native-cybertron",
-			Purpose: "Repair Cybertron recycle writes for absent designs, whose index -1 corrupted a dead pointer in the Win16 stack layout.",
+			Purpose: "Repair Cybertron behavior that depends on the Win16 stack layout: recycle writes for absent designs, whose index -1 corrupted a dead pointer, and the mine-laying order whose unset task union holds what the overlapping block locals left.",
 			Func: func(ctx *FuncContext) SemFuncProcessor {
 				return &nativeCybertronProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "native-macinti",
+			Purpose: "Give Macinti's late-game fleet splits the 16-entry array the copied ship design code expects, whose marks the Win16 code stored into neighboring locals.",
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &nativeMacintiProcessor{ctx: ctx}
+			},
+		},
+		{
+			Name:    "native-negative-index",
+			Purpose: "Make reads through an index that may be -1 return what the Win16 layout placed before the array, which native layouts place elsewhere.",
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &nativeNegativeIndexProcessor{ctx: ctx}
 			},
 		},
 		{
@@ -352,8 +373,8 @@ func ProcessorSpecs() []Processor {
 		{
 			Name:    "forward-temps",
 			Purpose: "Forward temps that only relay a value to the next effect, and assign copied temps' values to their copy directly.",
-			Func: func(*FuncContext) SemFuncProcessor {
-				return &forwardTempsProcessor{}
+			Func: func(ctx *FuncContext) SemFuncProcessor {
+				return &forwardTempsProcessor{fs: ctx.fs, writes: ctx.writes.Of}
 			},
 		},
 		{

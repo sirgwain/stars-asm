@@ -1,0 +1,388 @@
+/*
+PszFormatString  (msg)
+  addr: 0007:85cc  len=2459
+  sig:  char * PszFormatString(char *pszFormat, int16_t *pParamsReal)
+  params:
+    char *           pszFormat      [BP+0x6]
+    int16_t *        pParamsReal    [BP+0x8]
+  locals:
+    char *           pch            [BP-0x1f4]
+    uint16_t         w              [BP-0x1f2]
+    char[480]        szBuf          [BP-0x1f0]
+    char *           pchT           [BP-0x10]
+    int16_t *        pParams        [BP-0xe]
+    int16_t          i              [BP-0xa]
+    int16_t          c              [BP-0x8]
+    int16_t          cOut           [BP-0x6]
+    int16_t          iMineral       [BP-0x4]
+    block 0007:8B5E  len=0x8E
+      PART             part           [BP-0x1fc]
+    block 0007:8CFD  len=0xB8
+      int32_t          l              [BP-0x1f8]
+    block 0007:8DB5  len=0x102
+      SHDEF *          lpshdef        [BP-0x1f8]
+
+  stats: blocks=3  labels=6
+    DoPlanet: L_8ad8
+    DoFleet: L_8b26
+    LThingName: L_8bec
+    DoInt: L_87c9
+    FinishString: L_8ae9
+    DoNothing: L_8b07
+*/
+L_85cc:
+    iMineral = -1
+    pParams = pParamsReal
+    pch = szMsgBuf
+
+L_85ec:
+    branch sext8to16(*pszFormat) == 0 ? L_8f54 : L_85fa
+
+L_85fa:
+    branch sext8to16(*pszFormat) == '\\' ? L_861b : L_8608
+
+L_8608:
+    *pch++ = *pszFormat
+    goto L_8f4d
+
+L_861b:
+    pszFormat = &pszFormat[1]
+    goto L_8ecd
+
+L_8628:
+    call strcpy(pch, szWork) -> callresult(char *)
+    pch = &pch[strlen(szWork)]
+    goto L_8f4d
+
+L_864b:
+    call strcpy(pch, szBase) -> callresult(char *)
+    pch = &pch[strlen(szBase)]
+    goto L_8727
+
+L_8674:
+    branch idPlayer == -1 ? L_86a2 : L_867e
+
+L_867e:
+    c = _wsprintf(pch, ".x%d", (idPlayer + 1))
+    goto L_87c9
+
+L_86a2:
+    branch idPlayer == -1 ? L_86d0 : L_86ac
+
+L_86ac:
+    c = _wsprintf(pch, ".m%d", (idPlayer + 1))
+    goto L_87c9
+
+L_86d0:
+    call strcat(pch, ".hst") -> callresult(char *)
+    pch = &pch[4]
+    goto L_8f4d
+
+L_86e8:
+    c = _wsprintf(pch, ".h%d", (idPlayer + 1))
+    goto L_87c9
+
+L_870c:
+    call strcat(pch, ".xy") -> callresult(char *)
+    pch = &pch[3]
+    goto L_8f4d
+
+L_8727:
+    branch sext8to16(*pszFormat) == 'f' ? L_8674 : L_872f
+
+L_872f:
+    branch sext8to16(*pszFormat) == 'h' ? L_86d0 : L_8737
+
+L_8737:
+    branch sext8to16(*pszFormat) == 'r' ? L_86e8 : L_873f
+
+L_873f:
+    branch sext8to16(*pszFormat) == 't' ? L_86a2 : L_8747
+
+L_8747:
+    branch sext8to16(*pszFormat) != 'y' ? L_8f4d : L_874c
+
+L_874c:
+    goto L_870c
+
+L_8755:
+    pchT = rgszPlanetAttr[*pParams]
+    goto L_8ae9
+
+L_8767:
+    pchT = PszCalcEnvVar((((*pParams >> 8) & 0xff) & 0xff), (*pParams & 0xff))
+    goto L_8ae9
+
+L_8791:
+    pchT = PszGetCompressedString((*pParams + 1348))
+    goto L_8ae9
+
+L_87a9:
+    c = _wsprintf(pch, PCTD, *pParams)
+
+DoInt:
+    pch = &pch[c]
+    pParams = &pParams[1]
+    goto L_8f4d
+
+L_87d7:
+    pchT = PszPlayerName((*pParams & 0xf), (sext8to16(*pszFormat) == 'L' ? 1 : 0), ((*pParams & 0x10) == 0 ? 0 : 1), ((*pParams & 0x20) == 0 ? 0 : 1), ((*pParams & 0xc0) sar 6), NULL)
+    goto L_8ae9
+
+
+
+
+
+
+
+
+
+
+L_8850:
+    w = *pParams
+    branch w == 0 ? L_8f4d : L_8867
+
+L_8867:
+    branch ((w - 1) & w) != 0 ? L_88c1 : L_887a
+
+L_887a:
+    c = 0
+
+L_887f:
+    branch (w & 1) != 0 ? L_889c : L_888e
+
+L_888e:
+    c = (c + 1)
+    w = (w >> 1)
+    goto L_887f
+
+L_889c:
+    pchT = PszPlayerName(c, 0, 1, 1, 0, NULL)
+    goto L_8ae9
+
+L_88c1:
+    cOut = 0
+    i = 0
+    goto L_88e0
+
+L_88ce:
+    i = (i + 1)
+    w = (w >> 1)
+
+L_88e0:
+    branch i >= game.cPlayer ? L_8b07 : L_88eb
+
+L_88eb:
+    branch (w & 1) == 0 ? L_88ce : L_88fd
+
+L_88fd:
+    branch cOut <= 0 ? L_8944 : L_8906
+
+L_8906:
+    branch (w & 0xfffe) == 0 ? L_8930 : L_8915
+
+L_8915:
+    *pch++ = ','
+    *pch++ = ' '
+    goto L_8944
+
+L_8930:
+    pch = &pch[CchGetString(idsAnd, pch)]
+
+L_8944:
+    pchT = PszPlayerName(i, 0, 1, 1, 0, NULL)
+    call strcpy(pch, pchT) -> callresult(char *)
+    pch = &pch[strlen(pchT)]
+    cOut = (cOut + 1)
+    goto L_88ce
+
+L_898e:
+    branch *pParams == idPlayer ? L_8b07 : L_899f
+
+L_899f:
+    call CchGetString(idsOf2, szBuf) -> callresult(int16_t)
+    pchT = PszPlayerName(*pParams, 0, 0, 0, 0, NULL)
+    call strcat(szBuf, pchT) -> callresult(char *)
+    call strcat(szBuf, PszGetCompressedString(idsOrigin)) -> callresult(char *)
+    pchT = szBuf
+    goto L_8ae9
+
+L_8a09:
+    iMineral = *pParams
+    pchT = rgszMinerals[iMineral]
+    goto L_8ae9
+
+L_8a21:
+    pchT = rgszMineField[*pParams]
+    goto L_8ae9
+
+L_8a33:
+    branch (long double)sext16to32((sext16to32(*pParams) / 100)) < (long double)10.0 ? L_8a89 : L_8a5f
+
+L_8a5f:
+    c = _wsprintf(pch, PCTDPCTPCT, (sext16to32(*pParams) / 100))
+    goto L_8aca
+
+L_8a89:
+    c = _wsprintf(pch, PCTDXPCTDPCTPCT, (sext16to32(*pParams) / 100), (*pParams - ((sext16to32(*pParams) / 100) * 100)))
+
+L_8aca:
+    pch = &pch[c]
+    pParams = &pParams[1]
+    goto L_8f4d
+
+DoPlanet:
+    pchT = PszGetPlanetName(*pParams)
+
+FinishString:
+    call strcpy(pch, pchT) -> callresult(char *)
+    pch = &pch[strlen(pchT)]
+
+DoNothing:
+    pParams = &pParams[1]
+    goto L_8f4d
+
+L_8b11:
+    pchT = PszFleetNameFromWord(*pParams)
+    goto L_8ae9
+
+DoFleet:
+    w = (*pParams | 0x8000)
+    pchT = PszGetFleetName(w)
+    goto L_8ae9
+
+L_8b46:
+    pchT = PszGetCompressedString((*pParams + 84))
+    goto L_8ae9
+
+L_8b5e:
+    part.hs.grhst = *pParams
+    pParams = &pParams[1]
+    part.hs.iItem = *pParams
+    branch FLookupPart(&part) <= 0 ? L_8ba8 : L_8ba2
+
+L_8ba2:
+    goto L_8bab
+
+L_8ba8:
+
+L_8bab:
+    call fstrcpy(pch, part.pcom->szName) -> callresult(char *)
+    pch = &pch[fstrlen(part.pcom->szName)]
+    pParams = &pParams[1]
+    goto L_8f4d
+
+LThingName:
+    pchT = PszGetThingName(*pParams)
+    goto L_8ae9
+
+L_8c00:
+    w = *pParams
+    c = CchGetString((w + 1250), pch)
+    pch = &pch[c]
+    pParams = &pParams[1]
+    goto L_8f4d
+
+L_8c2f:
+    branch *pParams != -2 ? L_8c45 : L_8c3b
+
+L_8c3b:
+    pParams = &pParams[1]
+    goto L_8bec
+
+L_8c45:
+    branch *pParams == -1 ? L_8c78 : L_8c51
+
+L_8c51:
+    pchT = PszGetLocName(grobjNone, -1, *pParams, pParams[1])
+    pParams = &pParams[1]
+    goto L_8ae9
+
+L_8c78:
+    pParams = &pParams[1]
+
+L_8c7c:
+    branch (*pParams & 0x8000) != 0 ? L_8b26 : L_8c8a
+
+L_8c8a:
+    goto L_8ad8
+
+L_8c96:
+    w = ((*pParams >> 9) & 0xf)
+    pchT = PszPlayerName(w, 0, 0, 0, 0, NULL)
+    goto L_8ae9
+
+L_8ccf:
+    c = _wsprintf(pch, "%u", *pParams)
+    pch = &pch[c]
+    pParams = &pParams[1]
+    goto L_8f4d
+
+L_8cfd:
+    l = ((int32_t)((uint32_t)pParams[1] << 0x10) | (uint32_t)*pParams)
+    pParams = &pParams[2]
+    c = _wsprintf(pch, PCTLD, l)
+    pch = &pch[c]
+    branch sext8to16(*pszFormat) == 'v' ? L_8f4d : L_8d71
+
+L_8d71:
+    branch sext8to16(*pszFormat) != 'V' ? L_8d88 : L_8d7f
+
+L_8d7f:
+    iMineral = *pParams
+
+L_8d88:
+    pchT = vrgszUnits[iMineral]
+    call strcpy(pch, pchT) -> callresult(char *)
+    pch = &pch[strlen(pchT)]
+
+L_8db2:
+    goto L_8f4d
+
+L_8db5:
+    c = (*pParams sar 5)
+    w = (*pParams & 0x1f)
+    branch w < 16 ? L_8e07 : L_8ddf
+
+L_8ddf:
+    lpshdef = &rglpshdefSB[c][(w - 16)]
+    goto L_8e27
+
+L_8e07:
+    lpshdef = &rglpshdef[c][w]
+
+L_8e27:
+    branch c == idPlayer ? L_8e84 : L_8e32
+
+L_8e32:
+    pchT = PszPlayerName(c, 0, 0, 1, 0, NULL)
+    call _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass) -> callresult(int16_t)
+    goto L_8ea3
+
+L_8e84:
+    call fstrcpy(pch, lpshdef->hul.szClass) -> callresult(char *)
+
+L_8ea3:
+    pch = &pch[strlen(pch)]
+    pParams = &pParams[1]
+    goto L_8f4d
+
+L_8eba:
+    *pch++ = *pszFormat
+    goto L_8f4d
+
+L_8ecd:
+    branch (uint16_t)(sext8to16(*pszFormat) - 69) > 53 ? L_8eba : L_8ed8
+
+L_8ed8:
+    tablejump ((sext8to16(*pszFormat) - 69) * 2) [0x0: L_8767, 0x2: L_8b11, 0x4: L_8c00, 0x6: L_8eba, 0x8: L_8791, 0xa: L_8eba, 0xc: L_8eba, 0xe: L_87d7, 0x10: L_8a21, 0x12: L_8eba, 0x14: L_8c96, 0x16: L_8a33, 0x18: L_8eba, 0x1a: L_8eba, 0x1c: L_898e, 0x1e: L_8eba, 0x20: L_8cfd, 0x22: L_8cfd, 0x24: L_8eba, 0x26: L_8b07, 0x28: L_8eba, 0x2a: L_8850, 0x2c: L_8eba, 0x2e: L_8eba, 0x30: L_8eba, 0x32: L_8eba, 0x34: L_8eba, 0x36: L_8eba, 0x38: L_8eba, 0x3a: L_8eba, 0x3c: L_8eba, 0x3e: L_8eba, 0x40: L_8755, 0x42: L_864b, 0x44: L_8bec, 0x46: L_864b, 0x48: L_87a9, 0x4a: L_8b46, 0x4c: L_8b5e, 0x4e: L_87d7, 0x50: L_8a09, 0x52: L_8c2f, 0x54: L_8c7c, 0x56: L_8ad8, 0x58: L_8eba, 0x5a: L_864b, 0x5c: L_8b26, 0x5e: L_864b, 0x60: L_8ccf, 0x62: L_8cfd, 0x64: L_8628, 0x66: L_8eba, 0x68: L_864b, 0x6a: L_8db5]
+
+L_8f4d:
+    pszFormat = &pszFormat[1]
+    goto L_85ec
+
+L_8f54:
+    *pch = 0
+
+L_8f61:
+    return szMsgBuf

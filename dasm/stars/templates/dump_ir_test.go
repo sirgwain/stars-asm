@@ -98,3 +98,20 @@ func assertIRBlockLabels(t *testing.T, blocks []ir.Block, want []string) {
 		}
 	}
 }
+
+// TestFormatIRExprParenthesizesFlagSet checks that a constant named as a set
+// of flags keeps its bitwise-or grouping inside a tighter-binding operator.
+func TestFormatIRExprParenthesizesFlagSet(t *testing.T) {
+	mask := &ir.Binary{
+		Op:  "&",
+		LHS: &ir.Var{Name: "grobj"},
+		RHS: &ir.IntConst{Value: 3, Text: "grobjPlanet|grobjFleet"},
+	}
+	if got, want := formatIRExpr(mask, precLowest), "grobj & (grobjPlanet|grobjFleet)"; got != want {
+		t.Fatalf("formatIRExpr() = %q, want %q", got, want)
+	}
+	pipe := &ir.Binary{Op: "==", LHS: &ir.Var{Name: "ch"}, RHS: &ir.IntConst{Value: '|', Text: "'|'"}}
+	if got, want := formatIRExpr(pipe, precLowest), "ch == '|'"; got != want {
+		t.Fatalf("formatIRExpr() = %q, want %q", got, want)
+	}
+}

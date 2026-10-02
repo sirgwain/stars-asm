@@ -11,6 +11,8 @@
 - Snapshots exist to make output changes visible. When an intentional code change affects snapshot output, update and keep the relevant snapshots with the change.
 - Do not add reflection to do compares, write the compare functions
 - Ignore pending/staged changes. If the repo has changes, do the correct thing, don't be cautious because there are pending changes.
+- Never fail silently. Prefer returning errors over panics in new code; panic only where returning an error is not possible.
+- Native repairs that emulate or work around Win16 behavior (original bugs reproduced for regression parity, corruption guards, compiler/CRT matching, or known Win16 behavior left unreproduced) must be recorded in [WIN16-PARITY.md](WIN16-PARITY.md) in the same change, with where the repair lives, what the original did, and what a revert should do.
 
 ## After Changes
 After making changes to the repo, review the changes against the above rules to make sure no violations were introduced.

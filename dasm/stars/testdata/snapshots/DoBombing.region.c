@@ -134,8 +134,10 @@ void DoBombing() {
                         }
                     }
                     if (pctTot > 0) {
-                        FSendPlrMsg(lpfl->iPlayer, fMulti == 0 ? 302 : 378, lpfl->id | 0x8000, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
-                        FSendPlrMsg(lppl->iPlayer, fMulti == 0 ? 302 : 379, lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
+                        FSendPlrMsg(lpfl->iPlayer, fMulti == 0 ? idmHasRetroBombedUndoingTerraforming : idmFleetsHaveRetroBombedUndoingTerraforming,
+                                    lpfl->id | 0x8000, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
+                        FSendPlrMsg(lppl->iPlayer, fMulti == 0 ? idmHasRetroBombedUndoingTerraforming : idmFleetsHaveRetroBombedUndoingTerraforming2, lppl->id,
+                                    lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
                     }
                 }
                 cPPE = cKillMine + cKillFact + cKillDefenses;

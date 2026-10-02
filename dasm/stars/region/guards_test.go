@@ -9,9 +9,10 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 )
 
-// TestBuildFlipsGuards verifies when a short arm that always jumps is put
-// first, as a guard or as the first link of an else-if chain, and when the
-// compiler's layout keeps the source's order instead.
+// TestBuildFlipsGuards verifies when a short arm that always jumps, or
+// that falls into the return, is put first, as a guard or as the first
+// link of an else-if chain, and when the compiler's layout keeps the
+// source's order instead.
 func TestBuildFlipsGuards(t *testing.T) {
 	const a, b, c, ha, hb, tail, big, small machine.BlockID = 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80
 	set := func(v string) *ir.Assign {
@@ -43,6 +44,18 @@ func TestBuildFlipsGuards(t *testing.T) {
 				testBlock(small, &ir.Return{}),
 			},
 			want: "if c { return; } " + strings.Repeat("x=1; ", 30) + "return;",
+		},
+		{
+			// A short Else falling into the return takes its own copy of it,
+			// so the large Then is no longer nested.
+			name: "short else guards the return tail",
+			blocks: []ir.Block{
+				testBlock(a, testIfGoto("c", big, small)),
+				testBlock(big, append(slices.Repeat([]ir.Stmt{set("x")}, 30), &ir.Goto{Label: tail.String()})...),
+				testBlock(small, set("y"), &ir.Goto{Label: tail.String()}),
+				testBlock(tail, &ir.Return{}),
+			},
+			want: "if !c { y=1; return; } " + strings.Repeat("x=1; ", 30) + "return;",
 		},
 		{
 			// Each "not this case" test falls through to the next one.

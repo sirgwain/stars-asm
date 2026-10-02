@@ -5,7 +5,7 @@
 ;     PART *           ppart          [BP+0x6]
 ;   locals:
 ;     HS               hs             [BP-0x8]
-;     int16_t          raMajor        [BP-0x4]
+;     RaceAttribute    raMajor        [BP-0x4]
 ;
 ;   stats: blocks=0  labels=0
 

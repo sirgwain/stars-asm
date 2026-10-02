@@ -18,6 +18,7 @@ func TestNormalizeAssignmentAddressesPreProcessorResolvesNearPointerReturn(t *te
 		fx.SDB,
 		symresolve.NewResolver(fx.Image, fx.SDB),
 		fx.SDB.GetFunction("SzVersion"),
+		machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)),
 	)
 	block := machine.BlockEffects{Effects: []machine.Effect{
 		machine.ReturnEffect{Value: machine.ConstVal(0x57a4)},

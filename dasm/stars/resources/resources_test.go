@@ -68,6 +68,34 @@ func TestWriteRoundTripsThroughWindres(t *testing.T) {
 	}
 }
 
+// TestDialogControlNames checks that each dialog names its controls by its
+// own control enum, so IDs reused by different dialogs keep their meaning.
+func TestDialogControlNames(t *testing.T) {
+	fx := testfixture.Stars(t)
+	w := &writer{img: fx.Image, sdb: fx.SDB}
+	header := w.resourceHeader()
+	for dialogID, controls := range fx.SDB.DialogControls {
+		dialog, ok := fx.Image.Dialog(uint16(dialogID))
+		if !ok {
+			t.Fatalf("dialog %d missing", dialogID)
+		}
+		var script strings.Builder
+		w.dialog(&script, dialog)
+		for _, v := range controls.Values {
+			if _, ok := dialog.Control(uint16(v.Value)); !ok {
+				t.Errorf("dialog %d has no control %d for %s.%s", dialogID, v.Value, controls.Name, v.Name)
+				continue
+			}
+			if !strings.Contains(script.String(), ", "+v.Name+", ") {
+				t.Errorf("dialog %d control %d missing name %s", dialogID, v.Value, v.Name)
+			}
+			if !strings.Contains(header, fmt.Sprintf("#define %s %d\n", v.Name, v.Value)) {
+				t.Errorf("header missing %s = %d", v.Name, v.Value)
+			}
+		}
+	}
+}
+
 // resKey identifies a compiled resource by type and name.
 type resKey struct {
 	typ, name asm.ResourceKey

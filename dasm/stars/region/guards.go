@@ -1,6 +1,10 @@
 package region
 
-import "slices"
+import (
+	"slices"
+
+	"github.com/sirgwain/stars-asm/dasm/stars/ir"
+)
 
 // flipGuards un-nests chains of inverted tests, putting the short arm of a
 // test first so the long path stays at the outer level. When an If with no
@@ -110,4 +114,47 @@ func nodeSize(nodes []Node) int {
 		}
 	}
 	return size
+}
+
+// guardShortElse un-nests a large Then whose test's shorter Else falls into
+// a return that is duplicated when inlined, by making the Else a guard that
+// takes its own copy of the return:
+//
+//	if (c) { T } else { E } return v;   becomes   if (!c) { E return v; } T return v;
+//
+// E runs exactly when c fails and still ends in the return, and T still
+// runs otherwise and falls into it. An Else that is a single If reads as an
+// else-if chain and stays.
+func guardShortElse(nodes []Node) []Node {
+	for i := 0; i < len(nodes); i++ {
+		switch n := nodes[i].(type) {
+		case *If:
+			n.Then = guardShortElse(n.Then)
+			n.Else = guardShortElse(n.Else)
+			ret, ok := returnOnly(nodes, i+1)
+			if !ok || len(n.Else) == 0 || nodeSize(n.Then) < 30 || nodeSize(n.Else) >= nodeSize(n.Then) {
+				continue
+			}
+			if _, chain := n.Else[0].(*If); chain && len(n.Else) == 1 {
+				continue
+			}
+			guard := &If{Cond: Negate(n.Cond), Then: n.Else}
+			if !alwaysJumps(n.Else) {
+				guard.Then = append(slices.Clone(n.Else), &Basic{Stmts: []ir.Stmt{ret}})
+			}
+			out := append(slices.Clone(nodes[:i]), guard)
+			out = append(out, n.Then...)
+			if !alwaysJumps(n.Then) {
+				out = append(out, nodes[i+1])
+			}
+			nodes = append(out, nodes[i+2:]...)
+		case *Loop:
+			n.Body = guardShortElse(n.Body)
+		case *Switch:
+			for c := range n.Cases {
+				n.Cases[c].Body = guardShortElse(n.Cases[c].Body)
+			}
+		}
+	}
+	return nodes
 }

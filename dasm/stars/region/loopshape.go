@@ -62,9 +62,9 @@ func breakCond(n Node) ir.Expr {
 // shapeFor turns a while loop whose body ends with an assignment to a
 // variable its condition reads into a for loop with that assignment as Post.
 // A continue in a for loop runs Post, so the loop must have none of its own.
-// When Post was the whole latch block and every goto to the latch's label is
-// at this loop's level, those gotos become continue and the label is removed.
-// Otherwise the gotos stay and land on the label at the end of the body.
+// When Post was the whole latch block, the gotos to the latch's label at this
+// loop's level become continue. Gotos from nested loops stay and land on the
+// label, which is kept at the end of the body; with none left it is removed.
 func shapeFor(n *Loop, refs map[string]int) {
 	if len(n.Body) == 0 || hasContinue(n.Body) {
 		return
@@ -94,12 +94,14 @@ func shapeFor(n *Loop, refs map[string]int) {
 		return
 	}
 	latch, ok := n.Body[last-1].(*Label)
-	if !ok || levelGotos(n.Body, latch.Name) != refs[latch.Name] {
+	if !ok {
 		return
 	}
+	refs[latch.Name] -= levelGotos(n.Body, latch.Name)
 	continueGotos(n.Body, latch.Name)
-	refs[latch.Name] = 0
-	n.Body = n.Body[:last-1]
+	if refs[latch.Name] == 0 {
+		n.Body = n.Body[:last-1]
+	}
 	n.Latch = latch.Name
 }
 

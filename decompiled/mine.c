@@ -82,7 +82,7 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             fDetonate = LOWORD(SendMessage(hwndMineCB, BM_GETCHECK, 0, 0));
             rtlt.idFull = lpThings[sel.scan.ith].idFull;
             rtlt.fDetonate = fDetonate;
-            WriteMemRt(43, 4, &rtlt);
+            WriteMemRt(rtThing, 4, &rtlt);
             lpThings[sel.scan.ith].thm.fDetonate = LOBYTE(fDetonate);
             break;
         default:
@@ -223,9 +223,6 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     int16_t    iPass;
     uint16_t   t_merge_1d8c_0001;
     int16_t    t_merge_3357_0001;
-    uint16_t   t_call_334f;
-    int32_t    t_merge_33e5_0001;
-    int32_t    t_merge_3519_0001;
 
     hdcMem = CreateCompatibleDC(hdc);
     crBack = SetBkColor(hdc, crButtonFace);
@@ -233,11 +230,11 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
     bkMode = SetBkMode(hdc, OPAQUE);
     grobj = sel.scan.grobj;
     if (grobj == grobjOther) {
-        if ((sel.scan.grobjFull & 1) != 0) {
+        if ((sel.scan.grobjFull & grobjPlanet) != 0) {
             grobj = grobjPlanet;
-        } else if ((sel.scan.grobjFull & 2) != 0) {
+        } else if ((sel.scan.grobjFull & grobjFleet) != 0) {
             grobj = grobjFleet;
-        } else if ((sel.scan.grobjFull & 8) != 0) {
+        } else if ((sel.scan.grobjFull & grobjThing) != 0) {
             grobj = grobjThing;
         } else {
             grobj = grobjNone;
@@ -503,7 +500,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             if (lDecay < pctDecay) {
                 lDecay = pctDecay;
             }
-            if (lpth->thm.iType != 2) {
+            if (lpth->thm.iType != mineSpeedBump) {
                 lDecay = 10 <= lDecay ? lDecay : 10;
             }
             CchGetString(idsDecayRateLdYear, szT);
@@ -761,15 +758,9 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
             i = 0;
             while (i <= 2) {
                 SetTextColor(hdc, rgcrMinerals[i]);
-                if (fShortLabels != 0) {
-                    t_merge_3357_0001 = 4;
-                } else {
-                    t_call_334f = strlen(rgszMinerals[i]);
-                    t_merge_3357_0001 = t_call_334f;
-                }
+                t_merge_3357_0001 = fShortLabels != 0 ? 4 : strlen(rgszMinerals[i]);
                 RightTextOut(hdc, xL - 2, yCur + dy, rgszMinerals[i], t_merge_3357_0001, 0);
-                t_merge_33e5_0001 = cMinGrafMax < rgl[i] + pl.rgwtMin[i] ? cMinGrafMax : rgl[i] + pl.rgwtMin[i];
-                dx = LOWORD((int32_t)((int32_t)(dxBar * t_merge_33e5_0001) / cMinGrafMax));
+                dx = LOWORD((int32_t)((int32_t)(dxBar * (cMinGrafMax < rgl[i] + pl.rgwtMin[i] ? cMinGrafMax : rgl[i] + pl.rgwtMin[i])) / cMinGrafMax));
                 SetRect(&rcGauge, xL + 1, yCur + 4, xL + dx + 1, yCur + dyRow - 1);
                 if (dx != 0) {
                     FillRect(hdc, &rcGauge, rghbrMinSum[i][1]);
@@ -778,8 +769,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc) {
                     SetTextColor(hdc, crButtonText);
                     TextOut(hdc, xR, yCur + dy, "+", 1);
                 }
-                t_merge_3519_0001 = cMinGrafMax < pl.rgwtMin[i] ? cMinGrafMax : pl.rgwtMin[i];
-                dx = LOWORD((int32_t)((int32_t)(dxBar * t_merge_3519_0001) / cMinGrafMax));
+                dx = LOWORD((int32_t)((int32_t)(dxBar * (cMinGrafMax < pl.rgwtMin[i] ? cMinGrafMax : pl.rgwtMin[i])) / cMinGrafMax));
                 SetRect(&rcGauge, xL + 1, yCur + 4, xL + dx + 1, yCur + dyRow - 1);
                 if (dx != 0) {
                     FillRect(hdc, &rcGauge, rghbrMinSum[i][0]);
@@ -831,9 +821,9 @@ HtMineType HtMineWindow(HWND hwnd, int16_t x, int16_t y) {
 
     grobj = sel.scan.grobj;
     if (grobj == grobjOther) {
-        if ((sel.scan.grobjFull & 1) != 0) {
+        if ((sel.scan.grobjFull & grobjPlanet) != 0) {
             grobj = grobjPlanet;
-        } else if ((sel.scan.grobjFull & 2) != 0) {
+        } else if ((sel.scan.grobjFull & grobjFleet) != 0) {
             grobj = grobjFleet;
         } else {
             grobj = grobjNone;
@@ -925,7 +915,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
     ht = HtMineWindow(hwndMine, x, y);
     if ((msg != 516 || ht == htMineScanSel || ht == htMineShipOrFleet) && ht <= htMineMinefieldType) {
         switch (ht) {
-        case 10:
+        case htMineOwner:
             if (sel.scan.grobj == grobjPlanet) {
                 lppl = LpplFromId(sel.scan.idpl);
                 GlobalPD.iPlayer = lppl->iPlayer;
@@ -937,7 +927,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.grPopup = grPopupPlayer;
             Popup(hwndMine, x, y);
             break;
-        case 14:
+        case htMineMinefieldType:
             part.hs.iItem = mpiTypeiItem[lpThings[sel.scan.ith].thm.iType];
             part.hs.grhst = hstMines;
             FLookupPart(&part);
@@ -945,7 +935,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.part = part;
             Popup(hwndMine, x, y);
             break;
-        case 11:
+        case htMineShipOrFleet:
             if (msg == 516) {
                 lpfl = rglpfl[sel.scan.ifl];
                 c = 0;
@@ -978,7 +968,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             }
             Popup(hwndMine, x, y);
             break;
-        case 13:
+        case htMineStarbase:
             GlobalPD.grPopup = grPopupShdef;
             lppl = LpplFromId(sel.scan.idpl);
             GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
@@ -988,14 +978,14 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.fSummary = 1;
             Popup(hwndMine, x, y);
             break;
-        case 12:
+        case htMinePlanet:
             GlobalPD.grPopup = grPopupPlanet;
             GlobalPD.idPlanet = sel.scan.idpl;
             Popup(hwndMine, x, y);
             break;
-        case 6:
-        case 7:
-        case 8:
+        case htMineEnvVar0:
+        case htMineEnvVar1:
+        case htMineEnvVar2:
             FLookupPlanet(sel.scan.idpl, &pl);
             GlobalPD.grPopup = grPopupPlanetEnv;
             GlobalPD.idPlanet = pl.id;
@@ -1025,7 +1015,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             GlobalPD.iPlrMax = rgplr[idPlayer].rgEnvVarMax[GlobalPD.iPlanetVar];
             Popup(hwndMine, x, y);
             break;
-        case 9:
+        case htMineScanSel:
             if (msg == 516) {
                 PopupMineralScanChoices(hwndMine, x, y);
                 break;
@@ -1049,11 +1039,11 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 fOurs = rglpfl[i]->iPlayer == idPlayer ? 1 : 0;
                 goto ChangeIt;
             }
-            if ((scan.grobjFull & 8) != 0) {
+            if ((scan.grobjFull & grobjThing) != 0) {
                 i = 0;
                 goto L_4113;
             }
-            if ((scan.grobjFull & 1) != 0)
+            if ((scan.grobjFull & grobjPlanet) != 0)
                 goto CheckPlanet;
         CheckFleet:
             for (i = 0; i < cFleet; i++) {
@@ -1061,7 +1051,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 if (rglpfl[i] == 0 || (scan.pt.x == lpfl->pt.x && scan.pt.y == lpfl->pt.y))
                     break;
             }
-            if (i != cFleet || (scan.grobjFull & 8) == 0) {
+            if (i != cFleet || (scan.grobjFull & grobjThing) == 0) {
                 scan.grobj = grobjFleet;
                 scan.ifl = i;
                 idNew = rglpfl[i]->id;
@@ -1074,11 +1064,11 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 if (i >= cThing || (lpThings[i].pt.x == scan.pt.x && lpThings[i].pt.y == scan.pt.y)) {
                     if (i < cThing)
                         break;
-                    if ((scan.grobjFull & 1) != 0)
+                    if ((scan.grobjFull & grobjPlanet) != 0)
                         goto CheckPlanet;
-                    if ((scan.grobjFull & 2) != 0)
+                    if ((scan.grobjFull & grobjFleet) != 0)
                         goto CheckFleet;
-                    if ((scan.grobjFull & 8) == 0)
+                    if ((scan.grobjFull & grobjThing) == 0)
                         goto L_4192;
                     i = 0;
                 } else {
@@ -1110,7 +1100,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             ChangeMainObjSel(scan.grobj, idNew);
             RedrawScanSel(NULL, 1);
             break;
-        case 5:
+        case htMineScale:
             iChecked = -1;
             rgi[0] = 100;
             rgi[1] = 500;
@@ -1133,13 +1123,13 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 break;
             cMinGrafMax = rgi[i];
             InvalidateRect(hwndMine, NULL, 1);
-            if ((grbitScan & 0xf) != 1)
+            if ((grbitScan & grbitScanViewMask) != 1)
                 break;
             InvalidateRect(hwndScanner, NULL, 1);
             break;
-        case 1:
-        case 2:
-        case 3:
+        case htMineMineralConc1:
+        case htMineMineralConc2:
+        case htMineMineralConc3:
             FLookupPlanet(sel.scan.idpl, &pl);
             GlobalPD.grPopup = grPopupMineral;
             GlobalPD.rgi[0] = (int16_t)(ht - 1);
@@ -1191,17 +1181,17 @@ void SetMineralTitleBar(HWND hwnd) {
     CchGetString(idsDeepSpace, szDeepSpace);
     CchGetString(idsSummary, szSummary);
     grobj = sel.scan.grobj == grobjOther ? sel.scan.grobjFull : sel.scan.grobj;
-    if ((grobj & 1) != 0) {
+    if ((grobj & grobjPlanet) != 0) {
         if (sel.scan.idpl != -1) {
             psz = PszGetPlanetName(sel.scan.idpl);
             strcat(psz, szSummary);
         }
-    } else if ((grobj & 2) != 0) {
+    } else if ((grobj & grobjFleet) != 0) {
         if (sel.scan.ifl != -1) {
             psz = PszGetFleetName(rglpfl[sel.scan.ifl]->id);
             strcat(psz, szSummary);
         }
-    } else if ((grobj & 8) == 0) {
+    } else if ((grobj & grobjThing) == 0) {
         psz = szDeepSpace;
     } else if (sel.scan.ith != -1) {
         fVisCB = 1;
@@ -1211,7 +1201,7 @@ void SetMineralTitleBar(HWND hwnd) {
     strcpy(szMineralTitle, psz);
     InvalidateRect(hwnd, NULL, 1);
     if (fVisCB != 0) {
-        fVisCB = lpThings[sel.scan.ith].ith == ithMinefield && lpThings[sel.scan.ith].thm.iType == 0 && lpThings[sel.scan.ith].iplr == idPlayer &&
+        fVisCB = lpThings[sel.scan.ith].ith == ithMinefield && lpThings[sel.scan.ith].thm.iType == mineStandard && lpThings[sel.scan.ith].iplr == idPlayer &&
                  GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMines;
     }
     if (fVisCB != 0) {
@@ -1435,7 +1425,6 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
     int32_t rglQuan[3];
     int16_t ifl;
     FLEET  *lpfl;
-    int16_t t_scratch_m22;
 
     fRemote = cMines == -1 ? 0 : 1;
     fMacintosh = lppl->iPlayer != -1 && GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh;
@@ -1469,11 +1458,8 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
         }
         lQuanRem = (int32_t)(lQuan % 100);
         lQuan = (int32_t)(lQuan / 100);
-        if (lQuanRem != 0 && gd.fGeneratingTurn != 0) {
-            t_scratch_m22 = Random(100);
-            if (t_scratch_m22 < (int16_t)LOWORD(lQuanRem)) {
-                lQuan++;
-            }
+        if (lQuanRem != 0 && gd.fGeneratingTurn != 0 && Random(100) < (int16_t)LOWORD(lQuanRem)) {
+            lQuan++;
         }
         plQuan[i] = lQuan;
         if (fApply != 0) {

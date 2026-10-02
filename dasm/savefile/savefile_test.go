@@ -1,6 +1,7 @@
 package savefile
 
 import (
+	"bytes"
 	"encoding/binary"
 	"strings"
 	"testing"
@@ -82,5 +83,25 @@ func TestCompareRecordsSeparatesUnusedFreighterSlots(t *testing.T) {
 	if len(diffs) != 1 || diffs[0].Benign || len(diffs[0].Fields) != 2 ||
 		diffs[0].Fields[1] != (FieldChange{"starbase 1", "absent", "planet 82 freighters [24 25]"}) {
 		t.Fatalf("added starbase not reported: %+v", diffs)
+	}
+}
+
+// TestCompareRecordsClassifiesOrderStorage checks that unread ORDER bits and task
+// words are benign while the words a task reads remain meaningful.
+func TestCompareRecordsClassifiesOrderStorage(t *testing.T) {
+	// LayMines (grTask 6), grobj planet, fValidTask; cTime 5, cTimeOld 5, stale tail.
+	left := []byte{0x10, 0x04, 0x20, 0x05, 0x52, 0x00, 0x46, 0x11, 5, 0, 5, 0, 1, 0, 2, 0, 3, 0}
+	right := bytes.Clone(left)
+	right[7] |= 0xe0            // fNoAutoTrack and fUnused
+	right[10], right[12] = 9, 7 // cTimeOld and a stale word
+	diffs := CompareRecords([]Record{{Type: RtOrderA, Data: left}}, []Record{{Type: RtOrderA, Data: right}}, AIHistoryUnknown)
+	if len(diffs) != 1 || !diffs[0].Benign || len(diffs[0].Unused) != 4 {
+		t.Fatalf("unread ORDER storage not benign: %+v", diffs)
+	}
+	right[8] = 4
+	diffs = CompareRecords([]Record{{Type: RtOrderA, Data: left}}, []Record{{Type: RtOrderA, Data: right}}, AIHistoryUnknown)
+	if len(diffs) != 1 || diffs[0].Benign || len(diffs[0].Fields) != 1 ||
+		diffs[0].Fields[0] != (FieldChange{"order tlm.cTime", "0x0005", "0x0004"}) {
+		t.Fatalf("cTime change not meaningful: %+v", diffs)
 	}
 }

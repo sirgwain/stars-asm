@@ -8,16 +8,17 @@ ITEMACTION rgiaQuikDrop[5] = {{.iAction = iActionUnloadAll},
                               {.iAction = iActionLoadDunnage}};
 ITEMACTION rgiaQuikLoad[5] = {{.iAction = iActionLoadAll}, {.iAction = iActionLoadAll}, {.iAction = iActionLoadAll}, {0}, {.iAction = iActionLoadDunnage}};
 ITEMACTION rgiaLoadAllCol[5] = {{0}, {0}, {0}, {.iAction = iActionLoadAll}};
-ZIPPRODQ1  rgzpqTut[2] = {{
-                              .fNoResearch = 1,
-                              .cpq = 2,
-                              .rgpq = {{.w = 193, .mdIdle = 1, .cQuan = 3}, {.w = 192, .cQuan = 3}},
-                         },
-                          {
-                              .fNoResearch = 1,
-                              .cpq = 3,
-                              .rgpq = {{.w = 132, .mdIdle = 4, .cQuan = 2}, {.w = 193, .mdIdle = 1, .cQuan = 3}, {.w = 192, .cQuan = 3}},
-                         }};
+ZIPPRODQ1  rgzpqTut[2] = {
+    {
+         .fNoResearch = 1,
+         .cpq = 2,
+         .rgpq = {{.w = 193, .mdIdle = iobjFactory, .cQuan = 3}, {.w = 192, .cQuan = 3}},
+    },
+    {
+         .fNoResearch = 1,
+         .cpq = 3,
+         .rgpq = {{.w = 132, .mdIdle = iobjMinTerraform, .cQuan = 2}, {.w = 193, .mdIdle = iobjFactory, .cQuan = 3}, {.w = 192, .cQuan = 3}},
+    }};
 
 INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HMENU   hmenu;
@@ -43,7 +44,7 @@ INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
     case WM_COMMAND:
         switch (GET_WM_COMMAND_ID(wParam, lParam)) {
-        case 0x9c7:
+        case IDC_TUTOR_PANIC:
             lpProc = MakeProcInstance(PanicDlg, hInst);
             fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_PANIC), hwnd, lpProc);
             FreeProcInstance(lpProc);
@@ -60,8 +61,8 @@ INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 tutor.fShowHidMsg = 0;
             }
             return 1;
-        case IDC_HELP:
-            WinHelp(hwnd, szHelpFile, 1, tutor.idh);
+        case IDC_TUTOR_HINT:
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, (int16_t)tutor.idh);
             return 1;
         default:
             return 0;
@@ -69,8 +70,8 @@ INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         StickyDlgPos(hwnd, &ptStickyTutorDlg, 0);
         tutor.hwnd = 0;
-        hmenu = GetASubMenu(hwndFrame, 5);
-        CheckMenuItem(hmenu, 2501, MF_UNCHECKED);
+        hmenu = GetASubMenu(hwndFrame, menuHelp);
+        CheckMenuItem(hmenu, IDM_HELP_TUTORIAL, MF_UNCHECKED);
         EndDialog(hwnd, 1);
         EndTutor(1);
         return 1;
@@ -94,10 +95,10 @@ INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 EndDialog(hwnd, 0);
                 return 1;
             case IDC_HELP:
-                WinHelp(hwnd, szHelpFile, 1, tutor.idh);
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, (int16_t)tutor.idh);
                 return 1;
-            case 0x9c9:
-            case 0x9ca:
+            case IDC_PANIC_REDO_TURN:
+            case IDC_PANIC_COMPLETE_TURN:
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
                 return 1;
             }
@@ -197,16 +198,16 @@ void StartTutor(int16_t fRestart) {
             hwndTitle = 0;
             ShowWindow(hwndFrame, SW_SHOW);
         }
-        grbitScan = 1248;
+        grbitScan = grbitScanCoverage | grbitScanMineFields | grbitScanFleetPaths | grbitScanPlanetNames;
         cx = GetSystemMetrics(SM_CXSCREEN);
         if (cx >= 1280) {
-            iScanZoom = 3;
+            iScanZoom = zoom200;
         } else if (cx >= 1024) {
-            iScanZoom = 2;
+            iScanZoom = zoom150;
         } else if (cx >= 800) {
-            iScanZoom = 1;
+            iScanZoom = zoom125;
         } else {
-            iScanZoom = 0;
+            iScanZoom = zoom100;
         }
         if (game.lid == 0) {
             cch = CchGetString(idsTutorial, szBase);
@@ -231,7 +232,7 @@ void StartTutor(int16_t fRestart) {
                 gd.fChgZipProd = 1;
             }
             InitializeMenu(NULL);
-            PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+            PostMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
             if (fFreeingTitle == 0) {
                 fFreeingTitle = 1;
                 DestroyWindow(hwndTitle);
@@ -241,8 +242,8 @@ void StartTutor(int16_t fRestart) {
         }
         tutor.idsError = -1;
         tutor.fShowHidMsg = 1;
-        tutor.idt = 0;
-        tutor.idtBold = 0;
+        tutor.idt = idtWelcomeStarsTutorialWillGuideThrough36;
+        tutor.idtBold = idtWelcomeStarsTutorialWillGuideThrough36;
         tutor.fProgress = 0;
         while (FTutorTaskDone() != 0 && tutor.fTurnDone == 0) {
             tutor.idt += 8;
@@ -254,7 +255,7 @@ void StartTutor(int16_t fRestart) {
         if (tutor.hwnd == 0) {
             CreateDialog(hInst, MAKEINTRESOURCE(IDD_TUTOR), hwndFrame, lpfnTutorDlgProc);
         }
-        if (tutor.idt != 0) {
+        if (tutor.idt != idtWelcomeStarsTutorialWillGuideThrough36) {
             if (tutor.fTurnDone == 0) {
                 tutor.idt -= 8;
             }
@@ -297,9 +298,9 @@ void AdvanceTutor() {
         } else {
             tutor.idh = 3510;
         }
-        if (tutor.idt >= 640 || tutor.fTutorDone != 0) {
+        if ((int16_t)tutor.idt >= 640 || tutor.fTutorDone != 0) {
             if (tutor.idsError != 522) {
-                TutorError(522);
+                TutorError(idsTutorialFinishedCanContinuePlayGameStart);
             }
             EndTutor(0);
             return;
@@ -308,7 +309,7 @@ void AdvanceTutor() {
             return;
         }
     }
-    _wsprintf(szTitle, PszGetCompressedString(idsStarsTutorPageD80), tutor.idt / 8 + 1);
+    _wsprintf(szTitle, PszGetCompressedString(idsStarsTutorPageD80), (int16_t)tutor.idt / 8 + 1);
     SetWindowText(tutor.hwnd, szTitle);
     ShowTutor(1);
     GetWindowRect(tutor.hwnd, &rc);
@@ -349,16 +350,16 @@ void SaveGameState() {
     vrgZipProd[0].zpq1 = vrgZipProd[4].zpq1;
     vrgZipProd[0].fValid = vrgZipProd[4].fValid;
     if (gd.fToolbar == 0) {
-        hmenu = GetASubMenu(hwndFrame, 1);
+        hmenu = GetASubMenu(hwndFrame, menuView);
         gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
-        CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
+        CheckMenuItem(hmenu, IDM_VIEW_TOOLBAR, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
         RefitFrameChildren();
     }
     tutor.icolFSort = vrptFleet.icolSort;
     if (vrptFleet.icolSort != 1 || vrptFleet.fAscending == 0) {
         vrptFleet.icolSort = 1;
         vrptFleet.fAscending = 1;
-        InvalidateReport(1, 0);
+        InvalidateReport(rptFleets, 0);
     }
     if (game.lid != 0 && game.fTutorial == 0) {
         DestroyCurGame();
@@ -378,14 +379,14 @@ void RestoreGameState() {
     vrgZipProd[0].zpq1 = tutor.zpq;
     vrgZipProd[0].fValid = LOBYTE(tutor.fValidQ);
     if (gd.fToolbar != tutor.fTBVis) {
-        hmenu = GetASubMenu(hwndFrame, 1);
+        hmenu = GetASubMenu(hwndFrame, menuView);
         gd.fToolbar = gd.fToolbar == 0 ? 1 : 0;
-        CheckMenuItem(hmenu, 179, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
+        CheckMenuItem(hmenu, IDM_VIEW_TOOLBAR, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
         RefitFrameChildren();
     }
     if (vrptFleet.icolSort != tutor.icolFSort) {
         vrptFleet.icolSort = tutor.icolFSort;
-        InvalidateReport(1, 1);
+        InvalidateReport(rptFleets, 1);
     }
     return;
 }
@@ -412,158 +413,158 @@ int16_t FTutorTaskDone() {
     switch (game.turn) {
     case 0:
         switch (tutor.idt) {
-        case 0:
-            tutor.idtBold = 5;
+        case idtWelcomeStarsTutorialWillGuideThrough36:
+            tutor.idtBold = idtReadMessages;
             return FCheckMessages(9999, 0xffff, 0);
-        case 8:
-            tutor.idtBold = 11;
+        case idtExamineTilesCommandPaneUpperLeftPortion:
+            tutor.idtBold = idtPressTilesGotoButtonCommandArmedProbe;
             if (FCheckSelection(grobjFleet, 0) == 0) {
                 return 0;
             }
-            tutor.idtBold = 15;
-            return FCheckFleetWP(0, 1, grobjPlanet, 12, 0, 0xffff);
-        case 16:
-            tutor.idtBold = 18;
+            tutor.idtBold = idtHoldShiftKeyClickLeftMouseButton;
+            return FCheckFleetWP(0, 1, grobjPlanet, 12, grTaskNone, 0xffff);
+        case idtAccordingFleetWaypointsTileWillTake2:
+            tutor.idtBold = idtHitNKeyLookFleet;
             if (FCheckSelection(grobjFleet, 1) == 0) {
-                tutor.idh = 6001;
+                tutor.idh = idhKeyboardShortcuts;
                 return 0;
             }
-            tutor.idtBold = 21;
-            return FCheckFleetWP(1, 1, grobjPlanet, 16, 0, 0xffff);
-        case 24:
+            tutor.idtBold = idtHoldShiftKeyLeftClickPlanet90210;
+            return FCheckFleetWP(1, 1, grobjPlanet, 16, grTaskNone, 0xffff);
+        case idtLetsMoveOurFleet:
             if (FCheckSelection(grobjFleet, 4) != 0) {
-                tutor.idtBold = 31;
-                return FCheckFleetWP(4, 1, grobjPlanet, 15, 0, 0xffff);
+                tutor.idtBold = idtHoldShiftKeySelectAlexander;
+                return FCheckFleetWP(4, 1, grobjPlanet, 15, grTaskNone, 0xffff);
             }
             if (FCheckSelection(grobjFleet, 3) != 0) {
-                tutor.idtBold = 29;
+                tutor.idtBold = idtPress2;
             } else if (FCheckSelection(grobjFleet, 2) != 0) {
-                tutor.idtBold = 27;
+                tutor.idtBold = idtPress;
             } else {
-                tutor.idtBold = 25;
+                tutor.idtBold = idtTimePressButtonTileShowingLongRange;
             }
             return 0;
-        case 32:
+        case idtHitNKey:
             if (FCheckSelection(grobjFleet, 4) != 0 && tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
-                tutor.idtBold = 32;
+                tutor.idtBold = idtHitNKey;
             } else if (FCheckSelection(grobjFleet, 5) != 0 && tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
-                tutor.idtBold = 34;
+                tutor.idtBold = idtHitNKey2;
             } else {
                 if (FCheckResearch(Weapons, TechFieldCount, 15) != 0) {
-                    tutor.idtBold = 39;
+                    tutor.idtBold = idtThatsTurnHitF9GenerateYear;
                     tutor.fTurnDone = 1;
                     return 1;
                 }
-                tutor.idtBold = pctResGlob == -1 ? 37 : 38;
+                tutor.idtBold = pctResGlob == -1 ? idtChooseResearchCommandsMenu : idtChangeFieldStudyWeaponsPressDone;
             }
             return 0;
         default:
             return 0;
         }
     case 1:
-        if (tutor.idt != 40) {
+        if (tutor.idt != idtReadMessageMessagesPaneWeveGotPlenty) {
             return 1;
         }
-        if (FCheckQueue(13, 0, grobjPlanet, 7, 20, 0) == 0) {
-            tutor.idtBold = lpplProdGlob == 0 ? 42 : 43;
+        if (FCheckQueue(13, 0, grobjPlanet, mdIdleFactory, 20, 0) == 0) {
+            tutor.idtBold = lpplProdGlob == 0 ? idtPressChangeButtonProductionTile : idtSelectFactoryLeftHandListboxHoldShift;
             return 0;
         }
-        tutor.idtBold = 47;
+        tutor.idtBold = idtHitF9KeyGenerateYear;
         tutor.fTurnDone = 1;
         return 1;
     case 2:
         switch (tutor.idt) {
-        case 48:
-            if (FCheckFleetWP(1, 1, grobjPlanet, 21, 0, 0xffff) != 0) {
+        case idtReadFirstMessagePressGotoMessagesPane:
+            if (FCheckFleetWP(1, 1, grobjPlanet, 21, grTaskNone, 0xffff) != 0) {
                 return 1;
             }
-            tutor.idtBold = FCheckSelection(grobjFleet, 0) == 0 ? 48 : 50;
-            if (FCheckFleetWP(0, 1, grobjPlanet, 9, 0, 0xffff) == 0) {
+            tutor.idtBold = FCheckSelection(grobjFleet, 0) == 0 ? idtReadFirstMessagePressGotoMessagesPane : idtHoldShiftKeyLeftClickHiho;
+            if (FCheckFleetWP(0, 1, grobjPlanet, 9, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 51;
-            if (FCheckFleetWP(0, 2, grobjPlanet, 3, 0, 0xffff) == 0) {
+            tutor.idtBold = idtVacancy;
+            if (FCheckFleetWP(0, 2, grobjPlanet, 3, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 52;
-            if (FCheckFleetWP(0, 3, grobjPlanet, 8, 0, 0xffff) == 0) {
+            tutor.idtBold = idtSlime;
+            if (FCheckFleetWP(0, 3, grobjPlanet, 8, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 53;
-            if (FCheckFleetWP(0, 4, grobjPlanet, 5, 0, 0xffff) == 0) {
+            tutor.idtBold = idtWallaby;
+            if (FCheckFleetWP(0, 4, grobjPlanet, 5, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 54;
-            if (FCheckFleetWP(0, 5, grobjPlanet, 2, 0, 0xffff) == 0) {
+            tutor.idtBold = idtOxygen;
+            if (FCheckFleetWP(0, 5, grobjPlanet, 2, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 55;
+            tutor.idtBold = idtReadMessagePressGotoCommandLongRange;
             return FCheckSelection(grobjFleet, 1);
-        case 56:
-            if (FCheckFleetWP(4, 1, grobjPlanet, 14, 0, 0xffff) != 0) {
+        case idtWeWantSendFleetExploreAreaAbove:
+            if (FCheckFleetWP(4, 1, grobjPlanet, 14, grTaskNone, 0xffff) != 0) {
                 return 1;
             }
-            tutor.idtBold = 57;
-            if (FCheckFleetWP(1, 1, grobjPlanet, 21, 0, 0xffff) == 0) {
+            tutor.idtBold = idtHoldShiftKeySelectDwarte;
+            if (FCheckFleetWP(1, 1, grobjPlanet, 21, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 58;
-            if (FCheckFleetWP(1, 2, grobjPlanet, 19, 0, 0xffff) == 0) {
+            tutor.idtBold = idtMobius;
+            if (FCheckFleetWP(1, 2, grobjPlanet, 19, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 59;
-            if (FCheckFleetWP(1, 3, grobjPlanet, 20, 0, 0xffff) == 0) {
+            tutor.idtBold = idtCastle;
+            if (FCheckFleetWP(1, 3, grobjPlanet, 20, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 60;
-            if (FCheckFleetWP(1, 4, grobjPlanet, 7, 0, 0xffff) == 0) {
+            tutor.idtBold = idtMoholdi;
+            if (FCheckFleetWP(1, 4, grobjPlanet, 7, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = FCheckMessages(2, 0xffff, 0) == 0 ? 61 : 63;
+            tutor.idtBold = FCheckMessages(2, 0xffff, 0) == 0 ? idtReadMessage : idtGotoStalwartDefender5;
             return FCheckSelection(grobjFleet, 4);
-        case 64:
-            if (FCheckFleetWP(5, 1, grobjPlanet, 12, 3, 0xffff) != 0) {
+        case idtHoldShiftKeySelectShaggyDog:
+            if (FCheckFleetWP(5, 1, grobjPlanet, 12, grTaskMine, 0xffff) != 0) {
                 return 1;
             }
-            tutor.idtBold = 64;
-            if (FCheckFleetWP(4, 1, grobjPlanet, 14, 0, 0xffff) == 0) {
+            tutor.idtBold = idtHoldShiftKeySelectShaggyDog;
+            if (FCheckFleetWP(4, 1, grobjPlanet, 14, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 65;
-            if (FCheckFleetWP(4, 2, grobjPlanet, 17, 0, 0xffff) == 0) {
+            tutor.idtBold = idtSeaSquared;
+            if (FCheckFleetWP(4, 2, grobjPlanet, 17, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 66;
-            if (FCheckFleetWP(4, 3, grobjPlanet, 18, 0, 0xffff) == 0) {
+            tutor.idtBold = idtRedStorm;
+            if (FCheckFleetWP(4, 3, grobjPlanet, 18, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 67;
-            if (FCheckFleetWP(4, 4, grobjPlanet, 23, 0, 0xffff) == 0) {
+            tutor.idtBold = idtBloop;
+            if (FCheckFleetWP(4, 4, grobjPlanet, 23, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = 68;
-            if (FCheckFleetWP(4, 5, grobjPlanet, 22, 0, 0xffff) == 0) {
+            tutor.idtBold = idtKalamazoo;
+            if (FCheckFleetWP(4, 5, grobjPlanet, 22, grTaskNone, 0xffff) == 0) {
                 return 0;
             }
-            tutor.idtBold = FCheckMessages(4, 0xffff, 0) == 0 ? 69 : 71;
+            tutor.idtBold = FCheckMessages(4, 0xffff, 0) == 0 ? idtReadTwoMessages : idtPressGotoDisplayStatsPruneSummaryPane;
             return FCheckSummary(grobjPlanet, 12);
-        case 72:
+        case idtTopGraphSummaryPaneShowsPruneHas:
             if (FCheckColonizeWP(2, 16, 0xffff) != 0) {
                 return 1;
             }
-            if (FCheckFleetWP(5, 1, grobjPlanet, 12, 3, 0xffff) != 0) {
+            if (FCheckFleetWP(5, 1, grobjPlanet, 12, grTaskMine, 0xffff) != 0) {
                 tutor.fProgress = 0;
                 return 1;
             }
-            if (FCheckFleetWP(5, 1, grobjPlanet, 12, 0, 0xffff) != 0) {
-                tutor.idtBold = 79;
+            if (FCheckFleetWP(5, 1, grobjPlanet, 12, grTaskNone, 0xffff) != 0) {
+                tutor.idtBold = idtClickDropdownChangeTaskRemoteMining;
             } else if (FCheckSelection(grobjFleet, 5) != 0) {
-                tutor.idtBold = 77;
+                tutor.idtBold = idtShiftClickPrune;
             } else {
-                tutor.idtBold = 76;
+                tutor.idtBold = idtClickRightMouseButtonStoveTopSelect;
             }
             return 0;
-        case 80:
+        case idtMoveMessageGotoAlexander:
             if (FCheckColonizeWP(2, 16, 0xffff) != 0) {
                 return 1;
             }
@@ -572,33 +573,33 @@ int16_t FTutorTaskDone() {
             }
             if (FCheckSummary(grobjPlanet, 15) != 0) {
                 if (FCheckMessages(9999, 0xffff, 0) != 0) {
-                    tutor.idtBold = 86;
+                    tutor.idtBold = idtGotoPlanet90210;
                 } else {
-                    tutor.idtBold = tutor.fProgress == 0 ? 83 : 84;
+                    tutor.idtBold = tutor.fProgress == 0 ? idtClickVariousPlacesSummaryPaneGetPopup : idtReadMessage2;
                 }
             }
             return 0;
-        case 88:
+        case idtSince90210FinePlanetHighMineralConcentrations:
             if (FCheckCargo(LpflFromId(2), 0, 0, 0, 25) == 0) {
                 if (FCheckSelection(grobjFleet, 2) == 0) {
-                    tutor.idtBold = 89;
+                    tutor.idtBold = idtRightClickStoveTopSelectSantaMaria;
                 } else if (mdXferDlg == mdXferNone) {
-                    tutor.idh = 1514;
-                    tutor.idtBold = 90;
+                    tutor.idh = idhLocationTile;
+                    tutor.idtBold = idtClickXferButtonTileLabeledOrbitingStove;
                 } else {
-                    tutor.idtBold = 91;
+                    tutor.idtBold = idtClickDragColonistsGaugeFillingHold25kt;
                 }
                 return 0;
             }
             if (FCheckColonizeWP(2, 16, 0xffff) == 0) {
-                if (FCheckFleetWP(2, 1, grobjPlanet, 16, 0, 0xffff) == 0) {
-                    tutor.idtBold = FCheckSelection(grobjFleet, 2) == 0 ? 89 : 92;
+                if (FCheckFleetWP(2, 1, grobjPlanet, 16, grTaskNone, 0xffff) == 0) {
+                    tutor.idtBold = FCheckSelection(grobjFleet, 2) == 0 ? idtRightClickStoveTopSelectSantaMaria : idtShiftClick90210;
                 } else {
-                    tutor.idtBold = 93;
+                    tutor.idtBold = idtSelectColonizeDropdownWaypointTaskTile;
                 }
                 return 0;
             }
-            tutor.idtBold = 95;
+            tutor.idtBold = idtHitF9GenerateYear;
             tutor.fTurnDone = 1;
             return 1;
         default:
@@ -608,46 +609,46 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 96:
+        case idtFirstMessageQuiteCommonWeDontNeed:
             if (FCheckMessages(-1, idmHaveBuiltFactories, 1) == 0) {
-                tutor.idtBold = 97;
+                tutor.idtBold = idtFilterClickingBlueCheckMarkUpperLeft;
                 return 0;
             }
-            if (FCheckQueue(13, 0, grobjPlanet, 1, 30, 0) == 0) {
+            if (FCheckQueue(13, 0, grobjPlanet, iobjFactory, 30, 0) == 0) {
                 if (FCheckMessages(1, 0xffff, 0) == 0 || FCheckSelection(grobjPlanet, 13) == 0) {
-                    tutor.idtBold = 98;
+                    tutor.idtBold = idtMoveMessageGotoStoveTop;
                 } else {
-                    tutor.idtBold = lpplProdGlob == 0 ? 101 : 102;
+                    tutor.idtBold = lpplProdGlob == 0 ? idtPressChangeButtonProductionTile2 : idtSelectFactoriesAutoBuildLeftHandListbox;
                 }
                 return 0;
             }
             return 1;
-        case 104:
-            if (FCheckQueue(16, 0, grobjPlanet, 7, 3, 1) == 0 || FCheckQueue(16, 1, grobjPlanet, 8, 3, 1) == 0) {
+        case idtReadTwoMessagesGoto90210:
+            if (FCheckQueue(16, 0, grobjPlanet, mdIdleFactory, 3, 1) == 0 || FCheckQueue(16, 1, grobjPlanet, mdIdleMine, 3, 1) == 0) {
                 if (FCheckMessages(3, 0xffff, 0) == 0 || FCheckSelection(grobjPlanet, 16) == 0) {
-                    tutor.idtBold = 104;
+                    tutor.idtBold = idtReadTwoMessagesGoto90210;
                 } else {
-                    tutor.idtBold = lpplProdGlob == 0 ? 106 : 107;
+                    tutor.idtBold = lpplProdGlob == 0 ? idtHitQKey : idtDoubleClickFactory3TimesMine3;
                 }
                 return 0;
             }
             if (FCheckCargo(LpflFromId(3), 0, 0, 0, 210) == 0) {
                 if (FCheckSelection(grobjFleet, 3) != 0) {
-                    tutor.idtBold = mdXferDlg == mdXferNone ? 110 : 111;
+                    tutor.idtBold = mdXferDlg == mdXferNone ? idtClickXferButtonCommandPane : idtFillHoldColonistsHitOk;
                 } else {
-                    tutor.idtBold = 109;
+                    tutor.idtBold = idtRightClickStoveTopSelectTeamster4;
                 }
                 return 0;
             }
             return 1;
-        case 112:
+        case idtShiftClick902102:
             if (FCheckXferWP(3, 1, 16, 0xffff, rgiaQuikDrop) == 0) {
-                if (FCheckFleetWP(3, 1, grobjPlanet, 16, 1, 0xffff) != 0) {
-                    tutor.idtBold = 114;
+                if (FCheckFleetWP(3, 1, grobjPlanet, 16, grTaskXfer, 0xffff) != 0) {
+                    tutor.idtBold = idtRightClickBlueDiamondWaypointTaskTile;
                 } else if (FCheckFleetWP(3, 1, grobjPlanet, 16, 0xffff, 0xffff) == 0) {
-                    tutor.idtBold = 112;
+                    tutor.idtBold = idtShiftClick902102;
                 } else {
-                    tutor.idtBold = 113;
+                    tutor.idtBold = idtChangeWaypointTaskTransport;
                 }
                 return 0;
             }
@@ -657,38 +658,38 @@ int16_t FTutorTaskDone() {
             if (FCheckSelection(grobjFleet, 0) != 0) {
                 return 1;
             }
-            tutor.idtBold = FCheckSummary(grobjPlanet, 9) == 0 ? 115 : 118;
+            tutor.idtBold = FCheckSummary(grobjPlanet, 9) == 0 ? idtReadMessageGotoHiho : idtDoubleClickArmedProbe1;
             return 0;
-        case 120:
+        case idtArmedProbe1DoesntNeedGoWay:
             if (LpflFromId(0)->cord == 6) {
-                tutor.idtBold = FCheckSummary(grobjPlanet, 9) == 0 ? 121 : 123;
+                tutor.idtBold = FCheckSummary(grobjPlanet, 9) == 0 ? idtClickHiho : idtHitDeleteKey;
                 return 0;
             }
-            tutor.idtBold = 127;
+            tutor.idtBold = idtSelectGenerateTurnMenu;
             tutor.fTurnDone = 1;
             tutor.fProgress = 0;
             return 1;
         }
     case 4:
-        if (tutor.idt != 128) {
-            if (tutor.idt != 136) {
+        if (tutor.idt != idtReadFirstMessageGotoShaggyDog) {
+            if (tutor.idt != idtHitChangeButtonProductionTileOpenStove) {
                 return 1;
             }
             if (LpplFromId(13)->lpplprod->iprodMac != 3 || FCheckQueue(13, 1, grobjFleet, 2, 1, 0) == 0) {
-                tutor.idtBold = lpplProdGlob == 0 ? 136 : 137;
+                tutor.idtBold = lpplProdGlob == 0 ? idtHitChangeButtonProductionTileOpenStove : idtDoubleClickSantaMariaLeftHandListbox;
                 return 0;
             }
-            tutor.idtBold = 143;
+            tutor.idtBold = idtGenerateWhenReady;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (LpflFromId(4)->cord == 6) {
             if (FCheckSelection(grobjFleet, 4) != 0) {
-                tutor.idtBold = FCheckSummary(grobjPlanet, 14) == 0 ? 131 : 132;
+                tutor.idtBold = FCheckSummary(grobjPlanet, 14) == 0 ? idtSelectWaypointShaggyDog : idtPressDeleteKey;
             } else if (FCheckSummary(grobjPlanet, 14) != 0 || FCheckSummary(grobjFleet, 4) != 0) {
-                tutor.idtBold = 130;
+                tutor.idtBold = idtDoubleClickStalwartDefender5JustAbove;
             } else {
-                tutor.idtBold = 128;
+                tutor.idtBold = idtReadFirstMessageGotoShaggyDog;
             }
             return 0;
         }
@@ -698,142 +699,143 @@ int16_t FTutorTaskDone() {
         if (FCheckSelection(grobjPlanet, 13) != 0) {
             return 1;
         }
-        tutor.idtBold = FCheckSummary(grobjPlanet, 21) == 0 ? 133 : 135;
+        tutor.idtBold = FCheckSummary(grobjPlanet, 21) == 0 ? idtReadMessageGotoDwarte : idtDoubleClickStoveTop;
         return 0;
     case 5:
-        if (tutor.idt != 144) {
-            if (tutor.idt != 152) {
+        if (tutor.idt != idtReadFirstMessageGotoNewSantaMaria) {
+            if (tutor.idt != idtSetWaypointTaskColonize) {
                 return 1;
             }
             if (FCheckColonizeWP(2, 14, 0xffff) == 0) {
-                tutor.idtBold = 152;
+                tutor.idtBold = idtSetWaypointTaskColonize;
                 return 0;
             }
             if (FCheckFleetWP(3, 1, grobjPlanet, 13, 0xffff, 0xffff) == 0) {
                 if (FCheckScanner(0, -1) == 0) {
-                    tutor.idtBold = 153;
+                    tutor.idtBold = idtSwitchScannerBackNormalViewClickingLeftmost;
                 } else {
-                    tutor.idtBold = FCheckSelection(grobjFleet, 3) == 0 ? 154 : 155;
+                    tutor.idtBold = FCheckSelection(grobjFleet, 3) == 0 ? idtRead2MessagesGotoTeamster4 : idtShiftClickStoveTopSendHome;
                 }
                 return 0;
             }
             if (LpflFromId(0)->cord == 5) {
                 if (FCheckMessages(9999, 0xffff, 0) != 0) {
-                    tutor.idtBold = 158;
+                    tutor.idtBold = idtReadMessageDeleteArmedProbe1sWaypoint;
                 } else {
-                    tutor.idtBold = FCheckSelection(grobjPlanet, 16) == 0 ? 156 : 158;
+                    tutor.idtBold =
+                        FCheckSelection(grobjPlanet, 16) == 0 ? idtSelect90210PressingGotoButtonTileLabeled : idtReadMessageDeleteArmedProbe1sWaypoint;
                 }
                 return 0;
             }
-            tutor.idtBold = 159;
+            tutor.idtBold = idtThatsYearGenerateWhenReady;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckCargo(LpflFromId(2), 0, 0, 0, 25) != 0) {
             if (FCheckFleetWP(2, 1, grobjPlanet, 14, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = FCheckScanner(3, -1) == 0 ? 150 : 151;
+                tutor.idtBold = FCheckScanner(3, -1) == 0 ? idtClickButtonToolbarShowPlanetsHowHabitable : idtShiftClickBigGreenShaggyDogBelow;
                 return 0;
             }
             return 1;
         }
         if (FCheckSelection(grobjFleet, 2) == 0) {
-            tutor.idtBold = 144;
+            tutor.idtBold = idtReadFirstMessageGotoNewSantaMaria;
         } else {
-            tutor.idtBold = mdXferDlg == mdXferNone ? 146 : 148;
+            tutor.idtBold = mdXferDlg == mdXferNone ? idtClickCargoGaugeFuelCargoTile : idtFillHoldFullColonistsHitOk;
         }
         return 0;
     case 6:
-        if (tutor.idt != 160) {
-            if (tutor.idt != 168) {
+        if (tutor.idt != idtReadFirstMessageGotoTeamster4) {
+            if (tutor.idt != idtNoticeWaypointTaskHasCopiedPreviousWaypoint) {
                 return 1;
             }
             tutor.fNoErrors = 1;
             if (FCheckXferWP(3, 2, 13, 0xffff, rgiaQuikDrop) == 0) {
                 tutor.fNoErrors = 0;
-                tutor.idtBold = 170;
+                tutor.idtBold = idtRightClickBlueDiamondSelectQuikdropZip;
                 return 0;
             }
             tutor.fNoErrors = 0;
-            tutor.idh = 1518;
-            tutor.idtBold = 171;
+            tutor.idh = idhFleetWaypointsTile;
+            tutor.idtBold = idtClickRepeatOrdersCheckboxFleetWaypointsTile;
             if (LpflFromId(3)->fRepOrders == 0) {
                 return 0;
             }
-            tutor.idh = 1059;
+            tutor.idh = idhProductionDialog;
             if (LpplFromId(13)->lpplprod->iprodMac != 3 || FCheckQueue(13, 1, grobjFleet, 2, 1, 0) == 0) {
-                tutor.idtBold = FCheckSelection(grobjPlanet, 13) == 0 ? 173 : 174;
+                tutor.idtBold = FCheckSelection(grobjPlanet, 13) == 0 ? idtSelectStoveTop : idtAddSantaMariaProductionQueue;
                 return 0;
             }
-            tutor.idtBold = 175;
+            tutor.idtBold = idtGoAheadGenerateIDare;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckXferWP(3, 1, 12, 0xffff, rgiaQuikLoad) == 0) {
-            if (FCheckFleetWP(3, 1, grobjPlanet, 12, 1, 0xffff) != 0) {
-                tutor.idtBold = 165;
+            if (FCheckFleetWP(3, 1, grobjPlanet, 12, grTaskXfer, 0xffff) != 0) {
+                tutor.idtBold = idtRightClickBlueDiamondSelectQuikloadZip;
             } else if (FCheckFleetWP(3, 1, grobjPlanet, 12, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 3) == 0 ? 160 : 163;
+                tutor.idtBold = FCheckSelection(grobjFleet, 3) == 0 ? idtReadFirstMessageGotoTeamster4 : idtShiftClickPrune2;
             } else {
-                tutor.idtBold = 164;
+                tutor.idtBold = idtSetWaypointTaskTransport;
             }
             return 0;
         }
-        tutor.idtBold = 166;
+        tutor.idtBold = idtShiftClickBackStoveTop;
         return FCheckFleetWP(3, 2, grobjPlanet, 13, 0xffff, 0xffff);
     case 7:
         switch (tutor.idt) {
         default:
             return 1;
-        case 176:
+        case idtReadFirstMessageGotoNewSantaMaria2:
             if (FCheckCargo(LpflFromId(6), 0, 0, 0, 25) == 0) {
-                tutor.idtBold = 176;
+                tutor.idtBold = idtReadFirstMessageGotoNewSantaMaria2;
                 return 0;
             }
             if (FCheckColonizeWP(6, 18, 0xffff) == 0) {
-                tutor.idtBold = FCheckScanner(3, -1) == 0 ? 177 : 179;
+                tutor.idtBold = FCheckScanner(3, -1) == 0 ? idtClickToolbarButtonPutScannerPlanetValue : idtGiveSantaMaria7ColonizeTaskRed;
                 return 0;
             }
-            tutor.idh = 1507;
+            tutor.idh = idhProductionTile;
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 1, grobjFleet, 2, 3, 0) == 0) {
-                tutor.idtBold = 181;
+                tutor.idtBold = idtAddThreeSantaMariasStoveTopsProduction;
                 return 0;
             }
             if (FCheckScanner(0, -1) == 0) {
-                tutor.idtBold = 182;
+                tutor.idtBold = idtPressLeftmostToolbarButtonPutScannerBack;
                 return 0;
             }
             return 1;
-        case 184:
+        case idtReadMessage3:
             if (FCheckMessages(-1, idmHaveBuiltMines, 1) == 0) {
-                tutor.idtBold = FCheckMessages(3, 0xffff, 0) == 0 ? 184 : 186;
+                tutor.idtBold = FCheckMessages(3, 0xffff, 0) == 0 ? idtReadMessage3 : idtFilterThemClickingBlueCheckMarkMessages;
                 return 0;
             }
-            if (FCheckQueue(16, 0, grobjPlanet, 1, 10, 1) == 0 || FCheckQueue(16, 1, grobjPlanet, 0, 10, 1) == 0) {
+            if (FCheckQueue(16, 0, grobjPlanet, iobjFactory, 10, 1) == 0 || FCheckQueue(16, 1, grobjPlanet, iobjMine, 10, 1) == 0) {
                 if (FCheckSelection(grobjPlanet, 16) == 0) {
-                    tutor.idtBold = FCheckMessages(4, 0xffff, 0) == 0 ? 187 : 188;
+                    tutor.idtBold = FCheckMessages(4, 0xffff, 0) == 0 ? idtGoMessage : idtGoto90210OpenProductionQueue;
                 } else {
-                    tutor.idtBold = lpplProdGlob == 0 ? 188 : 189;
+                    tutor.idtBold = lpplProdGlob == 0 ? idtGoto90210OpenProductionQueue : idtShiftDoubleClickFactoriesAutoBuildMines;
                 }
                 return 0;
             }
-            tutor.idtBold = 190;
+            tutor.idtBold = idtReadRestMessages;
             tutor.fProgress = 0;
             return FCheckMessages(9999, 0xffff, 0);
-        case 192:
+        case idtClickRedTriangleBetweenSlimeVacancy:
             if (tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
                 if (FCheckSummary(grobjFleet, 512) != 0) {
                     tutor.fProgress = 1;
                 } else {
-                    tutor.idtBold = 192;
+                    tutor.idtBold = idtClickRedTriangleBetweenSlimeVacancy;
                     return 0;
                 }
             }
-            tutor.idh = 1507;
+            tutor.idh = idhProductionTile;
             if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 2, grobjFleet, 0, 2, 0) == 0) {
-                tutor.idtBold = 196;
+                tutor.idtBold = idtAddTwoArmedProbesStoveTopsQueue;
                 return 0;
             }
-            tutor.idtBold = 198;
+            tutor.idtBold = idtGenerateWhenReady2;
             tutor.fTurnDone = 1;
             return 1;
         }
@@ -841,42 +843,42 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 200:
+        case idtReadFirstMessageGotoNewColonyShips:
             if (rgplr[0].cFleet == 11 && FCheckColonizeWP(10, 8, 0xffff) != 0) {
                 return 1;
             }
             if (rgplr[0].cFleet == 9 || mdXferDlg == mdXferShips) {
                 if (FCheckSelection(grobjFleet, 7) == 0) {
-                    tutor.idtBold = 200;
+                    tutor.idtBold = idtReadFirstMessageGotoNewColonyShips;
                 } else {
-                    tutor.idtBold = mdXferDlg == mdXferShips ? 203 : 202;
+                    tutor.idtBold = mdXferDlg == mdXferShips ? idtMoveOneSantaMariasFleet10Hit : idtHitSplitButtonFleetCompositionTile;
                 }
-            } else if (FCheckCargo(LpflFromId(7), 0, 0, 0, 50) == 0 || FCheckFleetWP(7, 1, grobjPlanet, 8, 2, 0xffff) == 0) {
-                tutor.idtBold = 205;
+            } else if (FCheckCargo(LpflFromId(7), 0, 0, 0, 50) == 0 || FCheckFleetWP(7, 1, grobjPlanet, 8, grTaskColonize, 0xffff) == 0) {
+                tutor.idtBold = idtLoadFleetColonistsGiveColonizeTaskSlime;
             } else {
-                tutor.idtBold = 206;
+                tutor.idtBold = idtWeDontWantBothColonizersGoSlime;
             }
             return 0;
-        case 208:
+        case idtNoticeFleetHasOneSantaMariaOther:
             tutor.fNoErrors = 1;
             if (FCheckColonizeWP(7, 17, 0xffff) == 0) {
                 tutor.fNoErrors = 0;
                 FCheckColonizeWP(7, 8, 0xffff);
-                tutor.idtBold = 209;
+                tutor.idtBold = idtClickWaypointSlimeDragSeaSquared;
                 return 0;
             }
             tutor.fNoErrors = 0;
             if (FCheckFleetWP(8, 1, grobjPlanet, 9, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 8) == 0 ? 212 : 214;
+                tutor.idtBold = FCheckSelection(grobjFleet, 8) == 0 ? idtReadMessageGotoNewArmedScouts : idtLetsTryHeadThemOffPass;
                 return 0;
             }
             tutor.fProgress = 0;
             return 1;
-        case 216:
+        case idtReadMessageFilter:
             tutor.fNoErrors = 0;
             if (FCheckMessages(-1, idmHasUnloaded, 1) == 0) {
                 tutor.fProgress = 0;
-                tutor.idtBold = 216;
+                tutor.idtBold = idtReadMessageFilter;
                 return 0;
             }
             tutor.fNoErrors = 1;
@@ -885,119 +887,119 @@ int16_t FTutorTaskDone() {
                 return 1;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 217;
+                tutor.idtBold = idtReadLastMessageGotoWallaby;
                 tutor.fProgress = 0;
                 return 0;
             }
             if (tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
                 if (FCheckSummary(grobjPlanet, 5) != 0) {
-                    tutor.idtBold = 219;
+                    tutor.idtBold = idtClickGreenRadiationBarSummaryPaneRead;
                 } else {
-                    tutor.idtBold = 217;
+                    tutor.idtBold = idtReadLastMessageGotoWallaby;
                 }
                 return 0;
             }
-            tutor.idtBold = 221;
+            tutor.idtBold = idtHitF5OpenResearchDialog;
             if (pctResGlob != -1) {
                 tutor.fProgress = 0;
                 return 1;
             }
             return 0;
-        case 224:
+        case idtRightRadiationTerraform7OneExpectedBenefits:
             if (pctResGlob != -1) {
                 if (tutor.fProgress == 0) {
-                    tutor.idtBold = 226;
+                    tutor.idtBold = idtClickWordRadiationDialogSeeRequirements;
                 } else {
-                    tutor.idtBold = 228;
+                    tutor.idtBold = idtIncreaseResourcesBudgetedResearch30HitDone;
                 }
                 return 0;
             }
             if (FCheckResearch(Weapons, TechFieldCount, 30) == 0) {
-                tutor.idtBold = 228;
+                tutor.idtBold = idtIncreaseResourcesBudgetedResearch30HitDone;
                 return 0;
             }
-            tutor.idtBold = 230;
+            tutor.idtBold = idtGenerateWhenReady3;
             tutor.fTurnDone = 1;
             return 1;
         }
     case 9:
-        if (tutor.idt != 232) {
-            if (tutor.idt != 240) {
+        if (tutor.idt != idtReadFirstMessageGotoResearchDialog) {
+            if (tutor.idt != idtReadMessageGotoOxygen) {
                 return 1;
             }
             if (FCheckColonizeWP(9, 2, 0xffff) == 0) {
                 if (FCheckSelection(grobjFleet, 9) != 0) {
-                    tutor.idtBold = FCheckCargo(LpflFromId(9), 0, 0, 0, 25) == 0 ? 242 : 243;
+                    tutor.idtBold = FCheckCargo(LpflFromId(9), 0, 0, 0, 25) == 0 ? idtLoadColonists : idtSendColonizeOxygen;
                 } else {
-                    tutor.idtBold = FCheckSummary(grobjPlanet, 2) == 0 ? 240 : 241;
+                    tutor.idtBold = FCheckSummary(grobjPlanet, 2) == 0 ? idtReadMessageGotoOxygen : idtRightClickStoveTopSelectSantaMaria2;
                 }
                 return 0;
             }
             tutor.fNoErrors = 1;
             if (FCheckFleetWP(0, 1, grobjPlanet, 4, 0xffff, 0xffff) == 0) {
                 FCheckFleetWP(0, 1, grobjPlanet, 2, 0xffff, 0xffff);
-                tutor.idtBold = 245;
+                tutor.idtBold = idtSelectArmedProbe1DragWaypointOxygen;
                 tutor.fNoErrors = 0;
                 return 0;
             }
             tutor.fNoErrors = 0;
-            tutor.idtBold = 247;
+            tutor.idtBold = idtGenerateWhenReady4;
             tutor.fTurnDone = 1;
             return 1;
         }
         tutor.fNoErrors = 1;
         if (FCheckResearch(Weapons, Construction, 30) == 0) {
-            tutor.idtBold = pctResGlob == -1 ? 232 : 236;
+            tutor.idtBold = pctResGlob == -1 ? idtReadFirstMessageGotoResearchDialog : idtChangeFieldResearchConstructionHitDone;
             tutor.fNoErrors = 0;
             return 0;
         }
         tutor.fNoErrors = 0;
-        tutor.idtBold = 238;
+        tutor.idtBold = idtReadMessageFilter2;
         return FCheckMessages(-1, idmHasLoadedMiningRobotsWorking, 1);
     case 10:
-        if (tutor.idt != 248) {
-            if (tutor.idt != 256) {
+        if (tutor.idt != idtFilterMessageAboutDismantlingColonizer) {
+            if (tutor.idt != idtHitImportButtonCopyShaggyDogsQueue) {
                 return 1;
             }
             if (FCheckTemplate(0) == 0) {
-                tutor.idtBold = 256;
+                tutor.idtBold = idtHitImportButtonCopyShaggyDogsQueue;
                 return 0;
             }
             if (tutor.fProgress == 0 && lpplProdGlob != 0) {
-                tutor.idtBold = 257;
+                tutor.idtBold = idtOkProductionDialog;
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 1, grobjFleet, 2, 1, 0) == 0) {
-                tutor.idh = 1059;
+                tutor.idh = idhProductionDialog;
                 if (tutor.fProgress != 0 || FCheckSelection(grobjPlanet, 13) != 0) {
-                    tutor.idtBold = 260;
+                    tutor.idtBold = idtAddSantaMariaStoveTopsQueue;
                 } else if (FCheckSummary(grobjPlanet, 23) != 0) {
                     tutor.fProgress = 1;
-                    tutor.idtBold = 260;
+                    tutor.idtBold = idtAddSantaMariaStoveTopsQueue;
                 } else {
-                    tutor.idtBold = 259;
+                    tutor.idtBold = idtReadMessageGotoBloopLooksLikeNice;
                 }
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 2, grobjFleet, 3, 1, 0) == 0) {
-                tutor.idh = 1059;
-                tutor.idtBold = 262;
+                tutor.idh = idhProductionDialog;
+                tutor.idtBold = idtAddNewTeamsterStoveTopsQueue;
                 return 0;
             }
-            tutor.idtBold = 263;
+            tutor.idtBold = idtGenerateWhenReady5;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckMessages(-1, idmHasDismantledKtMineralsWhichHaveDeposited, 1) == 0) {
-            tutor.idtBold = 248;
+            tutor.idtBold = idtFilterMessageAboutDismantlingColonizer;
             tutor.fProgress = 0;
             return 0;
         }
-        if (FCheckQueue(14, 0, grobjPlanet, 1, 3, 1) == 0 || FCheckQueue(14, 1, grobjPlanet, 0, 3, 1) == 0) {
+        if (FCheckQueue(14, 0, grobjPlanet, iobjFactory, 3, 1) == 0 || FCheckQueue(14, 1, grobjPlanet, iobjMine, 3, 1) == 0) {
             if (FCheckSelection(grobjPlanet, 14) != 0) {
-                tutor.idtBold = lpplProdGlob == 0 ? 250 : 251;
+                tutor.idtBold = lpplProdGlob == 0 ? idtOpenShaggyDogsProductionQueue : idtAdd3FactoriesAutoBuild3Mines;
             } else {
-                tutor.idtBold = 249;
+                tutor.idtBold = idtReadMessageGotoShaggyDog;
             }
             return 0;
         }
@@ -1005,91 +1007,91 @@ int16_t FTutorTaskDone() {
             return 1;
         }
         if (lpplProdGlob == 0) {
-            tutor.idtBold = 254;
+            tutor.idtBold = idtOpenProductionQueue;
             return 0;
         }
         if (vyZPDStatic != -1) {
             return 1;
         }
-        tutor.idtBold = 255;
+        tutor.idtBold = idtRightClickBlueDiamondSelectCustomize;
         return 0;
     case 11:
         switch (tutor.idt) {
         default:
             return 1;
-        case 264:
+        case idtReadFirstMessageGotoArmedProbe1:
             if (FCheckFleetWP(0, 1, grobjPlanet, 10, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 0) == 0 ? 264 : 265;
+                tutor.idtBold = FCheckSelection(grobjFleet, 0) == 0 ? idtReadFirstMessageGotoArmedProbe1 : idtShiftClickHacker;
                 return 0;
             }
-            if (FCheckFleetWP(1, 1, grobjPlanet, 13, 5, 0xffff) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 1) == 0 ? 266 : 268;
+            if (FCheckFleetWP(1, 1, grobjPlanet, 13, grTaskScrap, 0xffff) == 0) {
+                tutor.idtBold = FCheckSelection(grobjFleet, 1) == 0 ? idtReadMessageGotoLongRangeScout2 : idtShiftClickStoveTopChangeWaypointTask;
                 return 0;
             }
             if (FCheckFleetWP(4, 1, grobjPlanet, 13, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 269;
+                tutor.idtBold = idtReadMessageSendStalwartDefender5Stove;
                 return 0;
             }
             if (FCheckFleetWP(8, 1, grobjFleet, 512, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 271;
+                tutor.idtBold = idtReadMessageGotoArmedProbe9Shift;
                 return 0;
             }
             return 1;
-        case 272:
+        case idtReadMessageGotoNewSantaMaria:
             if (FCheckColonizeWP(2, 4, 0xffff) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 2) == 0 ? 272 : 274;
+                tutor.idtBold = FCheckSelection(grobjFleet, 2) == 0 ? idtReadMessageGotoNewSantaMaria : idtGiveSantaMaria3OrdersColonizeDont;
                 return 0;
             }
             if (FCheckCargo(LpflFromId(11), 0, 0, 0, 210) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 11) == 0 ? 275 : 276;
+                tutor.idtBold = FCheckSelection(grobjFleet, 11) == 0 ? idtReadMessageGotoTeamster12 : idtLoadColonistsAssignWaypointWallaby;
                 return 0;
             }
             if (FCheckFleetWP(11, 1, grobjPlanet, 5, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 276;
-            } else if (FCheckFleetWP(11, 1, grobjPlanet, 5, 1, 0xffff) != 0) {
+                tutor.idtBold = idtLoadColonistsAssignWaypointWallaby;
+            } else if (FCheckFleetWP(11, 1, grobjPlanet, 5, grTaskXfer, 0xffff) != 0) {
                 if (FCheckXferWP(11, 1, 5, 0xffff, rgiaUnloadAllCol) != 0) {
                     tutor.fProgress = 0;
                     return 1;
                 }
                 if (FCheckSelection(grobjFleet, 11) != 0 && sel.fl.lpplord->rgord[sel.iwpAct].grTask == grTaskXfer &&
                     SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0, 0) == 4) {
-                    tutor.idtBold = 279;
+                    tutor.idtBold = idtThirdUnload;
                 } else {
-                    tutor.idtBold = 278;
+                    tutor.idtBold = idtSetSecondDropdownWaypointTaskTileColonists;
                 }
             } else {
-                tutor.idtBold = 277;
+                tutor.idtBold = idtChangeWaypointTaskTransport2;
             }
             return 0;
-        case 280:
-            if (LpplFromId(13)->lpplprod->iprodMac < 2 || FCheckQueue(13, 0, grobjPlanet, 8, 70, 0) == 0) {
-                tutor.idtBold = 280;
+        case idtReadMessageAdd70MinesTopStove:
+            if (LpplFromId(13)->lpplprod->iprodMac < 2 || FCheckQueue(13, 0, grobjPlanet, mdIdleMine, 70, 0) == 0) {
+                tutor.idtBold = idtReadMessageAdd70MinesTopStove;
             } else if (FCheckResearch(Construction, Biotechnology, 30) == 0) {
-                tutor.idtBold = pctResGlob == -1 ? 281 : 282;
+                tutor.idtBold = pctResGlob == -1 ? idtReadMessageGotoResearchDialog : idtLeaveFieldStudyConstructionChangeFieldResearch;
             } else {
                 if (FCheckSelection(grobjFleet, 8) != 0) {
                     return 1;
                 }
                 if (tutor.fProgress != 0 && FCheckMessages(11, 0xffff, 0) != 0 && hwndBrowser == 0) {
                     if (FCheckMessages(13, 0xffff, 0) == 0) {
-                        tutor.idtBold = 285;
+                        tutor.idtBold = idtReadTwoMessagesLookingTechBrowserIf;
                     } else {
-                        tutor.idtBold = 286;
+                        tutor.idtBold = idtReadMessageGotoArmedProbe;
                     }
                 } else if (hwndBrowser == 0) {
-                    tutor.idtBold = 283;
+                    tutor.idtBold = idtReadMessageHitGotoOpenTechnologyBrowser;
                 } else {
-                    tutor.idtBold = 284;
+                    tutor.idtBold = idtWhenDoneReadingAboutBetaTorpedoClose;
                     tutor.fProgress = 1;
                 }
             }
             return 0;
-        case 288:
+        case idtGollyNailedOneThemNoticeButtonNormally:
             if (tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
-                tutor.idtBold = vrgtok == 0 ? 289 : 290;
+                tutor.idtBold = vrgtok == 0 ? idtPressViewOpenBattleVcr : idtUseVcrControlsWatchPlaybackBattleHit;
                 return 0;
             }
-            tutor.idtBold = FCheckMessages(9999, 0xffff, 0) == 0 ? 291 : 295;
+            tutor.idtBold = FCheckMessages(9999, 0xffff, 0) == 0 ? idtReadRestMessages2 : idtGenerateWhenReady6;
             tutor.fTurnDone = 1;
             return 1;
         }
@@ -1097,7 +1099,7 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 296:
+        case idtReadFirstMessageGotoButtonDisabledI:
             if (LpplFromId(8)->lpplprod->iprodMac > 2) {
                 return 1;
             }
@@ -1105,34 +1107,34 @@ int16_t FTutorTaskDone() {
                 return 1;
             }
             if (FCheckSummary(grobjThing, -1) != 0) {
-                tutor.idtBold = 303;
+                tutor.idtBold = idtSelectViewFindTypeTeamster4Hit;
             } else if (FCheckMessages(1, 0xffff, 0) != 0 && FCheckSelection(grobjFleet, 8) != 0) {
-                tutor.idtBold = 300;
+                tutor.idtBold = idtRightClickArmedProbe9SelectSalvage;
             } else {
-                tutor.idtBold = 297;
+                tutor.idtBold = idtReadMessageGotoArmedProbe9;
             }
             return 0;
-        case 304:
+        case idtIfCantFindWhereYellowSelectionArrow:
             if (FCheckMessages(5, 0xffff, 0) == 0) {
-                tutor.idtBold = 306;
+                tutor.idtBold = idtReadMessage4;
                 return 0;
             }
             if (FCheckMessages(6, 0xffff, 0) == 0) {
-                tutor.idtBold = 308;
+                tutor.idtBold = idtWatchSadBattleIfWantMoveMessage;
                 return 0;
             }
-            tutor.idtBold = 310;
+            tutor.idtBold = idtReadMessageGotoRedStorm;
             return FCheckSelection(grobjPlanet, 18);
-        case 312:
+        case idtOtherBitShortColonistsRedStormDoing:
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 1, grobjFleet, 3, 2, 0) == 0) {
-                if (LpplFromId(8)->lpplprod->iprodMac < 3 || FCheckQueue(8, 0, grobjPlanet, 12, 2, 1) == 0) {
-                    tutor.idtBold = FCheckSelection(grobjPlanet, 8) == 0 ? 313 : 316;
+                if (LpplFromId(8)->lpplprod->iprodMac < 3 || FCheckQueue(8, 0, grobjPlanet, mdIdleTerraform, 2, 1) == 0) {
+                    tutor.idtBold = FCheckSelection(grobjPlanet, 8) == 0 ? idtReadMessageGotoSlime : idtOpenSlimesProductionQueueAddTwoTerraform;
                 } else {
-                    tutor.idtBold = 318;
+                    tutor.idtBold = idtAddTwoTeamstersStoveTopsProductionQueue;
                 }
                 return 0;
             }
-            tutor.idtBold = 319;
+            tutor.idtBold = idtGenerateWhenReady7;
             tutor.fTurnDone = 1;
             return 1;
         }
@@ -1140,42 +1142,42 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 320:
+        case idtReadFirstMessageLoadTeamster1Colonists:
             if (rgplr[0].cShDef == 7) {
                 return 1;
             }
             if (FCheckXferWP(0, 1, 8, 0xffff, rgiaUnloadAllCol) == 0) {
                 if (FCheckCargo(LpflFromId(0), 0, 0, 0, 210) == 0) {
-                    tutor.idtBold = 320;
+                    tutor.idtBold = idtReadFirstMessageLoadTeamster1Colonists;
                 } else {
-                    tutor.idtBold = 321;
+                    tutor.idtBold = idtSendSlimeOrdersUnloadThem;
                 }
                 tutor.fProgress = 0;
                 return 0;
             }
             if (FCheckMessages(3, 0xffff, 0) == 0) {
-                tutor.idtBold = 322;
+                tutor.idtBold = idtReadMessage5;
                 return 0;
             }
             if (FCheckResearch(Biotechnology, Propulsion, 30) == 0) {
-                tutor.idtBold = 324;
+                tutor.idtBold = idtReadMessageOpenResearchDialogChangeField;
                 return 0;
             }
             if (tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
                 if (hwndBrowser == 0) {
-                    tutor.idtBold = 325;
+                    tutor.idtBold = idtReadMessageCheckRoboMinerTechBrowser;
                 } else {
-                    tutor.idtBold = 327;
+                    tutor.idtBold = idtHitF4OpenShipDesigner;
                     tutor.fProgress = 1;
                 }
                 return 0;
             }
-            tutor.idtBold = 327;
+            tutor.idtBold = idtHitF4OpenShipDesigner;
             if (hwndSlotDlg != 0) {
                 return 1;
             }
             return 0;
-        case 328:
+        case idtSelectAvailableHullTypes:
             hs.grhst = hstEngine;
             hs.iItem = 3;
             hs.cItem = 1;
@@ -1187,337 +1189,338 @@ int16_t FTutorTaskDone() {
             }
             if (FCheckShipBuilder(4, -1) == 0) {
                 if (FCheckShipBuilder(1, 7) != 0) {
-                    tutor.idtBold = 330;
+                    tutor.idtBold = idtHitCopySelectedDesign;
                 } else {
-                    tutor.idtBold = FCheckShipBuilder(1, -1) == 0 ? 328 : 329;
+                    tutor.idtBold = FCheckShipBuilder(1, -1) == 0 ? idtSelectAvailableHullTypes : idtChooseMiniMinerDropdown;
                 }
                 return 0;
             }
-            tutor.idh = 3039;
+            tutor.idh = idhDesigningANewShipFromScratch;
             if (lpshdefBuild->hul.rghs[0].cItem == 0 || FCheckBuilderPart(0, &hs, 1) == 0) {
-                tutor.idtBold = 332;
+                tutor.idtBold = idtDragLongHump6EnginePartsList;
                 return 0;
             }
             if (lpshdefBuild->hul.rghs[1].cItem == 0 || FCheckBuilderPart(1, &hs1, 1) == 0) {
-                tutor.idtBold = 333;
+                tutor.idtBold = idtDragRhinoScannerScannerElectMechSlot;
                 return 0;
             }
             if (lpshdefBuild->hul.rghs[2].cItem == 0 || lpshdefBuild->hul.rghs[3].cItem == 0) {
                 if (FCheckShipBuilder(4, 8) == 0) {
-                    tutor.idtBold = 334;
+                    tutor.idtBold = idtSelectMiningRobotsPartsCategoryDropdown;
                     return 0;
                 }
-                tutor.idtBold = 335;
+                tutor.idtBold = idtDragRoboMinerEachMiningSlots;
                 return 0;
             }
             return 1;
-        case 336:
+        case idtShipDesignNameImageJustFine:
             if (hwndSlotDlg != 0) {
-                tutor.idtBold = FCheckShipBuilder(4, -1) == 0 ? 338 : 337;
+                tutor.idtBold = FCheckShipBuilder(4, -1) == 0 ? idtDoneCloseDesigner : idtHitOkFinishEditingDesign;
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || (LpplFromId(13)->lpplprod->iprodMac == 3 && FCheckQueue(13, 1, grobjFleet, 6, 1, 0) == 0)) {
-                tutor.idtBold = 339;
+                tutor.idtBold = idtAddOneNewMiniMinersStoveTops;
                 return 0;
             }
-            if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 0, grobjPlanet, 8, 100, 0) == 0) {
-                tutor.idtBold = lpplProdGlob == 0 ? 341 : 342;
+            if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 0, grobjPlanet, mdIdleMine, 100, 0) == 0) {
+                tutor.idtBold = lpplProdGlob == 0 ? idtOpenStoveTopsQueue : idtSelectMineLeftHandListboxTopQueue;
                 tutor.fProgress = 0;
                 return 0;
             }
             return 1;
-        case 344:
+        case idtClickEachItemsProductionTileMiniMiner:
             if (tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
-                tutor.idtBold = 344;
+                tutor.idtBold = idtClickEachItemsProductionTileMiniMiner;
                 return 0;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 345;
+                tutor.idtBold = idtReadFinalMessage;
                 return 0;
             }
             if (FCheckFleetWP(8, 1, grobjPlanet, 13, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 348;
+                tutor.idtBold = idtSendArmedProbe9BackStoveTop;
                 return 0;
             }
-            tutor.idtBold = 350;
+            tutor.idtBold = idtGenerateNewYear;
             tutor.fTurnDone = 1;
             return 1;
         }
     case 14:
-        if (tutor.idt != 352) {
+        if (tutor.idt != idtReadFirstMessageGotoSeaSquared) {
             return 1;
         }
-        if (LpplFromId(2)->lpplprod->iprodMac < 3 || FCheckQueue(2, 0, grobjPlanet, 4, 2, 1) == 0 || FCheckTemplate(1) == 0) {
+        if (LpplFromId(2)->lpplprod->iprodMac < 3 || FCheckQueue(2, 0, grobjPlanet, iobjMinTerraform, 2, 1) == 0 || FCheckTemplate(1) == 0) {
             if (FCheckSelection(grobjPlanet, 2) != 0) {
-                tutor.idtBold = 356;
+                tutor.idtBold = idtAddMinTerraform2OxygensQueueRight;
             } else if (FCheckSelection(grobjPlanet, 17) != 0) {
-                tutor.idtBold = 354;
+                tutor.idtBold = idtReadFinalMessageGotoOxygen;
             } else {
-                tutor.idtBold = 352;
+                tutor.idtBold = idtReadFirstMessageGotoSeaSquared;
             }
             return 0;
         }
-        tutor.idtBold = 358;
+        tutor.idtBold = idtGenerateWhenReady8;
         tutor.fTurnDone = 1;
         return 1;
     case 15:
-        if (tutor.idt != 360) {
-            if (tutor.idt != 368) {
+        if (tutor.idt != idtReadFirstMessageSendArmedProbe9) {
+            if (tutor.idt != idtReadTwoMessagesOpenResearchDialog) {
                 return 1;
             }
             if (tutor.fAutoComplete == 0 && tutor.fProgress == 0) {
                 if (pctResGlob != -1) {
                     tutor.fProgress = 1;
-                    tutor.idtBold = 371;
+                    tutor.idtBold = idtCloseDialog;
                 } else {
-                    tutor.idtBold = 368;
+                    tutor.idtBold = idtReadTwoMessagesOpenResearchDialog;
                 }
                 return 0;
             }
             if (FCheckFleetWP(11, 1, grobjPlanet, 13, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 372;
+                tutor.idtBold = idtReadRemainingMessagesSendTeamster12Back;
                 return 0;
             }
-            tutor.idtBold = 374;
+            tutor.idtBold = idtGenerateNewYear2;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckFleetWP(8, 1, grobjPlanet, 11, 0xffff, 0xffff) == 0) {
-            tutor.idtBold = 360;
+            tutor.idtBold = idtReadFirstMessageSendArmedProbe9;
             return 0;
         }
         if (FCheckCargo(LpflFromId(6), 0, 0, 0, 210) == 0) {
-            tutor.idtBold = 361;
+            tutor.idtBold = idtReadMessageGotoNewTeamsterFillColonists;
             tutor.fProgress = 0;
             return 0;
         }
         if (tutor.fAutoComplete == 0 && tutor.fProgress == 0) {
             if (vprptCur == 0) {
-                tutor.idtBold = 363;
+                tutor.idtBold = idtChoosePlanetsReportMenu;
             } else {
                 tutor.fProgress = 1;
                 if (vprptCur->icolSort == 4) {
-                    tutor.idtBold = 366;
+                    tutor.idtBold = idtHitEscKeyClosePlanetSummaryReport;
                 } else {
-                    tutor.idtBold = 364;
+                    tutor.idtBold = idtClickTitleValueColumnSortValue;
                 }
             }
             return 0;
         }
         if (FCheckXferWP(6, 1, 5, 0xffff, rgiaUnloadAllCol) == 0) {
-            tutor.idtBold = 367;
+            tutor.idtBold = idtSendTeamster7WallabyUnloadColonists;
             return 0;
         }
         return 1;
     case 16:
-        if (tutor.idt != 376) {
+        if (tutor.idt != idtReadFirstMessageSendStalwartDefender5) {
             return 1;
         }
         if (FCheckFleetWP(4, 1, grobjPlanet, 5, 0xffff, 0xffff) == 0) {
-            tutor.idtBold = 376;
+            tutor.idtBold = idtReadFirstMessageSendStalwartDefender5;
             return 0;
         }
         tutor.fNoErrors = 1;
         if (LpflFromId(7)->cord == 1) {
-            tutor.idtBold = FCheckSelection(grobjFleet, 7) == 0 ? 377 : 378;
+            tutor.idtBold = FCheckSelection(grobjFleet, 7) == 0 ? idtReadMessageGotoNewMiniMiner : idtShiftClickPruneSetWaypointTaskMerge;
             return 0;
         }
         if (FCheckFleetWP(7, 1, grobjPlanet, 12, 0xffff, 0xffff) != 0) {
             tutor.fNoErrors = 0;
-            tutor.idtBold = 378;
+            tutor.idtBold = idtShiftClickPruneSetWaypointTaskMerge;
             return 0;
         }
         tutor.fNoErrors = 0;
-        if (FCheckFleetWP(7, 1, grobjFleet, 5, 4, 0xffff) == 0) {
-            tutor.idtBold = 378;
+        if (FCheckFleetWP(7, 1, grobjFleet, 5, grTaskMerge, 0xffff) == 0) {
+            tutor.idtBold = idtShiftClickPruneSetWaypointTaskMerge;
             return 0;
         }
-        if (LpplFromId(13)->lpplprod->iprodMac < 2 || FCheckQueue(13, 0, grobjPlanet, 1, 60, 0) == 0 || FCheckQueue(13, 1, grobjPlanet, 0, 60, 0) == 0) {
-            tutor.idtBold = lpplProdGlob == 0 ? 380 : 381;
+        if (LpplFromId(13)->lpplprod->iprodMac < 2 || FCheckQueue(13, 0, grobjPlanet, iobjFactory, 60, 0) == 0 ||
+            FCheckQueue(13, 1, grobjPlanet, iobjMine, 60, 0) == 0) {
+            tutor.idtBold = lpplProdGlob == 0 ? idtReadMessageOpenStoveTopsProductionQueue : idtIncreaseNumberAutoBuildFactories60Add;
             return 0;
         }
         if (FCheckResearch(Propulsion, Construction, 30) == 0) {
-            tutor.idtBold = 382;
+            tutor.idtBold = idtReadTwoMessagesChangeFieldResearchConstruction;
             return 0;
         }
-        tutor.idtBold = 383;
+        tutor.idtBold = idtReadFinalMessageGenerate;
         tutor.fTurnDone = 1;
         return 1;
     case 17:
-        if (tutor.idt != 384) {
+        if (tutor.idt != idtReadMessages2) {
             return 1;
         }
         if (FCheckFleetWP(0, 1, grobjPlanet, 13, 0xffff, 0xffff) == 0) {
-            tutor.idtBold = FCheckMessages(9999, 0xffff, 0) == 0 ? 384 : 385;
+            tutor.idtBold = FCheckMessages(9999, 0xffff, 0) == 0 ? idtReadMessages2 : idtSendTeamster1BackStoveTop;
             return 0;
         }
-        tutor.idtBold = 387;
+        tutor.idtBold = idtGenerateNewYear3;
         tutor.fTurnDone = 1;
         return 1;
     case 18:
-        if (tutor.idt != 392) {
+        if (tutor.idt != idtReadFirstMessageAddTeamsterStoveTops) {
             return 1;
         }
         if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 0, grobjFleet, 3, 1, 0) == 0) {
-            tutor.idtBold = 392;
+            tutor.idtBold = idtReadFirstMessageAddTeamsterStoveTops;
             return 0;
         }
         if (FCheckMessages(5, 0xffff, 0) == 0) {
             tutor.fProgress = 0;
-            tutor.idtBold = 393;
+            tutor.idtBold = idtReadMessageGoto90210;
             return 0;
         }
         if (tutor.fAutoComplete == 0 && tutor.fProgress == 0) {
             if (FCheckSelection(grobjPlanet, 16) == 0) {
-                tutor.idtBold = 393;
+                tutor.idtBold = idtReadMessageGoto90210;
             } else if (pctResGlob != -1) {
-                tutor.idtBold = 396;
+                tutor.idtBold = idtClickDifferentItemsListedExpectedBenefitsBox;
             } else {
-                tutor.idtBold = 395;
+                tutor.idtBold = idtReadTwoMessagesOpenResearchDialog2;
             }
             return 0;
         }
         if (pctResGlob != -1) {
-            tutor.idtBold = 398;
+            tutor.idtBold = idtCloseDialogWithoutMakingAnyChanges;
             return 0;
         }
-        tutor.idtBold = 399;
+        tutor.idtBold = idtReadRemainingMessagesGenerateYear;
         tutor.fTurnDone = 1;
         return 1;
     case 19:
-        if (tutor.idt != 400) {
-            if (tutor.idt != 408) {
+        if (tutor.idt != idtReadFirstMessageLoadTeamster12Colonists) {
+            if (tutor.idt != idtAddWaypointOxygenUnloadColonists) {
                 return 1;
             }
             if (FCheckXferWP(1, 1, 2, 0xffff, rgiaUnloadAllCol) == 0) {
-                tutor.idtBold = 408;
+                tutor.idtBold = idtAddWaypointOxygenUnloadColonists;
                 return 0;
             }
             tutor.fNoErrors = 1;
             if (FCheckXferWP(1, 2, 13, 0xffff, rgiaLoadAllCol) == 0) {
                 tutor.fNoErrors = 0;
-                tutor.idtBold = 409;
+                tutor.idtBold = idtShiftClickBackStoveTopChangeTask2;
                 return 0;
             }
             tutor.fNoErrors = 0;
-            tutor.idh = 1518;
-            tutor.idtBold = 410;
+            tutor.idh = idhFleetWaypointsTile;
+            tutor.idtBold = idtClickRepeatOrdersCheckboxFleetWaypointsTile3;
             if (LpflFromId(1)->fRepOrders == 0) {
                 return 0;
             }
-            if (LpplFromId(16)->lpplprod->iprodMac < 3 || FCheckQueue(16, 2, grobjPlanet, 5, 1, 1) == 0) {
-                tutor.idtBold = 412;
+            if (LpplFromId(16)->lpplprod->iprodMac < 3 || FCheckQueue(16, 2, grobjPlanet, iobjMaxTerraform, 1, 1) == 0) {
+                tutor.idtBold = idtReadMessageAddMaxTerraformAutoBuild;
                 return 0;
             }
             if (FCheckFleetWP(6, 1, grobjPlanet, 13, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 413;
+                tutor.idtBold = idtRead3MessagesSendTeamster7Back;
                 return 0;
             }
-            tutor.idtBold = 414;
+            tutor.idtBold = idtReadLastMessageGenerateYear;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckCargo(LpflFromId(11), 0, 0, 0, 210) == 0) {
-            tutor.idtBold = 400;
+            tutor.idtBold = idtReadFirstMessageLoadTeamster12Colonists;
             return 0;
         }
         if (FCheckXferWP(11, 1, 5, 0xffff, rgiaUnloadAllCol) == 0) {
-            tutor.idtBold = 401;
+            tutor.idtBold = idtAddWaypointWallabyUnloadColonists;
             return 0;
         }
         tutor.fNoErrors = 1;
         if (FCheckXferWP(11, 2, 13, 0xffff, rgiaLoadAllCol) == 0) {
             tutor.fNoErrors = 0;
-            tutor.idtBold = 402;
+            tutor.idtBold = idtShiftClickBackStoveTopChangeTask;
             return 0;
         }
         tutor.fNoErrors = 0;
-        tutor.idh = 1518;
-        tutor.idtBold = 403;
+        tutor.idh = idhFleetWaypointsTile;
+        tutor.idtBold = idtClickRepeatOrdersCheckboxFleetWaypointsTile2;
         if (LpflFromId(11)->fRepOrders == 0) {
             return 0;
         }
         if (FCheckCargo(LpflFromId(1), 0, 0, 0, 210) == 0) {
-            tutor.idtBold = FCheckSelection(grobjFleet, 1) == 0 ? 406 : 407;
+            tutor.idtBold = FCheckSelection(grobjFleet, 1) == 0 ? idtReadMessageGotoNewTeamster : idtLoadColonists2;
             return 0;
         }
         return 1;
     case 20:
-        if (tutor.idt != 416) {
+        if (tutor.idt != idtReadFirstTwoMessagesSendArmedProbe) {
             return 1;
         }
         if (FCheckFleetWP(8, 1, grobjPlanet, 6, 0xffff, 0xffff) == 0) {
-            tutor.idtBold = 416;
+            tutor.idtBold = idtReadFirstTwoMessagesSendArmedProbe;
             return 0;
         }
         if (FCheckResearch(Construction, Weapons, 30) == 0) {
-            tutor.idtBold = 417;
+            tutor.idtBold = idtRead3MessagesChangeFieldResearchWeapons;
             return 0;
         }
         if (rgplr[0].cshdefSB == 1 || hwndSlotDlg != 0) {
             if (hwndSlotDlg == 0 && rgplr[0].cshdefSB == 1) {
-                tutor.idtBold = 418;
+                tutor.idtBold = idtReadFinalMessageHitF4OpenShip;
             } else if ((FCheckShipBuilder(4, -1) == 0 || fStarbaseMode == 0) && rgplr[0].cshdefSB == 1) {
-                tutor.idtBold = 419;
+                tutor.idtBold = idtSelectStarbasesCopySelectedDesign;
             } else if (lpshdefBuild->hul.rghs[0].cItem == 0) {
-                tutor.idtBold = 420;
+                tutor.idtBold = idtSelectOrbitalPartsCategoryDragStargate100;
             } else {
-                tutor.idtBold = 421;
+                tutor.idtBold = idtChangeDesignNameGaterClickRightArrow;
             }
             return 0;
         }
         if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 1, grobjFleet, 17, 1, 0) == 0) {
-            tutor.idtBold = 422;
+            tutor.idtBold = idtAddGaterStoveTopsQueue;
             return 0;
         }
-        tutor.idtBold = 423;
+        tutor.idtBold = idtGenerate;
         tutor.fTurnDone = 1;
         return 1;
     case 21:
-        if (tutor.idt != 424) {
-            if (tutor.idt != 432) {
+        if (tutor.idt != idtReadFirstMessageLoadTeamster1Colonists2) {
+            if (tutor.idt != idtReadRestMessages3) {
                 return 1;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 432;
+                tutor.idtBold = idtReadRestMessages3;
                 return 0;
             }
             if (tutor.fAutoComplete == 0 && tutor.fProgress == 0) {
                 if (vprptCur == 0) {
-                    tutor.idtBold = 434;
+                    tutor.idtBold = idtHitF3OpenPlanetSummaryReport;
                 } else if (vprptCur->icolSort == 11 && vprptCur->fAscending == 0 && vprptCur->iSubsort == 3) {
-                    tutor.idtBold = 439;
+                    tutor.idtBold = idtGenerateWhenReady9;
                     tutor.fProgress = 1;
                 } else {
-                    tutor.idtBold = 435;
+                    tutor.idtBold = idtFindMinConcColumnRightClickReverse;
                 }
                 return 0;
             }
-            tutor.idtBold = 439;
+            tutor.idtBold = idtGenerateWhenReady9;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckCargo(LpflFromId(0), 0, 0, 0, 210) == 0) {
-            tutor.idtBold = 424;
+            tutor.idtBold = idtReadFirstMessageLoadTeamster1Colonists2;
             return 0;
         }
         if (FCheckXferWP(0, 1, 5, 0xffff, rgiaUnloadAllCol) == 0) {
-            tutor.idtBold = 425;
+            tutor.idtBold = idtSendUnloadColonistsWallaby;
             return 0;
         }
         if (FCheckZip(0, rgiaUnloadAllCol, idsDropcol) == 0) {
-            tutor.idtBold = hwndZipOrderDlg == 0 ? 427 : 428;
+            tutor.idtBold = hwndZipOrderDlg == 0 ? idtRightClickBlueDiamondWaypointTaskTile2 : idtHitImportNameOrderDropcolOkBoth;
             return 0;
         }
         tutor.fNoErrors = 1;
         if (FCheckXferWP(0, 2, 13, 0xffff, rgiaLoadAllCol) == 0) {
             tutor.fNoErrors = 0;
-            tutor.idtBold = 430;
+            tutor.idtBold = idtShiftClickStoveTopChangeTransportOption;
             return 0;
         }
         tutor.fNoErrors = 0;
-        tutor.idh = 1518;
-        tutor.idtBold = 431;
+        tutor.idh = idhFleetWaypointsTile;
+        tutor.idtBold = idtClickRepeatOrders;
         if (LpflFromId(0)->fRepOrders == 0) {
             return 0;
         }
@@ -1526,29 +1529,29 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 440:
+        case idtReadFirstMessageGotoTeamster42:
             t_call_46b2 = LpflFromId(3);
             if (LOWORD(t_call_46b2->rgwtMin[4]) != 383 || HIWORD(t_call_46b2->rgwtMin[4]) != 0) {
                 if (FCheckSelection(grobjFleet, 3) == 0) {
-                    tutor.idtBold = 440;
+                    tutor.idtBold = idtReadFirstMessageGotoTeamster42;
                 } else {
-                    tutor.idtBold = 445;
-                    tutor.idh = 1517;
+                    tutor.idtBold = idtClickDragFuelGaugeOtherFleetsHere;
+                    tutor.idh = idhOtherFleetsHereTile;
                 }
                 return 0;
             }
             return 1;
-        case 448:
+        case idtAddTeamsterStoveTopsQueue:
             if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 1, grobjFleet, 3, 1, 0) == 0) {
-                tutor.idtBold = 448;
+                tutor.idtBold = idtAddTeamsterStoveTopsQueue;
                 return 0;
             }
             if (FCheckResearch(Weapons, Propulsion, 30) == 0) {
-                tutor.idtBold = 449;
+                tutor.idtBold = idtRead4MessagesChangeFieldResearchPropulsion;
                 return 0;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 450;
+                tutor.idtBold = idtReadRemainingMessagesOpenShipDesigner;
                 return 0;
             }
             if (rgplr[0].cShDef < 8 || hwndSlotDlg != 0) {
@@ -1559,42 +1562,42 @@ int16_t FTutorTaskDone() {
                 hs1.iItem = 1;
                 hs1.cItem = 3;
                 if (hwndSlotDlg == 0) {
-                    tutor.idtBold = 450;
+                    tutor.idtBold = idtReadRemainingMessagesOpenShipDesigner;
                     tutor.idh = 1001;
                     return 0;
                 }
                 if (rgplr[0].cShDef < 8 && FCheckShipBuilder(4, -1) == 0) {
-                    tutor.idtBold = 451;
+                    tutor.idtBold = idtViewAvailableHullTypesSelectFrigateDropdown;
                     return 0;
                 }
-                tutor.idh = 3039;
+                tutor.idh = idhDesigningANewShipFromScratch;
                 if (lpshdefBuild->hul.rghs[0].cItem == 0 || FCheckBuilderPart(0, &hs, 1) == 0) {
-                    tutor.idtBold = 452;
+                    tutor.idtBold = idtDragDaddyLongLegs7EngineSlot;
                 } else if (lpshdefBuild->hul.rghs[2].cItem == 0 || FCheckBuilderPart(2, &hs1, 1) == 0) {
-                    tutor.idtBold = 453;
+                    tutor.idtBold = idtSelectMineLayersDropdownDrag3Mine;
                 } else {
-                    tutor.idtBold = 454;
+                    tutor.idtBold = idtChangeDesignNameMineLayerOkDesign;
                 }
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 5 || FCheckQueue(13, 2, grobjFleet, 7, 1, 0) == 0) {
-                tutor.idtBold = 455;
+                tutor.idtBold = idtAddMineLayerStoveTopsQueue;
                 return 0;
             }
-            tutor.idtBold = 455;
+            tutor.idtBold = idtAddMineLayerStoveTopsQueue;
             return 1;
-        case 456:
+        case idtClickRedTriangleWallaby:
             if (FCheckFleetWP(4, 1, grobjFleet, 516, 0xffff, 0xffff) == 0) {
                 if (FCheckSelection(grobjFleet, 4) != 0) {
-                    tutor.idtBold = 459;
+                    tutor.idtBold = idtShiftClickEnemyFleet;
                 } else if (FCheckSummary(grobjFleet, 516) != 0) {
-                    tutor.idtBold = 458;
+                    tutor.idtBold = idtRightClickWallabySelectStalwartDefender5;
                 } else {
-                    tutor.idtBold = 456;
+                    tutor.idtBold = idtClickRedTriangleWallaby;
                 }
                 return 0;
             }
-            tutor.idtBold = 461;
+            tutor.idtBold = idtGenerateWhenReady10;
             tutor.fTurnDone = 1;
             tutor.fProgress = 0;
             return 1;
@@ -1603,47 +1606,47 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 464:
+        case idtReadFirstMessageGotoStalwartDefender5:
             if (FCheckCargo(LpflFromId(6), 0, 0, 0, 210) != 0) {
                 return 1;
             }
             if (FCheckMessages(1, 0xffff, 0) == 0 && FCheckSelection(grobjFleet, 4) == 0) {
-                tutor.idtBold = 464;
+                tutor.idtBold = idtReadFirstMessageGotoStalwartDefender5;
                 tutor.fProgress = 0;
                 return 0;
             }
             if (FCheckMessages(2, 0xffff, 0) == 0 && FCheckSelection(grobjFleet, 6) == 0) {
-                tutor.idtBold = 468;
+                tutor.idtBold = idtReadMessageGotoTeamster7;
                 return 0;
             }
             if (tutor.fAutoComplete == 0 && tutor.fProgress == 0) {
                 if (vprptCur == 0) {
-                    tutor.idtBold = 469;
+                    tutor.idtBold = idtOpenPlanetSummaryReportSortPopulation;
                 } else if (vprptCur->icolSort == 2) {
-                    tutor.idtBold = 471;
+                    tutor.idtBold = idtHitEscCloseReport;
                     tutor.fProgress = 1;
                 } else {
-                    tutor.idtBold = 469;
+                    tutor.idtBold = idtOpenPlanetSummaryReportSortPopulation;
                 }
                 return 0;
             }
             return 1;
-        case 472:
+        case idtLoadTeamster7ColonistsSendSeaSquared:
             if (FCheckCargo(LpflFromId(6), 0, 0, 0, 210) == 0) {
-                tutor.idtBold = 472;
+                tutor.idtBold = idtLoadTeamster7ColonistsSendSeaSquared;
                 return 0;
             }
             if (FCheckFleetWP(6, 1, grobjPlanet, 17, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 472;
+                tutor.idtBold = idtLoadTeamster7ColonistsSendSeaSquared;
                 return 0;
             }
-            if (FCheckFleetWP(6, 1, grobjPlanet, 17, 1, 0xffff) == 0) {
-                tutor.idtBold = 473;
+            if (FCheckFleetWP(6, 1, grobjPlanet, 17, grTaskXfer, 0xffff) == 0) {
+                tutor.idtBold = idtSetWaypointTaskTransport2;
                 return 0;
             }
             if (FCheckXferWP(6, 1, 17, 0xffff, rgiaUnloadAllCol) == 0) {
-                tutor.idtBold = 474;
-                tutor.idh = 1520;
+                tutor.idtBold = idtRightClickBlueDiamondChooseDropcol;
+                tutor.idh = idhTransport;
                 return 0;
             }
             if (LpflFromId(2) == 0) {
@@ -1651,25 +1654,25 @@ int16_t FTutorTaskDone() {
                 return 1;
             }
             if (FCheckMessages(3, 0xffff, 0) == 0) {
-                tutor.idtBold = 475;
+                tutor.idtBold = idtReadTwoMessagesGotoNewTeamster;
             } else if (FCheckSelection(grobjFleet, 3) == 0) {
-                tutor.idtBold = FCheckSelection(grobjFleet, 2) == 0 ? 475 : 477;
-                tutor.idh = 1517;
+                tutor.idtBold = FCheckSelection(grobjFleet, 2) == 0 ? idtReadTwoMessagesGotoNewTeamster : idtSelectTeamster4ListboxOtherFleetsHere;
+                tutor.idh = idhOtherFleetsHereTile;
             } else if (vrgiflMerge == 0) {
-                tutor.idtBold = 478;
-                tutor.idh = 1516;
+                tutor.idtBold = idtPressMergeButtonFleetCompositionTile;
+                tutor.idh = idhFleetCompositionTile;
             } else {
-                tutor.idh = 1107;
-                tutor.idtBold = 479;
+                tutor.idh = idhMergeFleetsDialog;
+                tutor.idtBold = idtClickTeamster3MergeFleetsDialogHit;
             }
             return 0;
-        case 480:
-            if (FCheckFleetWP(7, 0, grobjPlanet, 13, 6, 0xffff) == 0) {
-                tutor.idtBold = 480;
+        case idtReadMessageSetMineLayer8sTask:
+            if (FCheckFleetWP(7, 0, grobjPlanet, 13, grTaskLayMines, 0xffff) == 0) {
+                tutor.idtBold = idtReadMessageSetMineLayer8sTask;
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 0, grobjFleet, 6, 1, 0) == 0) {
-                tutor.idtBold = 481;
+                tutor.idtBold = idtReadMessageAddMiniMinerStoveTops;
                 tutor.fProgress = 0;
                 return 0;
             }
@@ -1678,97 +1681,97 @@ int16_t FTutorTaskDone() {
                 if (vrgtok != 0) {
                     tutor.fProgress = 1;
                 }
-                tutor.idtBold = 482;
+                tutor.idtBold = idtRead2MessagesWatchBattle;
                 return 0;
             }
             if (LpflFromId(4)->lpplord->rgord[0].grobj != grobjFleet) {
-                tutor.idtBold = 484;
-                tutor.idh = 1518;
+                tutor.idtBold = idtRightClickBlueDiamondFleetWaypointsTile;
+                tutor.idh = idhFleetWaypointsTile;
                 return 0;
             }
             if (LpflFromId(8)->cord < 3) {
                 if (FCheckMessages(9999, 0xffff, 0) == 0 || FCheckSelection(grobjFleet, 8) == 0) {
-                    tutor.idtBold = 485;
+                    tutor.idtBold = idtReadLastMessageDoubleClickArmedProbe;
                 } else {
                     tutor.fNoErrors = 1;
                     if (FCheckFleetWP(8, 1, grobjPlanet, 1, 0xffff, 0xffff) != 0) {
-                        tutor.idtBold = 487;
+                        tutor.idtBold = idtShiftClickLeverGenerate;
                     } else {
                         tutor.fNoErrors = 0;
                         FCheckFleetWP(8, 1, grobjPlanet, 6, 0xffff, 0xffff);
-                        tutor.idtBold = 486;
+                        tutor.idtBold = idtDragWaypointLaTeDaSpeedBump;
                     }
                     tutor.fNoErrors = 0;
                 }
                 return 0;
             }
             if (FCheckFleetWP(8, 2, grobjPlanet, 0, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 487;
+                tutor.idtBold = idtShiftClickLeverGenerate;
                 return 0;
             }
-            tutor.idtBold = 487;
+            tutor.idtBold = idtShiftClickLeverGenerate;
             tutor.fTurnDone = 1;
             return 1;
         }
     case 24:
-        if (tutor.idt != 488) {
+        if (tutor.idt != idtReadFirstMessageSendStalwartDefender52) {
             return 1;
         }
         if (FCheckFleetWP(4, 1, grobjPlanet, 5, 0xffff, 0xffff) == 0) {
-            tutor.idtBold = 488;
+            tutor.idtBold = idtReadFirstMessageSendStalwartDefender52;
             return 0;
         }
         tutor.fNoErrors = 1;
-        if (FCheckFleetWP(2, 1, grobjFleet, 5, 4, 0xffff) == 0) {
+        if (FCheckFleetWP(2, 1, grobjFleet, 5, grTaskMerge, 0xffff) == 0) {
             tutor.fNoErrors = 0;
             FCheckFleetWP(2, 1, grobjPlanet, 12, 0xffff, 0xffff);
-            tutor.idtBold = 489;
+            tutor.idtBold = idtReadMessageGotoMiniMiner3Send;
             return 0;
         }
         tutor.fNoErrors = 0;
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 490;
+            tutor.idtBold = idtReadRemainingMessages;
             return 0;
         }
-        tutor.idtBold = 492;
+        tutor.idtBold = idtGenerateWill;
         tutor.fTurnDone = 1;
         return 1;
     case 25:
-        if (tutor.idt != 496) {
-            if (tutor.idt != 504) {
+        if (tutor.idt != idtReadFirstTwoMessages) {
+            if (tutor.idt != idtAdd3ImprovedSantaMariasStoveTops) {
                 return 1;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 0, grobjFleet, 2, 3, 0) == 0) {
-                tutor.idtBold = 504;
+                tutor.idtBold = idtAdd3ImprovedSantaMariasStoveTops;
                 return 0;
             }
             if (FCheckMessages(4, 0xffff, 0) == 0) {
-                tutor.idtBold = 505;
+                tutor.idtBold = idtReadMessageGotoSeaSquared;
                 return 0;
             }
-            if (LpplFromId(17)->lpplprod->iprodMac != 3 || FCheckQueue(17, 2, grobjPlanet, 5, 2, 1) == 0) {
+            if (LpplFromId(17)->lpplprod->iprodMac != 3 || FCheckQueue(17, 2, grobjPlanet, iobjMaxTerraform, 2, 1) == 0) {
                 if (FCheckSelection(grobjPlanet, 17) == 0) {
-                    tutor.idtBold = 505;
+                    tutor.idtBold = idtReadMessageGotoSeaSquared;
                 } else {
-                    tutor.idtBold = 507;
+                    tutor.idtBold = idtAddMaxTerraformAutoBuild2End;
                 }
                 return 0;
             }
             if (FCheckMessages(6, 0xffff, 0) == 0 || FCheckResearch(Propulsion, Construction, 30) == 0) {
-                tutor.idtBold = 508;
+                tutor.idtBold = idtRead2MessagesChangeFieldResearchConstruction;
                 return 0;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 509;
+                tutor.idtBold = idtReadRestMessages4;
                 return 0;
             }
-            tutor.idtBold = 511;
+            tutor.idtBold = idtGenerateWhenReady11;
             tutor.fTurnDone = 1;
             tutor.fProgress = 0;
             return 1;
         }
         if (FCheckMessages(3, 0xffff, 0) == 0) {
-            tutor.idtBold = 496;
+            tutor.idtBold = idtReadFirstTwoMessages;
             return 0;
         }
         if (rgshdef[2].hul.rghs[0].iItem != 4 || hwndSlotDlg != 0) {
@@ -1779,39 +1782,39 @@ int16_t FTutorTaskDone() {
             hs2.iItem = 0;
             hs2.cItem = 1;
             if (FCheckScanner(3, -1) == 0) {
-                tutor.idtBold = 497;
+                tutor.idtBold = idtClickButtonToolbar;
                 return 0;
             }
             if (hwndSlotDlg == 0) {
-                tutor.idtBold = 499;
+                tutor.idtBold = idtHitF4OpenShipDesigner2;
                 tutor.idh = 1001;
                 return 0;
             }
             if (rgshdef[2].hul.rghs[0].iItem == 4) {
-                tutor.idtBold = 503;
+                tutor.idtBold = idtOkDesignHitDoneCloseDialog;
                 return 0;
             }
             if (FCheckShipBuilder(4, -1) == 0) {
                 if (FCheckShipBuilder(0, 2) == 0) {
-                    tutor.idtBold = 500;
+                    tutor.idtBold = idtSelectSantaMariaDropdown;
                 } else {
-                    tutor.idtBold = 501;
+                    tutor.idtBold = idtHitEditSelectedDesign;
                 }
             } else if (lpshdefBuild->hul.rghs[0].cItem == 0 || lpshdefBuild->hul.rghs[0].iItem != 4 || FCheckBuilderPart(1, &hs2, 1) == 0) {
-                tutor.idtBold = 502;
+                tutor.idtBold = idtDragLongHump6EngineDesignParts;
             } else {
-                tutor.idtBold = 503;
+                tutor.idtBold = idtOkDesignHitDoneCloseDialog;
             }
             return 0;
         }
         return 1;
     case 26:
-        if (tutor.idt != 512) {
-            if (tutor.idt != 520) {
+        if (tutor.idt != idtReadFirstThreeMessages) {
+            if (tutor.idt != idtTeamster12WillArriveStoveTopYear) {
                 return 1;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 4 || FCheckQueue(13, 1, grobjFleet, 3, 3, 0) == 0) {
-                tutor.idtBold = 521;
+                tutor.idtBold = idtAdd3TeamstersStoveTopsQueue;
                 return 0;
             }
             tutor.fNoErrors = 1;
@@ -1819,45 +1822,45 @@ int16_t FTutorTaskDone() {
                 tutor.fNoErrors = 0;
                 FCheckColonizeWP(4, 5, 0xffff);
                 if (FCheckSummary(grobjFleet, 517) != 0 || FCheckSummary(grobjFleet, 4) != 0 || FCheckSelection(grobjFleet, 4) != 0) {
-                    tutor.idtBold = 525;
+                    tutor.idtBold = idtSelectStalwartDefender5DragDestinationEnemy;
                 } else {
-                    tutor.idtBold = 523;
+                    tutor.idtBold = idtClickEnemyShipNearWallaby;
                 }
                 return 0;
             }
             tutor.fNoErrors = 0;
-            tutor.idtBold = 527;
+            tutor.idtBold = idtGenerateWhenYoureReady;
             tutor.fTurnDone = 1;
             return 1;
         }
         if (FCheckMessages(4, 0xffff, 0) == 0) {
-            tutor.idtBold = 512;
+            tutor.idtBold = idtReadFirstThreeMessages;
             return 0;
         }
         if (rgplr[0].cFleet == 10 && FCheckColonizeWP(9, 0, 0xffff) == 0) {
-            tutor.idtBold = FCheckSelection(grobjFleet, 9) == 0 ? 513 : 514;
+            tutor.idtBold = FCheckSelection(grobjFleet, 9) == 0 ? idtGoto3NewSantaMarias : idtLoadThemColonistsSendThemColonizeLever;
             return 0;
         }
         if (rgplr[0].cFleet == 10) {
-            tutor.idtBold = 515;
+            tutor.idtBold = idtHitSplitButtonFleetCompositionTile2;
             return 0;
         }
         tutor.fNoErrors = 1;
         if (FCheckColonizeWP(9, 1, 0xffff) == 0) {
             tutor.fNoErrors = 0;
             FCheckColonizeWP(9, 0, 0xffff);
-            tutor.idtBold = 516;
+            tutor.idtBold = idtDragSantaMaria10sWaypointSpeedBump;
             return 0;
         }
         if (FCheckColonizeWP(10, 23, 0xffff) == 0) {
             tutor.fNoErrors = 0;
             FCheckColonizeWP(10, 0, 0xffff);
-            tutor.idtBold = 517;
+            tutor.idtBold = idtSantaMaria11sBloop;
             return 0;
         }
         tutor.fNoErrors = 0;
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 518;
+            tutor.idtBold = idtReadRestMessages5;
             return 0;
         }
         return 1;
@@ -1865,21 +1868,21 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 528:
+        case idtReadFirstMessageGotoStalwartDefender52:
             tutor.fNoErrors = 1;
             if (FCheckFleetWP(4, 0, grobjFleet, 517, 0xffff, 0xffff) == 0) {
                 tutor.fNoErrors = 0;
                 if (FCheckSelection(grobjFleet, 4) != 0) {
-                    tutor.idh = 1518;
-                    tutor.idtBold = 530;
+                    tutor.idh = idhFleetWaypointsTile;
+                    tutor.idtBold = idtRightClickBlueDiamondFleetWaypointsTile2;
                 } else {
-                    tutor.idtBold = 528;
+                    tutor.idtBold = idtReadFirstMessageGotoStalwartDefender52;
                 }
                 return 0;
             }
             tutor.fNoErrors = 0;
             if (FCheckMessages(1, 0xffff, 0) == 0) {
-                tutor.idtBold = 532;
+                tutor.idtBold = idtReadMessageGotoArmedProbe92;
                 return 0;
             }
             if (LpflFromId(12) == 0 || LpflFromId(12)->fDead != 0) {
@@ -1887,90 +1890,90 @@ int16_t FTutorTaskDone() {
             }
             if (FCheckCargo(LpflFromId(12), 0, 0, 0, 630) == 0) {
                 if (FCheckSelection(grobjFleet, 12) != 0) {
-                    tutor.idtBold = 535;
+                    tutor.idtBold = idtFillColonists;
                 } else {
-                    tutor.idtBold = FCheckSelection(grobjFleet, 8) == 0 ? 532 : 534;
+                    tutor.idtBold = FCheckSelection(grobjFleet, 8) == 0 ? idtReadMessageGotoArmedProbe92 : idtReadMessageGotoNewFleet;
                 }
                 return 0;
             }
             return 1;
-        case 536:
+        case idtWeWantMergeNewTeamstersOtherFleet:
             if (LpflFromId(12) != 0) {
                 if (FCheckSelection(grobjFleet, 11) == 0) {
-                    tutor.idtBold = 537;
+                    tutor.idtBold = idtSelectTeamster12PressMergeButtonFleet;
                 } else if (vrgiflMerge == 0) {
-                    tutor.idtBold = 537;
-                    tutor.idh = 1516;
+                    tutor.idtBold = idtSelectTeamster12PressMergeButtonFleet;
+                    tutor.idh = idhFleetCompositionTile;
                 } else {
-                    tutor.idtBold = 537;
+                    tutor.idtBold = idtSelectTeamster12PressMergeButtonFleet;
                 }
                 return 0;
             }
             if (FCheckMessages(8, 0xffff, 0) == 0) {
-                tutor.idtBold = 538;
+                tutor.idtBold = idtReadMessage6;
                 return 0;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 540;
+                tutor.idtBold = idtReadRestMessagesViewingBattleColonizerIf;
                 return 0;
             }
-            tutor.idtBold = 542;
-            tutor.idh = 6001;
+            tutor.idtBold = idtHitF4OpenShipDesigner3;
+            tutor.idh = idhKeyboardShortcuts;
             if (hwndSlotDlg != 0 || rgplr[0].cShDef == 9) {
                 return 1;
             }
             return 0;
-        case 544:
+        case idtWeWantPowerfulWeAlsoWantWeigh:
             if (hwndSlotDlg != 0 || rgplr[0].cShDef < 9) {
                 if (FCheckShipBuilder(4, -1) == 0) {
-                    tutor.idtBold = rgplr[0].cShDef >= 9 ? 549 : 545;
+                    tutor.idtBold = rgplr[0].cShDef >= 9 ? idtClickRightArrowButtonBelowShipImage : idtSelectAvailableHullTypesChooseDestroyerDropdown;
                 } else if (lpshdefBuild->hul.rghs[0].cItem != 1 || lpshdefBuild->hul.rghs[1].cItem != 1 || lpshdefBuild->hul.rghs[2].cItem != 1 ||
                            lpshdefBuild->hul.rghs[3].cItem != 1 || lpshdefBuild->hul.rghs[4].cItem != 2) {
-                    tutor.idtBold = 546;
+                    tutor.idtBold = idtAddRadiatingHydroRamScoop2Carbonic;
                 } else if (lpshdefBuild->hul.rghs[5].cItem != 1 || lpshdefBuild->hul.rghs[6].cItem != 1) {
-                    tutor.idtBold = 547;
+                    tutor.idtBold = idtAddFuelTankMechanicalSlotBattleComputer;
                 } else {
-                    tutor.idtBold = 549;
+                    tutor.idtBold = idtClickRightArrowButtonBelowShipImage;
                 }
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 0, grobjFleet, 8, 10, 0) == 0) {
-                tutor.idtBold = 550;
+                tutor.idtBold = idtPut10DestroyersStoveTopsQueue;
                 return 0;
             }
-            tutor.idtBold = 551;
+            tutor.idtBold = idtGenerate2;
             tutor.fTurnDone = 1;
             return 1;
         }
     case 28:
-        if (tutor.idt != 552) {
+        if (tutor.idt != idtReadFirstMessageGotoStalwartDefender53) {
             return 1;
         }
         if (FCheckFleetWP(4, 1, grobjPlanet, 5, 0xffff, 0xffff) == 0) {
             if (FCheckSelection(grobjFleet, 4) == 0) {
-                tutor.idtBold = 552;
+                tutor.idtBold = idtReadFirstMessageGotoStalwartDefender53;
             } else {
-                tutor.idtBold = 554;
+                tutor.idtBold = idtSendWallaby;
             }
             return 0;
         }
         if (FCheckMessages(6, 0xffff, 0) == 0) {
-            tutor.idtBold = 555;
+            tutor.idtBold = idtRead4MessagesGotoNewDestroyerArmada;
             return 0;
         }
         if (FCheckFleetWP(12, 1, grobjPlanet, 10, 0xffff, 0xffff) == 0) {
             if (FCheckSelection(grobjFleet, 12) == 0) {
-                tutor.idtBold = 555;
+                tutor.idtBold = idtRead4MessagesGotoNewDestroyerArmada;
             } else {
-                tutor.idtBold = 556;
+                tutor.idtBold = idtSendWreakHavocBerserkerStarbaseHacker;
             }
             return 0;
         }
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 557;
+            tutor.idtBold = idtReadRestMessages6;
             return 0;
         }
-        tutor.idtBold = 559;
+        tutor.idtBold = idtGenerateTurn;
         tutor.fTurnDone = 1;
         tutor.fProgress = 0;
         return 1;
@@ -1978,150 +1981,150 @@ int16_t FTutorTaskDone() {
         switch (tutor.idt) {
         default:
             return 1;
-        case 560:
+        case idtReadFirstMessageGotoTeamster43:
             tutor.fNoErrors = 1;
             if (FCheckFleetWP(3, 1, grobjPlanet, 13, 0xffff, 5) == 0) {
                 tutor.fNoErrors = 0;
                 if (FCheckSelection(grobjFleet, 3) == 0) {
-                    tutor.idtBold = 560;
+                    tutor.idtBold = idtReadFirstMessageGotoTeamster43;
                 } else {
-                    tutor.idtBold = 562;
+                    tutor.idtBold = idtClickStoveTopFleetWaypointsTileDecrease;
                 }
                 return 0;
             }
             tutor.fNoErrors = 0;
             if (FCheckMessages(6, 0xffff, 0) == 0) {
-                tutor.idtBold = 564;
+                tutor.idtBold = idtRead4Messages;
                 return 0;
             }
             if (FCheckFleetWP(13, 1, grobjPlanet, 10, 0xffff, 0xffff) == 0) {
-                tutor.idtBold = 565;
+                tutor.idtBold = idtSendNewDestroyerHackerWell;
                 return 0;
             }
             if (FCheckPlanetRoute(13, 10) == 0) {
-                tutor.idtBold = 567;
+                tutor.idtBold = idtSelectStoveTopControlClickHacker;
                 return 0;
             }
             return 1;
-        case 568:
+        case idtNoticeProductionTileNewShipsWillRouted:
             if (FCheckMessages(17, 0xffff, 0) == 0) {
-                tutor.idtBold = 569;
+                tutor.idtBold = idtRead3Messages;
                 return 0;
             }
             if (FCheckResearch(Construction, Energy, 30) == 0) {
-                tutor.idtBold = 570;
+                tutor.idtBold = idtOpenResearchDialogSetFieldResearchEnergy;
                 return 0;
             }
             if (FCheckMessages(9999, 0xffff, 0) == 0) {
-                tutor.idtBold = 571;
+                tutor.idtBold = idtReadRestMessages7;
                 return 0;
             }
             tutor.fNoErrors = 1;
-            if (FCheckFleetWP(6, 0, grobjPlanet, 17, 5, 0xffff) == 0) {
+            if (FCheckFleetWP(6, 0, grobjPlanet, 17, grTaskScrap, 0xffff) == 0) {
                 tutor.fNoErrors = 0;
                 if (FCheckSelection(grobjFleet, 6) == 0) {
-                    tutor.idtBold = 572;
+                    tutor.idtBold = idtGotoTeamster7;
                 } else {
-                    tutor.idtBold = 574;
+                    tutor.idtBold = idtGiveTeamster7OrdersScrapFleet;
                 }
                 return 0;
             }
             tutor.fNoErrors = 0;
             return 1;
-        case 576:
+        case idtLetsFinishOffBerserkersOnceBuildingBombing:
             if (hwndSlotDlg != 0) {
                 if (rgshdef[9].fFree == 0 && FCheckShipBuilder(4, -1) == 0) {
-                    tutor.idtBold = 581;
+                    tutor.idtBold = idtOkDesignCloseShipDesigner;
                 } else if (FCheckShipBuilder(4, -1) == 0) {
-                    tutor.idtBold = 578;
+                    tutor.idtBold = idtSelectAvailableHullTypesChooseB17;
                 } else if (lpshdefBuild->hul.rghs[0].cItem != 2) {
-                    tutor.idtBold = 579;
+                    tutor.idtBold = idtAddRadiatingHydroRamScoopEngines;
                 } else if (lpshdefBuild->hul.rghs[1].cItem != 4 || lpshdefBuild->hul.rghs[2].cItem != 4 || lpshdefBuild->hul.rghs[3].cItem != 1) {
-                    tutor.idtBold = 580;
+                    tutor.idtBold = idtHoldShiftKeyDrag4BlackCat;
                 } else {
-                    tutor.idtBold = 581;
+                    tutor.idtBold = idtOkDesignCloseShipDesigner;
                 }
                 return 0;
             }
             if (rgplr[0].cShDef < 10) {
-                tutor.idtBold = 577;
-                tutor.idh = 6001;
+                tutor.idtBold = idtHitF4OpenShipDesigner4;
+                tutor.idh = idhKeyboardShortcuts;
                 return 0;
             }
             if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 0, grobjFleet, 9, 10, 0) == 0) {
-                tutor.idtBold = 582;
+                tutor.idtBold = idtAdd10B17BombersStoveTops;
                 return 0;
             }
-            tutor.idtBold = 583;
+            tutor.idtBold = idtGenerateWhenReady12;
             tutor.fTurnDone = 1;
             tutor.fProgress = 0;
             return 1;
         }
     case 30:
-        if (tutor.idt != 584) {
+        if (tutor.idt != idtCongratulationsYouveDeclaredWinner) {
             return 1;
         }
         if (FCheckMessages(5, 0xffff, 0) == 0) {
-            tutor.idtBold = 586;
+            tutor.idtBold = idtReadFirst3MessagesGotoNewB;
             return 0;
         }
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
             if (FCheckSelection(grobjFleet, 14) == 0) {
-                tutor.idtBold = 586;
+                tutor.idtBold = idtReadFirst3MessagesGotoNewB;
             } else {
-                tutor.idtBold = 588;
+                tutor.idtBold = idtReadRestMessages8;
             }
             return 0;
         }
-        tutor.idtBold = 590;
+        tutor.idtBold = idtGenerateWhenYoureReady2;
         tutor.fTurnDone = 1;
         tutor.fProgress = 0;
         return 1;
     case 31:
-        if (tutor.idt != 592) {
+        if (tutor.idt != idtReadFirst4MessagesGotoWallaby) {
             return 1;
         }
         if (FCheckMessages(6, 0xffff, 0) == 0) {
-            tutor.idtBold = 592;
+            tutor.idtBold = idtReadFirst4MessagesGotoWallaby;
             return 0;
         }
         if (FCheckSelection(grobjPlanet, 5) == 0) {
-            tutor.idtBold = 592;
+            tutor.idtBold = idtReadFirst4MessagesGotoWallaby;
             return 0;
         }
-        if (LpplFromId(5)->lpplprod->iprodMac < 4 || FCheckQueue(5, 0, grobjPlanet, 8, 100, 1) == 0) {
-            tutor.idtBold = 594;
+        if (LpplFromId(5)->lpplprod->iprodMac < 4 || FCheckQueue(5, 0, grobjPlanet, mdIdleMine, 100, 1) == 0) {
+            tutor.idtBold = idtAdd100MinesWallabysQueue;
             return 0;
         }
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 596;
+            tutor.idtBold = idtReadRestMessages9;
             return 0;
         }
-        tutor.idtBold = 598;
+        tutor.idtBold = idtGenerateWill2;
         tutor.fTurnDone = 1;
         tutor.fProgress = 0;
         return 1;
     case 32:
-        if (tutor.idt != 600) {
+        if (tutor.idt != idtReadFirst3MessagesGotoDestroyer13) {
             return 1;
         }
         if (FCheckMessages(2, 0xffff, 0) == 0) {
-            tutor.idtBold = 600;
+            tutor.idtBold = idtReadFirst3MessagesGotoDestroyer13;
             return 0;
         }
         if (tutor.fProgress == 0 && tutor.fAutoComplete == 0) {
-            tutor.idtBold = 602;
+            tutor.idtBold = idtClickDestroyerFleetCompositionTile;
             return 0;
         }
         if (FCheckMessages(18, 0xffff, 0) == 0) {
             if (FCheckSelection(grobjFleet, 12) == 0) {
-                tutor.idtBold = 600;
+                tutor.idtBold = idtReadFirst3MessagesGotoDestroyer13;
             } else {
-                tutor.idtBold = 604;
+                tutor.idtBold = idtRead8MessagesViewAssaultEnemyStarbase;
             }
             return 0;
         }
-        tutor.idtBold = 606;
+        tutor.idtBold = idtReadRestMessagesGenerate;
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
             return 0;
         }
@@ -2129,34 +2132,34 @@ int16_t FTutorTaskDone() {
         tutor.fProgress = 0;
         return 1;
     case 33:
-        if (tutor.idt != 608) {
+        if (tutor.idt != idtReadFirst6MessagesGotoStoveTop) {
             return 1;
         }
         if (FCheckMessages(10, 0xffff, 0) == 0) {
-            tutor.idtBold = 608;
+            tutor.idtBold = idtReadFirst6MessagesGotoStoveTop;
             return 0;
         }
         if (LpplFromId(13)->lpplprod->iprodMac < 3 || FCheckQueue(13, 0, grobjFleet, 9, 10, 0) == 0) {
             if (FCheckSelection(grobjPlanet, 13) == 0) {
-                tutor.idtBold = 608;
+                tutor.idtBold = idtReadFirst6MessagesGotoStoveTop;
             } else {
-                tutor.idtBold = 609;
+                tutor.idtBold = idtAddAnother10B17BombersProduction;
             }
             return 0;
         }
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 611;
+            tutor.idtBold = idtReadRestMessagesWatchBattles;
             return 0;
         }
-        tutor.idtBold = 612;
+        tutor.idtBold = idtGenerateWhenReady13;
         tutor.fTurnDone = 1;
         tutor.fProgress = 0;
         return 1;
     case 34:
-        if (tutor.idt != 616) {
+        if (tutor.idt != idtNothingMuchHappeningYearViewBattleHacker) {
             return 1;
         }
-        tutor.idtBold = 619;
+        tutor.idtBold = idtReadMessagesGenerateWhenReady;
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
             return 0;
         }
@@ -2164,26 +2167,26 @@ int16_t FTutorTaskDone() {
         tutor.fProgress = 0;
         return 1;
     case 35:
-        if (tutor.idt != 624) {
+        if (tutor.idt != idtReadThroughMessages) {
             return 1;
         }
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 624;
+            tutor.idtBold = idtReadThroughMessages;
             return 0;
         }
-        tutor.idtBold = 628;
+        tutor.idtBold = idtGenerateWhenReady14;
         tutor.fTurnDone = 1;
         tutor.fProgress = 0;
         return 1;
     case 36:
-        if (tutor.idt != 632) {
+        if (tutor.idt != idtCongratulationsHaveReachedEndTutorial) {
             return 1;
         }
         if (FCheckMessages(9999, 0xffff, 0) == 0) {
-            tutor.idtBold = 636;
+            tutor.idtBold = idtReadMessages3;
             return 0;
         }
-        tutor.idtBold = 637;
+        tutor.idtBold = idtWhenGenerateYoureOwn;
         tutor.fTurnDone = 1;
         tutor.fProgress = 0;
         return 1;
@@ -2197,7 +2200,7 @@ int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, StringId ids) {
     int16_t     idhSav;
 
     idhSav = tutor.idh;
-    tutor.idh = 1098;
+    tutor.idh = idhCustomZipOrdersDialog;
     if (tutor.fAutoComplete != 0) {
         vrgZip[iZip].fValid = 1;
         piaCur = vrgZip[iZip].txp.rgia;
@@ -2214,12 +2217,12 @@ int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, StringId ids) {
     }
     if (vrgZip[iZip].fValid == 0) {
         if (hwndZipOrderDlg == 0) {
-            tutor.idh = 1520;
+            tutor.idh = idhTransport;
         }
         return 0;
     }
     piaCur = vrgZip[iZip].txp.rgia;
-    tutor.idh = 1519;
+    tutor.idh = idhWaypointTaskTile;
     i = 0;
     while (i < 5) {
         if (piaCur->iAction != lpiaGoal->iAction && piaCur->iAction != iActionNone) {
@@ -2234,14 +2237,14 @@ int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, StringId ids) {
         tutor.idh = idhSav;
         return 1;
     }
-    TutorError(520);
+    TutorError(idsTutorialHaventGivenZipOrderRightName);
     return 0;
 }
 
 int16_t FCheckTemplate(int16_t iTemplate) {
     int16_t i;
 
-    tutor.idh = 3117;
+    tutor.idh = idhProductionTemplates;
     if (tutor.fAutoComplete != 0) {
         vrgZipProd[0].fValid = 1;
         vrgZipProd[0].zpq1 = rgzpqTut[iTemplate];
@@ -2266,19 +2269,10 @@ int16_t FCheckTemplate(int16_t iTemplate) {
     return 1;
 }
 
-void TutorError(int16_t idsError) {
-    uint16_t t_scratch_m4;
-
+void TutorError(StringId idsError) {
     if (tutor.fNoErrors != 0) {
         tutor.idsError = -1;
-    } else {
-        if (tutor.idsError == idsError) {
-            t_scratch_m4 = tutor.cError;
-            tutor.cError++;
-            if (t_scratch_m4 < 3) {
-                return;
-            }
-        }
+    } else if (tutor.idsError != idsError || tutor.cError++ >= 3) {
         tutor.cError = 0;
         tutor.idsError = idsError;
         AlertSz(PszFormatIds(idsError, NULL), MB_ICONHAND);
@@ -2293,10 +2287,10 @@ int16_t FCheckScanner(int16_t md, int16_t iZoom) {
     if (tutor.fAutoComplete != 0) {
         return 1;
     }
-    tutor.idh = 14008;
+    tutor.idh = idhChoosingYourViewOfTheUniverse;
     if (md != -1 && grbitScan != md) {
         if (md < 6) {
-            if ((grbitScan & 0xf) != md) {
+            if ((grbitScan & grbitScanViewMask) != md) {
                 return 0;
             }
         } else if ((md & grbitScan) != md) {
@@ -2304,7 +2298,7 @@ int16_t FCheckScanner(int16_t md, int16_t iZoom) {
         }
     }
     if (iZoom != -1 && iZoom != iScanZoom) {
-        tutor.idh = 14022;
+        tutor.idh = idhZooming;
         return 0;
     }
     tutor.idh = idhSav;
@@ -2317,7 +2311,7 @@ int16_t FCheckFleetName(int16_t id, StringId ids) {
     int16_t idhSav;
 
     idhSav = tutor.idh;
-    tutor.idh = 3054;
+    tutor.idh = idhNamingFleets;
     lpfl = LpflFromId(id);
     if (lpfl == 0) {
         return 1;
@@ -2337,7 +2331,7 @@ int16_t FCheckFleetName(int16_t id, StringId ids) {
         tutor.idh = idhSav;
         return 1;
     }
-    TutorError(1231);
+    TutorError(idsTutorialHaveGivenFleetWrongNamePlease);
     return 0;
 }
 
@@ -2367,7 +2361,7 @@ int16_t FCheckSummary(GrobjClass grobj, int16_t id) {
         fRet = sel.scan.grobj == grobjThing && (id == -1 || lpThings[sel.scan.ith].idFull == id);
     }
     if (fRet == 0) {
-        tutor.idh = 14034;
+        tutor.idh = idhKeyToTheScanner;
     }
     return fRet;
 }
@@ -2381,13 +2375,13 @@ int16_t FCheckSelection(GrobjClass grobj, int16_t id) {
         return 1;
     }
     if (mdMsgObj == (grobj == grobjFleet ? 2 : 1) && id == idMsgObj) {
-        tutor.idh = 14001;
+        tutor.idh = idhMessagesPane;
     } else if (grobj == grobjPlanet && sel.grobj == grobjFleet && sel.fl.idPlanet == id) {
-        tutor.idh = 1514;
+        tutor.idh = idhLocationTile;
     } else if (grobj == grobjFleet && sel.grobj == grobjPlanet && LpflFromId(id)->idPlanet == sel.pl.id) {
-        tutor.idh = 1510;
+        tutor.idh = idhFleetsInOrbitTile;
     } else {
-        tutor.idh = 1526;
+        tutor.idh = idhSelectingAnObjectToCommand;
     }
     fRet = 0;
     if (grobj == grobjPlanet) {
@@ -2408,7 +2402,7 @@ int16_t FCheckMessages(int16_t imsg, MessageId idm, int16_t fFilter) {
     if (gd.fGeneratingTurn != 0) {
         return 1;
     }
-    tutor.idh = 14001;
+    tutor.idh = idhMessagesPane;
     if (imsg == 9999 && IMsgNext(0) != -1) {
         return 0;
     }
@@ -2436,11 +2430,11 @@ int16_t FCheckResearch(TechFieldType iTech, TechFieldType iTechNext, int16_t pct
     if ((rgplr[0].iTechCur & 0xf) == iTech && rgplr[0].iTechCur >> 4 == iTechNext && rgplr[0].pctResearch == pct) {
         return 1;
     }
-    tutor.idh = 1070;
+    tutor.idh = idhResearchDialog;
     return 0;
 }
 
-int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp) {
+int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, TaskType grTask, uint16_t iWarp) {
     ORDER   ord;
     int16_t fRet;
     FLEET  *lpfl;
@@ -2450,21 +2444,21 @@ int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, 
     fRet = 0;
     idhSav = tutor.idh;
     lpfl = LpflFromId(ifl);
-    tutor.idh = 1526;
+    tutor.idh = idhSelectingAnObjectToCommand;
     if (lpfl != 0) {
-        tutor.idh = 3062;
+        tutor.idh = idhAddingFleetWaypoints;
         if (lpfl->cord >= iord + 1) {
             ord = lpfl->lpplord->rgord[iord];
             if ((id & 0x7fff) != 0x7fff && (ord.grobj != grobj || ord.id != id)) {
-                TutorError(492);
-                tutor.idh = 3063;
+                TutorError(idsTutorialHaveGivenFleetWrongDestinationPress);
+                tutor.idh = idhMovingFleetWaypoints;
             } else if (ord.grTask != grTask && grTask != 0xffff) {
-                tutor.idh = 1519;
+                tutor.idh = idhWaypointTaskTile;
                 if (ord.grTask != grTaskNone) {
-                    TutorError(grTask == 0 ? 493 : 494);
+                    TutorError(grTask == grTaskNone ? idsTutorialHaveGivenFleetTaskDestinationWaypoint : idsTutorialHaveGivenFleetWrongTaskDestination);
                 }
             } else {
-                tutor.idh = 1518;
+                tutor.idh = idhFleetWaypointsTile;
                 if (iWarp != 0xffff) {
                     fRet = ord.iWarp == iWarp ? 1 : 0;
                 } else {
@@ -2492,7 +2486,7 @@ int16_t FCheckPlanetRoute(int16_t idpl, int16_t idplRoute) {
     if (lppl == 0) {
         return 0;
     }
-    tutor.idh = 1531;
+    tutor.idh = idhRoute;
     if (lppl->idRoute != idplRoute + 1) {
         return 0;
     }
@@ -2510,9 +2504,9 @@ int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears) {
     if (lpfl == 0) {
         return 0;
     }
-    tutor.idh = 1528;
+    tutor.idh = idhLayMineFields;
     grobj = (id & 0x8000) == 0 ? grobjPlanet : grobjFleet;
-    if (FCheckFleetWP(ifl, iord, grobj, id & 0x7fff, 6, 0xffff) == 0) {
+    if (FCheckFleetWP(ifl, iord, grobj, id & 0x7fff, grTaskLayMines, 0xffff) == 0) {
         return 0;
     }
     if (lpfl->lpplord->rgord[iord].tsell.iPlrX != iYears) {
@@ -2533,7 +2527,7 @@ int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp) {
     if (lpfl == 0) {
         return 0;
     }
-    tutor.idh = 1522;
+    tutor.idh = idhColonize;
     csh = 0;
     for (ish = 0; ish < 16; ish++) {
         csh += lpfl->rgcsh[ish];
@@ -2541,7 +2535,7 @@ int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp) {
     if (lpfl->idPlanet == 13 && FCheckCargo(lpfl, 0, 0, 0, 25 * csh) == 0) {
         return 0;
     }
-    if (FCheckFleetWP(ifl, 1, grobjPlanet, id, 2, iWarp) != 0) {
+    if (FCheckFleetWP(ifl, 1, grobjPlanet, id, grTaskColonize, iWarp) != 0) {
         tutor.idh = idhSav;
         return 1;
     }
@@ -2558,13 +2552,13 @@ int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, u
     if (lpfl == 0) {
         return 0;
     }
-    tutor.idh = 3095;
+    tutor.idh = idhPatroling;
     grobj = (id & 0x8000) == 0 ? grobjPlanet : grobjFleet;
-    if (FCheckFleetWP(ifl, iord, grobj, id & 0x7fff, 7, iWarp) == 0) {
+    if (FCheckFleetWP(ifl, iord, grobj, id & 0x7fff, grTaskPatrol, iWarp) == 0) {
         return 0;
     }
     if (iDist != 0xffff && lpfl->lpplord->rgord[iord].tptl.iDist != iDist) {
-        tutor.idh = 1519;
+        tutor.idh = idhWaypointTaskTile;
         return 0;
     }
     tutor.idh = idhSav;
@@ -2593,18 +2587,18 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
     if (lpfl == 0) {
         return 0;
     }
-    if (FCheckFleetWP(ifl, iord, grobj, id, 1, iWarp) == 0) {
+    if (FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) == 0) {
         return 0;
     }
     ord = lpfl->lpplord->rgord[iord];
     piaCur = ord.txp.rgia;
-    tutor.idh = 1519;
+    tutor.idh = idhWaypointTaskTile;
     i = 0;
     while (i < 5) {
         if (piaCur->iAction != lpiaGoal->iAction) {
             if (piaCur->iAction == iActionNone)
                 goto LReturn;
-            TutorError(616);
+            TutorError(idsTutorialHaveGivenIncorrectTransferOrderPlease);
             goto LReturn;
         }
         if ((piaCur->iAction == iActionUnloadExact || piaCur->iAction == iActionSetAmount) && piaCur->cQuan != lpiaGoal->cQuan)
@@ -2635,19 +2629,19 @@ int16_t FCheckQueue(int16_t ipl, int16_t iprod, GrobjClass grobj, uint16_t iItem
     idhSav = tutor.idh;
     fRet = 0;
     if (game.turn < 2) {
-        tutor.idh = 1507;
+        tutor.idh = idhProductionTile;
     } else {
-        tutor.idh = 1059;
+        tutor.idh = idhProductionDialog;
     }
     lppl = LpplFromId(ipl);
     if (lppl != 0 && lppl->lpplprod != 0 && lppl->lpplprod->iprodMac > iprod) {
         prod = lppl->lpplprod->rgprod[iprod];
         if (prod.grobj != (uint32_t)grobj || prod.iItem != (uint32_t)iItem) {
-            TutorError(491);
+            TutorError(idsTutorialProductionQueueDoesContainRequestedItem);
         } else if (prod.cItem != (uint32_t)cItem) {
-            TutorError(496);
+            TutorError(idsTutorialProductionQueueDoesContainRightCount);
         } else if (fNoResearch != 0xffff && lppl->fNoResearch != (uint32_t)fNoResearch) {
-            TutorError(1305);
+            TutorError(idsTutorialContributeLeftoverCheckboxProductionQueu);
         } else {
             fRet = 1;
         }
@@ -2668,7 +2662,7 @@ int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_
     int16_t  idhSav;
 
     idhSav = tutor.idh;
-    tutor.idh = 3105;
+    tutor.idh = idhChangingTheContentsOfABattlePlan;
     if (ibp < 0 || ibp > rgcbtlplan[0]) {
         return 0;
     }
@@ -2687,10 +2681,10 @@ int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3,
     if (lpfl == 0) {
         return 0;
     }
-    tutor.idh = 1075;
+    tutor.idh = idhCargoTransferDialogs;
     if ((wtMin1 == 0 && lpfl->rgwtMin[0] != 0) || (wtMin2 == 0 && lpfl->rgwtMin[1] != 0) || (wtMin3 == 0 && lpfl->rgwtMin[2] != 0) ||
         (wtColonists == 0 && lpfl->rgwtMin[3] != 0)) {
-        TutorError(495);
+        TutorError(idsTutorialHaveLoadedWrongCargoFleetPlease);
     } else if (lpfl->rgwtMin[3] == wtColonists && lpfl->rgwtMin[0] == wtMin1 && lpfl->rgwtMin[1] == wtMin2 && lpfl->rgwtMin[2] == wtMin3) {
         fRet = 1;
     }
@@ -2710,10 +2704,10 @@ int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit) {
 
     idhSav = tutor.idh;
     if (hwndSlotDlg == 0) {
-        tutor.idh = 1066;
+        tutor.idh = idhShipDesigner;
         return 0;
     }
-    tutor.idh = 3040;
+    tutor.idh = idhEditingAnExistingShipDesign;
     if (mdBuild != mdBuildEdit) {
         return 0;
     }
@@ -2730,15 +2724,15 @@ int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit) {
     if (cItemAct != phs->cItem)
         goto BadCntSilent;
     if (phs->grhst != lpshdefBuild->hul.rghs[iSlot].grhst || phs->iItem != lpshdefBuild->hul.rghs[iSlot].iItem) {
-        TutorError(502);
+        TutorError(idsTutorialHavePlacedWrongComponentSlotDrag);
         goto BadCntSilent;
     }
     tutor.idh = idhSav;
     return 1;
 BadCnt:
-    TutorError(501);
+    TutorError(idsTutorialHaventPlacedCorrectNumberComponentsSlot);
 BadCntSilent:
-    tutor.idh = 3039;
+    tutor.idh = idhDesigningANewShipFromScratch;
     return 0;
 }
 
@@ -2747,7 +2741,7 @@ int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip) {
     int16_t idhSav;
 
     idhSav = tutor.idh;
-    tutor.idh = 1066;
+    tutor.idh = idhShipDesigner;
     if (hwndSlotDlg == 0) {
         return 0;
     }
@@ -2762,7 +2756,7 @@ int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip) {
     return 0;
 }
 
-int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
+int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
     HS      hs2;
     HS      hs3;
     HS      hs;
@@ -2775,76 +2769,76 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
     default:
         t_merge_81d4_0001 = 0;
         break;
-    case 0:
-        TutorError(497);
+    case tutsbDelete:
+        TutorError(idsTutorialShouldDeleteShipDesignPointTutorial);
         t_merge_81d4_0001 = 0;
         break;
-    case 1:
+    case tutsbCopy:
         switch (game.turn) {
         default:
             goto NoCustom;
         case 13:
-            if (tutor.idt != 328)
+            if (tutor.idt != idtSelectAvailableHullTypes)
                 goto NoCustom;
             if (rgplr[0].cShDef == 7) {
-                TutorError(499);
+                TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
                 t_merge_81d4_0001 = 0;
                 break;
             }
             if (FCheckShipBuilder(1, 7) != 0)
                 goto L_7c40;
-            TutorError(510);
+            TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
             t_merge_81d4_0001 = 0;
             break;
         case 20:
-            if (tutor.idt != 416)
+            if (tutor.idt != idtReadFirstTwoMessagesSendArmedProbe)
                 goto NoCustom;
             if (rgplr[0].cshdefSB == 2) {
-                TutorError(499);
+                TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
                 t_merge_81d4_0001 = 0;
                 break;
             }
             if (FCheckShipBuilder(0, 0) != 0 && fStarbaseMode != 0)
                 goto L_7c40;
-            TutorError(500);
+            TutorError(idsTutorialHaveTriedCopyWrongShipDesign);
             t_merge_81d4_0001 = 0;
             break;
         case 22:
-            if (tutor.idt != 448)
+            if (tutor.idt != idtAddTeamsterStoveTopsQueue)
                 goto NoCustom;
             if (rgplr[0].cShDef == 8) {
-                TutorError(499);
+                TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
                 t_merge_81d4_0001 = 0;
                 break;
             }
             if (FCheckShipBuilder(1, 3) != 0)
                 goto L_7c40;
-            TutorError(510);
+            TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
             t_merge_81d4_0001 = 0;
             break;
         case 27:
-            if (tutor.idt != 544)
+            if (tutor.idt != idtWeWantPowerfulWeAlsoWantWeigh)
                 goto NoCustom;
             if (rgplr[0].cShDef == 9) {
-                TutorError(499);
+                TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
                 t_merge_81d4_0001 = 0;
                 break;
             }
             if (FCheckShipBuilder(1, 4) != 0)
                 goto L_7c40;
-            TutorError(510);
+            TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
             t_merge_81d4_0001 = 0;
             break;
         case 29:
-            if (tutor.idt != 576)
+            if (tutor.idt != idtLetsFinishOffBerserkersOnceBuildingBombing)
                 goto NoCustom;
             if (rgplr[0].cShDef == 10) {
-                TutorError(499);
+                TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
                 t_merge_81d4_0001 = 0;
             } else {
                 if (FCheckShipBuilder(1, 8) != 0)
                     goto L_7c40;
-                TutorError(510);
+                TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
                 t_merge_81d4_0001 = 0;
             }
         }
@@ -2852,18 +2846,18 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
     L_7c40:
         t_merge_81d4_0001 = 1;
         break;
-    case 2:
-        if (game.turn != 25 || tutor.idt != 496)
+    case tutsbEdit:
+        if (game.turn != 25 || tutor.idt != idtReadFirstTwoMessages)
             goto NoCustom;
         t_call_7c62 = FCheckShipBuilder(0, 2);
         if (t_call_7c62 != 0) {
             t_merge_81d4_0001 = t_call_7c62;
             break;
         }
-        TutorError(511);
+        TutorError(idsTutorialDontHaveCorrectShipSelectedShip);
         t_merge_81d4_0001 = 0;
         break;
-    case 3:
+    case tutsbAccept:
         if ((uint16_t)(game.turn - 13) > 16)
             goto NoCustom;
         switch (game.turn) {
@@ -2889,43 +2883,43 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
             hs3.grhst = hstMining;
             hs3.iItem = 2;
             hs3.cItem = 1;
-            if (tutor.idt != 336) {
-                TutorError(504);
+            if (tutor.idt != idtShipDesignNameImageJustFine) {
+                TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
                 t_merge_81d4_0001 = 0;
                 break;
             }
             if (FCheckBuilderPart(0, &hs2, 1) != 0 && FCheckBuilderPart(1, &hs, 1) != 0 && FCheckBuilderPart(2, &hs3, 1) != 0 &&
                 FCheckBuilderPart(3, &hs3, 1) != 0)
                 goto L_818e;
-            TutorError(507);
+            TutorError(idsTutorialDontHaveRightPartsDesignVerify);
             t_merge_81d4_0001 = 0;
             break;
         case 20:
-            if (tutor.idt == 416) {
+            if (tutor.idt == idtReadFirstTwoMessagesSendArmedProbe) {
                 hs.grhst = hstSpecialSB;
                 hs.iItem = 0;
                 hs.cItem = 1;
                 if (FCheckBuilderPart(0, &hs, 1) == 0) {
-                    TutorError(515);
+                    TutorError(idsTutorialHaventAddedRightPartDesignVerify);
                     t_merge_81d4_0001 = 0;
                     break;
                 }
                 if (fstricmp(PszGetCompressedString(idsGater), lpshdefBuild->hul.szClass) != 0) {
-                    TutorError(512);
+                    TutorError(idsTutorialNameDesignEditboxMustGaterChange);
                     t_merge_81d4_0001 = 0;
                     break;
                 }
                 if (lpshdefBuild->hul.ibmp == 137)
                     goto L_818e;
-                TutorError(505);
+                TutorError(idsTutorialHaventPickedCorrectImageDesignPress);
                 t_merge_81d4_0001 = 0;
                 break;
             }
-            TutorError(504);
+            TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
             t_merge_81d4_0001 = 0;
             break;
         case 22:
-            if (tutor.idt == 448) {
+            if (tutor.idt == idtAddTeamsterStoveTopsQueue) {
                 hs.grhst = hstEngine;
                 hs.iItem = 4;
                 hs.cItem = 1;
@@ -2933,17 +2927,17 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
                 hs1.iItem = 1;
                 hs1.cItem = 3;
                 if (FCheckBuilderPart(0, &hs, 1) == 0 || FCheckBuilderPart(2, &hs1, 3) == 0) {
-                    TutorError(508);
+                    TutorError(idsTutorialDontHaveRightPartsDesignVerify2);
                     t_merge_81d4_0001 = 0;
                     break;
                 }
                 if (fstricmp(PszGetCompressedString(idsMineLayer), lpshdefBuild->hul.szClass) == 0)
                     goto L_818e;
-                TutorError(513);
+                TutorError(idsTutorialNameDesignEditboxMustMineLayer);
                 t_merge_81d4_0001 = 0;
                 break;
             }
-            TutorError(504);
+            TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
             t_merge_81d4_0001 = 0;
             break;
         case 25:
@@ -2955,11 +2949,11 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
             hs2.cItem = 1;
             if (FCheckBuilderPart(0, &hs, 1) != 0 && FCheckBuilderPart(1, &hs2, 1) != 0)
                 goto L_818e;
-            TutorError(507);
+            TutorError(idsTutorialDontHaveRightPartsDesignVerify);
             t_merge_81d4_0001 = 0;
             break;
         case 27:
-            if (tutor.idt == 544) {
+            if (tutor.idt == idtWeWantPowerfulWeAlsoWantWeigh) {
                 hs.grhst = hstEngine;
                 hs.iItem = 10;
                 hs.cItem = 1;
@@ -2978,21 +2972,21 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
                 if (FCheckBuilderPart(0, &hs, 1) == 0 || FCheckBuilderPart(1, &hs3, 1) == 0 || FCheckBuilderPart(2, &hs3, 1) == 0 ||
                     FCheckBuilderPart(3, &hs3, 1) == 0 || FCheckBuilderPart(4, &hs4, 2) == 0 || FCheckBuilderPart(5, &hs1, 1) == 0 ||
                     FCheckBuilderPart(6, &hs2, 1) == 0) {
-                    TutorError(506);
+                    TutorError(idsTutorialVerifyHaveRadiatingHydroRamScoop);
                     t_merge_81d4_0001 = 0;
                     break;
                 }
                 if (lpshdefBuild->hul.ibmp == 25)
                     goto L_818e;
-                TutorError(505);
+                TutorError(idsTutorialHaventPickedCorrectImageDesignPress);
                 t_merge_81d4_0001 = 0;
                 break;
             }
-            TutorError(504);
+            TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
             t_merge_81d4_0001 = 0;
             break;
         case 29:
-            if (tutor.idt == 576) {
+            if (tutor.idt == idtLetsFinishOffBerserkersOnceBuildingBombing) {
                 hs.grhst = hstEngine;
                 hs.iItem = 10;
                 hs.cItem = 2;
@@ -3005,10 +2999,10 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
                 if (FCheckBuilderPart(0, &hs, 2) != 0 && FCheckBuilderPart(1, &hs2, 4) != 0 && FCheckBuilderPart(2, &hs2, 4) != 0 &&
                     FCheckBuilderPart(3, &hs1, 1) != 0)
                     goto L_818e;
-                TutorError(509);
+                TutorError(idsTutorialDontHaveRightPartsDesignVerify3);
                 t_merge_81d4_0001 = 0;
             } else {
-                TutorError(504);
+                TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
                 t_merge_81d4_0001 = 0;
             }
         }
@@ -3016,13 +3010,13 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
     L_818e:
         t_merge_81d4_0001 = 1;
         break;
-    case 4:
-        TutorError(503);
+    case tutsbCancelEdit:
+        TutorError(idsTutorialMustFinishTutorialTasksBeforeExiting);
         t_merge_81d4_0001 = 0;
     }
     return t_merge_81d4_0001;
 NoCustom:
-    TutorError(498);
+    TutorError(idsTutorialShouldCustomizeShipDesignPointTutorial);
     t_merge_81d4_0001 = 0;
     return t_merge_81d4_0001;
 }
@@ -3030,7 +3024,7 @@ NoCustom:
 int16_t FOKMergeDialog() {
     if (game.turn != 23) {
         if (game.turn != 27) {
-            TutorError(516);
+            TutorError(idsTutorialHaventAskedMergeAnyFleetsYear);
             return 0;
         }
         if (*vrgiflMerge == -1 && vrgiflMerge[1] == -1 && vrgiflMerge[2] != -1 && vrgiflMerge[3] != -1) {
@@ -3039,7 +3033,7 @@ int16_t FOKMergeDialog() {
     } else if (*vrgiflMerge != -1 && vrgiflMerge[1] != -1 && vrgiflMerge[2] == -1 && vrgiflMerge[3] == -1) {
         return 1;
     }
-    TutorError(514);
-    tutor.idh = 1107;
+    TutorError(idsTutorialHaventSelectedRightFleetsMergeReread);
+    tutor.idh = idhMergeFleetsDialog;
     return 0;
 }

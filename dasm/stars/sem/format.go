@@ -86,6 +86,9 @@ func FormatExpr(expr Expr) string {
 		if i64, ok := e.Int64(); ok {
 			return fmt.Sprintf("%d", i64)
 		}
+		if text, ok := formatUnnamedEnumValue(e); ok {
+			return text
+		}
 		// Single digits read the same in either base and have the same C type.
 		if e.U64 <= 9 {
 			return fmt.Sprintf("%d", e.U64)
@@ -198,6 +201,27 @@ func formatEnumConst(e *Const) (string, bool) {
 		return "", false
 	}
 	return formatEnumValue(enumType, int(e.U64))
+}
+
+// formatUnnamedEnumValue renders a value of a non-flag enum that no member
+// names as a decimal number, as the enum's other values are counts and ids
+// rather than bit patterns: signed for an enum with negative members, and
+// unsigned below the sign bit otherwise, leaving larger unsigned values hex.
+func formatUnnamedEnumValue(e *Const) (string, bool) {
+	enumType, ok := e.TypeInfo.(*typeinfo.Enum)
+	if !ok || enumType.EnumKind == typeinfo.EnumFlags {
+		return "", false
+	}
+	if ch, ok := enumType.CharCode(int(e.U64)); ok {
+		return formatCharLiteral(ch), true
+	}
+	if typeinfo.IsIntLike(enumType.Typedef) {
+		return fmt.Sprintf("%d", enumType.SignExtend(int(e.U64))), true
+	}
+	if e.U64 < 1<<(8*uint(enumType.Bytes())-1) {
+		return fmt.Sprintf("%d", e.U64), true
+	}
+	return "", false
 }
 
 // formatEnumValue renders a concrete enum value by name.
@@ -398,6 +422,18 @@ func formatCharLiteral(ch byte) string {
 	switch ch {
 	case '\'', '\\':
 		return "'\\" + string(ch) + "'"
+	case '\t':
+		return `'\t'`
+	case '\n':
+		return `'\n'`
+	case '\r':
+		return `'\r'`
 	}
 	return "'" + string(ch) + "'"
+}
+
+// IsCharLiteralValue reports whether a character code reads as a character
+// literal: a printable character, tab, newline or carriage return.
+func IsCharLiteralValue(v uint64) bool {
+	return v >= ' ' && v <= '~' || v == '\t' || v == '\n' || v == '\r'
 }

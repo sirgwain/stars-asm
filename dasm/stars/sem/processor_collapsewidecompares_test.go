@@ -181,7 +181,7 @@ func TestCollapseWideCompareRejectsFourByteAggregate(t *testing.T) {
 		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
 		Vars: []typeinfo.FunctionVar{{Name: "pt", Type: point, BPOffset: -4}},
 	}
-	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	load := func(disp int) machine.Value {
 		return machine.LoadVal(machine.MemoryAddress{
 			Base:   machine.FrameBaseVal(),
@@ -227,7 +227,7 @@ func TestCollapseWideCompareRejectsStructArrayElement(t *testing.T) {
 		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
 		Vars: []typeinfo.FunctionVar{{Name: "points", Type: points, BPOffset: -8}},
 	}
-	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	load := func(disp int) machine.Value {
 		return machine.LoadVal(machine.MemoryAddress{
 			Base:   machine.FrameBaseVal(),
@@ -268,7 +268,7 @@ func TestCollapseWideCompareArrayElementReloads(t *testing.T) {
 		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
 		Vars: []typeinfo.FunctionVar{{Name: "values", Type: values, BPOffset: -16}},
 	}
-	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	ctx := NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	load := func(disp int, instOff uint32) machine.Value {
 		return machine.LoadVal(machine.MemoryAddress{
 			Base:   machine.FrameBaseVal(),
@@ -426,5 +426,5 @@ func ctxForWideCompareTest() *FuncContext {
 		Len:  0x200,
 		Ret:  &typeinfo.Primitive{TypeKind: typeinfo.KVoid, Name: "void"},
 	}
-	return NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs)
+	return NewFuncContext(img, sdb, symresolve.NewResolver(img, sdb), fs, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 }

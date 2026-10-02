@@ -377,36 +377,36 @@ L_0860:
     vprptCur->ptSize.y = (rc.bottom - rc.top)
     hwndReportDlg = 0
     fBrowserValid = 0
-    hmenu = GetASubMenu(hwndFrame, 4)
+    hmenu = GetASubMenu(hwndFrame, menuReport)
     goto L_08f1
 
 L_08ce:
-    idm = 0x8ff
+    idm = 2303
     goto L_0914
 
 L_08d6:
-    idm = 0x900
+    idm = 2304
     goto L_0914
 
 L_08de:
-    idm = 0x8fd
+    idm = 2301
     goto L_0914
 
 L_08e6:
-    idm = 0x901
+    idm = 2305
     goto L_0914
 
 L_08f1:
-    branch vprptCur->irpt == 0 ? L_08de : L_08f9
+    branch vprptCur->irpt == rptPlanets ? L_08de : L_08f9
 
 L_08f9:
-    branch vprptCur->irpt == 1 ? L_08ce : L_0901
+    branch vprptCur->irpt == rptFleets ? L_08ce : L_0901
 
 L_0901:
-    branch vprptCur->irpt == 2 ? L_08d6 : L_0909
+    branch vprptCur->irpt == rptEnemyFleets ? L_08d6 : L_0909
 
 L_0909:
-    branch vprptCur->irpt == 3 ? L_08e6 : L_0914
+    branch vprptCur->irpt == rptBattles ? L_08e6 : L_0914
 
 L_0914:
     call CheckMenuItem(hmenu, idm, MF_UNCHECKED) -> callresult(int16_t)

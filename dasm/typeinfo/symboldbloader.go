@@ -2,6 +2,7 @@ package typeinfo
 
 import (
 	"cmp"
+	"errors"
 	"fmt"
 	"maps"
 	"path/filepath"
@@ -885,6 +886,20 @@ func (l *symboldbLoader) loadEnums(inputDir string) error {
 
 	enums = append(enums, winDefineEnums...)
 
+	// enums whose digit and letter values are character codes
+	for _, name := range cfg.CharEnums {
+		found := false
+		for _, e := range enums {
+			if e.Name == name {
+				e.CharCodes = true
+				found = true
+			}
+		}
+		if !found {
+			return fmt.Errorf("char_enums: enum %s not found", name)
+		}
+	}
+
 	rules, err := enumLoader.loadEnumRules(filepath.Join(inputDir, "enums.json"))
 	if err != nil {
 		return err
@@ -1004,7 +1019,9 @@ func (l *symboldbLoader) applyOverrides(inputDir string) error {
 }
 
 func (l *symboldbLoader) applyEnumOverrides() error {
-
+	// rules naming a param, local, or field that no longer exists are
+	// collected so a rename reports every stale rule at once
+	var unmatched []error
 	for _, rule := range l.sdb.EnumRules {
 		typ := l.sdb.GetEnum(rule.EnumName)
 		if typ == nil {
@@ -1043,25 +1060,35 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 			}
 
 			if rule.Kind == UseParam {
+				found := false
 				for i := range f.Params {
 					p := &f.Params[i]
 					if p.Name != rule.ParamName {
 						continue
 					}
 					p.Type = EnumWithStorageSize(typ, p.Type)
+					found = true
 					break
+				}
+				if !found {
+					unmatched = append(unmatched, fmt.Errorf("enum %s rule: function %s has no param %s", rule.EnumName, rule.FuncName, rule.ParamName))
 				}
 				continue
 			}
 
 			if rule.Kind == UseLocal {
+				found := false
 				for i := range f.Vars {
 					v := &f.Vars[i]
 					if v.Name != rule.Name {
 						continue
 					}
 					v.Type = EnumWithStorageSize(typ, v.Type)
+					found = true
 					break
+				}
+				if !found {
+					unmatched = append(unmatched, fmt.Errorf("enum %s rule: function %s has no local %s", rule.EnumName, rule.FuncName, rule.Name))
 				}
 				continue
 			}
@@ -1083,13 +1110,15 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 				changed = true
 				break
 			}
-			if changed {
-				s.FinalizeLayout()
+			if !changed {
+				unmatched = append(unmatched, fmt.Errorf("enum %s rule: struct %s has no field %s", rule.EnumName, rule.StructName, rule.FieldName))
+				continue
 			}
+			s.FinalizeLayout()
 		}
 	}
 
-	return nil
+	return errors.Join(unmatched...)
 }
 
 // EnumWithStorageSize returns the enum annotating an item of the original

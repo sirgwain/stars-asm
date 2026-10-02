@@ -5,7 +5,7 @@
 #include <windows.h>
 
 LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-void             DrawPlanShip(HDC hdc, int16_t grbit);
+void             DrawPlanShip(HDC hdc, TileBits grbit);
 int16_t          FDrawTileNC(HDC hdc, TILE *ptile, RECT *prc, char *pszTitle);
 void             DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj);
 void             DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj);

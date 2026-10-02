@@ -17,6 +17,7 @@ type FuncContext struct {
 	res     *symresolve.Resolver
 	symbols *symbolResolver
 	fs      *typeinfo.Function
+	writes  *machine.WriteSummaries
 	log     *slog.Logger
 	dsReg   machine.Value
 	csReg   machine.Value
@@ -177,14 +178,16 @@ func (ctx *FuncContext) WithOptions(fromAddr, toAddr uint32) *FuncContext {
 	return ctx
 }
 
-// NewFuncContext creates a function-scoped semantic lowering context.
-func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Resolver, fs *typeinfo.Function) *FuncContext {
+// NewFuncContext creates a function-scoped semantic lowering context. writes
+// summarizes what the program's calls store to, shared across functions.
+func NewFuncContext(img *asm.ImageNE, sdb *typeinfo.SymbolDB, res *symresolve.Resolver, fs *typeinfo.Function, writes *machine.WriteSummaries) *FuncContext {
 
 	ctx := &FuncContext{
 		img:                 img,
 		sdb:                 sdb,
 		res:                 res,
 		fs:                  fs,
+		writes:              writes,
 		dsReg:               machine.RegVal(asm.RegDS),
 		csReg:               machine.RegVal(asm.RegCS),
 		unionBlockPathFacts: make(map[machine.BlockID][]*typeinfo.UnionBlockPathFact),

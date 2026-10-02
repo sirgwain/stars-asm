@@ -1,4 +1,4 @@
-int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj) {
+int32_t ChgCargo(GrobjClass grobj, int16_t id, MineralType iSupply, int32_t dChg, void *pobj) {
     THING  *pth;
     XFER    xfer;
     int16_t i;
@@ -19,8 +19,8 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
             memset(&xfer.pl, 0, sizeof(PLANET));
             ppl = &xfer.pl;
         }
-        if (iSupply <= 4) {
-            if (iSupply == 4) {
+        if (iSupply <= Fuel) {
+            if (iSupply == Fuel) {
                 return 0;
             }
             if (dChg == 0) {
@@ -42,10 +42,10 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
             FLookupThing(id, &xfer.th);
             pth = &xfer.th;
         }
-        if (iSupply >= 3) {
+        if (iSupply >= Colonists) {
             return 0;
         }
-        if (iSupply <= 4) {
+        if (iSupply <= Fuel) {
             if (dChg == 0) {
                 return pth->thp.rgwtMin[iSupply];
             }
@@ -72,19 +72,19 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
             FLookupFleet(id, &xfer.fl);
             pfl = &xfer.fl;
         }
-        if (iSupply <= 4) {
+        if (iSupply <= Fuel) {
             if (dChg == 0) {
                 return pfl->rgwtMin[iSupply];
             }
             if (pfl->rgwtMin[iSupply] + dChg < 0) {
                 dChg = -pfl->rgwtMin[iSupply];
             }
-            if (iSupply == 3 && pfl->det != detAll) {
+            if (iSupply == Colonists && pfl->det != detAll) {
                 dChg = 0;
             }
-            t_merge_6425_0001 = iSupply == 4 ? GetFuelFree(pfl) : GetCargoFree(pfl);
+            t_merge_6425_0001 = iSupply == Fuel ? GetFuelFree(pfl) : GetCargoFree(pfl);
             if (dChg >= t_merge_6425_0001) {
-                if (iSupply == 4) {
+                if (iSupply == Fuel) {
                     dChg = GetFuelFree(pfl);
                 } else {
                     dChg = GetCargoFree(pfl);

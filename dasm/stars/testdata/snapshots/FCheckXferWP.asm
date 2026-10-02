@@ -75,7 +75,7 @@ MOV       ax, [bp-grobj]            ; ax, [bp-0x22]
 PUSH      ax                  
 PUSH      [bp+iord]                 ; [bp+0x8]
 PUSH      [bp+ifl]                  ; [bp+0x6]
-CALLF     FCheckFleetWP             ; int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp)
+CALLF     FCheckFleetWP             ; int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, TaskType grTask, uint16_t iWarp)
 ADD       sp, 0x000c          
 CMP       ax, 0x0000          
 JNZ       L_7308              
@@ -153,7 +153,7 @@ JZ        LReturn
 L_73a1:                             ; tutor.c:3256
 MOV       ax, 0x0268          
 PUSH      ax                  
-CALLF     TutorError                ; void TutorError(int16_t idsError)
+CALLF     TutorError                ; void TutorError(StringId idsError)
 ADD       sp, 0x0002          
 
 L_73ad:                             ; tutor.c:3257

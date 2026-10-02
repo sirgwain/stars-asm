@@ -20,18 +20,18 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
     if (lpfl == 0) {
         return 0;
     }
-    if (FCheckFleetWP(ifl, iord, grobj, id, 1, iWarp) == 0) {
+    if (FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) == 0) {
         return 0;
     }
     ord = lpfl->lpplord->rgord[iord];
     piaCur = ord.txp.rgia;
-    tutor.idh = 1519;
+    tutor.idh = idhWaypointTaskTile;
     i = 0;
     while (i < 5) {
         if (piaCur->iAction != lpiaGoal->iAction) {
             if (piaCur->iAction == iActionNone)
                 goto LReturn;
-            TutorError(616);
+            TutorError(idsTutorialHaveGivenIncorrectTransferOrderPlease);
             goto LReturn;
         }
         if ((piaCur->iAction == iActionUnloadExact || piaCur->iAction == iActionSetAmount) && piaCur->cQuan != lpiaGoal->cQuan)

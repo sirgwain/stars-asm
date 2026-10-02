@@ -6,7 +6,7 @@ FIsAiAttack  (aiutil)
     FLEET *          lpfl           [BP+0x6]
   locals:
     int16_t          i              [BP-0x6]
-    int16_t          ihul           [BP-0x4]
+    HulDef           ihul           [BP-0x4]
 
   stats: blocks=0  labels=0
 */

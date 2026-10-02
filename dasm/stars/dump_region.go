@@ -1,6 +1,8 @@
 package stars
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"io"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
@@ -12,7 +14,7 @@ import (
 // DumpFuncRegion runs the analysis pipeline through IR, rebuilds the IR
 // control flow as structured regions, and renders the result as C.
 func DumpFuncRegion(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpOptions) error {
-	analysis, err := analyzeFunc(img, sdb, fs, opt)
+	analysis, err := analyzeFunc(img, sdb, fs, opt, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	if err != nil {
 		return err
 	}

@@ -14,7 +14,7 @@ L_0000:
     wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = LoadIcon(hInst, "StarsIco")
-    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00))
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512))
     wc.hbrBackground = (HBRUSH)13
     wc.lpszMenuName = "StarsMenu"
     wc.lpszClassName = szFrame
@@ -116,7 +116,7 @@ L_0299:
     wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = 0
-    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00))
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512))
     wc.hbrBackground = GetStockObject(BLACK_BRUSH)
     wc.lpszMenuName = NULL
     wc.lpszClassName = szTitle
@@ -132,7 +132,7 @@ L_030c:
     wc.cbWndExtra = 0
     wc.hInstance = hInst
     wc.hIcon = 0
-    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00))
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512))
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH)
     wc.lpszMenuName = NULL
     wc.lpszClassName = szReport

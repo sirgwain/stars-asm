@@ -67,7 +67,7 @@ func TestLowerMachinePreservesStaleLoadAfterMemoryWrite(t *testing.T) {
 			},
 		},
 	}
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -125,7 +125,7 @@ func TestLowerMachineResolvesByteValueInsideMerge(t *testing.T) {
 			},
 		},
 	}
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -177,7 +177,7 @@ func TestConvertTypedPhiResolvesCodeSegmentPointerWords(t *testing.T) {
 	if callee == nil {
 		t.Fatal("LphuldefSBFromId not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, res, fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res))
 	id := frameLoad(ctx, fn.Addr.Off, 0x6, 2)
 	indexedPointer := &machine.StackWords{Words: []machine.Value{
 		machine.RegVal(asm.RegCS),
@@ -234,7 +234,7 @@ func TestLowerMachineResolvesConstBaseGlobalMemory(t *testing.T) {
 			},
 		},
 	}
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -308,7 +308,7 @@ func TestLowerMachineResolvesIndexedGlobalStructByteArrayField(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -364,7 +364,7 @@ func TestLowerMachineResolvesFoldedNegativeGlobalByteArrayIndex(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -415,7 +415,7 @@ func TestLowerMachineResolvesBitfieldExtract(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -470,7 +470,7 @@ func TestLowerMachineResolvesBitfieldExtractFromStorageAlias(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -574,7 +574,7 @@ func TestLowerMachineCollapsesWideAggregateBitfieldRead(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -634,7 +634,7 @@ func TestLowerMachineResolvesCollapsedPointerFieldCallArg(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -691,7 +691,7 @@ func TestLowerMachinePreservesNativePointerDerefCallArg(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -782,7 +782,7 @@ func TestLowerMachineResolvesWideBitfieldStores(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -832,7 +832,7 @@ func TestLowerMachineResolvesStorageInsideCast(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}

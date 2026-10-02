@@ -129,8 +129,12 @@ type funcParamsJSON struct {
 }
 
 type functionSemanticsJSON struct {
-	Name   string               `json:"name"`
-	Params []paramSemanticsJSON `json:"params"`
+	Name   string `json:"name"`
+	Return string `json:"return,omitempty"`
+	// Writes is "none" for a function that stores to no memory of the
+	// program and runs none of its code.
+	Writes string               `json:"writes,omitempty"`
+	Params []paramSemanticsJSON `json:"params,omitempty"`
 }
 
 type paramSemanticsJSON struct {
@@ -380,6 +384,14 @@ func (o *overrideDB) loadFunctionSemantics(path string) error {
 		fn := o.sdb.GetFunction(f.Name)
 		if fn == nil {
 			continue
+		}
+		fn.RetSemantic = f.Return
+		switch f.Writes {
+		case "":
+		case "none":
+			fn.WritesNone = true
+		default:
+			return fmt.Errorf("function %s: unknown writes %q", f.Name, f.Writes)
 		}
 		for _, param := range f.Params {
 			idx := functionParamIndexByName(fn, param.Name)

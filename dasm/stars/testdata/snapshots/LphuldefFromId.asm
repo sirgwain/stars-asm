@@ -20,7 +20,7 @@ L_513e:                             ; parts.c:27
 MOV       ax, [bp+id]               ; ax, [bp+0x6]
 ADD       ax, 0xffe0          
 PUSH      ax                  
-CALLF     LphuldefSBFromId          ; HULDEF * LphuldefSBFromId(int16_t id)
+CALLF     LphuldefSBFromId          ; HULDEF * LphuldefSBFromId(isbhull id)
 ADD       sp, 0x0002          
 JMP       L_5162              
 

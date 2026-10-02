@@ -1,11 +1,11 @@
 /*
 ChgCargo  (ship)
   addr: 000b:6034  len=1176
-  sig:  int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj)
+  sig:  int32_t ChgCargo(GrobjClass grobj, int16_t id, MineralType iSupply, int32_t dChg, void *pobj)
   params:
     GrobjClass       grobj          [BP+0x6]
     int16_t          id             [BP+0x8]
-    int16_t          iSupply        [BP+0xa]
+    MineralType      iSupply        [BP+0xa]
     int32_t          dChg           [BP+0xc]
     void *           pobj           [BP+0x10]
   locals:
@@ -45,10 +45,10 @@ L_6084:
     ppl = &xfer.pl
 
 L_609f:
-    branch iSupply > 4 ? L_6159 : L_60a8
+    branch iSupply > Fuel ? L_6159 : L_60a8
 
 L_60a8:
-    branch iSupply != 4 ? L_60ba : L_60b1
+    branch iSupply != Fuel ? L_60ba : L_60b1
 
 L_60b1:
     return 0
@@ -102,13 +102,13 @@ L_61ab:
     pth = &xfer.th
 
 L_61c0:
-    branch iSupply < 3 ? L_61d2 : L_61c9
+    branch iSupply < Colonists ? L_61d2 : L_61c9
 
 L_61c9:
     return 0
 
 L_61d2:
-    branch iSupply > 4 ? L_62f3 : L_61db
+    branch iSupply > Fuel ? L_62f3 : L_61db
 
 L_61db:
     branch dChg != 0 ? L_6202 : L_61ed
@@ -173,7 +173,7 @@ L_6333:
     pfl = &xfer.fl
 
 L_6349:
-    branch iSupply > 4 ? L_6492 : L_6352
+    branch iSupply > Fuel ? L_6492 : L_6352
 
 L_6352:
     branch dChg != 0 ? L_637e : L_6364
@@ -191,7 +191,7 @@ L_63b0:
     dChg = neg(pfl->rgwtMin[iSupply])
 
 L_63d4:
-    branch iSupply != 3 ? L_63f9 : L_63dd
+    branch iSupply != Colonists ? L_63f9 : L_63dd
 
 L_63dd:
     branch pfl->det == detAll ? L_63f9 : L_63ef
@@ -200,7 +200,7 @@ L_63ef:
     dChg = 0
 
 L_63f9:
-    branch iSupply != 4 ? L_6415 : L_6402
+    branch iSupply != Fuel ? L_6415 : L_6402
 
 L_6402:
     t_merge_6425_0001 = GetFuelFree(pfl)
@@ -218,7 +218,7 @@ L_643a:
     goto L_646f
 
 L_6443:
-    branch iSupply != 4 ? L_645f : L_644c
+    branch iSupply != Fuel ? L_645f : L_644c
 
 L_644c:
     call GetFuelFree(pfl) -> dChg

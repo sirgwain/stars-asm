@@ -14,15 +14,14 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     XferActionType iAction;
     FARPROC        lpProc;
     char          *t_00bd;
-    HWND           t_scratch_m30;
     char          *t_065c;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rc);
-        GetWindowRect(GetDlgItem(hwnd, 0x431), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_ZIP_PROD_PRESET_1), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0434), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_ZIP_PROD_PRESET_4), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -41,7 +40,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 SetTextColor(hdc, 0);
                 iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
                 cch = CchGetString(iAction + 109, szWork);
-                if ((int16_t)(int8_t)szWork[cch - 1] == 46) {
+                if ((int16_t)(int8_t)szWork[cch - 1] == '.') {
                     _wsprintf(&szWork[cch - 3], " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
                 }
                 TextOut(hdc, xCtr + 6, rcGBox.top, szWork, strlen(szWork));
@@ -59,116 +58,114 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        if (message == WM_INITDIALOG) {
-            SetWindowText(hwnd, PszGetCompressedString(idsCustomizeZipOrders));
-            ShowWindow(GetDlgItem(hwnd, IDC_U16_0x0417), SW_HIDE);
-            hwndZipOrderDlg = hwnd;
-            CheckRadioButton(hwnd, 1073, 1076, 1073);
-            EnableZipBtns(hwnd, 0);
-            iResTechNow = 0;
-            for (i = 1073; i <= 1076; i++) {
-                if (vrgZip[i - 1073].fValid != 0) {
-                    pszT = szWork;
-                    psz = vrgZip[i - 1073].szName;
-                    while ((int16_t)(int8_t)*psz != 0) {
-                        t_00bd = psz;
-                        psz++;
-                        *pszT++ = *t_00bd;
-                        if ((int16_t)(int8_t)*t_00bd == 38) {
-                            *pszT++ = '&';
-                        }
-                    }
-                    *pszT = 0;
-                    psz = szWork;
-                } else {
-                    psz = PszGetCompressedString(idsUnusedD);
-                    _wsprintf(szWork, psz, i - 1072);
-                    psz = szWork;
-                }
-                hwndRad = GetDlgItem(hwnd, i);
-                SetWindowText(hwndRad, psz);
-            }
-            StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 1);
-            if (gd.fTutorial != 0) {
-                AdvanceTutor();
-            }
-            return 1;
-        }
-        if (message == WM_COMMAND) {
-            if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= 0x431 && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_U16_0x0434) {
-                iResTechNow = GET_WM_COMMAND_ID(wParam, lParam) - 1073;
-                EnableZipBtns(hwnd, iResTechNow);
-                InvalidateRect(hwnd, NULL, 1);
-            } else {
-                switch (GET_WM_COMMAND_ID(wParam, lParam)) {
-                case IDOK:
-                case IDCANCEL:
-                    hwndZipOrderDlg = 0;
-                    StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 0);
-                    EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
-                    if (gd.fTutorial != 0) {
-                        AdvanceTutor();
-                    }
-                    return 1;
-                case IDC_IMPORT:
-                case IDC_RENAME:
-                    if (vrgZip[iResTechNow].fValid != 0) {
-                        strcpy(szWork, vrgZip[iResTechNow].szName);
-                    } else {
-                        _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
-                    }
-                    lpProc = MakeProcInstance(RenameZipDlg, hInst);
-                    if (DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc) != 0) {
-                        if ((int16_t)(int8_t)szWork[0] == 0) {
-                            _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
-                        }
-                        strcpy(vrgZip[iResTechNow].szName, szWork);
-                        pszT = &szWork[64];
-                        psz = szWork;
-                        while ((int16_t)(int8_t)*psz != 0) {
-                            t_065c = psz;
-                            psz++;
-                            *pszT++ = *t_065c;
-                            if ((int16_t)(int8_t)*t_065c == 38) {
-                                *pszT++ = '&';
-                            }
-                        }
-                        *pszT = 0;
-                        SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), &szWork[64]);
-                        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_IMPORT) {
-                            vrgZip[iResTechNow].fValid = 1;
-                            vrgZip[iResTechNow].txp = sel.fl.lpplord->rgord[sel.iwpAct].txp;
-                            InvalidateRect(hwnd, NULL, 1);
-                        }
-                        EnableZipBtns(hwnd, iResTechNow);
-                    }
-                    FreeProcInstance(lpProc);
-                    SetFocus(hwnd);
-                    gd.fChgZipOrd = 1;
-                    break;
-                case IDC_DELETE:
-                    vrgZip[iResTechNow].fValid = 0;
-                    _wsprintf(szWork, PszGetCompressedString(idsUnusedD), iResTechNow + 1);
-                    SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), szWork);
-                    InvalidateRect(hwnd, NULL, 1);
-                    gd.fChgZipOrd = 1;
-                    break;
-                case IDC_HELP:
-                    WinHelp(hwnd, szHelpFile, 1, 1098);
-                    return 1;
-                }
-            }
-        }
-    } else {
-        for (i = 1073; i <= 1076; i++) {
-            t_scratch_m30 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_m30 == GetDlgItem(hwnd, i))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 1073; i <= 1076 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 1076) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    if (message == WM_INITDIALOG) {
+        SetWindowText(hwnd, PszGetCompressedString(idsCustomizeZipOrders));
+        ShowWindow(GetDlgItem(hwnd, IDC_ZIP_PROD_QUEUE), SW_HIDE);
+        hwndZipOrderDlg = hwnd;
+        CheckRadioButton(hwnd, IDC_ZIP_PROD_PRESET_1, IDC_ZIP_PROD_PRESET_4, IDC_ZIP_PROD_PRESET_1);
+        EnableZipBtns(hwnd, 0);
+        iResTechNow = Energy;
+        for (i = 1073; i <= 1076; i++) {
+            if (vrgZip[i - 1073].fValid != 0) {
+                pszT = szWork;
+                psz = vrgZip[i - 1073].szName;
+                while ((int16_t)(int8_t)*psz != 0) {
+                    t_00bd = psz;
+                    psz++;
+                    *pszT++ = *t_00bd;
+                    if ((int16_t)(int8_t)*t_00bd == '&') {
+                        *pszT++ = '&';
+                    }
+                }
+                *pszT = 0;
+                psz = szWork;
+            } else {
+                psz = PszGetCompressedString(idsUnusedD);
+                _wsprintf(szWork, psz, i - 1072);
+                psz = szWork;
+            }
+            hwndRad = GetDlgItem(hwnd, i);
+            SetWindowText(hwndRad, psz);
+        }
+        StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 1);
+        if (gd.fTutorial != 0) {
+            AdvanceTutor();
+        }
+        return 1;
+    }
+    if (message == WM_COMMAND) {
+        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_ZIP_PROD_PRESET_1 &&
+            GET_WM_COMMAND_ID(wParam, lParam) <= IDC_ZIP_PROD_PRESET_4) {
+            iResTechNow = GET_WM_COMMAND_ID(wParam, lParam) - 1073;
+            EnableZipBtns(hwnd, iResTechNow);
+            InvalidateRect(hwnd, NULL, 1);
+        } else {
+            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+            case IDOK:
+            case IDCANCEL:
+                hwndZipOrderDlg = 0;
+                StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 0);
+                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
+                if (gd.fTutorial != 0) {
+                    AdvanceTutor();
+                }
+                return 1;
+            case IDC_IMPORT:
+            case IDC_RENAME:
+                if (vrgZip[iResTechNow].fValid != 0) {
+                    strcpy(szWork, vrgZip[iResTechNow].szName);
+                } else {
+                    _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
+                }
+                lpProc = MakeProcInstance(RenameZipDlg, hInst);
+                if (DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc) != 0) {
+                    if ((int16_t)(int8_t)szWork[0] == 0) {
+                        _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
+                    }
+                    strcpy(vrgZip[iResTechNow].szName, szWork);
+                    pszT = &szWork[64];
+                    psz = szWork;
+                    while ((int16_t)(int8_t)*psz != 0) {
+                        t_065c = psz;
+                        psz++;
+                        *pszT++ = *t_065c;
+                        if ((int16_t)(int8_t)*t_065c == '&') {
+                            *pszT++ = '&';
+                        }
+                    }
+                    *pszT = 0;
+                    SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), &szWork[64]);
+                    if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_IMPORT) {
+                        vrgZip[iResTechNow].fValid = 1;
+                        vrgZip[iResTechNow].txp = sel.fl.lpplord->rgord[sel.iwpAct].txp;
+                        InvalidateRect(hwnd, NULL, 1);
+                    }
+                    EnableZipBtns(hwnd, iResTechNow);
+                }
+                FreeProcInstance(lpProc);
+                SetFocus(hwnd);
+                gd.fChgZipOrd = 1;
+                break;
+            case IDC_DELETE:
+                vrgZip[iResTechNow].fValid = 0;
+                _wsprintf(szWork, PszGetCompressedString(idsUnusedD), iResTechNow + 1);
+                SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), szWork);
+                InvalidateRect(hwnd, NULL, 1);
+                gd.fChgZipOrd = 1;
+                break;
+            case IDC_HELP:
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhCustomZipOrdersDialog);
+                return 1;
+            }
         }
     }
     return 0;
@@ -197,7 +194,7 @@ INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
                 }
                 SetWindowText(hwnd, PszGetCompressedString(ids));
                 SetWindowPos(hwnd, NULL, ptStickyRenameDlg.x + 70, ptStickyRenameDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-                SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xc, 0);
+                SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0xc, 0);
                 SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
                 StickyDlgPos(hwnd, &ptStickyRenameDlg, 1);
                 return 1;
@@ -213,7 +210,7 @@ INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
                     EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
                     return 1;
                 case IDC_HELP:
-                    WinHelp(hwnd, szHelpFile, 1, (uint32_t)(hwndZipOrderDlg == 0 ? 1106 : 3103));
+                    WinHelp(hwnd, szHelpFile, HELP_CONTEXT, (uint32_t)(hwndZipOrderDlg == 0 ? 1106 : 3103));
                     return 1;
                 }
             }
@@ -241,7 +238,7 @@ INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         if (message == WM_INITDIALOG) {
             SetWindowText(hwnd, PszGetCompressedString(idsRenameFleet));
             SetWindowPos(hwnd, NULL, ptStickyRenameDlg.x + 70, ptStickyRenameDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
+            SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0x1f, 0);
             SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
             StickyDlgPos(hwnd, &ptStickyRenameDlg, 1);
             return 1;
@@ -271,7 +268,7 @@ INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                 }
             default:
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                    WinHelp(hwnd, szHelpFile, 1, 1095);
+                    WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhRenameFleetDialog);
                     return 1;
                 }
             }
@@ -324,10 +321,10 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
             t_call_0e31 = MdCalcStargateDamage(isbsSrc, isbsDst, dDist, rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty, &rgpct[ishdef]);
             switch (t_call_0e31) {
             case -1:
-                FSendPlrMsg(flSrc.iPlayer, 227, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
+                FSendPlrMsg(flSrc.iPlayer, idmAttemptedUseStargateReachCouldBecauseDestination, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
                 return 0;
             case -2:
-                FSendPlrMsg(flSrc.iPlayer, 228, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
+                FSendPlrMsg(flSrc.iPlayer, idmAttemptedUseStargateReachCouldBecauseShips, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
                 return 0;
             case 0:
                 cshdef--;
@@ -412,7 +409,8 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
         if (cshdef != 0) {
             if (cshKill != 0) {
                 if ((cshKill & 0xffff0000) != 0) {
-                    FSendPlrMsg(lpfl->iPlayer, 235, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), HIWORD(cshKill), 0, 0);
+                    FSendPlrMsg(lpfl->iPlayer, idmUsedStargateReachLosingUnbelievableShipsJump, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id,
+                                LOWORD(cshKill), HIWORD(cshKill), 0, 0);
                 } else {
                     if (cshKill < (int32_t)(cshOrig >> 2)) {
                         idm = idmUsedStargateReachLosingShipsTreacherousVoid;
@@ -433,7 +431,7 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
         }
     }
     lpfl->fDead = 1;
-    FSendPlrMsg(flSrc.iPlayer, 231, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
+    FSendPlrMsg(flSrc.iPlayer, idmHeedlessDangerAttemptedUseStargateReachFleet, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
     return 0;
 }
 
@@ -502,7 +500,7 @@ void KillUsedWaypoints() {
             if (lpfl->cord > 1) {
                 if (lpfl->fMark != 0) {
                     DeleteWpFar(lpfl, 1, 0);
-                    FSendPlrMsg(lpfl->iPlayer, 311, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
+                    FSendPlrMsg(lpfl->iPlayer, idmHasExecutedOrdersFollowFleetAwaitsFurther, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                 } else {
                     for (j = 1; j < lpfl->cord; j++) {
                         if (lpfl->lpplord->rgord[j].grobj == grobjFleet) {
@@ -541,26 +539,26 @@ void KillUsedWaypoints() {
                         if (lpfl->cord == 1) {
                             if ((uint16_t)(lpfl->lpplord->rgord[0].grTask - 1) <= 7) {
                                 switch (lpfl->lpplord->rgord[0].grTask) {
-                                case 1:
-                                case 2:
-                                case 3:
-                                case 5:
-                                case 6:
-                                case 7:
+                                case grTaskXfer:
+                                case grTaskColonize:
+                                case grTaskMine:
+                                case grTaskScrap:
+                                case grTaskLayMines:
+                                case grTaskPatrol:
                                     break;
-                                case 8:
+                                case grTaskAutoRoute:
                                     if (lpfl->idPlanet != -1) {
                                         lppl = LpplFromId(lpfl->idPlanet);
                                         if (lppl->iPlayer == lpfl->iPlayer && lppl->idRoute != 0)
                                             break;
                                     }
-                                case 4:
+                                case grTaskMerge:
                                     goto L_1cc6;
                                 }
                                 continue;
                             }
                         L_1cc6:
-                            FSendPlrMsg(lpfl->iPlayer, 78, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
+                            FSendPlrMsg(lpfl->iPlayer, idmHasCompletedAssignedOrders, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                         }
                     }
                 }
@@ -751,7 +749,6 @@ int32_t CMineFromLpfl(FLEET *lpfl) {
     int16_t  chs;
     HS      *lphs;
     HS      *t_fields_1;
-    uint32_t t_fields_2;
     uint32_t t_fields_3;
 
     cMineTot = 0;
@@ -766,9 +763,8 @@ int32_t CMineFromLpfl(FLEET *lpfl) {
                 if (lphs->grhst == hstMining && lphs->iItem >= iminingRoboMidgetMiner && lphs->iItem <= iminingAlienMiner) {
                     part.hs.grhst = lphs->grhst;
                     t_fields_1 = &part.hs;
-                    t_fields_2 = lphs->iItem;
                     t_fields_3 = lphs->cItem;
-                    t_fields_1->iItem = t_fields_2;
+                    t_fields_1->iItem = lphs->iItem;
                     t_fields_1->cItem = t_fields_3;
                     FLookupPart(&part);
                     cMine += (uint32_t)(lphs->cItem * part.pmining->grAbility);
@@ -815,7 +811,7 @@ int32_t PctTerraFromLpfl(FLEET *lpfl) {
     return pctTot;
 }
 
-int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
+int32_t CLayMinesFromLpfl(FLEET *lpfl, MineFieldType iType, int16_t ishdef) {
     uint16_t iMin;
     uint16_t iMax;
     int32_t  cMine;
@@ -827,25 +823,24 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
     int16_t  chs;
     HS      *lphs;
     HS      *t_fields_1;
-    uint32_t t_fields_2;
     uint32_t t_fields_3;
 
     cMineTot = 0;
     switch (iType) {
-    case -1:
+    case 0xffff:
     default:
         iMin = 0;
         iMax = 9;
         break;
-    case 0:
+    case mineStandard:
         iMin = 0;
         iMax = 3;
         break;
-    case 1:
+    case mineHeavy:
         iMin = 4;
         iMax = 6;
         break;
-    case 2:
+    case mineSpeedBump:
         iMin = 7;
         iMax = 9;
     }
@@ -860,13 +855,12 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
                 if (lphs->grhst == hstMines && lphs->iItem >= iMin && lphs->iItem <= iMax) {
                     part.hs.grhst = lphs->grhst;
                     t_fields_1 = &part.hs;
-                    t_fields_2 = lphs->iItem;
                     t_fields_3 = lphs->cItem;
-                    t_fields_1->iItem = t_fields_2;
+                    t_fields_1->iItem = lphs->iItem;
                     t_fields_1->cItem = t_fields_3;
                     FLookupPart(&part);
                     cMine += (uint32_t)(lphs->cItem * part.pmines->grAbility);
-                } else if (iType <= 0 && lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition) {
+                } else if ((int16_t)iType <= mineStandard && lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition) {
                     cMine += (int32_t)(lphs->cItem * 4);
                 }
                 j++;
@@ -913,7 +907,6 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     int32_t  lPow;
     PART     part;
     HS      *t_fields_1;
-    uint32_t t_fields_2;
     uint32_t t_fields_3;
 
     fStarbase = (int16_t)lphul->ihuldef < ihuldefOrbitalFort ? 0 : 1;
@@ -925,15 +918,14 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
         if (lphs->grhst == hstBeam) {
             part.hs.grhst = lphs->grhst;
             t_fields_1 = &part.hs;
-            t_fields_2 = lphs->iItem;
             t_fields_3 = lphs->cItem;
-            t_fields_1->iItem = t_fields_2;
+            t_fields_1->iItem = lphs->iItem;
             t_fields_1->cItem = t_fields_3;
             FLookupPart(&part);
-            if ((part.pbeam->grfAbilities & 2) != 0) {
+            if ((part.pbeam->grfAbilities & beamGatling) != 0) {
                 lRange = 4;
             } else {
-                if ((part.pbeam->grfAbilities & 1) != 0)
+                if ((part.pbeam->grfAbilities & beamSapper) != 0)
                     goto L_2c4d;
                 lRange = part.pbeam->dRangeMax;
             }
@@ -1055,7 +1047,6 @@ int16_t CPtsCloakFromLphs(HS *lphs) {
     int16_t  cPts;
     PART     part;
     HS      *t_fields_1;
-    uint32_t t_fields_2;
     uint32_t t_fields_3;
 
     cPts = 0;
@@ -1068,9 +1059,8 @@ int16_t CPtsCloakFromLphs(HS *lphs) {
             break;
         part.hs.grhst = lphs->grhst;
         t_fields_1 = &part.hs;
-        t_fields_2 = lphs->iItem;
         t_fields_3 = lphs->cItem;
-        t_fields_1->iItem = t_fields_2;
+        t_fields_1->iItem = lphs->iItem;
         t_fields_1->cItem = t_fields_3;
         FLookupPart(&part);
         cPts = part.pspecial->grAbility;
@@ -1133,8 +1123,6 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     char   *psz;
     HWND    t_call_343f;
     WPARAM  t_merge_3487_0001;
-    HWND    t_scratch_me;
-    HWND    t_call_3640;
 
     if (msg == WM_ERASEBKGND) {
         GetClientRect(hwnd, &rc);
@@ -1150,8 +1138,8 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 if (rglpfl[vrgiflMerge[i]]->cord > 1) {
                     strcat(szT, " *");
                 }
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_ADDSTRING, 0, (LPARAM)szT);
-                t_call_343f = GetDlgItem(hwnd, IDC_U16_0x0051);
+                SendMessage(GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST), LB_ADDSTRING, 0, (LPARAM)szT);
+                t_call_343f = GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST);
                 t_merge_3487_0001 = vcflMerge == 2 || rglpfl[vrgiflMerge[i]]->id == sel.fl.id;
                 SendMessage(t_call_343f, LB_SETSEL, t_merge_3487_0001, i);
             }
@@ -1165,7 +1153,7 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             case IDOK:
             case IDCANCEL:
                 for (i = 0; i < vcflMerge; i++) {
-                    if (SendMessage(GetDlgItem(hwnd, IDC_U16_0x0051), LB_GETSEL, i, 0) == 0) {
+                    if (SendMessage(GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST), LB_GETSEL, i, 0) == 0) {
                         vrgiflMerge[i] = -1;
                     }
                 }
@@ -1176,23 +1164,20 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
                 return 1;
             case IDC_HELP:
-                WinHelp(hwnd, szHelpFile, 1, 1107);
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhMergeFleetsDialog);
                 return 1;
-            case 0x7f8:
-            case 0x7f9:
+            case IDC_MERGE_FLEETS_SELECT_ALL:
+            case IDC_MERGE_FLEETS_UNSELECT_ALL:
                 for (i = 0; i < vcflMerge; i++) {
-                    t_call_3640 = GetDlgItem(hwnd, IDC_U16_0x0051);
-                    SendMessage(t_call_3640, LB_SETSEL, GET_WM_COMMAND_ID(wParam, lParam) == 0x7f8 ? 1 : 0, i);
+                    SendMessage(GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST), LB_SETSEL, GET_WM_COMMAND_ID(wParam, lParam) == IDC_MERGE_FLEETS_SELECT_ALL ? 1 : 0,
+                                i);
                 }
                 return 1;
             }
         }
-    } else {
-        t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-        if (t_scratch_me != GetDlgItem(hwnd, IDC_U16_0x0051)) {
-            SetBkColor((HDC)wParam, crButtonFace);
-            return (INT_PTR)hbrButtonFace;
-        }
+    } else if (GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, IDC_MERGE_FLEETS_LIST)) {
+        SetBkColor((HDC)wParam, crButtonFace);
+        return (INT_PTR)hbrButtonFace;
     }
     return 0;
 }

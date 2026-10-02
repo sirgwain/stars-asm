@@ -24,8 +24,6 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     COLDROP  *lpcdT;
     XFERFULL *lpxfMax;
     MessageId idm;
-    int16_t   t_b926;
-    int16_t   t_b9dc;
 
 L_ae39:
     rgcXfer[i] = (int16_t)(int8_t)lpb[iLook + 6];

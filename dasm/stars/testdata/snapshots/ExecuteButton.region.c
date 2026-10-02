@@ -1,4 +1,4 @@
-void ExecuteButton(int16_t itb, int16_t fDown) {
+void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     uint16_t grbitNew;
     POINT16  pt;
     char    *rgszScan[12];
@@ -19,46 +19,46 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
     POINT    t_pt_15bd_1;
 
     gd.fChgScanner = 1;
-    if ((uint16_t)itb <= 17) {
+    if ((uint16_t)itb <= tbShipCounts) {
         switch (itb) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
+        case tbNormalView:
+        case tbSurfaceMineralView:
+        case tbMineralConcView:
+        case tbPlanetValueView:
+        case tbPopulationView:
+        case tbNoPlayerInfoView:
             if (fDown == 0)
                 break;
-            grbitScan = itb + (grbitScan & 0x3ff0);
+            grbitScan = itb + (grbitScan & grbitScanToggleMask);
             goto L_1644;
-        case 6:
+        case tbAddWaypoints:
             grbitNew = 16;
             goto LBitDiddle;
-        case 7:
+        case tbScannerCoverage:
             grbitNew = 32;
             goto LBitDiddle;
-        case 9:
+        case tbFleetPaths:
             grbitNew = 128;
             goto LBitDiddle;
-        case 10:
+        case tbIdleFleets:
             grbitNew = 0x100;
             goto LBitDiddle;
-        case 11:
+        case tbPlanetNames:
             grbitNew = 0x400;
             goto LBitDiddle;
-        case 17:
+        case tbShipCounts:
             grbitNew = 0x1000;
             goto LBitDiddle;
-        case 12:
+        case tbShipDesignFilter:
             grbitNew = 0x200;
             goto LBitDiddle;
-        case 14:
+        case tbEnemyClassFilter:
             grbitNew = 0x800;
             goto LBitDiddle;
-        case 8:
+        case tbMineFields:
             grbit = 1;
             c = 0;
-            if ((grbitScan & 0x40) == 0) {
+            if ((grbitScan & grbitScanMineFields) == 0) {
                 grbitScanMines = 0;
             }
             for (i = 1278; i <= 1279; i++) {
@@ -96,13 +96,13 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                 grbitScanMines = 0;
             }
             if (grbitScanMines != 0) {
-                grbitScan |= 0x40;
+                grbitScan |= grbitScanMineFields;
             } else {
                 grbitScan &= 0xffbf;
             }
             InvalidateRect(hwndTb, NULL, 1);
             goto L_1644;
-        case 13:
+        case tbShipDesignFilterMenu:
             c = 0;
             for (i = 1275; i <= 1277; i++) {
                 rgid[c] = 0;
@@ -139,7 +139,7 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                 } else {
                     grbitScanShip = 0;
                 }
-                if ((grbitScan & 0x200) != 0 || grbitScanShip == 0)
+                if ((grbitScan & grbitScanDesignFilter) != 0 || grbitScanShip == 0)
                     goto L_12e6;
             } else {
                 iSel -= 4;
@@ -151,16 +151,16 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                     }
                 }
                 grbitScanShip ^= 1 << ish;
-                if ((grbitScan & 0x200) != 0 || (1 << ish & grbitScanShip) == 0)
+                if ((grbitScan & grbitScanDesignFilter) != 0 || (1 << ish & grbitScanShip) == 0)
                     goto L_12e6;
             }
-            grbitScan |= 0x200;
+            grbitScan |= grbitScanDesignFilter;
             InvalidateRect(hwndTb, NULL, 1);
         L_12e6:
-            if ((grbitScan & 0x200) == 0)
+            if ((grbitScan & grbitScanDesignFilter) == 0)
                 break;
             goto L_1644;
-        case 15:
+        case tbEnemyClassFilterMenu:
             grbit = 1;
             c = 0;
             for (i = 1275; i <= 1277; i++) {
@@ -193,21 +193,21 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                 } else {
                     grbitScanEShip = 0;
                 }
-                if ((grbitScan & 0x800) != 0 || grbitScanEShip == 0)
+                if ((grbitScan & grbitScanEnemyFilter) != 0 || grbitScanEShip == 0)
                     goto L_1505;
             } else {
                 iSel -= 4;
                 grbitScanEShip ^= 1 << iSel;
-                if ((grbitScan & 0x800) != 0 || (1 << iSel & grbitScanEShip) == 0)
+                if ((grbitScan & grbitScanEnemyFilter) != 0 || (1 << iSel & grbitScanEShip) == 0)
                     goto L_1505;
             }
-            grbitScan |= 0x800;
+            grbitScan |= grbitScanEnemyFilter;
             InvalidateRect(hwndTb, NULL, 1);
         L_1505:
-            if ((grbitScan & 0x800) == 0)
+            if ((grbitScan & grbitScanEnemyFilter) == 0)
                 break;
             goto L_1644;
-        case 16:
+        case tbZoomMenu:
             c = 0;
             for (i = 0; i < 9; i++) {
                 rgid[c] = (uint32_t)(iScanZoom + 4 == i ? 1 : 0);
@@ -232,7 +232,7 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
             grbitScan &= ~grbitNew;
         }
     L_1644:
-        if (itb != 6) {
+        if (itb != tbAddWaypoints) {
             InvalidateRect(hwndScanner, NULL, 1);
         }
         if (gd.fTutorial != 0) {

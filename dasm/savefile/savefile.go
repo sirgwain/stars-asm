@@ -419,7 +419,8 @@ func CompareRecords(left, right []Record, layout AIHistoryLayout) []RecordDiffer
 		diff := RecordDifference{Index: startI, Left: a, Right: b}
 		if a[0].Type == RtAiData && b[0].Type == RtAiData {
 			diff.Fields, diff.Unused, diff.Label = aiDataChanges(recordGroupData(a), recordGroupData(b), layout)
-			diff.Benign = len(diff.Fields) == 0 && len(diff.Unused) != 0
+		} else if (a[0].Type == RtOrderA || a[0].Type == RtOrderB) && a[0].Type == b[0].Type {
+			diff.Fields, diff.Unused = orderChanges(a[0].Data, b[0].Data)
 		} else if a[0].Type == RtGame && b[0].Type == RtGame {
 			diff.Fields = gameChanges(a[0].Data, b[0].Data)
 		} else if a[0].Type == RtBOF && b[0].Type == RtBOF {
@@ -430,6 +431,7 @@ func CompareRecords(left, right []Record, layout AIHistoryLayout) []RecordDiffer
 			diff.Fields = starChanges(a[0].Stars, b[0].Stars)
 			diff.Label = "STARPACK coordinates"
 		}
+		diff.Benign = len(diff.Fields) == 0 && len(diff.Unused) != 0
 		differences = append(differences, diff)
 	}
 	return differences
@@ -666,6 +668,91 @@ func cyberInfoChanges(a, b []byte) (fields, unused []FieldChange, err error) {
 		}
 	}
 	return fields, unused, nil
+}
+
+// Order matches ORDER in structs.h. rtOrderB stores only the 8-byte prefix
+// (grTask == grTaskNone); rtOrderA adds the 10-byte task union.
+type Order struct {
+	X, Y         int16
+	ID           int16
+	GrTask       uint8
+	IWarp        uint8
+	Grobj        uint8
+	FValidTask   bool
+	FNoAutoTrack bool
+	FUnused      uint8
+	Task         []uint16
+}
+
+// ParseOrder decodes an rtOrderA or rtOrderB payload.
+func ParseOrder(data []byte) (Order, error) {
+	if len(data) != 8 && len(data) != 18 {
+		return Order{}, fmt.Errorf("ORDER is %d bytes, want 8 or 18", len(data))
+	}
+	w := binary.LittleEndian.Uint16(data[6:])
+	order := Order{X: int16(binary.LittleEndian.Uint16(data)), Y: int16(binary.LittleEndian.Uint16(data[2:])),
+		ID: int16(binary.LittleEndian.Uint16(data[4:])), GrTask: uint8(w & 0xf), IWarp: uint8(w >> 4 & 0xf),
+		Grobj: uint8(w >> 8 & 0xf), FValidTask: w&0x1000 != 0, FNoAutoTrack: w&0x2000 != 0, FUnused: uint8(w >> 14)}
+	for i := 8; i < len(data); i += 2 {
+		order.Task = append(order.Task, binary.LittleEndian.Uint16(data[i:]))
+	}
+	return order, nil
+}
+
+// orderTaskWords names the task-union words each grTask reads (enums.h TaskType).
+// Later words hold stale data; tlm.cTimeOld is written but never read.
+var orderTaskWords = map[uint8][]string{
+	1: {"txp.rgia[0]", "txp.rgia[1]", "txp.rgia[2]", "txp.rgia[3]", "txp.rgia[4]"},
+	6: {"tlm.cTime"},
+	7: {"tptl.iWarp", "tptl.iDist"},
+	9: {"tsell.iPlrX"},
+}
+
+// orderChanges compares ORDER fields. fUnused is never read, fNoAutoTrack is
+// cleared when fleets load, and task words past the grTask's use are stale.
+func orderChanges(a, b []byte) (fields, unused []FieldChange) {
+	x, errX := ParseOrder(a)
+	y, errY := ParseOrder(b)
+	if errX != nil || errY != nil || len(x.Task) != len(y.Task) {
+		return nil, nil
+	}
+	for _, field := range []struct {
+		name        string
+		left, right int64
+	}{
+		{"pt.x", int64(x.X), int64(y.X)}, {"pt.y", int64(x.Y), int64(y.Y)}, {"id", int64(x.ID), int64(y.ID)},
+		{"grTask", int64(x.GrTask), int64(y.GrTask)}, {"iWarp", int64(x.IWarp), int64(y.IWarp)},
+		{"grobj", int64(x.Grobj), int64(y.Grobj)},
+	} {
+		if field.left != field.right {
+			fields = append(fields, FieldChange{"order " + field.name, fmt.Sprint(field.left), fmt.Sprint(field.right)})
+		}
+	}
+	if x.FValidTask != y.FValidTask {
+		fields = append(fields, FieldChange{"order fValidTask", fmt.Sprint(x.FValidTask), fmt.Sprint(y.FValidTask)})
+	}
+	if x.FNoAutoTrack != y.FNoAutoTrack {
+		unused = append(unused, FieldChange{"order fNoAutoTrack", fmt.Sprint(x.FNoAutoTrack), fmt.Sprint(y.FNoAutoTrack)})
+	}
+	if x.FUnused != y.FUnused {
+		unused = append(unused, FieldChange{"order fUnused", fmt.Sprint(x.FUnused), fmt.Sprint(y.FUnused)})
+	}
+	names := orderTaskWords[x.GrTask]
+	if other := orderTaskWords[y.GrTask]; len(other) > len(names) {
+		names = other
+	}
+	for i := range x.Task {
+		if x.Task[i] == y.Task[i] {
+			continue
+		}
+		before, after := fmt.Sprintf("0x%04x", x.Task[i]), fmt.Sprintf("0x%04x", y.Task[i])
+		if i < len(names) {
+			fields = append(fields, FieldChange{"order " + names[i], before, after})
+		} else {
+			unused = append(unused, FieldChange{fmt.Sprintf("order task word %d", i), before, after})
+		}
+	}
+	return fields, unused
 }
 
 // planetTailChanges identifies the documented routing and starbase tail words.

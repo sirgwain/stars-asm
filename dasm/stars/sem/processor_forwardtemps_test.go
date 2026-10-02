@@ -1,11 +1,17 @@
 package sem
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"testing"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
+
+// writesAnything reports that every call may store to any memory.
+func writesAnything(*typeinfo.Function) machine.Writes {
+	return machine.Writes{Any: true}
+}
 
 // TestForwardTempsProcessor verifies which temps are forwarded into their
 // use and which keep the conversion or evaluation order they provide.
@@ -21,6 +27,7 @@ func TestForwardTempsProcessor(t *testing.T) {
 	global := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "gCount", Type: typeinfo.I16}}
 	program := &typeinfo.Function{Name: "CountThings", Ret: typeinfo.I16}
 	other := &typeinfo.Function{Name: "Touch", Ret: typeinfo.I16}
+	caller := &typeinfo.Function{Name: "Caller", Ret: typeinfo.I16}
 	signed := func(v int16) *Const { return &Const{TypeInfo: typeinfo.I16, U64: uint64(uint16(v))} }
 	isZero := &Compare{Op: CompareEQ, LHS: flag, RHS: signed(0)}
 	callOf := func(fn *typeinfo.Function, args ...Expr) *Call {
@@ -63,6 +70,40 @@ func TestForwardTempsProcessor(t *testing.T) {
 				&Assign{Dst: sum, Src: &Binary{TypeInfo: typeinfo.I16, Op: OpSub, LHS: global, RHS: result}},
 			},
 			want: []string{"call CountThings(id) -> t_call_1000", "sum = (gCount - t_call_1000)"},
+		},
+		{
+			name: "call converted on assignment forwarded",
+			effects: []Effect{
+				&CallEffect{Call: callOf(program, id), Result: scratch},
+				&Assign{Dst: sum, Src: scratch},
+			},
+			want: []string{"sum = CountThings(id)"},
+		},
+		{
+			name: "masked value that fits forwarded",
+			effects: []Effect{
+				&Assign{Dst: scratch, Src: &Binary{TypeInfo: typeinfo.U16, Op: OpAnd, LHS: count, RHS: &Const{TypeInfo: typeinfo.U16, U64: 0xf}}},
+				&Branch{Cond: &Compare{Op: CompareLT, LHS: scratch, RHS: sum}},
+			},
+			want: []string{"branch (c & 0xf) < sum ? L_0000 : L_0000"},
+		},
+		{
+			name: "value forwarded past an unrelated store",
+			effects: []Effect{
+				&Assign{Dst: merge, Src: count},
+				&Assign{Dst: id, Src: signed(5)},
+				&Branch{Cond: &Compare{Op: CompareLT, LHS: merge, RHS: sum}},
+			},
+			want: []string{"id = 5", "branch c < sum ? L_0000 : L_0000"},
+		},
+		{
+			name: "value kept ahead of a store to what it reads",
+			effects: []Effect{
+				&Assign{Dst: merge, Src: count},
+				&Assign{Dst: count, Src: signed(5)},
+				&Branch{Cond: &Compare{Op: CompareLT, LHS: merge, RHS: sum}},
+			},
+			want: []string{"t_merge_1000_0001 = c", "c = 5", "branch t_merge_1000_0001 < sum ? L_0000 : L_0000"},
 		},
 		{
 			name: "call kept ahead of another call",
@@ -121,7 +162,51 @@ func TestForwardTempsProcessor(t *testing.T) {
 				CFG:    cfgForReturnSinkTest(t, []asm.DecodedInst{retForReturnSinkTest(0x1000)}),
 				Blocks: []Block{{ID: 0x1000, Effects: tc.effects}},
 			}
-			(&forwardTempsProcessor{}).ProcessFunc(nil, fn)
+			(&forwardTempsProcessor{fs: caller, writes: writesAnything}).ProcessFunc(nil, fn)
+			if got := formatEffects(fn.Blocks[0].Effects); !equalStrings(got, tc.want) {
+				t.Fatalf("effects = %#v, want %#v", got, tc.want)
+			}
+		})
+	}
+}
+
+// TestForwardTempsUsesCallWrites verifies that a call moves ahead of a
+// global read only when what it may store to leaves that global alone.
+func TestForwardTempsUsesCallWrites(t *testing.T) {
+	sum := testLocal("sum", typeinfo.I16)
+	id := testLocal("id", typeinfo.I16)
+	result := &Temp{Name: "t_call_1000", TypeInfo: typeinfo.I16}
+	global := &Global{GlobalVar: &typeinfo.GlobalVar{Name: "gCount", Type: typeinfo.I16}}
+	other := &typeinfo.GlobalVar{Name: "gSeed", Type: typeinfo.I32}
+	program := &typeinfo.Function{Name: "CountThings", Ret: typeinfo.I16}
+	caller := &typeinfo.Function{Name: "Caller", Ret: typeinfo.I16}
+
+	for _, tc := range []struct {
+		name   string
+		stores machine.Writes
+		want   []string
+	}{
+		{
+			name:   "call storing elsewhere forwarded",
+			stores: machine.Writes{Globals: []*typeinfo.GlobalVar{other}},
+			want:   []string{"sum = (gCount - CountThings(id))"},
+		},
+		{
+			name:   "call storing to the global kept",
+			stores: machine.Writes{Globals: []*typeinfo.GlobalVar{global.GlobalVar}},
+			want:   []string{"call CountThings(id) -> t_call_1000", "sum = (gCount - t_call_1000)"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fn := &Func{
+				CFG: cfgForReturnSinkTest(t, []asm.DecodedInst{retForReturnSinkTest(0x1000)}),
+				Blocks: []Block{{ID: 0x1000, Effects: []Effect{
+					&CallEffect{Call: &Call{Function: program, Target: &FunctionRef{Function: program}, Args: []Expr{id}}, Result: result},
+					&Assign{Dst: sum, Src: &Binary{TypeInfo: typeinfo.I16, Op: OpSub, LHS: global, RHS: result}},
+				}}},
+			}
+			writes := func(*typeinfo.Function) machine.Writes { return tc.stores }
+			(&forwardTempsProcessor{fs: caller, writes: writes}).ProcessFunc(nil, fn)
 			if got := formatEffects(fn.Blocks[0].Effects); !equalStrings(got, tc.want) {
 				t.Fatalf("effects = %#v, want %#v", got, tc.want)
 			}
@@ -134,6 +219,7 @@ func TestForwardTempsProcessor(t *testing.T) {
 // and that a copy converting to another type is kept.
 func TestForwardTempsSinksMergeCopies(t *testing.T) {
 	merge := &Temp{Name: "t_merge_1006_0001", TypeInfo: typeinfo.I16}
+	caller := &typeinfo.Function{Name: "Caller", Ret: typeinfo.I16}
 	signed := func(v int16) *Const { return &Const{TypeInfo: typeinfo.I16, U64: uint64(uint16(v))} }
 
 	for _, tc := range []struct {
@@ -176,7 +262,7 @@ func TestForwardTempsSinksMergeCopies(t *testing.T) {
 					{ID: 0x1006, Effects: []Effect{&Assign{Dst: tc.dst, Src: merge}, &Return{Value: tc.dst}}},
 				},
 			}
-			(&forwardTempsProcessor{}).ProcessFunc(nil, fn)
+			(&forwardTempsProcessor{fs: caller, writes: writesAnything}).ProcessFunc(nil, fn)
 			for i, want := range tc.want {
 				if got := formatEffects(fn.Blocks[i+1].Effects); !equalStrings(got, want) {
 					t.Fatalf("block %s effects = %#v, want %#v", fn.Blocks[i+1].ID, got, want)

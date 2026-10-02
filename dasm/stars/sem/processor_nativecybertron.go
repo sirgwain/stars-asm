@@ -2,6 +2,7 @@ package sem
 
 import (
 	"fmt"
+	"math"
 	"slices"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
@@ -68,7 +69,85 @@ func (p *nativeCybertronProcessor) ProcessFunc(_ *Result, f *Func) bool {
 			break
 		}
 	}
+	overlayCyberOrderFrame(f)
 	return true
+}
+
+// overlayCyberOrderFrame gives shdef, rgRecycleSBShdef, and ord the one
+// storage their blocks shared in the Win16 frame. The mine-laying order never
+// sets its task union, so it moves whatever those locals last left there:
+// zeros from the late-game recycle clears, which make the fleet stop laying
+// on arrival, or bytes of a scrapped design. Native locals are separate, so
+// the order would carry unrelated stack bytes instead.
+func overlayCyberOrderFrame(f *Func) {
+	locals := map[string]*Local{"shdef": nil, "rgRecycleSBShdef": nil, "ord": nil}
+	for _, block := range f.Blocks {
+		for _, effect := range block.Effects {
+			walkEffect(effect, func(expr Expr) {
+				if v, ok := expr.(*Local); ok {
+					if _, want := locals[v.Name]; want {
+						locals[v.Name] = v
+					}
+				}
+			})
+		}
+	}
+	base, end := math.MaxInt, math.MinInt
+	for name, v := range locals {
+		if v == nil {
+			panic(fmt.Sprintf("native-cybertron: overlaid local %s not found", name))
+		}
+		base = min(base, v.BPOffset)
+		end = max(end, v.BPOffset+v.Type.Bytes())
+	}
+	frame := &Local{FunctionVar: typeinfo.FunctionVar{Name: "rgbOrdFrame", Type: &typeinfo.Array{Elem: typeinfo.U8, Count: end - base}}}
+	f.RecoveredLocals = append(f.RecoveredLocals, &frame.FunctionVar)
+	at := func(v *Local) Expr {
+		if v.BPOffset == base {
+			return frame
+		}
+		return &AddressOf{
+			Target:   &ArrayIndex{Base: frame, Index: &Const{TypeInfo: typeinfo.I16, U64: uint64(v.BPOffset - base)}, TypeInfo: typeinfo.U8},
+			TypeInfo: &typeinfo.Pointer{Elem: typeinfo.U8},
+		}
+	}
+	recycle := locals["rgRecycleSBShdef"]
+	w := semRewriter{
+		lvalue: func(_ *semRewriter, value LValue) (LValue, bool, bool) {
+			switch v := value.(type) {
+			case *ArrayIndex:
+				array, ok := v.Base.(*Local)
+				if !ok || array.Name != recycle.Name {
+					return nil, false, false
+				}
+				index, ok := v.Index.(*Const)
+				if !ok {
+					panic(fmt.Sprintf("native-cybertron: unexpected recycle index %s", FormatExpr(v)))
+				}
+				return &ArrayIndex{Base: frame, Index: &Const{TypeInfo: index.TypeInfo, U64: index.U64 + uint64(recycle.BPOffset-base)}, TypeInfo: v.TypeInfo}, true, true
+			case *Local:
+				if v.Name != "shdef" && v.Name != "ord" {
+					return nil, false, false
+				}
+				pointer := &typeinfo.Pointer{Elem: v.Type}
+				return &Deref{
+					Pointer:  &Cast{Value: at(v), To: typeinfo.TypeDecl(pointer, ""), TypeInfo: pointer},
+					Width:    v.Type.Bytes(),
+					TypeInfo: v.Type,
+				}, true, true
+			}
+			return nil, false, false
+		},
+		expr: func(_ *semRewriter, e Expr) (Expr, bool, bool) {
+			if v, ok := e.(*Local); ok && v.Name == recycle.Name {
+				return at(v), true, true
+			}
+			return nil, false, false
+		},
+	}
+	for bi := range f.Blocks {
+		f.Blocks[bi].Effects, _ = w.rewriteEffects(f.Blocks[bi].Effects)
+	}
 }
 
 // cyberRecycleIndex matches the zero stores through latest-design locals that

@@ -28,10 +28,10 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 void             DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw);
 int16_t          FTrackNewGameDlg3(HWND hwnd, POINT16 pt, int16_t kbd);
 void             SetNGWTitle(HWND hwnd, int16_t iStep);
-PLAYER          *LpplrComp(int16_t idAi, AiLevel lvlAi);
-void             SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked);
-int16_t          GetVCCheck(GAME *pgame, int16_t vc);
-int16_t          SetVCVal(GAME *pgame, int16_t vc, int16_t val);
-int16_t          GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw);
+PLAYER          *LpplrComp(AiRace idAi, AiLevel lvlAi);
+void             SetVCCheck(GAME *pgame, VictoryCondition vc, int16_t fChecked);
+int16_t          GetVCCheck(GAME *pgame, VictoryCondition vc);
+int16_t          SetVCVal(GAME *pgame, VictoryCondition vc, int16_t val);
+int16_t          GetVCVal(GAME *pgame, VictoryCondition vc, int16_t fRaw);
 
 #endif

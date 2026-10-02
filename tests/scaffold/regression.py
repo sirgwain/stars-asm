@@ -4,6 +4,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -17,7 +18,7 @@ from seed_exe import patch_seed
 
 ROOT = Path(__file__).resolve().parents[2]
 SCENARIOS = ("noai", "oneai1", "oneai2", "oneai3", "oneai4", "oneai5", "oneai6", "smallai4", "smallai6")
-CHECKPOINTS = (0, 1, 10, 25, 50, 80, 100)
+CHECKPOINTS = (0, 1, 10, 25, 50, 80, 100, 150)
 SAVE_NAME = re.compile(r"game\.(xy|hst|[mhx](?:[1-9]|1[0-6]))$", re.I)
 
 
@@ -247,31 +248,185 @@ def compare(args):
             if any(not d.is_dir() for d in dirs):
                 results.append({"scenario": name, "turn": turn, "error": "missing checkpoint"})
                 continue
-            files = [{p.name.lower(): p for p in d.iterdir() if SAVE_NAME.fullmatch(p.name)} for d in dirs]
             if turn == 0 and any(json.loads((d / "checkpoint.json").read_text()).get("origin") == "baseline" for d in dirs):
                 results.append({"scenario": name, "turn": turn, "skipped": "reference input; creation not tested"})
                 continue
-            for filename in sorted(files[0].keys() | files[1].keys() | {"game.xy", "game.hst"}):
-                result = {"scenario": name, "turn": turn, "file": filename}
-                if any(filename not in f for f in files):
-                    result["error"] = "missing file"
-                else:
-                    proc = subprocess.run([str(cli), "save", "compare", str(files[0][filename]), str(files[1][filename])],
-                                          cwd=ROOT, text=True, capture_output=True)
-                    result["match"] = proc.returncode == 0
-                    if result["match"] and proc.stdout.startswith("MATCH with warnings"):
-                        result["warning"] = True
-                    result["detail"] = proc.stdout + proc.stderr
-                results.append(result)
+            results.extend(compare_saves(cli, dirs, {"scenario": name, "turn": turn}))
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(results, indent=2) + "\n")
+    return summarize(results, args.report)
+
+
+def summarize(results, report):
+    """summarize prints result counts and reports whether any comparison failed."""
     failures = sum(not r.get("match", False) and "skipped" not in r for r in results)
     matches = sum(r.get("match", False) for r in results)
     warnings = sum(r.get("warning", False) for r in results)
     skipped = sum("skipped" in r for r in results)
     print(f"{matches} matches ({warnings} with warnings); {failures} differences/errors; "
-          f"{skipped} reference inputs skipped. Report: {args.report}")
+          f"{skipped} reference inputs skipped. Report: {report}")
     return bool(failures)
+
+
+def compare_saves(cli, dirs, base):
+    """compare_saves runs save compare on every save in either directory."""
+    files = [{p.name.lower(): p for p in d.iterdir() if SAVE_NAME.fullmatch(p.name)} for d in dirs]
+    results = []
+    for filename in sorted(files[0].keys() | files[1].keys() | {"game.xy", "game.hst"}):
+        result = dict(base, file=filename)
+        if any(filename not in f for f in files):
+            result["error"] = "missing file"
+        else:
+            proc = subprocess.run([str(cli), "save", "compare", str(files[0][filename]), str(files[1][filename])],
+                                  cwd=ROOT, text=True, capture_output=True)
+            result["match"] = proc.returncode == 0
+            result["detail"] = proc.stdout + proc.stderr
+            if result["match"] and proc.stdout.startswith("MATCH with warnings"):
+                # Unused storage holds stale native heap and stack bytes that
+                # change between runs; keep the report stable and leave the
+                # values to save compare.
+                result["warning"] = True
+                result["detail"] = proc.stdout.splitlines()[0] + "\n"
+        results.append(result)
+    return results
+
+
+def load_work(path):
+    """load_work reads a prepared run and verifies its executable is unchanged."""
+    work = path.resolve()
+    manifest = json.loads((work / "run.json").read_text())
+    if digest(Path(manifest["exe"])) != manifest["exe_sha256"]:
+        raise ValueError(f"executable changed since prepare; prepare a fresh run: {work}")
+    return work, manifest
+
+
+def generate(work, manifest, scenario, source, turns, timeout, trace=False):
+    """generate runs one launch of turns from source saves and returns the output directory.
+
+    Output goes to <work>/<scenario>/xfeed/<from>_<to>. An existing output is
+    reused only when it came from the same input files and executable.
+    """
+    saved = source / "checkpoint.json"
+    if saved.is_file():
+        checked_files(source, json.loads(saved.read_text())["files"], "input checkpoint file")
+    start = host_turn(source / "game.hst")
+    end = start + turns
+    directory = work / scenario / "xfeed" / f"{start:03}_{end:03}"
+    inputs = sorted(p.name.lower() for p in source.iterdir() if SAVE_NAME.fullmatch(p.name))
+    input_files = {f: digest(source / f) for f in inputs}
+    if directory.exists():
+        previous = json.loads((directory / "crossfeed.json").read_text()) if (directory / "crossfeed.json").is_file() else {}
+        if (previous.get("input_files") != input_files or previous.get("exe_sha256") != manifest["exe_sha256"]
+                or (trace and not (directory / "trace.log").is_file())):
+            raise ValueError(f"output exists from different input, executable, or without a trace: {directory}; remove it to rerun")
+        print(f"{scenario}: reusing {directory}", flush=True)
+        return directory
+    if trace and manifest["engine"] != "native":
+        raise ValueError("--trace requires a native run built with -DSTARS_TEST_TRACE=ON")
+    directory.mkdir(parents=True)
+    copy_files(source, directory, inputs)
+    command, cwd = launch_command(manifest["engine"], Path(manifest["exe"]), directory, end, start)
+    env = dict(os.environ)
+    if trace:
+        env["STARS_TRACE"] = windows_path(directory, "native") + "\\trace.log"
+    print(f"{scenario}: turn {start} -> {end} from {source}: {' '.join(command)}", flush=True)
+    with (directory / "run.log").open("w") as log:
+        process = subprocess.run(command, cwd=cwd, stdout=log, stderr=subprocess.STDOUT,
+                                 check=False, timeout=timeout, env=env)
+    expected_exit = 1 if manifest["engine"] == "native" else 0
+    if process.returncode != expected_exit:
+        raise ValueError(f"exit {process.returncode}, expected {expected_exit}; see {directory / 'run.log'}")
+    if host_turn(directory / "game.hst") != end:
+        raise ValueError(f"expected turn {end} in {directory / 'game.hst'}")
+    if trace and not (directory / "trace.log").is_file():
+        raise ValueError(f"no trace.log written; was {manifest['exe']} built with -DSTARS_TEST_TRACE=ON?")
+    report = {"engine": manifest["engine"], "exe_sha256": manifest["exe_sha256"], "input": str(source),
+              "input_files": input_files, "turn": end, "command": command,
+              "files": {p.name.lower(): digest(p) for p in directory.iterdir() if SAVE_NAME.fullmatch(p.name)}}
+    (directory / "crossfeed.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(f"Saved {directory}", flush=True)
+    return directory
+
+
+def crossfeed(args):
+    """crossfeed generates turns from another run's saves with this run's engine.
+
+    Feeding the original's checkpoint to native tests turn-generation logic on
+    identical input; feeding native's checkpoint to the original tests whether
+    native's differing state changes what the original does next.
+    """
+    work, manifest = load_work(args.work)
+    directory = generate(work, manifest, args.scenario, args.input.resolve(), args.turns, args.timeout, args.trace)
+    if not args.expect:
+        return False
+    expect = args.expect.resolve()
+    end = host_turn(directory / "game.hst")
+    if host_turn(expect / "game.hst") != end:
+        raise ValueError(f"expected saves are not at turn {end}: {expect}")
+    results = compare_saves(args.cli.resolve(), [expect, directory], {"scenario": args.scenario, "turn": end})
+    report_path = args.report or directory / "comparison.json"
+    report_path.write_text(json.dumps(results, indent=2) + "\n")
+    return summarize(results, report_path)
+
+
+def bisect(args):
+    """bisect finds the first turn where native diverges from the original.
+
+    Both engines run -gK from the same input. The startup seed resets only at
+    launch, so -gK reproduces the first K turns of a longer launch; a binary
+    search over K needs about log2(turns) launches per engine.
+    """
+    cli = args.cli.resolve()
+    original, original_manifest = load_work(args.original)
+    native, native_manifest = load_work(args.native)
+    source = args.input.resolve()
+    start = host_turn(source / "game.hst")
+
+    def diverges(k):
+        """diverges reports whether the engines' outputs differ after k turns."""
+        expect = generate(original, original_manifest, args.scenario, source, k, args.timeout)
+        actual = generate(native, native_manifest, args.scenario, source, k, args.timeout, args.trace)
+        results = compare_saves(cli, [expect, actual], {"scenario": args.scenario, "turn": start + k})
+        (actual / "comparison.json").write_text(json.dumps(results, indent=2) + "\n")
+        failed = any(not r.get("match", False) for r in results)
+        print(f"{args.scenario}: after {k} turns (turn {start + k}): {'DIFFERS' if failed else 'matches'}", flush=True)
+        return failed
+
+    if not diverges(args.turns):
+        print(f"{args.scenario}: no divergence through turn {start + args.turns}")
+        return False
+    low, high = 0, args.turns
+    while high - low > 1:
+        mid = (low + high) // 2
+        if diverges(mid):
+            high = mid
+        else:
+            low = mid
+    first = native / args.scenario / "xfeed" / f"{start:03}_{start + high:03}"
+    print(f"{args.scenario}: first divergent turn {start + high} (generated from turn {start + high - 1}); "
+          f"report: {first / 'comparison.json'}")
+    return True
+
+
+def trace(args):
+    """trace annotates a regression trace with the source line of each caller."""
+    exe = args.exe.resolve()
+    headers = subprocess.run(["x86_64-w64-mingw32-objdump", "-p", str(exe)], text=True, capture_output=True, check=True).stdout
+    base = int(re.search(r"^ImageBase\s+([0-9a-fA-F]+)", headers, re.M).group(1), 16)
+    labels = {"R": "Random({0})={1}", "P": "PctPlanetCapacity(planet {0})={1}"}
+    rows = []
+    for index, line in enumerate(args.file.read_text().splitlines()):
+        tag, turn, player, ai, arg, result, rva = line.split()[:7]
+        if (args.turn is None or int(turn) == args.turn) and (args.player is None or int(player) == args.player):
+            rows.append((index, turn, player, ai, labels[tag].format(arg, result), int(rva, 16)))
+    # A return address follows its call; one byte earlier lies within the call.
+    addresses = sorted({row[-1] for row in rows})
+    lookup = subprocess.run(["x86_64-w64-mingw32-addr2line", "-f", "-e", str(exe)] + [hex(base + a - 1) for a in addresses],
+                            text=True, capture_output=True, check=True).stdout.splitlines()
+    names = {a: f"{lookup[2 * i]} {Path(lookup[2 * i + 1].split(' ')[0]).name}" for i, a in enumerate(addresses)}
+    for index, turn, player, ai, call, rva in rows:
+        print(f"{index} turn={turn} player={player} ai={ai} {call} {names[rva]}")
+    return False
 
 
 def main():
@@ -286,7 +441,7 @@ def main():
     execute = sub.add_parser("run")
     execute.add_argument("--work", type=Path, required=True)
     execute.add_argument("--scenario", choices=SCENARIOS, action="append")
-    execute.add_argument("--through", type=int, choices=CHECKPOINTS, default=100)
+    execute.add_argument("--through", type=int, choices=CHECKPOINTS, default=150)
     execute.add_argument("--resume", action="store_true", help="restore the latest checkpoint and continue; preserve current saves")
     execute.add_argument("--baseline", type=Path, help="start from this run's creation checkpoint to test turn generation separately")
     execute.add_argument("--timeout", type=int, default=900, help="seconds per game launch")
@@ -295,12 +450,39 @@ def main():
     diff.add_argument("left", type=Path)
     diff.add_argument("right", type=Path)
     diff.add_argument("--scenario", choices=SCENARIOS, action="append")
-    diff.add_argument("--through", type=int, choices=CHECKPOINTS, default=100)
+    diff.add_argument("--through", type=int, choices=CHECKPOINTS, default=150)
     diff.add_argument("--cli", type=Path, default=ROOT / "dist/stars-asm")
     diff.add_argument("--report", type=Path, default=ROOT / "tests/scaffold/fixtures/regression/regression-comparison.json")
+    feed = sub.add_parser("crossfeed", help="generate turns from another run's saves with this run's engine")
+    feed.add_argument("--work", type=Path, required=True, help="prepared run whose engine and executable generate")
+    feed.add_argument("--scenario", choices=SCENARIOS, required=True, help="scenario directory to hold the output")
+    feed.add_argument("--input", type=Path, required=True, help="directory of input saves, such as a checkpoint")
+    feed.add_argument("--turns", type=int, required=True, help="turns to generate in one launch (-gN)")
+    feed.add_argument("--expect", type=Path, help="directory of saves to compare the generated turn against")
+    feed.add_argument("--timeout", type=int, default=900, help="seconds for the game launch")
+    feed.add_argument("--cli", type=Path, default=ROOT / "dist/stars-asm")
+    feed.add_argument("--report", type=Path, help="comparison report (default: comparison.json in the output)")
+    feed.add_argument("--trace", action="store_true", help="write trace.log (native built with -DSTARS_TEST_TRACE=ON)")
+    search = sub.add_parser("bisect", help="find the first turn where native diverges from the original")
+    search.add_argument("--original", type=Path, required=True, help="prepared original (reference) run")
+    search.add_argument("--native", type=Path, required=True, help="prepared native run")
+    search.add_argument("--scenario", choices=SCENARIOS, required=True)
+    search.add_argument("--input", type=Path, required=True, help="directory of saves both engines start from")
+    search.add_argument("--turns", type=int, required=True, help="the launch span to search (-gN)")
+    search.add_argument("--timeout", type=int, default=900, help="seconds per game launch")
+    search.add_argument("--cli", type=Path, default=ROOT / "dist/stars-asm")
+    search.add_argument("--trace", action="store_true", help="write trace.log for native launches")
+    annotate = sub.add_parser("trace", help="annotate a trace.log with caller source lines")
+    annotate.add_argument("file", type=Path)
+    annotate.add_argument("--exe", type=Path, required=True, help="the traced native executable")
+    annotate.add_argument("--turn", type=int)
+    annotate.add_argument("--player", type=int, help="zero-based player index")
     args = parser.parse_args()
+    if args.action in ("crossfeed", "bisect") and args.turns < 1:
+        parser.error("--turns must be at least 1")
     try:
-        return {"prepare": prepare, "run": run, "compare": compare}[args.action](args) or 0
+        return {"prepare": prepare, "run": run, "compare": compare, "crossfeed": crossfeed,
+                "bisect": bisect, "trace": trace}[args.action](args) or 0
     except (ValueError, OSError, subprocess.SubprocessError, struct.error) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1

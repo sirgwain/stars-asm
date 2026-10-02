@@ -2,6 +2,7 @@ package ir
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 	"github.com/sirgwain/stars-asm/dasm/stars/sem"
@@ -94,7 +95,15 @@ func (l *lowerer) lowerEffect(effect sem.Effect) []Stmt {
 			for i, target := range e.Targets {
 				labels[i] = l.blockLabel(target)
 			}
-			return []Stmt{&TableJump{Index: index, Labels: labels}}
+			enumType, char := e.SwitchedValue()
+			var enums []*typeinfo.Enum
+			if e.CaseEnum != nil {
+				enums = append(enums, e.CaseEnum)
+			}
+			if enumType != nil {
+				enums = append(enums, enumType)
+			}
+			return []Stmt{&TableJump{Index: index, Labels: labels, Enums: enums, Char: char || e.CharCases}}
 		}
 	case *sem.Jump:
 		return []Stmt{&Goto{Label: l.blockLabel(e.To)}}
@@ -896,4 +905,26 @@ func derefAccess(e *sem.Deref) (derefLowering, string) {
 		return derefLowering{}, "unknown-access-type"
 	}
 	return derefLowering{form: derefRaw, typ: access}, ""
+}
+
+// CaseConst returns the constant for case value v of the table, named by the
+// first of its enums with a member of that value, or written as a character
+// literal when the table switches on a printable char.
+func (t *TableJump) CaseConst(v int64) *IntConst {
+	if t.Char && v >= 0 && sem.IsCharLiteralValue(uint64(v)) {
+		return &IntConst{Value: uint64(v), Text: sem.FormatExpr(&sem.Const{TypeInfo: typeinfo.I16, U64: uint64(v), Char: true})}
+	}
+	for _, enumType := range t.Enums {
+		for _, member := range enumType.Values {
+			if member.Value == int(v) || member.Value == enumType.SignExtend(int(v)) {
+				return &IntConst{Value: uint64(v), Text: member.Name}
+			}
+		}
+	}
+	for _, enumType := range t.Enums {
+		if ch, ok := enumType.CharCode(int(v)); ok {
+			return &IntConst{Value: uint64(v), Text: sem.FormatExpr(&sem.Const{TypeInfo: typeinfo.I16, U64: uint64(ch), Char: true})}
+		}
+	}
+	return &IntConst{Value: uint64(v), Text: strconv.FormatInt(v, 10)}
 }

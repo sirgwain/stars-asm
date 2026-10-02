@@ -1,0 +1,112 @@
+/*
+WtMaxShdefStat  (ship)
+  addr: 000b:41b2  len=771
+  sig:  int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    int16_t          grStat         [BP+0xa]
+  locals:
+    HUL *            lphul          [BP-0xa]
+    int16_t          j              [BP-0x6]
+    int16_t          wt             [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_41b2:
+    lphul = &lpshdef->hul
+    goto L_4496
+
+L_41cd:
+    wt = LphuldefFromId(lphul->ihuldef)->hul.wtFuelMax
+    j = 0
+    goto L_41f2
+
+L_41ee:
+    j = (j + 1)
+
+L_41f2:
+    branch j >= lphul->chs ? L_44a9 : L_4204
+
+L_4204:
+    branch lphul->rghs[j].grhst != hstSpecialM ? L_42c8 : L_4224
+
+L_4224:
+    branch lphul->rghs[j].iItem != ispecialMFuelTank ? L_4276 : L_4249
+
+L_4249:
+    wt = (wt + (lphul->rghs[j].cItem * 250))
+    goto L_41ee
+
+L_4276:
+    branch lphul->rghs[j].iItem != ispecialMSuperFuelTank ? L_41ee : L_429b
+
+L_429b:
+    wt = (wt + (lphul->rghs[j].cItem * 500))
+
+L_42c5:
+    goto L_41ee
+
+L_42c8:
+    branch lphul->rghs[j].grhst != hstSpecialE ? L_41ee : L_42e8
+
+L_42e8:
+    branch lphul->rghs[j].iItem != ispecialEAntiMatterGenerator ? L_41ee : L_430d
+
+L_430d:
+    wt = (wt + (lphul->rghs[j].cItem * 200))
+
+L_4337:
+    goto L_41ee
+
+L_433d:
+    wt = LphuldefFromId(lphul->ihuldef)->hul.wtCargoMax
+    j = 0
+    goto L_4362
+
+L_435e:
+    j = (j + 1)
+
+L_4362:
+    branch j >= lphul->chs ? L_44a9 : L_4374
+
+L_4374:
+    branch lphul->rghs[j].grhst != hstSpecialM ? L_435e : L_4394
+
+L_4394:
+    branch lphul->rghs[j].iItem != ispecialMCargoPod ? L_43e6 : L_43b9
+
+L_43b9:
+    wt = (wt + (lphul->rghs[j].cItem * 50))
+    goto L_435e
+
+L_43e6:
+    branch lphul->rghs[j].iItem != ispecialMSuperCargoPod ? L_4438 : L_440b
+
+L_440b:
+    wt = (wt + (lphul->rghs[j].cItem * 100))
+    goto L_435e
+
+L_4438:
+    branch lphul->rghs[j].iItem != ispecialMMultiCargoPod ? L_435e : L_445d
+
+L_445d:
+    wt = (wt + (lphul->rghs[j].cItem * 250))
+
+L_4487:
+    goto L_435e
+
+L_448d:
+    return 0
+
+L_4496:
+    branch grStat == 1 ? L_41cd : L_449e
+
+L_449e:
+    branch grStat != 2 ? L_448d : L_44a3
+
+L_44a3:
+    goto L_433d
+
+L_44a9:
+    return wt
+

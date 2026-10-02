@@ -273,13 +273,13 @@ L_4129:
     goto L_43d9
 
 L_4154:
-    branch (scan.grobjFull & 1) != 0 ? L_429f : L_4168
+    branch (scan.grobjFull & grobjPlanet) != 0 ? L_429f : L_4168
 
 L_4168:
-    branch (scan.grobjFull & 2) != 0 ? L_42f3 : L_417c
+    branch (scan.grobjFull & grobjFleet) != 0 ? L_42f3 : L_417c
 
 L_417c:
-    branch (scan.grobjFull & 8) == 0 ? L_4192 : L_418a
+    branch (scan.grobjFull & grobjThing) == 0 ? L_4192 : L_418a
 
 L_418a:
     i = 0
@@ -323,14 +323,14 @@ L_4220:
 
 
 L_4278:
-    branch (scan.grobjFull & 8) == 0 ? L_4291 : L_4286
+    branch (scan.grobjFull & grobjThing) == 0 ? L_4291 : L_4286
 
 L_4286:
     i = 0
     goto L_4113
 
 L_4291:
-    branch (scan.grobjFull & 1) == 0 ? L_42f3 : L_429f
+    branch (scan.grobjFull & grobjPlanet) == 0 ? L_42f3 : L_429f
 
 CheckPlanet:
     scan.grobj = grobjPlanet
@@ -377,7 +377,7 @@ L_4363:
     branch i != cFleet ? L_4384 : L_436e
 
 L_436e:
-    branch (scan.grobjFull & 8) == 0 ? L_4384 : L_437c
+    branch (scan.grobjFull & grobjThing) == 0 ? L_4384 : L_437c
 
 L_437c:
     i = 0
@@ -451,7 +451,7 @@ L_4511:
 L_4525:
     cMinGrafMax = rgi[i]
     call InvalidateRect(hwndMine, NULL, 1) -> callresult(void)
-    branch (grbitScan & 0xf) != 1 ? L_47d5 : L_4557
+    branch (grbitScan & grbitScanViewMask) != 1 ? L_47d5 : L_4557
 
 L_4557:
     call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)

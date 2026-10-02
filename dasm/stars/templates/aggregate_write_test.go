@@ -25,7 +25,7 @@ func TestAggregateWritesExecute(t *testing.T) {
 		t.Skip("C compiler unavailable")
 	}
 	fx := testfixture.Stars(t)
-	ctx := sem.NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("GenerateWorld"))
+	ctx := sem.NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fx.SDB.GetFunction("GenerateWorld"), machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	hsType := fx.SDB.GetStruct("HS")
 	planetType := fx.SDB.GetStruct("PLANET")
 	var c strings.Builder

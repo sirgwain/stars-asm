@@ -1,27 +1,55 @@
 #include "common.h"
 
-char    vrgTBBtn[29] = {0, 1, 2, 3, 4, 5, -1, 6, -1, 7, -2, -3, -1, 8, -1, 9, -1, 11, 17, -1, 10, -1, 12, 13, -1, 14, 15, -1, 16};
+char    vrgTBBtn[29] = {tbNormalView,
+                        tbSurfaceMineralView,
+                        tbMineralConcView,
+                        tbPlanetValueView,
+                        tbPopulationView,
+                        tbNoPlayerInfoView,
+                        tbSeparator,
+                        tbAddWaypoints,
+                        tbSeparator,
+                        tbScannerCoverage,
+                        tbSpacer,
+                        tbScannerRange,
+                        tbSeparator,
+                        tbMineFields,
+                        tbSeparator,
+                        tbFleetPaths,
+                        tbSeparator,
+                        tbPlanetNames,
+                        tbShipCounts,
+                        tbSeparator,
+                        tbIdleFleets,
+                        tbSeparator,
+                        tbShipDesignFilter,
+                        tbShipDesignFilterMenu,
+                        tbSeparator,
+                        tbEnemyClassFilter,
+                        tbEnemyClassFilterMenu,
+                        tbSeparator,
+                        tbZoomMenu};
 int16_t vrgpctZoom[9] = {25, 38, 50, 75, 100, 125, 150, 200, 400};
 
 LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    HDC         hdc;
-    int16_t     fInside;
-    POINT16     pt;
-    StringId    ids;
-    int16_t     itb;
-    PAINTSTRUCT ps;
-    int16_t     i;
-    int16_t     fCur;
-    int16_t     fDown;
-    int16_t     iSel;
-    int16_t     dx;
-    POINT16     ptBtn;
-    int16_t     j;
-    int16_t     x;
-    RECT        rc;
-    HWND        hwndCE;
-    int16_t     pct;
-    POINT       t_pt_045f_2;
+    HDC           hdc;
+    int16_t       fInside;
+    POINT16       pt;
+    StringId      ids;
+    ToolbarButton itb;
+    PAINTSTRUCT   ps;
+    int16_t       i;
+    int16_t       fCur;
+    int16_t       fDown;
+    int16_t       iSel;
+    int16_t       dx;
+    POINT16       ptBtn;
+    int16_t       j;
+    int16_t       x;
+    RECT          rc;
+    HWND          hwndCE;
+    int16_t       pct;
+    POINT         t_pt_045f_2;
 
     switch (msg) {
     case WM_CREATE:
@@ -29,7 +57,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         for (i = 0; i < 29; i++) {
             itb = (int16_t)(int8_t)vrgTBBtn[i];
             dx = DxOfBtn(itb);
-            if (itb <= -3 && itb == -3) {
+            if (itb <= tbScannerRange && itb == tbScannerRange) {
                 hwndTBRadar = CreateWindow("COMBOBOX", NULL, CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_CHILD | WS_VISIBLE | WS_VSCROLL, x,
                                            (int16_t)(28 - dyArial8 - 8) / 2 + 4, dx, 11 * dyArial8 + 28, hwnd, NULL, hInst, NULL);
                 SendMessage(hwndTBRadar, WM_SETFONT, (WPARAM)rghfontArial8[1], 0);
@@ -66,7 +94,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         GetClientRect(hwnd, &rc);
         PatBlt(hdc, 0, 0, rc.right, 1, BLACKNESS);
         PatBlt(hdc, 0, rc.bottom - 1, rc.right, 1, BLACKNESS);
-        if (iWindowLayout == 0) {
+        if (iWindowLayout == layoutLarge) {
             PatBlt(hdc, 0, 0, 1, rc.bottom, BLACKNESS);
         }
         DrawToolbar(hdc, &rc);
@@ -85,18 +113,18 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             pt.y = HIWORD(lParam);
             ptBtn = pt;
             itb = ItbFromPpt(&ptBtn);
-            if (itb < 0)
+            if (itb < tbNormalView)
                 break;
             fDown = FIsButtonDown(itb);
-            if (fDown != 0 && itb <= 5) {
-                MessageBeep(0);
+            if (fDown != 0 && itb <= tbNoPlayerInfoView) {
+                MessageBeep(MB_OK);
                 break;
             }
             switch (itb) {
-            case 13:
-            case 15:
-            case 16:
-            case 8:
+            case tbShipDesignFilterMenu:
+            case tbEnemyClassFilterMenu:
+            case tbZoomMenu:
+            case tbMineFields:
                 ExecuteButton(itb, fDown == 0 ? 1 : 0);
                 break;
             default:
@@ -122,7 +150,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     ExecuteButton(itb, fDown == 0 ? 1 : 0);
                     fDown = FIsButtonDown(itb);
                 }
-                if (itb <= 5) {
+                if (itb <= tbNoPlayerInfoView) {
                     GetClientRect(hwnd, &rc);
                     DrawToolbar(hdc, &rc);
                 } else {
@@ -143,10 +171,10 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 break;
             vptTbLast = pt;
             itb = ItbFromPpt(&pt);
-            if (itb >= 0) {
+            if (itb >= tbNormalView) {
                 ids = itb + 362;
             } else {
-                if (itb != -3)
+                if (itb != tbScannerRange)
                     break;
                 ids = idsScannerEffective;
             }
@@ -158,14 +186,14 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             ShowTooltip(ids, &rc);
             break;
         case WM_SETCURSOR:
-            SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(0x7f00)));
+            SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32512)));
             return 1;
         case WM_COMMAND:
             if (GET_WM_COMMAND_HWND(wParam, lParam) != hwndTBRadar || GET_WM_COMMAND_CMD(wParam, lParam) != 8)
                 break;
-            PostMessage(hwnd, 0x5f4, 0, 0);
+            PostMessage(hwnd, 1524, 0, 0);
             break;
-        case 0x5f4:
+        case 1524:
             TerminateToolbarFocus(0);
             break;
         default:
@@ -176,9 +204,9 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 void DrawToolbar(HDC hdc, RECT *prc) {
-    POINT16 pt;
-    int16_t i;
-    int16_t ibtn;
+    POINT16       pt;
+    int16_t       i;
+    ToolbarButton ibtn;
 
     SelectPalette(hdc, vhpal, 0);
     RealizePalette(hdc);
@@ -186,16 +214,16 @@ void DrawToolbar(HDC hdc, RECT *prc) {
     pt.y = 4;
     for (i = 0; i < 29; i++) {
         ibtn = (int16_t)(int8_t)vrgTBBtn[i];
-        if (ibtn >= 0) {
+        if (ibtn >= tbNormalView) {
             DrawBitmapButton(hdc, pt, (int16_t)(int8_t)vrgTBBtn[i], FIsButtonDown(ibtn));
-        } else if (ibtn <= -3) {
+        } else if (ibtn <= tbScannerRange) {
         }
         pt.x += DxOfBtn(ibtn);
     }
     return;
 }
 
-void DrawBitmapButton(HDC hdc, POINT16 pt, int16_t ibtn, int16_t fDown) {
+void DrawBitmapButton(HDC hdc, POINT16 pt, ToolbarButton ibtn, int16_t fDown) {
     int16_t dx;
     HBRUSH  hbrBotRight;
     HBRUSH  hbrTopLeft;
@@ -263,19 +291,19 @@ int16_t ItbFromPpt(POINT16 *ppt) {
     return -1;
 }
 
-int16_t DxOfBtn(int16_t itb) {
-    if (itb >= 0) {
-        if (itb != 13 && itb != 15) {
+int16_t DxOfBtn(ToolbarButton itb) {
+    if (itb >= tbNormalView) {
+        if (itb != tbShipDesignFilterMenu && itb != tbEnemyClassFilterMenu) {
             return 29;
         }
         return 11;
     }
     switch (itb) {
-    case -1:
+    case tbSeparator:
         return 6;
-    case -2:
+    case tbSpacer:
         return 2;
-    case -3:
+    case tbScannerRange:
         if (dyArial8 < 16) {
             return 60;
         }
@@ -285,74 +313,74 @@ int16_t DxOfBtn(int16_t itb) {
     }
 }
 
-int16_t FIsButtonDown(int16_t itb) {
-    if ((uint16_t)itb > 17) {
+int16_t FIsButtonDown(ToolbarButton itb) {
+    if ((uint16_t)itb > tbShipCounts) {
         return 0;
     }
     switch (itb) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-        if ((grbitScan & 0xf) == itb) {
+    case tbNormalView:
+    case tbSurfaceMineralView:
+    case tbMineralConcView:
+    case tbPlanetValueView:
+    case tbPopulationView:
+    case tbNoPlayerInfoView:
+        if ((grbitScan & grbitScanViewMask) == itb) {
             return 1;
         }
         return 0;
-    case 6:
-        if ((grbitScan & 0x10) != 0) {
+    case tbAddWaypoints:
+        if ((grbitScan & grbitScanAddWaypoints) != 0) {
             return 1;
         }
         return 0;
-    case 7:
-        if ((grbitScan & 0x20) != 0) {
+    case tbScannerCoverage:
+        if ((grbitScan & grbitScanCoverage) != 0) {
             return 1;
         }
         return 0;
-    case 8:
-        if ((grbitScan & 0x40) != 0 && grbitScanMines == 15) {
+    case tbMineFields:
+        if ((grbitScan & grbitScanMineFields) != 0 && grbitScanMines == 15) {
             return 1;
         }
         return 0;
-    case 9:
-        if ((grbitScan & 0x80) != 0) {
+    case tbFleetPaths:
+        if ((grbitScan & grbitScanFleetPaths) != 0) {
             return 1;
         }
         return 0;
-    case 10:
-        if ((grbitScan & 0x100) != 0) {
+    case tbIdleFleets:
+        if ((grbitScan & grbitScanIdleFleets) != 0) {
             return 1;
         }
         return 0;
-    case 11:
-        if ((grbitScan & 0x400) != 0) {
+    case tbPlanetNames:
+        if ((grbitScan & grbitScanPlanetNames) != 0) {
             return 1;
         }
         return 0;
-    case 17:
-        if ((grbitScan & 0x1000) != 0) {
+    case tbShipCounts:
+        if ((grbitScan & grbitScanShipCounts) != 0) {
             return 1;
         }
         return 0;
-    case 12:
-        if ((grbitScan & 0x200) != 0) {
+    case tbShipDesignFilter:
+        if ((grbitScan & grbitScanDesignFilter) != 0) {
             return 1;
         }
         return 0;
-    case 14:
-        if ((grbitScan & 0x800) != 0) {
+    case tbEnemyClassFilter:
+        if ((grbitScan & grbitScanEnemyFilter) != 0) {
             return 1;
         }
         return 0;
-    case 13:
-    case 15:
-    case 16:
+    case tbShipDesignFilterMenu:
+    case tbEnemyClassFilterMenu:
+    case tbZoomMenu:
         return 0;
     }
 }
 
-void ExecuteButton(int16_t itb, int16_t fDown) {
+void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     uint16_t grbitNew;
     POINT16  pt;
     char    *rgszScan[12];
@@ -373,46 +401,46 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
     POINT    t_pt_15bd_1;
 
     gd.fChgScanner = 1;
-    if ((uint16_t)itb <= 17) {
+    if ((uint16_t)itb <= tbShipCounts) {
         switch (itb) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
+        case tbNormalView:
+        case tbSurfaceMineralView:
+        case tbMineralConcView:
+        case tbPlanetValueView:
+        case tbPopulationView:
+        case tbNoPlayerInfoView:
             if (fDown == 0)
                 break;
-            grbitScan = itb + (grbitScan & 0x3ff0);
+            grbitScan = itb + (grbitScan & grbitScanToggleMask);
             goto L_1644;
-        case 6:
+        case tbAddWaypoints:
             grbitNew = 16;
             goto LBitDiddle;
-        case 7:
+        case tbScannerCoverage:
             grbitNew = 32;
             goto LBitDiddle;
-        case 9:
+        case tbFleetPaths:
             grbitNew = 128;
             goto LBitDiddle;
-        case 10:
+        case tbIdleFleets:
             grbitNew = 0x100;
             goto LBitDiddle;
-        case 11:
+        case tbPlanetNames:
             grbitNew = 0x400;
             goto LBitDiddle;
-        case 17:
+        case tbShipCounts:
             grbitNew = 0x1000;
             goto LBitDiddle;
-        case 12:
+        case tbShipDesignFilter:
             grbitNew = 0x200;
             goto LBitDiddle;
-        case 14:
+        case tbEnemyClassFilter:
             grbitNew = 0x800;
             goto LBitDiddle;
-        case 8:
+        case tbMineFields:
             grbit = 1;
             c = 0;
-            if ((grbitScan & 0x40) == 0) {
+            if ((grbitScan & grbitScanMineFields) == 0) {
                 grbitScanMines = 0;
             }
             for (i = 1278; i <= 1279; i++) {
@@ -450,13 +478,13 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                 grbitScanMines = 0;
             }
             if (grbitScanMines != 0) {
-                grbitScan |= 0x40;
+                grbitScan |= grbitScanMineFields;
             } else {
                 grbitScan &= 0xffbf;
             }
             InvalidateRect(hwndTb, NULL, 1);
             goto L_1644;
-        case 13:
+        case tbShipDesignFilterMenu:
             c = 0;
             for (i = 1275; i <= 1277; i++) {
                 rgid[c] = 0;
@@ -493,7 +521,7 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                 } else {
                     grbitScanShip = 0;
                 }
-                if ((grbitScan & 0x200) != 0 || grbitScanShip == 0)
+                if ((grbitScan & grbitScanDesignFilter) != 0 || grbitScanShip == 0)
                     goto L_12e6;
             } else {
                 iSel -= 4;
@@ -505,16 +533,16 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                     }
                 }
                 grbitScanShip ^= 1 << ish;
-                if ((grbitScan & 0x200) != 0 || (1 << ish & grbitScanShip) == 0)
+                if ((grbitScan & grbitScanDesignFilter) != 0 || (1 << ish & grbitScanShip) == 0)
                     goto L_12e6;
             }
-            grbitScan |= 0x200;
+            grbitScan |= grbitScanDesignFilter;
             InvalidateRect(hwndTb, NULL, 1);
         L_12e6:
-            if ((grbitScan & 0x200) == 0)
+            if ((grbitScan & grbitScanDesignFilter) == 0)
                 break;
             goto L_1644;
-        case 15:
+        case tbEnemyClassFilterMenu:
             grbit = 1;
             c = 0;
             for (i = 1275; i <= 1277; i++) {
@@ -547,21 +575,21 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
                 } else {
                     grbitScanEShip = 0;
                 }
-                if ((grbitScan & 0x800) != 0 || grbitScanEShip == 0)
+                if ((grbitScan & grbitScanEnemyFilter) != 0 || grbitScanEShip == 0)
                     goto L_1505;
             } else {
                 iSel -= 4;
                 grbitScanEShip ^= 1 << iSel;
-                if ((grbitScan & 0x800) != 0 || (1 << iSel & grbitScanEShip) == 0)
+                if ((grbitScan & grbitScanEnemyFilter) != 0 || (1 << iSel & grbitScanEShip) == 0)
                     goto L_1505;
             }
-            grbitScan |= 0x800;
+            grbitScan |= grbitScanEnemyFilter;
             InvalidateRect(hwndTb, NULL, 1);
         L_1505:
-            if ((grbitScan & 0x800) == 0)
+            if ((grbitScan & grbitScanEnemyFilter) == 0)
                 break;
             goto L_1644;
-        case 16:
+        case tbZoomMenu:
             c = 0;
             for (i = 0; i < 9; i++) {
                 rgid[c] = (uint32_t)(iScanZoom + 4 == i ? 1 : 0);
@@ -586,7 +614,7 @@ void ExecuteButton(int16_t itb, int16_t fDown) {
             grbitScan &= ~grbitNew;
         }
     L_1644:
-        if (itb != 6) {
+        if (itb != tbAddWaypoints) {
             InvalidateRect(hwndScanner, NULL, 1);
         }
         if (gd.fTutorial != 0) {
@@ -605,10 +633,10 @@ void TerminateToolbarFocus(int16_t fCancel) {
         GetWindowText(hwndTBRadar, szWork, 20);
         psz = szWork;
         pct = 0;
-        for (; (int16_t)(int8_t)*psz >= 48 && (int16_t)(int8_t)*psz <= 57; psz++) {
+        for (; (int16_t)(int8_t)*psz >= '0' && (int16_t)(int8_t)*psz <= '9'; psz++) {
             pct = 10 * pct + ((int16_t)(int8_t)*psz - 48);
         }
-        if ((int16_t)(int8_t)*psz != 0 && (int16_t)(int8_t)*psz != 37) {
+        if ((int16_t)(int8_t)*psz != 0 && (int16_t)(int8_t)*psz != '%') {
             pct = 0;
         }
     } else {
@@ -624,10 +652,10 @@ void TerminateToolbarFocus(int16_t fCancel) {
     SetWindowText(hwndTBRadar, szWork);
     if (pct != vpctRadarView) {
         vpctRadarView = pct;
-        if ((grbitScan & 0x20) == 0) {
+        if ((grbitScan & grbitScanCoverage) == 0) {
             InvalidateRect(hwndTb, NULL, 1);
         }
-        grbitScan |= 0x20;
+        grbitScan |= grbitScanCoverage;
         InvalidateRect(hwndScanner, NULL, 1);
     }
     SetFocus(hwndFrame);
@@ -667,7 +695,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
         SetWindowPos(hwndTooltip, (HWND)-1, 0, 0, dxTip + 6, dyArial8 + 6, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
         t_scratch_m10 = vtickTooltipLast + 400;
         fShowNow = t_scratch_m10 >= GetTickCount() || fVisCur != 0;
-        TooltipWndProc(hwndTooltip, 0x5f3, fShowNow, 0);
+        TooltipWndProc(hwndTooltip, 1523, fShowNow, 0);
     }
     return;
 }
@@ -701,7 +729,7 @@ LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     case WM_LBUTTONDBLCLK:
         DestroyWindow(hwnd);
         return 0;
-    case 0x5f3:
+    case 1523:
         if (wParam == 0) {
             if (vidTimerTooltip != -1) {
                 KillTimer(hwnd, vidTimerTooltip);
@@ -776,8 +804,6 @@ LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 }
 
 LRESULT CALLBACK FakeComboProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    LRESULT t_call_1de0;
-
     switch (msg) {
     case WM_LBUTTONDOWN:
     case WM_LBUTTONDBLCLK:
@@ -786,13 +812,10 @@ LRESULT CALLBACK FakeComboProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     case WM_MOUSEMOVE:
         TbWndProc(hwnd, msg, wParam, lParam);
     }
-    t_call_1de0 = CallWindowProc(lpfnRealComboProc, hwnd, msg, wParam, lParam);
-    return t_call_1de0;
+    return CallWindowProc(lpfnRealComboProc, hwnd, msg, wParam, lParam);
 }
 
 LRESULT CALLBACK FakeCEProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    LRESULT t_call_1e5e;
-
     switch (msg) {
     case WM_LBUTTONDOWN:
     case WM_LBUTTONDBLCLK:
@@ -801,6 +824,5 @@ LRESULT CALLBACK FakeCEProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_MOUSEMOVE:
         TbWndProc(hwnd, msg, wParam, lParam);
     }
-    t_call_1e5e = CallWindowProc(lpfnRealCEProc, hwnd, msg, wParam, lParam);
-    return t_call_1e5e;
+    return CallWindowProc(lpfnRealCEProc, hwnd, msg, wParam, lParam);
 }

@@ -104,6 +104,7 @@ func newDasmCmd() *cobra.Command {
 	addDasmNameFlags(regionCmd)
 	cmd.AddCommand(regionCmd)
 	cmd.AddCommand(newDasmAllCmd())
+	cmd.AddCommand(newDasmNegIdxCmd())
 	cmd.AddCommand(newDasmStructCmd())
 	return cmd
 }

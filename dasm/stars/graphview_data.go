@@ -3,6 +3,7 @@ package stars
 import (
 	"bytes"
 	"fmt"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"strings"
 
 	"github.com/alecthomas/chroma/v2"
@@ -47,7 +48,7 @@ type FuncGraphViewEdge struct {
 // instructions, builds a control-flow graph, and converts it into the JSON-ready
 // data consumed by the graph viewer.
 func BuildFuncGraphViewData(img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpOptions) (*FuncGraphViewData, error) {
-	analysis, err := analyzeFunc(img, sdb, fs, opt)
+	analysis, err := analyzeFunc(img, sdb, fs, opt, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	if err != nil {
 		return nil, err
 	}

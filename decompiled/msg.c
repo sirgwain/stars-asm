@@ -1114,32 +1114,32 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             ((MINMAXINFO *)lParam)->ptMinTrackSize.y = (0xd * dyArial8 >> 1) + 0x16;
             goto Default;
         case WM_KEYDOWN:
-            if (wParam == 40)
+            if (wParam == VK_DOWN)
                 goto NextMsg;
-            if (wParam == 38)
+            if (wParam == VK_UP)
                 goto PrevMsg;
             if (gd.fSendMsgMode != 0)
                 goto Default;
-            if (wParam == 36) {
+            if (wParam == VK_HOME) {
                 iMsgCur = -1;
                 goto NextMsg;
             }
-            if (wParam != 35) {
+            if (wParam != VK_END) {
                 return 0;
             }
             iMsgCur = cMsg + vcmsgplrIn;
             goto PrevMsg;
         case WM_CHAR:
             switch (wParam) {
-            case 43:
+            case '+':
                 goto CheckBox;
-            case 45:
+            case '-':
                 for (i = 0; (uint16_t)i < 49 && (bitfMsgSent[i] & bitfMsgFiltered[i]) == 0; i++) {
                 }
                 if (i != 49)
                     goto ZoomBox;
                 break;
-            case 13:
+            case '\r':
                 goto GotoMsg;
             }
             return 0;
@@ -1191,12 +1191,12 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         break;
     GotoMsg:
         if (gd.fSendMsgMode == 0 && iMsgCur < cMsg) {
-            if ((uint16_t)mdMsgObj <= 11) {
+            if (mdMsgObj <= mdMsgObjBattleReport) {
                 switch (mdMsgObj) {
-                case 1:
+                case mdMsgObjPlanet:
                     SelectAdjPlanet(0, idMsgObj);
                     UpdateWindow(hwndScanner);
-                    SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
+                    SendMessage(hwndScanner, WM_CHAR, 'v', 0);
                     idm = IdmGetMessageN(iMsgCur);
                     if (idm != 62 && idm != 63 && (idm < 175 || idm > 180))
                         break;
@@ -1209,12 +1209,12 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                         break;
                     ChangeProduction(0);
                     break;
-                case 2:
+                case mdMsgObjFleet:
                     SelectAdjFleet(0, idMsgObj);
                     UpdateWindow(hwndScanner);
-                    SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
+                    SendMessage(hwndScanner, WM_CHAR, 'v', 0);
                     break;
-                case 10:
+                case mdMsgObjThing:
                     lpth = LpthFromId(vptMsg.x);
                     if (lpth == 0)
                         break;
@@ -1223,7 +1223,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                     ChangeScanSel(&scan, 0);
                     CtrPointScan(scan.pt, 1);
                     break;
-                case 6:
+                case mdMsgObjBattle:
                     SelectOursAtObject(&vptMsg);
                     if (gd.fGotoVCR != 0) {
                         BattleVCR(idMsgObj);
@@ -1232,24 +1232,24 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                     gd.fGotoVCR = 1;
                     SetMsgTitle(hwnd);
                     break;
-                case 3:
-                    PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0);
+                case mdMsgObjResearch:
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_RESEARCH, 0);
                     break;
-                case 8:
-                    PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0);
+                case mdMsgObjScore:
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_SCORE, 0);
                     break;
-                case 5:
-                    PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0);
+                case mdMsgObjShipDesign:
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_SHIP_BUILDER, 0);
                     break;
-                case 7:
-                    PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0);
+                case mdMsgObjRelations:
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_RELATIONS2, 0);
                     break;
-                case 11:
+                case mdMsgObjBattleReport:
                     if (hwndReportDlg != 0 && vprptCur == &vrptBattle)
                         break;
-                    PostMessage(hwndFrame, WM_COMMAND, 0x901, 0);
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_REPORT_BATTLE, 0);
                     break;
-                case 9:
+                case mdMsgObjSerialNumber:
                     szWork[200] = 2;
                     lpProc = MakeProcInstance(MsgDlg, hInst);
                     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_SERIAL_NUMBER), hwndTitle == 0 ? hwndFrame : hwndTitle, lpProc);
@@ -1265,7 +1265,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                         break;
                     memcpy(vrgbMachineConfig, vrgbEnvCur, 11);
                     break;
-                case 4:
+                case mdMsgObjPart:
                     vpartBrowser.hs.grhst = 1 << (idMsgObj >> 8 & 0xf);
                     vpartBrowser.hs.iItem = idMsgObj & 0xff;
                     FLookupPart(&vpartBrowser);
@@ -1273,7 +1273,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                         InvalidateRect(hwndBrowserChild, NULL, 1);
                     } else {
                         fBrowserValid = 1;
-                        PostMessage(hwndFrame, WM_COMMAND, 0x100, 0);
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_VIEW_BROWSER_TOGGLE2, 0);
                     }
                 }
             }
@@ -1433,53 +1433,53 @@ void SetMsgTitle(HWND hwnd) {
                 EnableWindow(rghwndMsgBtn[1], 1);
             } else {
                 if (cMsg != 0 && iMsgCur < cMsg && FGetNMsgbig(iMsgCur, &mb) != 0) {
-                    if (mb.wGoto != -1) {
+                    if (mb.wGoto != gotoNone) {
                         idMsgObj = mb.wGoto & 0x7fff;
                         switch (mb.wGoto) {
-                        case -2:
-                            mdMsgObj = 3;
+                        case gotoResearch:
+                            mdMsgObj = mdMsgObjResearch;
                             break;
-                        case -3:
-                            mdMsgObj = 5;
+                        case gotoShipDesign:
+                            mdMsgObj = mdMsgObjShipDesign;
                             break;
-                        case -4:
-                            mdMsgObj = 8;
+                        case gotoScore:
+                            mdMsgObj = mdMsgObjScore;
                             break;
-                        case -5:
-                            mdMsgObj = 9;
+                        case gotoSerialNumber:
+                            mdMsgObj = mdMsgObjSerialNumber;
                             break;
-                        case -6:
-                            mdMsgObj = 10;
+                        case gotoThing:
+                            mdMsgObj = mdMsgObjThing;
                             vptMsg.x = mb.rgParam[0];
                             break;
-                        case -7:
-                            mdMsgObj = 11;
+                        case gotoBattleReport:
+                            mdMsgObj = mdMsgObjBattleReport;
                             break;
                         default:
                             if ((mb.wGoto & 0xc000) == 0xc000) {
-                                mdMsgObj = 4;
+                                mdMsgObj = mdMsgObjPart;
                             } else if ((mb.wGoto & 0x4000) != 0) {
                                 idMsgObj = mb.wGoto & 0x3fff;
                                 if (idMsgObj == 2048) {
-                                    mdMsgObj = 7;
+                                    mdMsgObj = mdMsgObjRelations;
                                 } else {
-                                    mdMsgObj = 6;
+                                    mdMsgObj = mdMsgObjBattle;
                                     vptMsg.x = mb.rgParam[0];
                                     vptMsg.y = mb.rgParam[1];
                                 }
                             } else if (mb.wGoto >= 0) {
-                                mdMsgObj = 1;
+                                mdMsgObj = mdMsgObjPlanet;
                             } else if (LpflFromId(idMsgObj) != 0) {
-                                mdMsgObj = 2;
+                                mdMsgObj = mdMsgObjFleet;
                             } else {
-                                mdMsgObj = 0;
+                                mdMsgObj = mdMsgObjNone;
                             }
                         }
                     } else {
-                        mdMsgObj = 0;
+                        mdMsgObj = mdMsgObjNone;
                     }
                 }
-                if (mdMsgObj != 0) {
+                if (mdMsgObj != mdMsgObjNone) {
                     if (iMsgCur >= 0) {
                         if (fViewFilteredMsg != 0)
                             goto L_77c1;
@@ -1487,10 +1487,10 @@ void SetMsgTitle(HWND hwnd) {
                         if ((bitfMsgFiltered[IdmGetMessageN(iMsgCur) >> 3] & t_scratch_m6e) == 0)
                             goto L_77c1;
                     }
-                    mdMsgObj = 0;
+                    mdMsgObj = mdMsgObjNone;
                 }
             L_77c1:
-                EnableWindow(rghwndMsgBtn[1], mdMsgObj == 0 ? 0 : 1);
+                EnableWindow(rghwndMsgBtn[1], mdMsgObj == mdMsgObjNone ? 0 : 1);
             }
         }
         strcpy(szMsgTitle, szWork);
@@ -1651,9 +1651,9 @@ HtMsgType HtMsgBox(POINT16 pt) {
     return htMsgNone;
 }
 
-int16_t FSendPlrMsg2(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) { return FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0, 0, 0, 0, 0); }
+int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2) { return FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0, 0, 0, 0, 0); }
 
-int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
+int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
     uint8_t  rgbWork[40];
     int16_t  cbMsg;
     uint8_t *lpb;
@@ -1672,7 +1672,7 @@ int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_
     return 1;
 }
 
-int16_t FSendPrependedPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
+int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
     uint8_t rgbWork[40];
     int16_t cbMsg;
 
@@ -1690,7 +1690,7 @@ int16_t FSendPrependedPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p
     return 1;
 }
 
-int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6,
+int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6,
                      int16_t p7) {
     int16_t *pi;
     int16_t  i;
@@ -1701,20 +1701,19 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
     int16_t  rgArgs[7];
     uint16_t t_scratch_m16_2;
     MSGHDR  *t_fields_1;
-    uint32_t t_fields_2;
     uint32_t t_fields_3;
 
     if (iPlr == -1) {
         return 0;
     }
-    if (rgplr[iPlr].fAi != 0 && rgplr[iPlr].idAi != 7) {
+    if (rgplr[iPlr].fAi != 0 && rgplr[iPlr].idAi != idAiMaid) {
         switch (iMsg) {
         default:
             return 0;
-        case 143:
-        case 7:
-        case 35:
-        case 64:
+        case idmHasBombedKillingOffEnemyColonists:
+        case idmHaveAttackedFirstRateStormTroopersThough:
+        case idmColonistsHaveDiedOffLongerControlPlanet:
+        case idmColonistsHaveJumpedShipLongerControlPlanet:
             break;
         }
     }
@@ -1744,9 +1743,8 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
             t_scratch_m16_2 = (grbit << 9 | (lpmt->msghdr.iMsg | lpmt->msghdr.grWord << 9)) & 0xfe00;
             lpmt->msghdr.grWord = 0;
             t_fields_1 = &lpmt->msghdr;
-            t_fields_2 = t_fields_1->iMsg | ((uint32_t)t_scratch_m16_2 & 0x1ff);
             t_fields_3 = t_fields_1->grWord | ((uint32_t)t_scratch_m16_2 >> 9 & 0x7f);
-            t_fields_1->iMsg = t_fields_2;
+            t_fields_1->iMsg |= (uint32_t)t_scratch_m16_2 & 0x1ff;
             t_fields_1->grWord = t_fields_3;
             RawStore16(lpb, *pi);
             lpb += 2;
@@ -1762,7 +1760,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, int16_t iMsg, int16_t iObj, int1
     return lpb - pb;
 }
 
-int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2) {
+int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2) {
     uint8_t  rgb[64];
     int16_t *pi;
     int16_t  i;
@@ -1772,7 +1770,6 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
     MSGHDR  *pmsghdr;
     int16_t  rgArgs[2];
     uint16_t t_scratch_m50_2;
-    uint32_t t_fields_1;
     uint32_t t_fields_2;
 
     if ((uint16_t)(imemMsgCur + 20) > 0xffc8) {
@@ -1794,9 +1791,8 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, int16_t iMsg, int16_t iObj, int16_t p
         if ((*pi & 0xff00) != 0) {
             t_scratch_m50_2 = (grbit << 9 | (pmsghdr->iMsg | pmsghdr->grWord << 9)) & 0xfe00;
             pmsghdr->grWord = 0;
-            t_fields_1 = pmsghdr->iMsg | ((uint32_t)t_scratch_m50_2 & 0x1ff);
             t_fields_2 = pmsghdr->grWord | ((uint32_t)t_scratch_m50_2 >> 9 & 0x7f);
-            pmsghdr->iMsg = t_fields_1;
+            pmsghdr->iMsg |= (uint32_t)t_scratch_m50_2 & 0x1ff;
             pmsghdr->grWord = t_fields_2;
             RawStore16(pb, *pi);
             pb += 2;
@@ -1831,7 +1827,7 @@ int16_t IdmGetMessageN(int16_t iMsg) {
     return mb.iMsg;
 }
 
-int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb) {
+int16_t FGetNMsgbig(MessageId iMsg, MSGBIG *pmb) {
     uint8_t *lpbMax;
     int16_t  iMax;
     MSGHDR  *lpmh;
@@ -1839,7 +1835,7 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb) {
     uint8_t *lpb;
     uint16_t u;
 
-    if (iMsg < 0 || iMsg >= cMsg) {
+    if ((int16_t)iMsg < idmColonistsDroppedMassacredGroundTroops || (int16_t)iMsg >= cMsg) {
         return 0;
     }
     lpb = (uint8_t *)lpMsg;
@@ -1848,19 +1844,19 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb) {
         lpmh = (MSGHDR *)lpb;
         u = lpmh->grWord;
         lpb += 4;
-        if (iMsg == 0) {
+        if (iMsg == idmColonistsDroppedMassacredGroundTroops) {
             pmb->iMsg = lpmh->iMsg;
             pmb->wGoto = lpmh->wGoto;
         }
         iMax = (int16_t)(int8_t)rgcMsgArgs[lpmh->iMsg];
         for (i = 0; i < iMax; i++) {
-            if (iMsg == 0) {
+            if (iMsg == idmColonistsDroppedMassacredGroundTroops) {
                 pmb->rgParam[i] = (u & 1) == 0 ? *lpb : RawLoad16(lpb);
             }
             lpb += 1 + ((u & 1) == 1 ? 1 : 0);
             u >>= 1;
         }
-        if (iMsg-- <= 0)
+        if ((int16_t)iMsg-- <= idmColonistsDroppedMassacredGroundTroops)
             break;
     }
     return 1;
@@ -1896,64 +1892,64 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
     pParams = pParamsReal;
     pch = szMsgBuf;
     for (; (int16_t)(int8_t)*pszFormat != 0; pszFormat++) {
-        if ((int16_t)(int8_t)*pszFormat != 92) {
+        if ((int16_t)(int8_t)*pszFormat != '\\') {
             *pch++ = *pszFormat;
         } else {
             pszFormat++;
             if ((uint16_t)((int16_t)(int8_t)*pszFormat - 69) <= 53) {
                 switch ((int16_t)(int8_t)*pszFormat) {
-                case 119:
+                case 'w':
                     strcpy(pch, szWork);
                     pch += strlen(szWork);
                     break;
-                case 102:
-                case 104:
-                case 114:
-                case 116:
-                case 121:
+                case 'f':
+                case 'h':
+                case 'r':
+                case 't':
+                case 'y':
                     strcpy(pch, szBase);
                     pch += strlen(szBase);
                     switch ((int16_t)(int8_t)*pszFormat) {
-                    case 102:
+                    case 'f':
                         if (idPlayer != -1) {
                             c = _wsprintf(pch, ".x%d", idPlayer + 1);
                             goto DoInt;
                         }
-                    case 116:
+                    case 't':
                         if (idPlayer != -1) {
                             c = _wsprintf(pch, ".m%d", idPlayer + 1);
                             goto DoInt;
                         }
-                    case 104:
+                    case 'h':
                         strcat(pch, ".hst");
                         pch += 4;
                         break;
-                    case 114:
+                    case 'r':
                         c = _wsprintf(pch, ".h%d", idPlayer + 1);
                         goto DoInt;
-                    case 121:
+                    case 'y':
                         strcat(pch, ".xy");
                         pch += 3;
                     }
                     break;
-                case 101:
+                case 'e':
                     pchT = rgszPlanetAttr[*pParams];
                     goto FinishString;
-                case 69:
+                case 'E':
                     pchT = PszCalcEnvVar((uint16_t)*pParams >> 8 & 0xff & 0xff, *pParams & 0xff);
                     goto FinishString;
-                case 73:
+                case 'I':
                     pchT = PszGetCompressedString(*pParams + 1348);
                     goto FinishString;
-                case 105:
+                case 'i':
                     c = _wsprintf(pch, PCTD, *pParams);
                     goto DoInt;
-                case 76:
-                case 108:
-                    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 76 ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1,
+                case 'L':
+                case 'l':
+                    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1,
                                          (*pParams & 0x20) == 0 ? 0 : 1, (*pParams & 0xc0) >> 6, NULL);
                     goto FinishString;
-                case 90:
+                case 'Z':
                     w = *pParams;
                     if (w == 0)
                         break;
@@ -1986,7 +1982,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                         w >>= 1;
                     }
                     goto DoNothing;
-                case 83:
+                case 'S':
                     if (*pParams == idPlayer)
                         goto DoNothing;
                     CchGetString(idsOf2, szBuf);
@@ -1995,14 +1991,14 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     strcat(szBuf, PszGetCompressedString(idsOrigin));
                     pchT = szBuf;
                     goto FinishString;
-                case 109:
+                case 'm':
                     iMineral = *pParams;
                     pchT = rgszMinerals[iMineral];
                     goto FinishString;
-                case 77:
+                case 'M':
                     pchT = rgszMineField[*pParams];
                     goto FinishString;
-                case 80:
+                case 'P':
                     if ((long double)(int16_t)((int16_t)*pParams / 100) >= (long double)10.0) {
                         c = _wsprintf(pch, PCTDPCTPCT, (int16_t)*pParams / 100);
                     } else {
@@ -2011,26 +2007,26 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pch += c;
                     pParams++;
                     break;
-                case 112:
+                case 'p':
                 DoPlanet:
                     pchT = PszGetPlanetName(*pParams);
                     goto FinishString;
-                case 88:
+                case 'X':
                 DoNothing:
                     pParams++;
                     break;
-                case 70:
+                case 'F':
                     pchT = PszFleetNameFromWord(*pParams);
                     goto FinishString;
-                case 115:
+                case 's':
                 DoFleet:
                     w = *pParams | 0x8000;
                     pchT = PszGetFleetName(w);
                     goto FinishString;
-                case 106:
+                case 'j':
                     pchT = PszGetCompressedString(*pParams + 84);
                     goto FinishString;
-                case 107:
+                case 'k':
                     part.hs.grhst = *pParams;
                     pParams++;
                     part.hs.iItem = *pParams;
@@ -2040,17 +2036,17 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pch += fstrlen(part.pcom->szName);
                     pParams++;
                     break;
-                case 103:
+                case 'g':
                 LThingName:
                     pchT = PszGetThingName(*pParams);
                     goto FinishString;
-                case 71:
+                case 'G':
                     w = *pParams;
                     c = CchGetString(w + 1250, pch);
                     pch += c;
                     pParams++;
                     break;
-                case 110:
+                case 'n':
                     if (*pParams == -2) {
                         pParams++;
                         goto LThingName;
@@ -2061,36 +2057,36 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                         goto FinishString;
                     }
                     pParams++;
-                case 111:
+                case 'o':
                     if ((*pParams & 0x8000) != 0)
                         goto DoFleet;
                     goto DoPlanet;
-                case 79:
+                case 'O':
                     w = (uint16_t)*pParams >> 9 & 0xf;
                     pchT = PszPlayerName(w, 0, 0, 0, 0, NULL);
                     goto FinishString;
-                case 117:
+                case 'u':
                     c = _wsprintf(pch, "%u", *pParams);
                     pch += c;
                     pParams++;
                     break;
-                case 85:
-                case 86:
-                case 118:
+                case 'U':
+                case 'V':
+                case 'v':
                     l = (int32_t)((uint32_t)pParams[1] << 0x10) | (uint32_t)*pParams;
                     pParams += 2;
                     c = _wsprintf(pch, PCTLD, l);
                     pch += c;
-                    if ((int16_t)(int8_t)*pszFormat == 118)
+                    if ((int16_t)(int8_t)*pszFormat == 'v')
                         break;
-                    if ((int16_t)(int8_t)*pszFormat == 86) {
+                    if ((int16_t)(int8_t)*pszFormat == 'V') {
                         iMineral = *pParams;
                     }
                     pchT = vrgszUnits[iMineral];
                     strcpy(pch, pchT);
                     pch += strlen(pchT);
                     break;
-                case 122:
+                case 'z':
                     c = *pParams >> 5;
                     w = *pParams & 0x1f;
                     if (w >= 16) {
@@ -2107,27 +2103,27 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pch += strlen(pch);
                     pParams++;
                     break;
-                case 72:
-                case 74:
-                case 75:
-                case 78:
-                case 81:
-                case 82:
-                case 84:
-                case 87:
-                case 89:
-                case 91:
-                case 92:
-                case 93:
-                case 94:
-                case 95:
-                case 96:
-                case 97:
-                case 98:
-                case 99:
-                case 100:
-                case 113:
-                case 120:
+                case 'H':
+                case 'J':
+                case 'K':
+                case 'N':
+                case 'Q':
+                case 'R':
+                case 'T':
+                case 'W':
+                case 'Y':
+                case '[':
+                case '\\':
+                case ']':
+                case '^':
+                case '_':
+                case '`':
+                case 'a':
+                case 'b':
+                case 'c':
+                case 'd':
+                case 'q':
+                case 'x':
                     goto L_8eba;
                 }
                 continue;
@@ -2164,7 +2160,7 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
                     pt.x = -1;
                     pt.y = -1;
                     szWork[0] = 0;
-                    SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 8, 0);
+                    SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 8, 0);
                     SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
                     StickyDlgPos(hwnd, &pt, 1);
                     return 1;
@@ -2184,7 +2180,7 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
                         EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
                         return 1;
                     case IDC_HELP:
-                        WinHelp(hwnd, szHelpFile, 1, 3516);
+                        WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhCopyProtection);
                         return 1;
                     }
                 }
@@ -2219,7 +2215,7 @@ char *PszFormatMessage(MessageId idm, int16_t *pParams) { return PszFormatString
 
 char *PszFormatIds(StringId ids, int16_t *pParams) { return PszFormatString(PszGetCompressedString(ids), pParams); }
 
-int16_t FRemovePlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
+int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, MsgGoto iObj) {
     uint8_t *lpbMax;
     uint8_t *lpb;
     int16_t  cDel;
@@ -2236,7 +2232,7 @@ int16_t FRemovePlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
     return cDel;
 }
 
-int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
+int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, MsgGoto iObj) {
     uint8_t *lpbMax;
     uint8_t *lpb;
 
@@ -2306,7 +2302,7 @@ void MarkPlanetsPlayerLost(int16_t iPlayer) {
         LLookupPlanet:
             lppl = LpplFromId(w);
             if (lppl != 0) {
-                MarkPlanet(lppl, iPlayer, 3);
+                MarkPlanet(lppl, iPlayer, detSome);
             }
         }
     }

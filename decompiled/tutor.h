@@ -23,14 +23,14 @@ int16_t          FAskKillTutor();
 int16_t          FTutorTaskDone();
 int16_t          FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, StringId ids);
 int16_t          FCheckTemplate(int16_t iTemplate);
-void             TutorError(int16_t idsError);
+void             TutorError(StringId idsError);
 int16_t          FCheckScanner(int16_t md, int16_t iZoom);
 int16_t          FCheckFleetName(int16_t id, StringId ids);
 int16_t          FCheckSummary(GrobjClass grobj, int16_t id);
 int16_t          FCheckSelection(GrobjClass grobj, int16_t id);
 int16_t          FCheckMessages(int16_t imsg, MessageId idm, int16_t fFilter);
 int16_t          FCheckResearch(TechFieldType iTech, TechFieldType iTechNext, int16_t pct);
-int16_t          FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp);
+int16_t          FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, TaskType grTask, uint16_t iWarp);
 int16_t          FCheckPlanetRoute(int16_t idpl, int16_t idplRoute);
 int16_t          FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears);
 int16_t          FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp);
@@ -42,7 +42,7 @@ int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_
 int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3, int16_t wtColonists);
 int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit);
 int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip);
-int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction);
+int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction);
 int16_t FOKMergeDialog();
 
 #endif

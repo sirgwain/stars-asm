@@ -17,7 +17,7 @@ func TestAnnotateMachineStorageRespectsLocalScopes(t *testing.T) {
 	if fn == nil {
 		t.Fatal("FBuildObject not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	processor := &annotateProcessor{ctx: ctx}
 	result := newResult(fn)
 

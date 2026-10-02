@@ -24,7 +24,7 @@ L_1252:
 L_1261:
     iAbout1st = -11
     iAboutPartial = 0
-    call SetWindowText(GetDlgItem(hwnd, 0x401), SzVersion()) -> callresult(void)
+    call SetWindowText(GetDlgItem(hwnd, IDC_ABOUT_DEMO_TEXT), SzVersion()) -> callresult(void)
     uTimerId = SetTimer(hwnd, 14, 50, NULL)
     return 1
 
@@ -34,7 +34,7 @@ L_12a9:
     return 1
 
 L_12d1:
-    hwndCtl = GetDlgItem(hwnd, IDC_U16_0x041F)
+    hwndCtl = GetDlgItem(hwnd, IDC_ABOUT_CREDITS_TEXT)
     iAboutPartial = (iAboutPartial + 2)
     branch iAboutPartial < dyArial8 ? L_130c : L_12f1
 
@@ -109,7 +109,7 @@ L_1473:
     return 1
 
 L_149a:
-    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_HELP ? L_1510 : L_14a3
+    branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_ABOUT_ORDER_INFO ? L_1510 : L_14a3
 
 L_14a3:
     lpProc = MakeProcInstance(OrderInfoDlg, hInst)

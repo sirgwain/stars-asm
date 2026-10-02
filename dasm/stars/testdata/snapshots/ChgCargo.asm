@@ -1,10 +1,10 @@
 ; ChgCargo  (ship)
 ;   addr: 000b:6034  len=1176
-;   sig:  int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj)
+;   sig:  int32_t ChgCargo(GrobjClass grobj, int16_t id, MineralType iSupply, int32_t dChg, void *pobj)
 ;   params:
 ;     GrobjClass       grobj          [BP+0x6]
 ;     int16_t          id             [BP+0x8]
-;     int16_t          iSupply        [BP+0xa]
+;     MineralType      iSupply        [BP+0xa]
 ;     int32_t          dChg           [BP+0xc]
 ;     void *           pobj           [BP+0x10]
 ;   locals:

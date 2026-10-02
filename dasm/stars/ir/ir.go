@@ -36,6 +36,10 @@ type Expr interface{ expr() }
 type Assign struct {
 	Dst, Src Expr
 	Merge    bool
+	// Fits marks a store to a temp of a value that already has the temp's C
+	// type and fits it, so reading Src where the temp is read gives the
+	// same value and C type.
+	Fits bool
 }
 
 func (*Assign) stmt() {}
@@ -52,9 +56,13 @@ type IfGoto struct {
 func (*IfGoto) stmt() {}
 
 // TableJump preserves a computed byte offset and each word-table destination.
+// Enums name recovered case values, tried in order, and Char reports a switch
+// on a char.
 type TableJump struct {
 	Index  Expr
 	Labels []string
+	Enums  []*typeinfo.Enum
+	Char   bool
 }
 
 // stmt marks TableJump as an IR statement.

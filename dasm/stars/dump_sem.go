@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"io"
 	"os"
 	"os/exec"
@@ -23,7 +24,7 @@ func DumpFuncSem(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *type
 		return dumpFuncSemDiff(w, img, sdb, fs, opt)
 	}
 
-	analysis, err := analyzeFunc(img, sdb, fs, opt.DumpOptions)
+	analysis, err := analyzeFunc(img, sdb, fs, opt.DumpOptions, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	if err != nil {
 		return err
 	}
@@ -55,7 +56,7 @@ func dumpFuncSemDiff(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *
 	var finalEffects *machine.FuncEffects
 	passOpt := opt
 	passOpt.DiffDir = ""
-	analysis, err := analyzeFuncWithSemPassSnapshots(img, sdb, fs, opt.DumpOptions, func(snapshot sem.PassSnapshot, effects *machine.FuncEffects) error {
+	analysis, err := analyzeFuncWithSemPassSnapshots(img, sdb, fs, opt.DumpOptions, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)), func(snapshot sem.PassSnapshot, effects *machine.FuncEffects) error {
 		if snapshot.Effects != nil {
 			finalEffects = snapshot.Effects
 		}

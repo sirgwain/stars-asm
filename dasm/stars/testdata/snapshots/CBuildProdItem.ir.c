@@ -501,7 +501,7 @@ L_17c9:
         goto L_17d9;
 
 L_17d9:
-    FSendPlrMsg2(lppl->iPlayer, 140, lppl->id, lppl->id, cAlchemy);
+    FSendPlrMsg2(lppl->iPlayer, idmScientistsHaveTransmutedCommonMaterialsKtEach, lppl->id, lppl->id, cAlchemy);
 
 L_17fb:
     if (pmdStatus == 0)

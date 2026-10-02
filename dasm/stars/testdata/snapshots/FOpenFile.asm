@@ -84,7 +84,7 @@ MOV       [fFileErrSilent], 0x0001  ; [0x074c], 0x0001
 PUSH      [bp+md]                   ; [bp+0xa]
 MOV       ax, 0x57a4          
 PUSH      ax                  
-CALLF     StreamOpen                ; void StreamOpen(char *szFile, int16_t mdOpen)
+CALLF     StreamOpen                ; void StreamOpen(char *szFile, MdOpenFlags mdOpen)
 ADD       sp, 0x0004          
                                     ; file.c:2228
 MOV       ax, [bp-fSilentSav]       ; ax, [bp-0x1a]

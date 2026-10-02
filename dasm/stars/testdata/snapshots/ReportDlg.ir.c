@@ -471,45 +471,45 @@ L_0860:
     vprptCur->ptSize.y = rc.bottom - rc.top;
     hwndReportDlg = 0;
     fBrowserValid = 0;
-    hmenu = GetASubMenu(hwndFrame, 4);
+    hmenu = GetASubMenu(hwndFrame, menuReport);
     goto L_08f1;
 
 L_08ce:
-    idm = 0x8ff;
+    idm = 2303;
     goto L_0914;
 
 L_08d6:
-    idm = 0x900;
+    idm = 2304;
     goto L_0914;
 
 L_08de:
-    idm = 0x8fd;
+    idm = 2301;
     goto L_0914;
 
 L_08e6:
-    idm = 0x901;
+    idm = 2305;
     goto L_0914;
 
 L_08f1:
-    if (vprptCur->irpt == 0)
+    if (vprptCur->irpt == rptPlanets)
         goto L_08de;
     else
         goto L_08f9;
 
 L_08f9:
-    if (vprptCur->irpt == 1)
+    if (vprptCur->irpt == rptFleets)
         goto L_08ce;
     else
         goto L_0901;
 
 L_0901:
-    if (vprptCur->irpt == 2)
+    if (vprptCur->irpt == rptEnemyFleets)
         goto L_08d6;
     else
         goto L_0909;
 
 L_0909:
-    if (vprptCur->irpt == 3)
+    if (vprptCur->irpt == rptBattles)
         goto L_08e6;
     else
         goto L_0914;

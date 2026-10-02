@@ -298,19 +298,19 @@ L_4129:
     goto ChangeIt;
 
 L_4154:
-    if ((scan.grobjFull & 1) != 0)
+    if ((scan.grobjFull & grobjPlanet) != 0)
         goto CheckPlanet;
     else
         goto L_4168;
 
 L_4168:
-    if ((scan.grobjFull & 2) != 0)
+    if ((scan.grobjFull & grobjFleet) != 0)
         goto CheckFleet;
     else
         goto L_417c;
 
 L_417c:
-    if ((scan.grobjFull & 8) == 0)
+    if ((scan.grobjFull & grobjThing) == 0)
         goto L_4192;
     else
         goto L_418a;
@@ -365,7 +365,7 @@ L_4220:
     goto ChangeIt;
 
 L_4278:
-    if ((scan.grobjFull & 8) == 0)
+    if ((scan.grobjFull & grobjThing) == 0)
         goto L_4291;
     else
         goto L_4286;
@@ -375,7 +375,7 @@ L_4286:
     goto L_4113;
 
 L_4291:
-    if ((scan.grobjFull & 1) == 0)
+    if ((scan.grobjFull & grobjPlanet) == 0)
         goto CheckFleet;
     else
         goto CheckPlanet;
@@ -438,7 +438,7 @@ L_4363:
         goto L_436e;
 
 L_436e:
-    if ((scan.grobjFull & 8) == 0)
+    if ((scan.grobjFull & grobjThing) == 0)
         goto L_4384;
     else
         goto L_437c;
@@ -533,7 +533,7 @@ L_4511:
 L_4525:
     cMinGrafMax = rgi[i];
     InvalidateRect(hwndMine, NULL, 1);
-    if ((grbitScan & 0xf) != 1)
+    if ((grbitScan & grbitScanViewMask) != 1)
         goto L_47d5;
     else
         goto L_4557;

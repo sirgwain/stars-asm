@@ -52,6 +52,9 @@ func (c *machineConverter) convertCallArgs(fn *typeinfo.Function, values []machi
 			expected = typeinfo.LpStr
 		}
 		out[i] = c.convertValueTyped(value, expected)
+		if isMessageCall && c.ctx.messageCallArgumentChar(fn, values, i) {
+			out[i] = markCharLiteral(out[i])
+		}
 	}
 	return out
 }

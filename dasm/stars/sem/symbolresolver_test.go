@@ -18,7 +18,7 @@ func mustFuncContext(t *testing.T, fx *testfixture.StarsFixture, res *symresolve
 	if fn == nil {
 		t.Fatalf("function %s not found", name)
 	}
-	return NewFuncContext(fx.Image, fx.SDB, res, fn)
+	return NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res))
 }
 
 // frameLoad returns a BP-relative load at the supplied function-relative

@@ -128,7 +128,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 2,
                             .dp = 13,
                             .init = 12,
-                            .grfAbilities = 2,
+                            .grfAbilities = beamGatling,
                    },
                         {
                             .id = 4,
@@ -176,7 +176,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 3,
                             .dp = 82,
                             .init = 14,
-                            .grfAbilities = 1,
+                            .grfAbilities = beamSapper,
                    },
                         {
                             .id = 8,
@@ -201,7 +201,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 2,
                             .dp = 31,
                             .init = 12,
-                            .grfAbilities = 2,
+                            .grfAbilities = beamGatling,
                    },
                         {
                             .id = 10,
@@ -249,7 +249,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 3,
                             .dp = 211,
                             .init = 14,
-                            .grfAbilities = 1,
+                            .grfAbilities = beamSapper,
                    },
                         {
                             .id = 14,
@@ -274,7 +274,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 2,
                             .dp = 80,
                             .init = 13,
-                            .grfAbilities = 2,
+                            .grfAbilities = beamGatling,
                    },
                         {
                             .id = 16,
@@ -334,7 +334,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 3,
                             .dp = 541,
                             .init = 14,
-                            .grfAbilities = 1,
+                            .grfAbilities = beamSapper,
                    },
                         {
                             .id = 21,
@@ -359,7 +359,7 @@ BEAM      rgbeam[24] = {{
                             .dRangeMax = 2,
                             .dp = 204,
                             .init = 13,
-                            .grfAbilities = 2,
+                            .grfAbilities = beamGatling,
                    },
                         {
                             .id = 23,
@@ -442,7 +442,7 @@ SCANNER   rgscanner[16] = {{
                                .rgwtOreCost = {8, 10, 6},
                                .ibmp = 56,
                                .dRange = 80,
-                               .grfAbilities = 4,
+                               .grfAbilities = scannerSteals,
                          },
                            {
                                .id = 7,
@@ -453,7 +453,7 @@ SCANNER   rgscanner[16] = {{
                                .rgwtOreCost = {4, 6, 4},
                                .ibmp = 63,
                                .dRange = 160,
-                               .grfAbilities = 4,
+                               .grfAbilities = scannerSteals,
                          },
                            {
                                .id = 8,
@@ -464,7 +464,7 @@ SCANNER   rgscanner[16] = {{
                                .rgwtOreCost = {2, 0, 8},
                                .ibmp = 53,
                                .dRange = 185,
-                               .grfAbilities = 1,
+                               .grfAbilities = scannerPenetrating50,
                          },
                            {
                                .id = 9,
@@ -475,7 +475,7 @@ SCANNER   rgscanner[16] = {{
                                .rgwtOreCost = {5, 5, 10},
                                .ibmp = 54,
                                .dRange = 220,
-                               .grfAbilities = 2,
+                               .grfAbilities = scannerPenetrating100,
                          },
                            {
                                .id = 10,
@@ -516,7 +516,7 @@ SCANNER   rgscanner[16] = {{
                                .rgwtOreCost = {8, 5, 14},
                                .ibmp = 55,
                                .dRange = 300,
-                               .grfAbilities = 3,
+                               .grfAbilities = scannerPenetrating200,
                          },
                            {
                                .id = 14,
@@ -537,7 +537,7 @@ SCANNER   rgscanner[16] = {{
                                .rgwtOreCost = {10, 10, 10},
                                .ibmp = 57,
                                .dRange = 220,
-                               .grfAbilities = 4,
+                               .grfAbilities = scannerSteals,
                          },
                            {
                                .id = 16,
@@ -566,7 +566,7 @@ HULDEF    rghuldefSB[5] = {{
                                        .chs = 5,
                                 },
                                .init = 10,
-                               .imdAttack = 2,
+                               .imdAttack = hullAttackHeavy,
                                .wrcCargo = 65535,
                                .rgbrc = {68, 36, 70, 100, 66},
                         },
@@ -592,7 +592,7 @@ HULDEF    rghuldefSB[5] = {{
                                        .chs = 8,
                                 },
                                .init = 12,
-                               .imdAttack = 2,
+                               .imdAttack = hullAttackHeavy,
                                .wrcCargo = 17510,
                                .rgbrc = {34, 20, 65, 71, 116, 38, 102, 98},
                         },
@@ -621,7 +621,7 @@ HULDEF    rghuldefSB[5] = {{
                                        .chs = 12,
                                 },
                                .init = 14,
-                               .imdAttack = 2,
+                               .imdAttack = hullAttackHeavy,
                                .wrcCargo = 17510,
                                .rgbrc = {66, 5, 3, 88, 80, 133, 100, 131, 36, 48, 70, 56},
                         },
@@ -655,7 +655,7 @@ HULDEF    rghuldefSB[5] = {{
                                        .chs = 16,
                                 },
                                .init = 16,
-                               .imdAttack = 2,
+                               .imdAttack = hullAttackHeavy,
                                .wrcCargo = 17510,
                                .rgbrc = {36, 80, 66, 88, 98, 38, 70, 3, 131, 56, 100, 102, 48, 34, 5, 133},
                         },
@@ -689,7 +689,7 @@ HULDEF    rghuldefSB[5] = {{
                                        .chs = 16,
                                 },
                                .init = 18,
-                               .imdAttack = 2,
+                               .imdAttack = hullAttackHeavy,
                                .wrcCargo = 17510,
                                .rgbrc = {20, 96, 65, 104, 98, 38, 71, 2, 130, 40, 116, 102, 32, 34, 6, 134},
                         }};
@@ -1105,7 +1105,7 @@ ENGINE    rgengine[16] = {{
                               .resCost = 2,
                               .rgwtOreCost = {1, 0, 1},
                               .ibmp = 8,
-                              .grfAbilities = 1,
+                              .grfAbilities = engineSettlersDelight,
                               .rgcFuelUsed = {0, 0, 0, 0, 0, 0, 0, 140, 275, 480, 576},
                        },
                           {
@@ -1124,7 +1124,7 @@ ENGINE    rgengine[16] = {{
                               .resCost = 11,
                               .rgwtOreCost = {8},
                               .ibmp = 9,
-                              .grfAbilities = 3,
+                              .grfAbilities = engineFuelMizer,
                               .rgcFuelUsed = {0, 0, 0, 0, 0, 35, 120, 175, 235, 360, 420},
                        },
                           {
@@ -1175,7 +1175,7 @@ ENGINE    rgengine[16] = {{
                               .resCost = 60,
                               .rgwtOreCost = {18, 25, 10},
                               .ibmp = 12,
-                              .grfAbilities = 5,
+                              .grfAbilities = engineInterspace10,
                               .rgcFuelUsed = {0, 0, 10, 30, 40, 50, 60, 70, 80, 90, 100},
                        },
                           {
@@ -1186,7 +1186,7 @@ ENGINE    rgengine[16] = {{
                               .resCost = 40,
                               .rgwtOreCost = {12, 15, 11},
                               .ibmp = 109,
-                              .grfAbilities = 6,
+                              .grfAbilities = engineEnigmaPulsar,
                               .rgcFuelUsed = {0, 0, 0, 0, 0, 0, 65, 75, 85, 95, 105},
                        },
                           {
@@ -1207,7 +1207,7 @@ ENGINE    rgengine[16] = {{
                               .resCost = 8,
                               .rgwtOreCost = {3, 2, 9},
                               .ibmp = 7,
-                              .grfAbilities = 2,
+                              .grfAbilities = engineRadiatingRamScoop,
                               .rgcFuelUsed = {0, 0, 0, 0, 0, 0, 0, 165, 375, 600, 720},
                        },
                           {
@@ -1258,7 +1258,7 @@ ENGINE    rgengine[16] = {{
                               .resCost = 12,
                               .rgwtOreCost = {4, 2, 9},
                               .ibmp = 191,
-                              .grfAbilities = 4,
+                              .grfAbilities = engineGalaxyScoop,
                               .rgcFuelUsed = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60},
                        }};
 HULDEF    rghuldef[32] = {{
@@ -1274,7 +1274,7 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 1}, {.grhst = hstScanSpec, .cItem = 1}, {.grhst = hstShArm, .cItem = 1}},
                                       .chs = 3,
                                },
-                              .imdCategory = 1,
+                              .imdCategory = hullCatFreighter,
                               .wrcCargo = 13141,
                               .rgbrc = {49, 55, 53},
                        },
@@ -1294,7 +1294,7 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 1}, {.grhst = hstScanSpec, .cItem = 1}, {.grhst = hstShArm, .cItem = 1}},
                                       .chs = 3,
                                },
-                              .imdCategory = 1,
+                              .imdCategory = hullCatFreighter,
                               .wrcCargo = 12886,
                               .rgbrc = {48, 56, 54},
                        },
@@ -1314,7 +1314,7 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 2}, {.grhst = hstScanSpec, .cItem = 2}, {.grhst = hstShArm, .cItem = 2}},
                                       .chs = 3,
                                },
-                              .imdCategory = 1,
+                              .imdCategory = hullCatFreighter,
                               .wrcCargo = 8806,
                               .rgbrc = {48, 38, 70},
                        },
@@ -1337,7 +1337,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstSpecialE, .cItem = 2}},
                                       .chs = 4,
                                },
-                              .imdCategory = 1,
+                              .imdCategory = hullCatFreighter,
                               .wrcCargo = 8840,
                               .rgbrc = {64, 40, 72, 104},
                        },
@@ -1356,8 +1356,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 3,
                                },
                               .init = 1,
-                              .imdAttack = 1,
-                              .imdCategory = 2,
+                              .imdAttack = hullAttackLight,
+                              .imdCategory = hullCatScout,
                               .wrcCargo = 65535,
                               .rgbrc = {50, 54, 52},
                        },
@@ -1380,8 +1380,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 4,
                                },
                               .init = 4,
-                              .imdAttack = 1,
-                              .imdCategory = 2,
+                              .imdAttack = hullAttackLight,
+                              .imdCategory = hullCatScout,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 55, 53, 51},
                        },
@@ -1407,8 +1407,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 7,
                                },
                               .init = 3,
-                              .imdAttack = 1,
-                              .imdCategory = 2,
+                              .imdAttack = hullAttackLight,
+                              .imdCategory = hullCatScout,
                               .wrcCargo = 65535,
                               .rgbrc = {66, 21, 117, 70, 68, 35, 99},
                        },
@@ -1434,8 +1434,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 7,
                                },
                               .init = 5,
-                              .imdAttack = 2,
-                              .imdCategory = 3,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatWarship,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 35, 67, 21, 85, 55, 53},
                        },
@@ -1461,8 +1461,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 7,
                                },
                               .init = 5,
-                              .imdAttack = 2,
-                              .imdCategory = 3,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatWarship,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 35, 67, 21, 85, 55, 53},
                        },
@@ -1492,8 +1492,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 11,
                                },
                               .init = 10,
-                              .imdAttack = 2,
-                              .imdCategory = 3,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatWarship,
                               .wrcCargo = 65535,
                               .rgbrc = {48, 56, 38, 20, 84, 2, 98, 70, 52, 34, 66},
                        },
@@ -1525,8 +1525,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 13,
                                },
                               .init = 10,
-                              .imdAttack = 2,
-                              .imdCategory = 3,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatWarship,
                               .wrcCargo = 65535,
                               .rgbrc = {64, 32, 96, 18, 114, 50, 82, 36, 100, 68, 54, 86, 72},
                        },
@@ -1551,8 +1551,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 5,
                                },
                               .init = 3,
-                              .imdAttack = 1,
-                              .imdCategory = 4,
+                              .imdAttack = hullAttackLight,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 17255,
                               .rgbrc = {65, 55, 87, 37, 101},
                        },
@@ -1581,8 +1581,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 9,
                                },
                               .init = 4,
-                              .imdAttack = 2,
-                              .imdCategory = 4,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 13174,
                               .rgbrc = {65, 70, 102, 72, 20, 116, 38, 18, 114},
                        },
@@ -1610,8 +1610,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 8,
                                },
                               .init = 4,
-                              .imdAttack = 2,
-                              .imdCategory = 4,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 12918,
                               .rgbrc = {64, 19, 115, 21, 117, 54, 86, 72},
                        },
@@ -1666,8 +1666,8 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 1}, {.grhst = hstBomb, .cItem = 2}},
                                       .chs = 2,
                                },
-                              .imdAttack = 3,
-                              .imdCategory = 5,
+                              .imdAttack = hullAttackBomber,
+                              .imdCategory = hullCatBomber,
                               .wrcCargo = 65535,
                               .rgbrc = {51, 53},
                        },
@@ -1689,8 +1689,8 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstScanSpec, .cItem = 1}},
                                       .chs = 4,
                                },
-                              .imdAttack = 3,
-                              .imdCategory = 5,
+                              .imdAttack = hullAttackBomber,
+                              .imdCategory = hullCatBomber,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 51, 53, 55},
                        },
@@ -1713,8 +1713,8 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstSpecialE, .cItem = 3}},
                                       .chs = 5,
                                },
-                              .imdAttack = 3,
-                              .imdCategory = 5,
+                              .imdAttack = hullAttackBomber,
+                              .imdCategory = hullCatBomber,
                               .wrcCargo = 65535,
                               .rgbrc = {50, 36, 68, 38, 70},
                        },
@@ -1739,8 +1739,8 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstShield, .cItem = 2}},
                                       .chs = 7,
                                },
-                              .imdAttack = 3,
-                              .imdCategory = 5,
+                              .imdAttack = hullAttackBomber,
+                              .imdCategory = hullCatBomber,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 19, 83, 37, 69, 55, 51},
                        },
@@ -1758,7 +1758,7 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 1}, {.grhst = hstMining, .cItem = 2}},
                                       .chs = 2,
                                },
-                              .imdCategory = 6,
+                              .imdCategory = hullCatMiner,
                               .wrcCargo = 65535,
                               .rgbrc = {51, 53},
                        },
@@ -1780,7 +1780,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstMining, .cItem = 1}},
                                       .chs = 4,
                                },
-                              .imdCategory = 6,
+                              .imdCategory = hullCatMiner,
                               .wrcCargo = 65535,
                               .rgbrc = {50, 54, 36, 68},
                        },
@@ -1804,7 +1804,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstMining, .cItem = 1}},
                                       .chs = 6,
                                },
-                              .imdCategory = 6,
+                              .imdCategory = hullCatMiner,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 55, 35, 37, 67, 69},
                        },
@@ -1828,7 +1828,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstMining, .cItem = 1}},
                                       .chs = 6,
                                },
-                              .imdCategory = 6,
+                              .imdCategory = hullCatMiner,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 55, 35, 37, 67, 69},
                        },
@@ -1852,7 +1852,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstMining, .cItem = 2}},
                                       .chs = 6,
                                },
-                              .imdCategory = 6,
+                              .imdCategory = hullCatMiner,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 55, 35, 37, 67, 69},
                        },
@@ -1871,7 +1871,7 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 1}, {.grhst = hstShield, .cItem = 1}},
                                       .chs = 2,
                                },
-                              .imdCategory = 7,
+                              .imdCategory = hullCatFuelTransport,
                               .wrcCargo = 65535,
                               .rgbrc = {51, 53},
                        },
@@ -1890,7 +1890,7 @@ HULDEF    rghuldef[32] = {{
                                       .rghs = {{.grhst = hstEngine, .cItem = 2}, {.grhst = hstShield, .cItem = 2}, {.grhst = hstScanner, .cItem = 1}},
                                       .chs = 3,
                                },
-                              .imdCategory = 7,
+                              .imdCategory = hullCatFuelTransport,
                               .wrcCargo = 65535,
                               .rgbrc = {50, 52, 54},
                        },
@@ -1911,7 +1911,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstScanSpec, .cItem = 1}},
                                       .chs = 4,
                                },
-                              .imdCategory = 4,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 65535,
                               .rgbrc = {50, 36, 68, 54},
                        },
@@ -1935,7 +1935,7 @@ HULDEF    rghuldef[32] = {{
                                                {.grhst = hstSpecMine, .cItem = 3}},
                                       .chs = 6,
                                },
-                              .imdCategory = 4,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 65535,
                               .rgbrc = {49, 35, 67, 53, 39, 71},
                        },
@@ -1967,8 +1967,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 13,
                                },
                               .init = 2,
-                              .imdAttack = 2,
-                              .imdCategory = 4,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 65535,
                               .rgbrc = {64, 32, 96, 18, 114, 50, 82, 36, 100, 68, 54, 86, 72},
                        },
@@ -1995,8 +1995,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 7,
                                },
                               .init = 2,
-                              .imdAttack = 2,
-                              .imdCategory = 4,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 9318,
                               .rgbrc = {48, 50, 38, 70, 56, 18, 82},
                        },
@@ -2023,8 +2023,8 @@ HULDEF    rghuldef[32] = {{
                                       .chs = 7,
                                },
                               .init = 2,
-                              .imdAttack = 2,
-                              .imdCategory = 4,
+                              .imdAttack = hullAttackHeavy,
+                              .imdCategory = hullCatUtility,
                               .wrcCargo = 9318,
                               .rgbrc = {48, 50, 38, 70, 56, 18, 82},
                        }};
@@ -3464,7 +3464,7 @@ MINES     rgmines[10] = {{
                              .grAbility = 5,
                      }};
 
-HULDEF *LphuldefSBFromId(int16_t id) { return &rghuldefSB[id]; }
+HULDEF *LphuldefSBFromId(isbhull id) { return &rghuldefSB[id]; }
 
 HULDEF *LphuldefFromId(int16_t id) {
     if (id >= 32) {
@@ -3491,8 +3491,8 @@ int16_t FLookupPartX(PART *ppart, uint16_t grhst, uint16_t iItem) {
 }
 
 int16_t FLookupPart(PART *ppart) {
-    int16_t raMajor;
-    HS      hs;
+    RaceAttribute raMajor;
+    HS            hs;
 
     raMajor = GetRaceStat(&rgplr[idPlayer], rsMajorAdv);
     hs = ppart->hs;
@@ -3506,7 +3506,7 @@ int16_t FLookupPart(PART *ppart) {
         ppart->pengine = &rgengine[hs.iItem];
         if (idPlayer == -1)
             break;
-        if (hs.iItem == iengineSettlersDelight && raMajor != 0) {
+        if (hs.iItem == iengineSettlersDelight && raMajor != raCheapCol) {
             return -1;
         }
         if (((hs.iItem >= iengineSubGalacticFuelScoop && hs.iItem <= iengineGalaxyScoop) || hs.iItem == iengineRadiatingHydroRamScoop) &&
@@ -3527,10 +3527,10 @@ int16_t FLookupPart(PART *ppart) {
             return 0;
         }
         ppart->pshield = &rgshield[hs.iItem];
-        if (hs.iItem == ishieldShadowShield && raMajor != 1) {
+        if (hs.iItem == ishieldShadowShield && raMajor != raStealth) {
             return -1;
         }
-        if (hs.iItem == ishieldCrobySharmor && raMajor != 4) {
+        if (hs.iItem == ishieldCrobySharmor && raMajor != raDefend) {
             return -1;
         }
         if (FShouldPartBeHidden(ppart) == 0)
@@ -3543,10 +3543,10 @@ int16_t FLookupPart(PART *ppart) {
         ppart->phul = &rghuldef[hs.iItem].hul;
         if (idPlayer == -1)
             break;
-        if ((hs.iItem == ihuldefMiniColonyShip || hs.iItem == ihuldefMetaMorph) && raMajor != 0) {
+        if ((hs.iItem == ihuldefMiniColonyShip || hs.iItem == ihuldefMetaMorph) && raMajor != raCheapCol) {
             return -1;
         }
-        if ((hs.iItem == ihuldefFuelTransport || hs.iItem == ihuldefSuperFreighter) && raMajor != 4) {
+        if ((hs.iItem == ihuldefFuelTransport || hs.iItem == ihuldefSuperFreighter) && raMajor != raDefend) {
             return -1;
         }
         switch (hs.iItem) {
@@ -3566,16 +3566,16 @@ int16_t FLookupPart(PART *ppart) {
                     return -1;
                 }
             default:
-                if ((hs.iItem == ihuldefDreadnought || hs.iItem == ihuldefBattleCruiser) && raMajor != 2) {
+                if ((hs.iItem == ihuldefDreadnought || hs.iItem == ihuldefBattleCruiser) && raMajor != raAttack) {
                     return -1;
                 }
-                if (hs.iItem == ihuldefRogue && raMajor != 1) {
+                if (hs.iItem == ihuldefRogue && raMajor != raStealth) {
                     return -1;
                 }
-                if (hs.iItem == ihuldefStealthBomber && raMajor != 1) {
+                if (hs.iItem == ihuldefStealthBomber && raMajor != raStealth) {
                     return -1;
                 }
-                if ((hs.iItem == ihuldefMiniMineLayer || hs.iItem == ihuldefSuperMineLayer) && raMajor != 5) {
+                if ((hs.iItem == ihuldefMiniMineLayer || hs.iItem == ihuldefSuperMineLayer) && raMajor != raMines) {
                     return -1;
                 }
                 if (FShouldPartBeHidden(ppart) == 0)
@@ -3584,16 +3584,16 @@ int16_t FLookupPart(PART *ppart) {
             }
         }
     case hstSBHull:
-        if (hs.iItem >= 5) {
+        if (hs.iItem >= isbhullCount) {
             return 0;
         }
         ppart->phul = &rghuldefSB[hs.iItem].hul;
         if (idPlayer == -1)
             break;
-        if ((hs.iItem == 1 || hs.iItem == 3) && GetRaceGrbit(&rgplr[idPlayer], ibitRaceISB) == 0) {
+        if ((hs.iItem == isbhullSpaceDock || hs.iItem == isbhullUltraStation) && GetRaceGrbit(&rgplr[idPlayer], ibitRaceISB) == 0) {
             return -1;
         }
-        if (hs.iItem != 4 || raMajor == 8)
+        if (hs.iItem != isbhullDeathStar || raMajor == raMacintosh)
             break;
         return -1;
     case hstArmor:
@@ -3601,10 +3601,10 @@ int16_t FLookupPart(PART *ppart) {
             return 0;
         }
         ppart->parmor = &rgarmor[hs.iItem];
-        if (hs.iItem == iarmorDepletedNeutronium && raMajor != 1) {
+        if (hs.iItem == iarmorDepletedNeutronium && raMajor != raStealth) {
             return -1;
         }
-        if (hs.iItem == iarmorFieldedKelarium && raMajor != 4) {
+        if (hs.iItem == iarmorFieldedKelarium && raMajor != raDefend) {
             return -1;
         }
         if (FShouldPartBeHidden(ppart) == 0)
@@ -3623,38 +3623,38 @@ int16_t FLookupPart(PART *ppart) {
         if (hs.iItem > ispecialEAntiMatterGenerator)
             break;
         switch (hs.iItem) {
-        case 0:
-        case 3:
-            if (raMajor == 1)
+        case ispecialETransportCloaking:
+        case ispecialEUltraStealthCloak:
+            if (raMajor == raStealth)
                 goto L_609c;
             return -1;
-        case 14:
-            if (raMajor == 5)
+        case ispecialEEnergyDampener:
+            if (raMajor == raMines)
                 goto L_609c;
             return -1;
-        case 16:
-            if (raMajor == 7)
+        case ispecialEAntiMatterGenerator:
+            if (raMajor == raStargate)
                 goto L_609c;
             return -1;
-        case 13:
-            if (raMajor == 0)
+        case ispecialEFluxCapacitor:
+            if (raMajor == raCheapCol)
                 goto L_609c;
             return -1;
-        case 8:
-        case 11:
-        case 15:
-            if (raMajor != 4) {
+        case ispecialEJammer10:
+        case ispecialEJammer50:
+        case ispecialETachyonDetector:
+            if (raMajor != raDefend) {
                 return -1;
             }
-        case 1:
-        case 2:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 9:
-        case 10:
-        case 12:
+        case ispecialEStealthCloak:
+        case ispecialESuperStealthCloak:
+        case ispecialEMultiFunctionPod:
+        case ispecialEBattleComputer:
+        case ispecialEBattleSuperComputer:
+        case ispecialEBattleNexus:
+        case ispecialEJammer20:
+        case ispecialEJammer30:
+        case ispecialEEnergyCapacitor:
             goto L_609c;
         }
     case hstSpecialM:
@@ -3667,10 +3667,10 @@ int16_t FLookupPart(PART *ppart) {
         if (FShouldPartBeHidden(ppart) != 0) {
             return -1;
         }
-        if (hs.iItem == ispecialMColonizationModule && raMajor == 8) {
+        if (hs.iItem == ispecialMColonizationModule && raMajor == raMacintosh) {
             return -1;
         }
-        if (hs.iItem != ispecialMOrbitalConstructionModule || raMajor == 8)
+        if (hs.iItem != ispecialMOrbitalConstructionModule || raMajor == raMacintosh)
             break;
         return -1;
     case hstSpecialSB:
@@ -3681,16 +3681,16 @@ int16_t FLookupPart(PART *ppart) {
         if (idPlayer == -1)
             break;
         if (hs.iItem >= ispecialSBMassDriver5 && hs.iItem <= ispecialSBUltraDriver13) {
-            if (hs.iItem == ispecialSBMassDriver7 || hs.iItem == ispecialSBUltraDriver10 || raMajor == 6)
+            if (hs.iItem == ispecialSBMassDriver7 || hs.iItem == ispecialSBUltraDriver10 || raMajor == raMassAccel)
                 break;
             return -1;
         }
         if (hs.iItem < ispecialSBStargate100250 || hs.iItem > ispecialSBStargateAnyAny)
             break;
-        if (raMajor != 7 && (hs.iItem == ispecialSBStargateAny300 || hs.iItem >= ispecialSBStargate100Any)) {
+        if (raMajor != raStargate && (hs.iItem == ispecialSBStargateAny300 || hs.iItem >= ispecialSBStargate100Any)) {
             return -1;
         }
-        if (raMajor != 0)
+        if (raMajor != raCheapCol)
             break;
         return -1;
     case hstMines:
@@ -3709,14 +3709,14 @@ int16_t FLookupPart(PART *ppart) {
         case iminesHeavyDispenser200:
         case iminesSpeedTrap30:
         case iminesSpeedTrap50:
-            if (raMajor != 5) {
+            if (raMajor != raMines) {
                 return -1;
             }
         default:
-            if (hs.iItem == iminesSpeedTrap20 && raMajor != 5 && raMajor != 4) {
+            if (hs.iItem == iminesSpeedTrap20 && raMajor != raMines && raMajor != raDefend) {
                 return -1;
             }
-            if (hs.iItem != iminesMineDispenser50 || raMajor != 2)
+            if (hs.iItem != iminesMineDispenser50 || raMajor != raAttack)
                 goto L_609c;
             return -1;
         }
@@ -3740,7 +3740,7 @@ int16_t FLookupPart(PART *ppart) {
             if ((hs.iItem == iminingRoboMidgetMiner || hs.iItem == iminingRoboUltraMiner) && GetRaceGrbit(&rgplr[idPlayer], ibitRaceARM) == 0) {
                 return -1;
             }
-            if (hs.iItem == iminingOrbitalAdjuster && raMajor != 3) {
+            if (hs.iItem == iminingOrbitalAdjuster && raMajor != raTerra) {
                 return -1;
             }
             if (FShouldPartBeHidden(ppart) == 0)
@@ -3766,7 +3766,7 @@ int16_t FLookupPart(PART *ppart) {
             case iscannerChameleonScanner:
             case iscannerPickPocketScanner:
             case iscannerRobberBaronScanner:
-                if (raMajor != 1) {
+                if (raMajor != raStealth) {
                     return -1;
                 }
             default:
@@ -3778,10 +3778,10 @@ int16_t FLookupPart(PART *ppart) {
             return 0;
         }
         ppart->pbeam = &rgbeam[hs.iItem];
-        if (hs.iItem == ibeamMiniGun && raMajor != 4) {
+        if (hs.iItem == ibeamMiniGun && raMajor != raDefend) {
             return -1;
         }
-        if ((hs.iItem == ibeamBlunderbuss || hs.iItem == ibeamGatlingNeutrinoCannon) && raMajor != 2) {
+        if ((hs.iItem == ibeamBlunderbuss || hs.iItem == ibeamGatlingNeutrinoCannon) && raMajor != raAttack) {
             return -1;
         }
         if (FShouldPartBeHidden(ppart) == 0)
@@ -3802,10 +3802,10 @@ int16_t FLookupPart(PART *ppart) {
         ppart->pbomb = &rgbomb[hs.iItem];
         if (idPlayer == -1)
             break;
-        if (hs.iItem >= ibombSmartBomb && hs.iItem <= ibombAnnihilatorBomb && raMajor == 4) {
+        if (hs.iItem >= ibombSmartBomb && hs.iItem <= ibombAnnihilatorBomb && raMajor == raDefend) {
             return -1;
         }
-        if (hs.iItem == ibombRetroBomb && raMajor != 3) {
+        if (hs.iItem == ibombRetroBomb && raMajor != raTerra) {
             return -1;
         }
         if (FShouldPartBeHidden(ppart) == 0)
@@ -3822,13 +3822,13 @@ int16_t FLookupPart(PART *ppart) {
             GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) != 0) {
             return -1;
         }
-        if (hs.iItem >= iplanetaryViewer50 && hs.iItem <= iplanetarySnooper620X && raMajor == 8) {
+        if (hs.iItem >= iplanetaryViewer50 && hs.iItem <= iplanetarySnooper620X && raMajor == raMacintosh) {
             return -1;
         }
-        if (hs.iItem >= iplanetarySDI && hs.iItem <= iplanetaryNeutronShield && raMajor == 8) {
+        if (hs.iItem >= iplanetarySDI && hs.iItem <= iplanetaryNeutronShield && raMajor == raMacintosh) {
             return -1;
         }
-        if (hs.iItem >= iplanetaryLaserBattery && hs.iItem <= iplanetaryNeutronShield && raMajor == 2) {
+        if (hs.iItem >= iplanetaryLaserBattery && hs.iItem <= iplanetaryNeutronShield && raMajor == raAttack) {
             return -1;
         }
         if (FShouldPartBeHidden(ppart) == 0)

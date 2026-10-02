@@ -80,6 +80,6 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     }
 FinishUp:
     UpdateXferBtns();
-    DrawXferDlg(hwnd, NULL, &rc, -2);
+    DrawXferDlg(hwnd, NULL, &rc, SupplyButtonsOnly);
     return 1;
 }

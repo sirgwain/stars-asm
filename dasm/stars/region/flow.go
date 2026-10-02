@@ -99,13 +99,27 @@ func (c *flowChecker) index(nodes []Node, ctx flowCtx) {
 				}
 				c.starts[n.Latch] = func(out map[string]bool) { out[n.Header] = true }
 			}
-			c.index(n.Body, c.loopCtx(n, nodes, i, ctx))
+			c.index(latchlessBody(n), c.loopCtx(n, nodes, i, ctx))
 		case *Switch:
 			for j, cs := range n.Cases {
 				c.index(cs.Body, c.caseCtx(n, j, nodes, i, ctx))
 			}
 		}
 	}
+}
+
+// latchlessBody returns loop n's body without the latch label kept at its end
+// for gotos from nested loops. Falling off the shortened body enters the
+// latch, just as reaching the label did.
+func latchlessBody(n *Loop) []Node {
+	last := len(n.Body) - 1
+	if n.Latch == "" || last < 0 {
+		return n.Body
+	}
+	if l, ok := n.Body[last].(*Label); ok && l.Name == n.Latch {
+		return n.Body[:last]
+	}
+	return n.Body
 }
 
 // run adds to out the labels control reaches from nodes[i] onward, stopping

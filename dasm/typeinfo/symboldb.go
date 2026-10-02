@@ -16,9 +16,12 @@ type SymbolDB struct {
 	Sources     []SourceRange
 	Messages    []*MessageRule
 
-	WindowClasses   []*WindowClass
-	WindowRules     []*WindowRule
-	SentMessages    []*SentMessage
+	WindowClasses []*WindowClass
+	WindowRules   []*WindowRule
+	SentMessages  []*SentMessage
+	// DialogControls maps a dialog template resource id to the enum naming
+	// its own controls.
+	DialogControls  map[int]*Enum
 	MessageHandlers []*MessageHandler
 
 	EnumRules          []*EnumUseRule

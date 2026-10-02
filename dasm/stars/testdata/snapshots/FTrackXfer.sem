@@ -214,6 +214,6 @@ L_5f6d:
 
 FinishUp:
     call UpdateXferBtns() -> callresult(void)
-    call DrawXferDlg(hwnd, NULL, &rc, -2) -> callresult(void)
+    call DrawXferDlg(hwnd, NULL, &rc, SupplyButtonsOnly) -> callresult(void)
     return 1
 

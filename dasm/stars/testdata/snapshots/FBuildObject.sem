@@ -25,9 +25,9 @@ FBuildObject  (turn2)
       int16_t[3]       rgwt           [BP-0x2c]
       int16_t          cSize          [BP-0x26]
       int16_t          iWarpAsked     [BP-0x24]
-      int16_t          raMajor        [BP-0x22]
+      RaceAttribute    raMajor        [BP-0x22]
       THING *          lpth           [BP-0x20]
-      int16_t          iDecayRate     [BP-0x1c]
+      PacketDecay      iDecayRate     [BP-0x1c]
       int16_t          iWarp          [BP-0x1a]
       THING *          lpthMac        [BP-0x18]
       block 0018:2785  len=0x4B
@@ -129,7 +129,7 @@ L_1cd6:
     branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0 ? L_1d1d : L_1cf3
 
 L_1cf3:
-    call FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, (iItem + 1), 0) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmStarbaseFailedBuildNewShipTypeBecause, lppl->id, (iItem + 1), 0) -> callresult(int16_t)
     return 0
 
 L_1d1d:
@@ -204,11 +204,11 @@ L_20c5:
 
 L_20de:
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
-    call FSendPlrMsg(lppl->iPlayer, 313, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewSDueLack27b, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
     return 1
 
 L_214f:
-    call FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewShipSTypeLost, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
     return 0
 
 L_219c:
@@ -244,11 +244,11 @@ L_2321:
     branch cBuilt != 1 ? L_2379 : L_233e
 
 L_233e:
-    call FSendPlrMsg2(lppl->iPlayer, 47, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 5) | iItem)) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmStarbaseHasBuiltNew, (lpfl->id | 0x8000), lppl->id, ((lppl->iPlayer << 5) | iItem)) -> callresult(int16_t)
     goto L_2fc9
 
 L_2379:
-    call FSendPlrMsg(lppl->iPlayer, 48, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmStarbaseHasBuiltNewShips, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
 
 L_23c4:
     goto L_2fc9
@@ -332,34 +332,34 @@ L_2681:
     branch iWarp != 0 ? L_26e7 : L_26be
 
 L_26be:
-    call FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecausePlanet, lppl->id, lppl->id, 0) -> callresult(int16_t)
     return 0
 
 L_26e7:
     branch lppl->idFling != 0 ? L_2722 : L_26f9
 
 L_26f9:
-    call FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecauseDidnt, lppl->id, lppl->id, 0) -> callresult(int16_t)
     return 0
 
 L_2722:
-    branch iItem != 6 ? L_2730 : L_272b
+    branch iItem != iobjPacket ? L_2730 : L_272b
 
 L_272b:
-    iItem = 17
+    iItem = iobjPacketMixed
 
 L_2730:
-    branch iItem != 17 ? L_2751 : L_2739
+    branch iItem != iobjPacketMixed ? L_2751 : L_2739
 
 L_2739:
-    cSize = (raMajor == 6 ? 25 : 40)
+    cSize = (raMajor == raMassAccel ? 25 : 40)
     goto L_2766
 
 
 
 
 L_2751:
-    cSize = (raMajor == 6 ? 70 : 100)
+    cSize = (raMajor == raMassAccel ? 70 : 100)
 
 
 
@@ -372,7 +372,7 @@ L_276e:
     branch i == (iItem - 14) ? L_2785 : L_277c
 
 L_277c:
-    branch iItem != 17 ? L_27d3 : L_2785
+    branch iItem != iobjPacketMixed ? L_27d3 : L_2785
 
 L_2785:
     l = (uint32_t)(sext16to32(cSize) * sext16to32(cBuilt))
@@ -410,17 +410,17 @@ L_2823:
     branch iWarpAsked > (iWarp + fTwoMAs) ? L_2839 : L_2831
 
 L_2831:
-    iDecayRate = 0
+    iDecayRate = decayNone
     goto L_2845
 
 L_2839:
     iDecayRate = ((iWarpAsked - iWarp) - fTwoMAs)
 
 L_2845:
-    branch raMajor != 7 ? L_285b : L_284e
+    branch raMajor != raStargate ? L_285b : L_284e
 
 L_284e:
-    branch iDecayRate >= 3 ? L_285b : L_2857
+    branch (int16_t)iDecayRate >= decay50Pct ? L_285b : L_2857
 
 L_2857:
     iDecayRate = (iDecayRate + 1)
@@ -485,7 +485,7 @@ L_2a3f:
     branch i < 3 ? L_299a : L_2a48
 
 L_2a48:
-    call FSendPlrMsg2(lppl->iPlayer, 212, lppl->id, lppl->id, (lppl->idFling - 1)) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasCombined, lppl->id, lppl->id, (lppl->idFling - 1)) -> callresult(int16_t)
     goto L_2fc9
 
 L_2a78:
@@ -494,7 +494,7 @@ L_2a78:
 
 
 L_2aa3:
-    call FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmHasOrdersBuildMineralPacketEitherDoesnt, lppl->id, lppl->id, 0) -> callresult(int16_t)
     goto L_2fc9
 
 L_2ac9:
@@ -514,7 +514,7 @@ L_2b3e:
     lpth->thp.iDecayRate = iDecayRate
     lpth->thp.idPlanet = (lppl->idFling - 1)
     lpth->pt = rgptPlan[lppl->id]
-    call FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, (lppl->idFling - 1)) -> callresult(int16_t)
+    call FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasDestination, lppl->id, lppl->id, (lppl->idFling - 1)) -> callresult(int16_t)
     goto L_2fc9
 
 L_2c05:
@@ -528,7 +528,7 @@ L_2c11:
     branch i >= game.cPlayer ? L_2c3e : L_2c1c
 
 L_2c1c:
-    call FSendPlrMsg2(i, 283, lppl->id, lppl->id, 0) -> callresult(int16_t)
+    call FSendPlrMsg2(i, idmStrongFundamentalForcesHaveRebirthed, lppl->id, lppl->id, 0) -> callresult(int16_t)
     goto L_2c0d
 
 L_2c3e:
@@ -593,7 +593,7 @@ L_2e50:
 
 L_2e53:
     lppl->rgEnvVar[iEnv] = lobyte(cAllowed)
-    call FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, (i <= 0 ? 0 : 1), iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, (i <= 0 ? 0 : 1), iEnv, ((iEnv * 256) + cAllowed), 0, 0, 0) -> callresult(int16_t)
 
 
 
@@ -608,12 +608,12 @@ L_2ec1:
     iItem = (part.hs.iItem + 18)
 
 L_2ee9:
-    call FSendPlrMsg(lppl->iPlayer, 124, lppl->id, lppl->id, -32768, (iItem - 18), 0, 0, 0, 0) -> callresult(int16_t)
+    call FSendPlrMsg(lppl->iPlayer, idmHasBuiltNewPlanetaryScanner, lppl->id, lppl->id, -32768, (iItem - 18), 0, 0, 0, 0) -> callresult(int16_t)
     lppl->iScanner = (iItem - 18)
     goto L_2fc9
 
 L_2f77:
-    branch (uint16_t)iItem > 27 ? L_23d6 : L_2f7f
+    branch (uint16_t)iItem > iobjPlanetaryScanner ? L_23d6 : L_2f7f
 
 L_2f7f:
     tablejump (iItem * 2) [0x0: L_2505, 0x2: L_23dc, 0x4: L_25c4, 0x6: L_2fc9, 0x8: L_2da8, 0xa: L_2da8, 0xc: L_2681, 0xe: L_23dc, 0x10: L_2505, 0x12: L_25c4, 0x14: L_2fc9, 0x16: L_2fc9, 0x18: L_2da8, 0x1a: L_2c05, 0x1c: L_2681, 0x1e: L_2681, 0x20: L_2681, 0x22: L_2681, 0x24: L_2ee9, 0x26: L_2ee9, 0x28: L_2ee9, 0x2a: L_2ee9, 0x2c: L_2ee9, 0x2e: L_2ee9, 0x30: L_2ee9, 0x32: L_2ee9, 0x34: L_2ee9, 0x36: L_2ec1]

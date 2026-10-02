@@ -1,4 +1,4 @@
-.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile resources newgame
+.PHONY: help test build tidy fmt clean coverage-report compile-analysis compile-check compile resources newgame tutorial tutorial-reject
 
 DIST_DIR    := dist
 CLI_BIN     := $(DIST_DIR)/stars-asm

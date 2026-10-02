@@ -304,19 +304,19 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
         switch ((int16_t)(int8_t)szWork[0]) {
         default:
             goto NoRc;
-        case 77:
-        case 82:
-        case 73:
+        case 'M':
+        case 'R':
+        case 'I':
             pch = &szWork[1];
             for (i = 0; i < 4; i++) {
                 rg[i] = 0;
                 fNeg = 0;
                 j = 0;
                 while (j < 4) {
-                    if ((int16_t)(int8_t)*pch == 45) {
+                    if ((int16_t)(int8_t)*pch == '-') {
                         fNeg = 1;
                     } else {
-                        if ((int16_t)(int8_t)*pch < 48 || (int16_t)(int8_t)*pch > 57)
+                        if ((int16_t)(int8_t)*pch < '0' || (int16_t)(int8_t)*pch > '9')
                             goto NoRc;
                         rg[i] = 10 * rg[i] + ((int16_t)(int8_t)*pch - 48);
                     }
@@ -331,8 +331,8 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
             rc.top = rg[1];
             rc.right = rg[2];
             rc.bottom = rg[3];
-            fMaximized = (int16_t)(int8_t)szWork[0] == 77 ? 1 : 0;
-            fMinimized = (int16_t)(int8_t)szWork[0] == 73 ? 1 : 0;
+            fMaximized = (int16_t)(int8_t)szWork[0] == 'M' ? 1 : 0;
+            fMinimized = (int16_t)(int8_t)szWork[0] == 'I' ? 1 : 0;
             fInitalized = 1;
         }
         goto L_11ec;
@@ -365,13 +365,6 @@ void ReadIniSettings() {
     char     szSection[16];
     int16_t  cch;
     int16_t  cpq;
-    int16_t  t_merge_1498_0001;
-    int16_t  t_merge_1500_0001;
-    int16_t  t_merge_1568_0001;
-    int16_t  t_merge_15d0_0001;
-    int16_t  t_merge_1638_0001;
-    int16_t  t_merge_16a0_0001;
-    int16_t  t_merge_1708_0001;
     uint16_t t_scratch_m4a_8;
     uint16_t t_scratch_m4c;
 
@@ -416,32 +409,27 @@ void ReadIniSettings() {
     }
     CchGetString(idsLayout, szEntry);
     iWindowLayout = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    t_merge_1498_0001 = 2 < (0 <= iWindowLayout ? iWindowLayout : 0) ? 2 : 0 > iWindowLayout ? 0 : iWindowLayout;
-    iWindowLayout = t_merge_1498_0001;
+    iWindowLayout = 2 < (layoutLarge <= (int16_t)iWindowLayout ? iWindowLayout : 0) ? layoutSmall
+                    : layoutLarge > (int16_t)iWindowLayout                          ? layoutLarge
+                                                                                    : iWindowLayout;
     CchGetString(idsStyle1width, szEntry);
     vfs.dxPlanWant = GetPrivateProfileInt(szSection, szEntry, 396, szIniFile);
-    t_merge_1500_0001 = (vfs.dxPlanWant <= 10 ? 10 : vfs.dxPlanWant) >= 2000 ? 2000 : vfs.dxPlanWant > 10 ? vfs.dxPlanWant : 10;
-    vfs.dxPlanWant = t_merge_1500_0001;
+    vfs.dxPlanWant = (vfs.dxPlanWant <= 10 ? 10 : vfs.dxPlanWant) >= 2000 ? 2000 : vfs.dxPlanWant > 10 ? vfs.dxPlanWant : 10;
     CchGetString(idsStyle1height, szEntry);
     vfs.dyMsgWant = GetPrivateProfileInt(szSection, szEntry, 110, szIniFile);
-    t_merge_1568_0001 = (vfs.dyMsgWant <= 10 ? 10 : vfs.dyMsgWant) >= 2000 ? 2000 : vfs.dyMsgWant > 10 ? vfs.dyMsgWant : 10;
-    vfs.dyMsgWant = t_merge_1568_0001;
+    vfs.dyMsgWant = (vfs.dyMsgWant <= 10 ? 10 : vfs.dyMsgWant) >= 2000 ? 2000 : vfs.dyMsgWant > 10 ? vfs.dyMsgWant : 10;
     CchGetString(idsStyle1height2, szEntry);
     vfs.dyMinWant = GetPrivateProfileInt(szSection, szEntry, 192, szIniFile);
-    t_merge_15d0_0001 = (vfs.dyMinWant <= 10 ? 10 : vfs.dyMinWant) >= 2000 ? 2000 : vfs.dyMinWant > 10 ? vfs.dyMinWant : 10;
-    vfs.dyMinWant = t_merge_15d0_0001;
+    vfs.dyMinWant = (vfs.dyMinWant <= 10 ? 10 : vfs.dyMinWant) >= 2000 ? 2000 : vfs.dyMinWant > 10 ? vfs.dyMinWant : 10;
     CchGetString(idsStyle2width, szEntry);
     vfs.dx2PlanWant = GetPrivateProfileInt(szSection, szEntry, 396, szIniFile);
-    t_merge_1638_0001 = (vfs.dx2PlanWant <= 10 ? 10 : vfs.dx2PlanWant) >= 2000 ? 2000 : vfs.dx2PlanWant > 10 ? vfs.dx2PlanWant : 10;
-    vfs.dx2PlanWant = t_merge_1638_0001;
+    vfs.dx2PlanWant = (vfs.dx2PlanWant <= 10 ? 10 : vfs.dx2PlanWant) >= 2000 ? 2000 : vfs.dx2PlanWant > 10 ? vfs.dx2PlanWant : 10;
     CchGetString(idsStyle2height, szEntry);
     vfs.dy2MsgWant = GetPrivateProfileInt(szSection, szEntry, 110, szIniFile);
-    t_merge_16a0_0001 = (vfs.dy2MsgWant <= 10 ? 10 : vfs.dy2MsgWant) >= 2000 ? 2000 : vfs.dy2MsgWant > 10 ? vfs.dy2MsgWant : 10;
-    vfs.dy2MsgWant = t_merge_16a0_0001;
+    vfs.dy2MsgWant = (vfs.dy2MsgWant <= 10 ? 10 : vfs.dy2MsgWant) >= 2000 ? 2000 : vfs.dy2MsgWant > 10 ? vfs.dy2MsgWant : 10;
     CchGetString(idsStyle2height2, szEntry);
     vfs.dy2MinWant = GetPrivateProfileInt(szSection, szEntry, 192, szIniFile);
-    t_merge_1708_0001 = (vfs.dy2MinWant <= 10 ? 10 : vfs.dy2MinWant) >= 2000 ? 2000 : vfs.dy2MinWant > 10 ? vfs.dy2MinWant : 10;
-    vfs.dy2MinWant = t_merge_1708_0001;
+    vfs.dy2MinWant = (vfs.dy2MinWant <= 10 ? 10 : vfs.dy2MinWant) >= 2000 ? 2000 : vfs.dy2MinWant > 10 ? vfs.dy2MinWant : 10;
     CchGetString(idsToolbar, szEntry);
     i = GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
     gd.fToolbar = i == 0 ? 0 : 1;
@@ -464,20 +452,20 @@ void ReadIniSettings() {
         ini.grobjSel = 0;
     } else {
         switch ((int16_t)(int8_t)szWork[0]) {
-        case 78:
+        case 'N':
         default:
             ini.grobjSel = 0;
             break;
-        case 80:
+        case 'P':
             ini.grobjSel = 1;
             break;
-        case 83:
+        case 'S':
             ini.grobjSel = 2;
             break;
-        case 69:
+        case 'E':
             ini.grobjSel = 4;
         }
-        if ((int16_t)(int8_t)szWork[1] >= 66 && (int16_t)(int8_t)szWork[1] <= 81) {
+        if ((int16_t)(int8_t)szWork[1] >= 'B' && (int16_t)(int8_t)szWork[1] <= 'Q') {
             ini.idPlayer = (int16_t)(int8_t)szWork[1] - 66;
         } else {
             ini.grobjSel = 0;
@@ -494,9 +482,9 @@ void ReadIniSettings() {
     ini.lid = 0;
     for (i = 0; i < cch; i++) {
         ini.lid = (int32_t)(ini.lid * 16);
-        if ((int16_t)(int8_t)szWork[i] >= 48 && (int16_t)(int8_t)szWork[i] <= 57) {
+        if ((int16_t)(int8_t)szWork[i] >= '0' && (int16_t)(int8_t)szWork[i] <= '9') {
             ini.lid += (int16_t)((int16_t)(int8_t)szWork[i] - 48);
-        } else if ((int16_t)(int8_t)szWork[i] >= 97 && (int16_t)(int8_t)szWork[i] <= 102) {
+        } else if ((int16_t)(int8_t)szWork[i] >= 'a' && (int16_t)(int8_t)szWork[i] <= 'f') {
             ini.lid += (int16_t)((int16_t)(int8_t)szWork[i] - 87);
         }
     }
@@ -656,7 +644,7 @@ void ReadIniSettings() {
         if (cch >= 20 && cch <= 32) {
             psz = szWork;
             iPass = 0;
-            for (; iPass < 20 && (int16_t)(int8_t)*psz >= 97 && (int16_t)(int8_t)*psz <= 112; psz++) {
+            for (; iPass < 20 && (int16_t)(int8_t)*psz >= 'a' && (int16_t)(int8_t)*psz <= 'p'; psz++) {
                 iPass++;
             }
             if (iPass >= 20) {
@@ -692,13 +680,13 @@ void ReadIniSettings() {
             cpq = (int16_t)(int8_t)psz[1] - 97;
             if (cpq >= 0 && cpq <= 12) {
                 iPass = 0;
-                for (; iPass < cpq * 4 + 2 && (int16_t)(int8_t)*psz >= 97 && (int16_t)(int8_t)*psz <= 112; psz++) {
+                for (; iPass < cpq * 4 + 2 && (int16_t)(int8_t)*psz >= 'a' && (int16_t)(int8_t)*psz <= 'p'; psz++) {
                     iPass++;
                 }
                 if (iPass >= cpq * 4 + 2 && strlen(psz) <= 12) {
                     strcpy(vrgZipProd[i].szName, psz);
                     psz = szWork;
-                    vrgZipProd[i].fNoResearch = LOBYTE((int16_t)(int8_t)*psz == 97 ? 0 : 1);
+                    vrgZipProd[i].fNoResearch = LOBYTE((int16_t)(int8_t)*psz == 'a' ? 0 : 1);
                     vrgZipProd[i].fValid = 1;
                     vrgZipProd[i].cpq = LOBYTE(cpq);
                     psz += 2;
@@ -714,8 +702,8 @@ void ReadIniSettings() {
                         if (vrgZipProd[i].rgpq[iPass].cQuan > 1020) {
                             vrgZipProd[i].rgpq[iPass].cQuan = 1;
                         }
-                        if (vrgZipProd[i].rgpq[iPass].mdIdle >= 7) {
-                            vrgZipProd[i].rgpq[iPass].mdIdle = 0;
+                        if (vrgZipProd[i].rgpq[iPass].mdIdle >= mdIdleFactory) {
+                            vrgZipProd[i].rgpq[iPass].mdIdle = iobjMine;
                         }
                     }
                 }
@@ -738,7 +726,7 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile) {
     iCol = 0;
     iTile = 0;
     for (; (int16_t)(int8_t)*pszFormat != 0; pszFormat++) {
-        if ((int16_t)(int8_t)*pszFormat == 42) {
+        if ((int16_t)(int8_t)*pszFormat == '*') {
             if (iCol < 1) {
                 iCol++;
             }

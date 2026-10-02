@@ -78,7 +78,7 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 uint32_t         GetDiskSerialNumber();
 void             ShowProgressGauge();
 void             HideProgressGauge();
-void             UpdateProgressGauge(int16_t pctX10);
+void             UpdateProgressGauge(ProgressStep pctX10);
 INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 void             DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly);
 int32_t          LDistance2(POINT16 pt1, POINT16 pt2);

@@ -57,7 +57,7 @@ void AddMinesToBlockedQueues() {
                     }
                     InitProduction(rgprod);
                     if (cBuild > 0) {
-                        AddItemToQueue(8, LOWORD(cBuild), grobjPlanet, 0);
+                        AddItemToQueue(mdIdleMine, LOWORD(cBuild), grobjPlanet, addItemFront);
                         FinishProduction(1);
                         PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL);
                         if (etaBetterMines == -1) {
@@ -67,7 +67,7 @@ void AddMinesToBlockedQueues() {
                         sel.pl.lpplprod->rgprod[0].iItem = iobjAlchemy;
                     } else {
                         etaBetterMines = 700;
-                        AddItemToQueue(3, 1, grobjPlanet, 0);
+                        AddItemToQueue(iobjAlchemy, 1, grobjPlanet, addItemFront);
                         FinishProduction(1);
                     }
                     PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, NULL);

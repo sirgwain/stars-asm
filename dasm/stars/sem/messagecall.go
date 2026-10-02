@@ -116,3 +116,35 @@ func (ctx *FuncContext) messageCallArgumentType(fn *typeinfo.Function, args []ma
 	}
 	return nil
 }
+
+// messageCallArgumentChar reports whether the wParam or lParam of a call
+// sending a constant message is a character code, such as WM_CHAR's wParam.
+func (ctx *FuncContext) messageCallArgumentChar(fn *typeinfo.Function, args []machine.Value, argIndex int) bool {
+	call, ok := ctx.messageCallInfo(fn, args)
+	if !ok {
+		return false
+	}
+	message := ctx.sdb.GetMessage(call.enum, call.value)
+	if message == nil {
+		return false
+	}
+	switch argIndex {
+	case call.index + 1:
+		return message.WParam != nil && message.WParam.Whole.Char
+	case call.index + 2:
+		return message.LParam != nil && message.LParam.Whole.Char
+	}
+	return false
+}
+
+// markCharLiteral returns a character-code constant marked to print as a
+// character literal, or expr unchanged.
+func markCharLiteral(expr Expr) Expr {
+	c, ok := expr.(*Const)
+	if !ok || c.Fixup != nil || !IsCharLiteralValue(c.U64) || c.Char {
+		return expr
+	}
+	next := *c
+	next.Char = true
+	return &next
+}

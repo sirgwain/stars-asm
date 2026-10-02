@@ -116,13 +116,22 @@ func resolveConstTypesExpr(expr Expr, expected typeinfo.Type, bitwise bool) (Exp
 		next.Target = target
 		return &next, true
 	case *Const:
+		// A constant resolve-enums named by context, such as a report column
+		// compared with a plain int16_t column index, keeps its enum.
+		if _, named := e.TypeInfo.(*typeinfo.Enum); named {
+			if _, wantEnum := expected.(*typeinfo.Enum); !wantEnum {
+				return expr, false
+			}
+		}
 		if !bitwise && expected == nil {
 			expected = quantityConstType(e)
 		}
 		if bitwise || expected == nil || keepsConstantFamily(e.TypeInfo, expected) {
 			return expr, false
 		}
-		char := isCharLiteralConst(e, expected)
+		// a constant already marked as a character, such as one sent as
+		// WM_CHAR's wParam, stays one
+		char := e.Char || isCharLiteralConst(e, expected)
 		if sameConstType(e.TypeInfo, expected) && e.Char == char {
 			return expr, false
 		}
@@ -256,11 +265,10 @@ func quantityConstType(c *Const) typeinfo.Type {
 }
 
 // isCharLiteralConst reports whether c, typed as expected, reads as a
-// printable character, as in *lpT == 'F'.
+// character literal, as in *lpT == 'F'.
 func isCharLiteralConst(c *Const, expected typeinfo.Type) bool {
 	prim, ok := expected.(*typeinfo.Primitive)
-	return ok && prim.TypeKind == typeinfo.KInt && prim.Name == "char" && c.Fixup == nil &&
-		c.U64 >= ' ' && c.U64 <= '~'
+	return ok && prim.TypeKind == typeinfo.KInt && prim.Name == "char" && c.Fixup == nil && IsCharLiteralValue(c.U64)
 }
 
 // arrayIndexConstType returns the source integer type for literal indexes.
@@ -404,7 +412,7 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 	equality := compare.Op == CompareEQ || compare.Op == CompareNE
 	lhsBitwise, rhsBitwise := false, false
 	if c, ok := compare.LHS.(*Const); ok {
-		if typ := semanticPeerType(compare.RHS); typ != nil {
+		if typ := comparePeerType(compare.RHS, c); typ != nil {
 			lhsExpected = compareConstType(compare.Op, typ, c)
 		} else {
 			lhsBitwise = equality && containsBitwiseExpr(compare.RHS)
@@ -412,7 +420,7 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 	}
 
 	if c, ok := compare.RHS.(*Const); ok {
-		if typ := semanticPeerType(compare.LHS); typ != nil {
+		if typ := comparePeerType(compare.LHS, c); typ != nil {
 			rhsExpected = compareConstType(compare.Op, typ, c)
 		} else {
 			rhsBitwise = equality && containsBitwiseExpr(compare.LHS)
@@ -439,6 +447,41 @@ func resolveConstTypesCompare(compare *Compare, expected typeinfo.Type) (Expr, b
 	}
 
 	return &next, true
+}
+
+// comparePeerType returns the type a constant compared with expr takes: char
+// when expr is a char promoted to int, such as (int16_t)(int8_t)*psz, and c is
+// a printable character, so the comparison reads as one with a character
+// literal; otherwise expr's semantic type.
+func comparePeerType(expr Expr, c *Const) typeinfo.Type {
+	if char, ok := promotedChar(expr); ok && isCharLiteralConst(c, char) {
+		return char
+	}
+	return semanticPeerType(expr)
+}
+
+// promotedChar returns the char type of expr when it is a char value widened
+// by casts or 8-bit sign extensions.
+func promotedChar(expr Expr) (typeinfo.Type, bool) {
+	for {
+		switch e := expr.(type) {
+		case *Cast:
+			expr = e.Value
+		case *SignExtend:
+			if e.FromBits != 8 {
+				return nil, false
+			}
+			expr = e.Parent
+		case nil:
+			return nil, false
+		default:
+			prim, ok := expr.ExprType().(*typeinfo.Primitive)
+			if !ok || prim.TypeKind != typeinfo.KInt || prim.Name != "char" {
+				return nil, false
+			}
+			return prim, true
+		}
+	}
 }
 
 // compareDomainType returns typ with the signedness of a relational

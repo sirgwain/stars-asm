@@ -114,26 +114,26 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         iNew = iCur;
         if (GET_WM_VSCROLL_CODE(wParam, lParam) <= SB_BOTTOM) {
             switch (GET_WM_VSCROLL_CODE(wParam, lParam)) {
-            case 7:
+            case SB_BOTTOM:
                 iNew = 2000;
                 break;
-            case 1:
+            case SB_LINEDOWN:
                 iNew++;
                 break;
-            case 0:
+            case SB_LINEUP:
                 iNew--;
                 break;
-            case 3:
+            case SB_PAGEDOWN:
                 iNew += vprptCur->cRowsVis - 1;
                 break;
-            case 2:
+            case SB_PAGEUP:
                 iNew -= vprptCur->cRowsVis - 1;
                 break;
-            case 4:
-            case 5:
+            case SB_THUMBPOSITION:
+            case SB_THUMBTRACK:
                 iNew = GET_WM_VSCROLL_POS(wParam, lParam);
                 break;
-            case 6:
+            case SB_TOP:
                 iNew = 0;
             }
         }
@@ -160,26 +160,26 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         iNew = iCur;
         if (GET_WM_HSCROLL_CODE(wParam, lParam) <= SB_BOTTOM) {
             switch (GET_WM_HSCROLL_CODE(wParam, lParam)) {
-            case 7:
+            case SB_BOTTOM:
                 iNew = 2000;
                 break;
-            case 1:
+            case SB_LINEDOWN:
                 iNew++;
                 break;
-            case 0:
+            case SB_LINEUP:
                 iNew--;
                 break;
-            case 3:
+            case SB_PAGEDOWN:
                 iNew += 3;
                 break;
-            case 2:
+            case SB_PAGEUP:
                 iNew -= 3;
                 break;
-            case 4:
-            case 5:
+            case SB_THUMBPOSITION:
+            case SB_THUMBTRACK:
                 iNew = GET_WM_HSCROLL_POS(wParam, lParam);
                 break;
-            case 6:
+            case SB_TOP:
                 iNew = 0;
             }
         }
@@ -216,19 +216,19 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         vprptCur->ptSize.y = rc.bottom - rc.top;
         hwndReportDlg = 0;
         fBrowserValid = 0;
-        hmenu = GetASubMenu(hwndFrame, 4);
+        hmenu = GetASubMenu(hwndFrame, menuReport);
         switch (vprptCur->irpt) {
-        case 1:
-            idm = 0x8ff;
+        case rptFleets:
+            idm = 2303;
             break;
-        case 2:
-            idm = 0x900;
+        case rptEnemyFleets:
+            idm = 2304;
             break;
-        case 0:
-            idm = 0x8fd;
+        case rptPlanets:
+            idm = 2301;
             break;
-        case 3:
-            idm = 0x901;
+        case rptBattles:
+            idm = 2305;
         }
         CheckMenuItem(hmenu, idm, MF_UNCHECKED);
         vprptCur = 0;

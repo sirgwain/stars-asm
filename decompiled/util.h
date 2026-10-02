@@ -66,7 +66,7 @@ void     DecorateHullName(int16_t iplr, int16_t ish, char *psz);
 void     DrawABunchOfStars(HDC hdc, RECT *prc);
 int32_t  LongFromSerialCh(char ch);
 int16_t  FValidSerialNo(char *psz, int32_t *plSerial);
-int16_t  FMatchTarget(FLEET *lpflTarget, int16_t mdTarget, int16_t fExact);
+int16_t  FMatchTarget(FLEET *lpflTarget, MdTarget mdTarget, int16_t fExact);
 void     ValidateWaypoints();
 int32_t  ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate);
 int16_t  FCanFleetUseStargates(FLEET *lpfl, POINT16 ptSrc, POINT16 ptDst);

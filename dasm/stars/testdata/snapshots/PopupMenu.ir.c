@@ -113,7 +113,7 @@ L_1545:
     t_1545 = psz;
     psz++;
     *pszT++ = *t_1545;
-    if ((int16_t)(int8_t)*t_1545 != 38)
+    if ((int16_t)(int8_t)*t_1545 != '&')
         goto L_1536;
     else
         goto L_1564;
@@ -194,7 +194,7 @@ L_16d0:
     t_16d0 = psz;
     psz++;
     *pszT++ = *t_16d0;
-    if ((int16_t)(int8_t)*t_16d0 != 38)
+    if ((int16_t)(int8_t)*t_16d0 != '&')
         goto L_16c1;
     else
         goto L_16ef;
@@ -252,7 +252,7 @@ L_17e3:
     t_17e3 = psz;
     psz++;
     *pszT++ = *t_17e3;
-    if ((int16_t)(int8_t)*t_17e3 != 38)
+    if ((int16_t)(int8_t)*t_17e3 != '&')
         goto L_17d4;
     else
         goto L_1802;

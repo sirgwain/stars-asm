@@ -25,7 +25,7 @@ func TestConvertValueResolvesSymbolsInsideComplexExpression(t *testing.T) {
 			{Name: "depth", Type: typeinfo.I16, BPOffset: -0x3c},
 		},
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	ctx.currentInstOff = 0x110
 	ds := machine.RegVal(asm.RegDS)
 	globalLoad := func(offset int) machine.Value {
@@ -103,7 +103,7 @@ func TestLowerMachineResolvesNearPointerMemory(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -160,7 +160,7 @@ func TestLowerMachineResolvesIndexedNearBytePointerArray(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -221,7 +221,7 @@ func TestLowerMachineResolvesIndexedNearPointerByteArrayFields(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}
@@ -245,7 +245,7 @@ func TestLowerMachineResolvesConfiguredUnionArrayField(t *testing.T) {
 	if fn == nil {
 		t.Fatal("FTrackXfer not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, res, fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res))
 	ctx.SetCurrentBlock(0x5e4d)
 
 	pxferGlobal := fx.SDB.GetGlobal("pxfer")
@@ -307,7 +307,7 @@ func TestConvertTypedAddressResolvesStringLiteral(t *testing.T) {
 	if fn == nil {
 		t.Fatal("InitMDIApp not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	value := machine.AddressVal(machine.MemoryAddress{
 		Seg:   machine.RegVal(asm.RegDS),
 		Disp:  0x364,
@@ -328,7 +328,7 @@ func TestConvertTypedNearPointerOffsetPreservesPointerArithmetic(t *testing.T) {
 	if fn == nil {
 		t.Fatal("WriteRtPlr not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	var psz *typeinfo.FunctionVar
 	for i := range fn.Vars {
 		if fn.Vars[i].Name == "pb" {
@@ -357,7 +357,7 @@ func TestConvertTypedSegmentedPointerFieldResolvesThroughParameter(t *testing.T)
 	if fn == nil {
 		t.Fatal("WriteRtPlr not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	pplr := frameLoad(ctx, 0, 0x6, 2)
 	offset := machine.BinaryVal(machine.ValueOpAdd, pplr, machine.ConstVal(0x80))
 	value := &machine.StackWords{Words: []machine.Value{
@@ -384,7 +384,7 @@ func TestConvertTypedCodeSegmentIndexedAddressPreservesArrayIndex(t *testing.T) 
 	if fn == nil {
 		t.Fatal("EnsureRobotoidShdefs not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	index := machine.LoadVal(machine.MemoryAddress{
 		Seg:   machine.RegVal(asm.RegCS),
 		Base:  machine.ConstVal(0x1f7e),
@@ -415,7 +415,7 @@ func TestConvertNearPointerAssignmentUsesDestinationType(t *testing.T) {
 	if fn == nil {
 		t.Fatal("ZipOrderDlg not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	i := frameLoad(ctx, 0xac, -0x6, 2)
 	index := machine.BinaryVal(machine.ValueOpAdd, i, machine.ConstVal(0xfbcf))
 	stride := machine.WordVal(
@@ -447,7 +447,7 @@ func TestConvertTypedIndexedPointerOffsetPreservesPointerArithmetic(t *testing.T
 	if fn == nil {
 		t.Fatal("ReadRtPlr not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	var pbIn, iOff *typeinfo.FunctionVar
 	for i := range fn.Params {
 		if fn.Params[i].Name == "pbIn" {
@@ -483,7 +483,7 @@ func TestConvertMemoryPreservesInnerZeroArrayIndex(t *testing.T) {
 	if fn == nil {
 		t.Fatal("PopRandom not found")
 	}
-	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn)
+	ctx := NewFuncContext(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB), fn, machine.NewWriteSummaries(fx.Image, fx.SDB, symresolve.NewResolver(fx.Image, fx.SDB)))
 	cRandStack := fx.SDB.GetGlobal("cRandStack")
 	rglRandStack := fx.SDB.GetGlobal("rglRandStack")
 	if cRandStack == nil || rglRandStack == nil {
@@ -555,7 +555,7 @@ func TestLowerMachineResolvesIndexedNearPointerParameter(t *testing.T) {
 		},
 	}
 
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}

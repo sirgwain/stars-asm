@@ -160,7 +160,7 @@ L_1712:
         }
     }
     if (cAlchemy != 0 && fCalcOnly == 0 && gd.fGeneratingTurn != 0) {
-        FSendPlrMsg2(lppl->iPlayer, 140, lppl->id, lppl->id, cAlchemy);
+        FSendPlrMsg2(lppl->iPlayer, idmScientistsHaveTransmutedCommonMaterialsKtEach, lppl->id, lppl->id, cAlchemy);
     }
     if (pmdStatus != 0) {
         if (fAutoBuild == 2) {

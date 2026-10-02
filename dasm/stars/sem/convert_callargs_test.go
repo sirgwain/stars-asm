@@ -58,7 +58,7 @@ func TestLowerMachineResolvesIndexedStructFunctionPointerCall(t *testing.T) {
 			},
 		},
 	}
-	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn), effects, nil)
+	semFunc, _, err := Lower(NewFuncContext(fx.Image, fx.SDB, res, fn, machine.NewWriteSummaries(fx.Image, fx.SDB, res)), effects, nil)
 	if err != nil {
 		t.Fatalf("LowerMachine: %v", err)
 	}

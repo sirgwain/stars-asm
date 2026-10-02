@@ -1,31 +1,31 @@
 int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBuilt, int32_t *rgMinerals) {
-    int16_t   iWarp;
-    int16_t   i;
-    FLEET    *lpfl;
-    MessageId idm;
-    int16_t   fTwoMAs;
-    SHDEF    *lpshdef;
-    int16_t   cAllowed;
-    int32_t   dpOrig;
-    int16_t   cshDamaged;
-    int16_t   cshOrig;
-    uint16_t  dpShdef;
-    THING    *lpthMac;
-    int16_t   iDecayRate;
-    THING    *lpth;
-    int16_t   raMajor;
-    int16_t   iWarpAsked;
-    int16_t   cSize;
-    int16_t   rgwt[3];
-    int32_t   l;
-    EnvType   iEnv;
-    PART      part;
-    uint16_t  t_scratch_m16_3;
-    uint16_t  t_scratch_m16_4;
-    uint16_t  t_scratch_m16_5;
-    int16_t   t_scratch_m16_6;
-    int16_t   t_call_2d26;
-    int16_t   t_scratch_m16_7;
+    int16_t       iWarp;
+    int16_t       i;
+    FLEET        *lpfl;
+    MessageId     idm;
+    int16_t       fTwoMAs;
+    SHDEF        *lpshdef;
+    int16_t       cAllowed;
+    int32_t       dpOrig;
+    int16_t       cshDamaged;
+    int16_t       cshOrig;
+    uint16_t      dpShdef;
+    THING        *lpthMac;
+    PacketDecay   iDecayRate;
+    THING        *lpth;
+    RaceAttribute raMajor;
+    int16_t       iWarpAsked;
+    int16_t       cSize;
+    int16_t       rgwt[3];
+    int32_t       l;
+    EnvType       iEnv;
+    PART          part;
+    uint16_t      t_scratch_m16_3;
+    uint16_t      t_scratch_m16_4;
+    uint16_t      t_scratch_m16_5;
+    int16_t       t_scratch_m16_6;
+    int16_t       t_call_2d26;
+    int16_t       t_scratch_m16_7;
 
 L_19b2:
     if (grobj != grobjFleet)
@@ -160,7 +160,7 @@ L_1cd6:
         goto L_1cf3;
 
 L_1cf3:
-    FSendPlrMsg2(lppl->iPlayer, 79, lppl->id, iItem + 1, 0);
+    FSendPlrMsg2(lppl->iPlayer, idmStarbaseFailedBuildNewShipTypeBecause, lppl->id, iItem + 1, 0);
     return 0;
 
 L_1d1d:
@@ -273,11 +273,11 @@ L_20c5:
 
 L_20de:
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
-    FSendPlrMsg(lppl->iPlayer, 313, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lpfl->id, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewSDueLack27b, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lpfl->id, 0, 0, 0);
     return 1;
 
 L_214f:
-    FSendPlrMsg(lppl->iPlayer, 186, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewShipSTypeLost, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
     return 0;
 
 L_219c:
@@ -316,11 +316,11 @@ L_2321:
         goto L_233e;
 
 L_233e:
-    FSendPlrMsg2(lppl->iPlayer, 47, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 5 | iItem);
+    FSendPlrMsg2(lppl->iPlayer, idmStarbaseHasBuiltNew, lpfl->id | 0x8000, lppl->id, lppl->iPlayer << 5 | iItem);
     goto L_2fc9;
 
 L_2379:
-    FSendPlrMsg(lppl->iPlayer, 48, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmStarbaseHasBuiltNewShips, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
 
 L_23c4:
     goto L_2fc9;
@@ -413,7 +413,7 @@ L_2681:
         goto L_26be;
 
 L_26be:
-    FSendPlrMsg2(lppl->iPlayer, 209, lppl->id, lppl->id, 0);
+    FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecausePlanet, lppl->id, lppl->id, 0);
     return 0;
 
 L_26e7:
@@ -423,30 +423,30 @@ L_26e7:
         goto L_26f9;
 
 L_26f9:
-    FSendPlrMsg2(lppl->iPlayer, 210, lppl->id, lppl->id, 0);
+    FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecauseDidnt, lppl->id, lppl->id, 0);
     return 0;
 
 L_2722:
-    if (iItem != 6)
+    if (iItem != iobjPacket)
         goto L_2730;
     else
         goto L_272b;
 
 L_272b:
-    iItem = 17;
+    iItem = iobjPacketMixed;
 
 L_2730:
-    if (iItem != 17)
+    if (iItem != iobjPacketMixed)
         goto L_2751;
     else
         goto L_2739;
 
 L_2739:
-    cSize = raMajor == 6 ? 25 : 40;
+    cSize = raMajor == raMassAccel ? 25 : 40;
     goto L_2766;
 
 L_2751:
-    cSize = raMajor == 6 ? 70 : 100;
+    cSize = raMajor == raMassAccel ? 70 : 100;
 
 L_2766:
     i = 0;
@@ -459,7 +459,7 @@ L_276e:
         goto L_277c;
 
 L_277c:
-    if (iItem != 17)
+    if (iItem != iobjPacketMixed)
         goto L_27d3;
     else
         goto L_2785;
@@ -513,20 +513,20 @@ L_2823:
         goto L_2831;
 
 L_2831:
-    iDecayRate = 0;
+    iDecayRate = decayNone;
     goto L_2845;
 
 L_2839:
     iDecayRate = iWarpAsked - iWarp - fTwoMAs;
 
 L_2845:
-    if (raMajor != 7)
+    if (raMajor != raStargate)
         goto L_285b;
     else
         goto L_284e;
 
 L_284e:
-    if (iDecayRate >= 3)
+    if ((int16_t)iDecayRate >= decay50Pct)
         goto L_285b;
     else
         goto L_2857;
@@ -629,7 +629,7 @@ L_2a3f:
         goto L_2a48;
 
 L_2a48:
-    FSendPlrMsg2(lppl->iPlayer, 212, lppl->id, lppl->id, lppl->idFling - 1);
+    FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasCombined, lppl->id, lppl->id, lppl->idFling - 1);
     goto L_2fc9;
 
 L_2a78:
@@ -640,7 +640,7 @@ L_2a78:
         goto L_2aa3;
 
 L_2aa3:
-    FSendPlrMsg2(lppl->iPlayer, 297, lppl->id, lppl->id, 0);
+    FSendPlrMsg2(lppl->iPlayer, idmHasOrdersBuildMineralPacketEitherDoesnt, lppl->id, lppl->id, 0);
     goto L_2fc9;
 
 L_2ac9:
@@ -663,7 +663,7 @@ L_2b3e:
     lpth->thp.iDecayRate = iDecayRate;
     lpth->thp.idPlanet = lppl->idFling - 1;
     lpth->pt = rgptPlan[lppl->id];
-    FSendPlrMsg2(lppl->iPlayer, 211, lppl->id, lppl->id, lppl->idFling - 1);
+    FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasDestination, lppl->id, lppl->id, lppl->idFling - 1);
     goto L_2fc9;
 
 L_2c05:
@@ -680,7 +680,7 @@ L_2c11:
         goto L_2c1c;
 
 L_2c1c:
-    FSendPlrMsg2(i, 283, lppl->id, lppl->id, 0);
+    FSendPlrMsg2(i, idmStrongFundamentalForcesHaveRebirthed, lppl->id, lppl->id, 0);
     goto L_2c0d;
 
 L_2c3e:
@@ -757,7 +757,7 @@ L_2e50:
 
 L_2e53:
     lppl->rgEnvVar[iEnv] = LOBYTE(cAllowed);
-    FSendPlrMsg(lppl->iPlayer, 123, lppl->id, lppl->id, i <= 0 ? 0 : 1, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmTerraformingEffortsHave, lppl->id, lppl->id, i <= 0 ? 0 : 1, iEnv, iEnv * 256 + cAllowed, 0, 0, 0);
 
 L_2ebb:
     goto L_2da8;
@@ -769,12 +769,12 @@ L_2ec1:
     iItem = part.hs.iItem + 18;
 
 L_2ee9:
-    FSendPlrMsg(lppl->iPlayer, 124, lppl->id, lppl->id, -32768, iItem - 18, 0, 0, 0, 0);
+    FSendPlrMsg(lppl->iPlayer, idmHasBuiltNewPlanetaryScanner, lppl->id, lppl->id, -32768, iItem - 18, 0, 0, 0, 0);
     lppl->iScanner = iItem - 18;
     goto L_2fc9;
 
 L_2f77:
-    if ((uint16_t)iItem > 27)
+    if ((uint16_t)iItem > iobjPlanetaryScanner)
         goto L_23d6;
     else
         goto L_2f7f;

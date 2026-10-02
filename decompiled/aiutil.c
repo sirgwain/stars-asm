@@ -144,7 +144,7 @@ AIPART  vrgAiParts[150] = {{.ibit = 5, .iItem = 7, .cItem = 8},
                            {.iItem = 15, .cItem = 5},
                            {.iItem = 2, .cItem = 1}};
 
-int16_t FCreateAiShdef(int16_t ishdef, int16_t ihul, uint8_t *rgaip) {
+int16_t FCreateAiShdef(int16_t ishdef, HulDef ihul, uint8_t *rgaip) {
     StringId ids;
     int32_t  grbitHull;
     int16_t  cItem;
@@ -319,7 +319,7 @@ int16_t FChangeAiShdef(SHDEF *pshdef, int16_t ishdef) {
     return 1;
 }
 
-int16_t XferAiSupply(GrobjClass grobjSrc, int16_t idSrc, GrobjClass grobjDst, int16_t idDst, int16_t iSupply, int16_t cQuan) {
+int16_t XferAiSupply(GrobjClass grobjSrc, int16_t idSrc, GrobjClass grobjDst, int16_t idDst, MineralType iSupply, int16_t cQuan) {
     int16_t dChg;
     int16_t iT;
     int32_t cAvailable;
@@ -356,15 +356,15 @@ int16_t XferAiTroopers(int16_t idSrc, int16_t idDst, int16_t cQuan) {
     if (cQuan == 0) {
         return 0;
     }
-    cAvailable = ChgCargo(grobjFleet, idSrc, 3, 0, NULL);
+    cAvailable = ChgCargo(grobjFleet, idSrc, Colonists, 0, NULL);
     if (cQuan > cAvailable) {
         cQuan = LOWORD(cAvailable);
     }
     if (cQuan == 0) {
         return 0;
     }
-    ChgCargo(grobjFleet, idSrc, 3, (int16_t)-cQuan, NULL);
-    ChgCargo(grobjPlanet, idDst, 3, cQuan, NULL);
+    ChgCargo(grobjFleet, idSrc, Colonists, (int16_t)-cQuan, NULL);
+    ChgCargo(grobjPlanet, idDst, Colonists, cQuan, NULL);
     return cQuan;
 }
 
@@ -419,7 +419,7 @@ int16_t IdNearestColonizablePlanet(FLEET *lpflCol, THING **plpthWorm) {
     uint8_t *lpb;
     int32_t  d2Cur;
 
-    if (rgplr[idPlayer].idAi != 0 && rgplr[idPlayer].idAi != 5) {
+    if (rgplr[idPlayer].idAi != idAiRobotoid && rgplr[idPlayer].idAi != idAiMacinti) {
         iVal = 16;
         if (fMarkedPlanets != 0)
             goto LFindNearest;
@@ -442,7 +442,7 @@ int16_t IdNearestColonizablePlanet(FLEET *lpflCol, THING **plpthWorm) {
             } else {
                 iVal = 2;
             }
-        } else if (rgplr[idPlayer].idAi != 0 && rgplr[idPlayer].idAi != 5 && PctPlanetOptValue(lppl, idPlayer) < 0) {
+        } else if (rgplr[idPlayer].idAi != idAiRobotoid && rgplr[idPlayer].idAi != idAiMacinti && PctPlanetOptValue(lppl, idPlayer) < 0) {
             iVal = 8;
         } else {
             iVal = 0;
@@ -454,7 +454,7 @@ int16_t IdNearestColonizablePlanet(FLEET *lpflCol, THING **plpthWorm) {
         if (rglpfl[ifl] == 0)
             break;
         if (lpfl->iPlayer == idPlayer && lpfl->cord > 1 && lpfl != lpflCol && lpfl->lpplord->rgord[1].grobj == grobjPlanet &&
-            ((rgplr[idPlayer].idAi != 0 && rgplr[idPlayer].idAi != 5) || lpfl->lpplord->rgord[1].grTask == grTaskColonize)) {
+            ((rgplr[idPlayer].idAi != idAiRobotoid && rgplr[idPlayer].idAi != idAiMacinti) || lpfl->lpplord->rgord[1].grTask == grTaskColonize)) {
             vlpbAiPlanet[lpfl->lpplord->rgord[1].id * 16 + 15] = 4;
         }
     }
@@ -668,7 +668,7 @@ void AddMinesToBlockedQueues() {
                     }
                     InitProduction(rgprod);
                     if (cBuild > 0) {
-                        AddItemToQueue(8, LOWORD(cBuild), grobjPlanet, 0);
+                        AddItemToQueue(mdIdleMine, LOWORD(cBuild), grobjPlanet, addItemFront);
                         FinishProduction(1);
                         PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL);
                         if (etaBetterMines == -1) {
@@ -678,7 +678,7 @@ void AddMinesToBlockedQueues() {
                         sel.pl.lpplprod->rgprod[0].iItem = iobjAlchemy;
                     } else {
                         etaBetterMines = 700;
-                        AddItemToQueue(3, 1, grobjPlanet, 0);
+                        AddItemToQueue(iobjAlchemy, 1, grobjPlanet, addItemFront);
                         FinishProduction(1);
                     }
                     PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, NULL);
@@ -729,7 +729,7 @@ void SetAiFleetIdealSpeed(FLEET *lpfl, int16_t wtFuelMax, int16_t cMinefields, T
             lpth = lpThings;
             lpthMac = lpThings + cThing;
             for (; lpth < lpthMac; lpth++) {
-                if (lpth->ith == ithMinefield && lpth->iplr != idPlayer && lpth->thm.iType != 2 && FFleetInField(lpfl, lpth) != 0) {
+                if (lpth->ith == ithMinefield && lpth->iplr != idPlayer && lpth->thm.iType != mineSpeedBump && FFleetInField(lpfl, lpth) != 0) {
                     fMinefield = 1;
                     break;
                 }
@@ -748,9 +748,9 @@ void SetAiFleetIdealSpeed(FLEET *lpfl, int16_t wtFuelMax, int16_t cMinefields, T
     if (fMinefield == 0) {
         i = IWarpBestForWaypoint(lpfl, &lpfl->lpplord->rgord[1]);
     } else {
-        if (lpth->thm.iType == 1) {
+        if (lpth->thm.iType == mineHeavy) {
             i = 6;
-        } else if (lpth->thm.iType != 2) {
+        } else if (lpth->thm.iType != mineSpeedBump) {
             i = 4;
             j = Random(10);
             if (j >= 4) {
@@ -1012,7 +1012,7 @@ int16_t IdTargetFreighter(FLEET *lpflFr, PLANET *lpplHome) {
                 score = (int32_t)((int16_t)((vlpbAiPlanet[lppl->id * 16 + 1] & 0x7f) * 0x1f4) / l);
             } else {
                 if (lppl->iPlayer != idPlayer) {
-                    if (rgplr[idPlayer].idAi == 0 && lpplHome->id == lpflFr->idPlanet &&
+                    if (rgplr[idPlayer].idAi == idAiRobotoid && lpplHome->id == lpflFr->idPlanet &&
                         ((lpplHome->rgwtMin[3] > 1100 && lppl->uPopGuess < 62) || (lpplHome->rgwtMin[3] > 300 && lppl->uPopGuess < 15))) {
                         pctHere = 65;
                         goto ScorePctHere;
@@ -1104,24 +1104,24 @@ int16_t IdTargetFreighter(FLEET *lpflFr, PLANET *lpplHome) {
     for (i = 0; i <= 2; i++) {
         ord.txp.rgia[i].iAction = lpthBest == 0 && idBest == lpplHome->id ? 2 : 1;
     }
-    if (rgplr[idPlayer].idAi == 1) {
+    if (rgplr[idPlayer].idAi == idAiTurinDrone) {
         if (lpplHome->id == lpflFr->idPlanet) {
             ChangeMainObjSel(grobjFleet, lpflFr->id);
             if (lpplHome->rgwtMin[3] > 1200 && lpthBest == 0 && lpplBest->iPlayer != -1 && lpplBest->rgwtMin[3] < lpplHome->rgwtMin[3]) {
-                XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, 1000);
+                XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, Colonists, 1000);
             }
             FLookupFleet(lpflFr->id, &sel.fl);
         }
         if (lpthBest == 0 && lpplBest->iPlayer != -1 && lpplBest != lpplHome) {
             ord.txp.rgia[3].iAction = iActionUnloadAll;
         }
-    } else if (rgplr[idPlayer].idAi == 0 && lpplHome->id == lpflFr->idPlanet && lpthBest == 0 && lpplBest->iPlayer != -1) {
+    } else if (rgplr[idPlayer].idAi == idAiRobotoid && lpplHome->id == lpflFr->idPlanet && lpthBest == 0 && lpplBest->iPlayer != -1) {
         if (lpplBest->iPlayer != idPlayer) {
             ChangeMainObjSel(grobjFleet, lpflFr->id);
             if (lpplHome->rgwtMin[3] > 900) {
-                XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, 300);
+                XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, Colonists, 300);
             } else {
-                XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, 100);
+                XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, Colonists, 100);
             }
             FLookupFleet(lpflFr->id, &sel.fl);
             ord.txp.rgia[3].iAction = iActionUnloadAll;
@@ -1137,7 +1137,7 @@ int16_t IdTargetFreighter(FLEET *lpflFr, PLANET *lpplHome) {
             }
             l = (int32_t)(lpplHome->rgwtMin[3] * l) / 100;
             ChangeMainObjSel(grobjFleet, lpflFr->id);
-            XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, 3, LOWORD(l));
+            XferAiSupply(grobjPlanet, lpflFr->idPlanet, grobjFleet, lpflFr->id, Colonists, LOWORD(l));
             FLookupFleet(lpflFr->id, &sel.fl);
             ord.txp.rgia[3].iAction = iActionUnloadAll;
         }
@@ -1261,7 +1261,7 @@ int16_t FMoveAiFleet(FLEET *lpfl, ORDER *pord, int16_t fAppend) {
     return FLookupFleet(-1, &sel.fl);
 }
 
-void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, int16_t mdAddItem) {
+void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, AddItemMode mdAddItem) {
     int16_t fSingle;
     int16_t iprod;
     int16_t i;
@@ -1281,16 +1281,16 @@ void AddItemToQueue(uint16_t iItem, uint16_t cItem, GrobjClass grobj, int16_t md
             }
         }
         if (cItem > 0) {
-            if (mdAddItem != 2 && lpplProdGlob->iprodMac == lpplProdGlob->iprodMax) {
+            if (mdAddItem != addItemReplace && lpplProdGlob->iprodMac == lpplProdGlob->iprodMax) {
                 lpplProdGlob = (PLPROD *)LpplReAlloc((PL *)lpplProdGlob, lpplProdGlob->iprodMac + 3);
             }
             switch (mdAddItem) {
-            case 2:
+            case addItemReplace:
                 lpplProdGlob->iprodMac = 0;
-            case 1:
+            case addItemEnd:
                 iprod = lpplProdGlob->iprodMac;
                 break;
-            case 0:
+            case addItemFront:
                 iprod = 0;
                 fmemmove(&lpplProdGlob->rgprod[1], lpplProdGlob->rgprod, lpplProdGlob->iprodMac * sizeof(PROD));
                 fmemset(lpplProdGlob->rgprod, 0, 4);
@@ -1326,7 +1326,7 @@ int16_t IroEnsureAi(uint8_t *lpbRes, int16_t cRes, int16_t *pishdefSBLatest, int
     if (i == 6) {
         rgplr[idPlayer].pctResearch = 0;
         pctTech = rgplr[idPlayer].iTechCur * 256;
-        WriteMemRt(34, 2, &pctTech);
+        WriteMemRt(rtLogResearch, 2, &pctTech);
     }
     for (i = 0; i < cRes; i++) {
         ilvl = rgplr[idPlayer].rgTech[lpbRes[i] >> 5];
@@ -1336,7 +1336,7 @@ int16_t IroEnsureAi(uint8_t *lpbRes, int16_t cRes, int16_t *pishdefSBLatest, int
                 rgplr[idPlayer].iTechCur = LOBYTE((rgplr[idPlayer].iTechCur & 0xff0f) | (lpbRes[i + 1] >> 5) * 0x10);
             }
             pctTech = rgplr[idPlayer].pctResearch + rgplr[idPlayer].iTechCur * 256;
-            WriteMemRt(34, 2, &pctTech);
+            WriteMemRt(rtLogResearch, 2, &pctTech);
             return i;
         }
     }
@@ -1352,7 +1352,7 @@ int16_t IroEnsureAi(uint8_t *lpbRes, int16_t cRes, int16_t *pishdefSBLatest, int
             rgplr[idPlayer].pctResearch = 0;
         }
         pctTech = rgplr[idPlayer].pctResearch + rgplr[idPlayer].iTechCur * 256;
-        WriteMemRt(34, 2, &pctTech);
+        WriteMemRt(rtLogResearch, 2, &pctTech);
     }
     return 926;
 }
@@ -1370,7 +1370,7 @@ void KeepFleetsMoving() {
     lpth = lpThings;
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
-        if (lpth->ith == ithMinefield && lpth->iplr != idPlayer && lpth->thm.iType != 2) {
+        if (lpth->ith == ithMinefield && lpth->iplr != idPlayer && lpth->thm.iType != mineSpeedBump) {
             if (ith == 100) {
                 ith = -1;
                 break;
@@ -1383,7 +1383,7 @@ void KeepFleetsMoving() {
         if (rglpfl[ifl] == 0)
             break;
         if (lpfl->iPlayer == idPlayer && lpfl->cord > 1) {
-            if (rgplr[idPlayer].idAi != 0 && game.turn < 5) {
+            if (rgplr[idPlayer].idAi != idAiRobotoid && game.turn < 5) {
                 i = 16;
             } else {
                 i = -1;
@@ -1479,23 +1479,23 @@ int16_t FShouldWeBuildColonizers(int16_t *pcCol) {
 }
 
 int16_t FIsAiAttack(FLEET *lpfl) {
-    int16_t ihul;
+    HulDef  ihul;
     int16_t i;
 
     for (i = 0; i < 16; i++) {
         if (lpfl->rgcsh[i] > 0) {
             ihul = rgshdef[i].hul.ihuldef;
-            if (ihul > 5 && ihul <= 10) {
+            if ((int16_t)ihul > ihuldefFrigate && (int16_t)ihul <= ihuldefDreadnought) {
                 return 1;
             }
             switch (ihul) {
-            case 5:
+            case ihuldefFrigate:
                 if (rglpshdef[idPlayer][i].lPower > 0) {
                     return 1;
                 }
                 return 0;
-            case 31:
-            case 29:
+            case ihuldefMetaMorph:
+            case ihuldefNubian:
                 if (WtMaxShdefStat(&rgshdef[i], 2) < 500 && rglpshdef[idPlayer][i].lPower > 0) {
                     return 1;
                 }
@@ -1506,13 +1506,13 @@ int16_t FIsAiAttack(FLEET *lpfl) {
 }
 
 int16_t FIsTurinDroneAiAttack(FLEET *lpfl) {
-    int16_t ihul;
+    HulDef  ihul;
     int16_t i;
 
     for (i = 0; i < 16; i++) {
         if (lpfl->rgcsh[i] > 0) {
             ihul = rgshdef[i].hul.ihuldef;
-            if (ihul >= 4 && ihul <= 10) {
+            if ((int16_t)ihul >= ihuldefScout && (int16_t)ihul <= ihuldefDreadnought) {
                 return 1;
             }
         }
@@ -1521,16 +1521,17 @@ int16_t FIsTurinDroneAiAttack(FLEET *lpfl) {
 }
 
 int16_t FIsAiTransport(FLEET *lpfl) {
-    int16_t ihul;
+    HulDef  ihul;
     int16_t i;
 
     for (i = 0; i < 16; i++) {
         if (lpfl->rgcsh[i] > 0) {
             ihul = rgshdef[i].hul.ihuldef;
-            if ((ihul >= 0 && ihul <= 3) || (ihul >= 11 && ihul <= 13)) {
+            if (((int16_t)ihul >= ihuldefSmallFreighter && (int16_t)ihul <= ihuldefSuperFreighter) ||
+                ((int16_t)ihul >= ihuldefPrivateer && (int16_t)ihul <= ihuldefGalleon)) {
                 return 1;
             }
-            if (ihul == 31 && WtMaxShdefStat(&rgshdef[i], 2) >= 500 && rglpshdef[idPlayer][i].lPower > 0) {
+            if (ihul == ihuldefMetaMorph && WtMaxShdefStat(&rgshdef[i], 2) >= 500 && rglpshdef[idPlayer][i].lPower > 0) {
                 return 1;
             }
         }
@@ -1561,7 +1562,7 @@ void ValidateStarbaseHistory() {
     uint16_t t_scratch_m32_5;
     uint16_t t_569b;
 
-    if (rgplr[idPlayer].idAi != 4 && rgplr[idPlayer].idAi != 5) {
+    if (rgplr[idPlayer].idAi != idAiCybertron && rgplr[idPlayer].idAi != idAiMacinti) {
         if (RawLoad16(vlpbAiData) <= 2) {
             RawStore16((uint8_t *)vlpbAiData + 0x2, 0);
         }
@@ -1610,7 +1611,7 @@ void ValidateStarbaseHistory() {
                             id = RawLoad16(vlpbAiData + (i * 20 + 4));
                             if (id == lppl->id)
                                 break;
-                            if (rgplr[idPlayer].idAi == 0) {
+                            if (rgplr[idPlayer].idAi == idAiRobotoid) {
                                 pt = rgptPlan[id];
                                 dx = pt.x - rgptPlan[lppl->id].x;
                                 dy = pt.y - rgptPlan[lppl->id].y;
@@ -2167,10 +2168,10 @@ void QuickBuildDefenses(PLANET *lppl, PROD *rgprod) {
                 cDef = cRes;
             }
             if (cDef > 0) {
-                AddItemToQueue(9, cDef, grobjPlanet, 0);
+                AddItemToQueue(mdIdleDefense, cDef, grobjPlanet, addItemFront);
             }
             if (cAlch > 0) {
-                AddItemToQueue(11, cAlch, grobjPlanet, 0);
+                AddItemToQueue(mdIdleAlchemy, cAlch, grobjPlanet, addItemFront);
             }
             FinishProduction(cDef > 0 || cAlch > 0);
         }
@@ -2279,14 +2280,14 @@ void EnsureAiStarbaseDesigns() {
     int16_t  iSetLast;
 
     if (rglpshdefSB[idPlayer][2].fFree != 0) {
-        FCreateAiStarbase(2, 2, -1, -1);
-        FCreateAiStarbase(4, 3, -1, -1);
+        FCreateAiStarbase(2, 2, -1, isbhullAuto);
+        FCreateAiStarbase(4, 3, -1, isbhullAuto);
     }
     if (rglpshdefSB[idPlayer][1].fFree != 0) {
-        FCreateAiStarbase(1, 1, -1, -1);
+        FCreateAiStarbase(1, 1, -1, isbhullAuto);
     }
     if (rglpshdefSB[idPlayer][3].fFree != 0) {
-        FCreateAiStarbase(3, 2, -1, -1);
+        FCreateAiStarbase(3, 2, -1, isbhullAuto);
     }
     if (game.turn >= 50) {
         iSetLast = -1;
@@ -2306,9 +2307,9 @@ void EnsureAiStarbaseDesigns() {
                 if (rglpshdefSB[idPlayer][i].fFree == 0 && rglpshdefSB[idPlayer][i].cExist > 0)
                     goto LOrbital;
             }
-            FCreateAiStarbase(iSetNew, 1, -1, -1);
-            FCreateAiStarbase(iSetNew + 2, 2, -1, -1);
-            FCreateAiStarbase(iSetNew + 4, 3, -1, -1);
+            FCreateAiStarbase(iSetNew, 1, -1, isbhullAuto);
+            FCreateAiStarbase(iSetNew + 2, 2, -1, isbhullAuto);
+            FCreateAiStarbase(iSetNew + 4, 3, -1, isbhullAuto);
         }
     LOrbital:
         iSetLast = -1;
@@ -2326,8 +2327,8 @@ void EnsureAiStarbaseDesigns() {
             iSetNew = iSetLast <= 4 ? 6 : 1;
             if ((rglpshdefSB[idPlayer][iSetNew].fFree != 0 || rglpshdefSB[idPlayer][iSetNew].cExist <= 0) &&
                 (rglpshdefSB[idPlayer][iSetNew + 2].fFree != 0 || rglpshdefSB[idPlayer][iSetNew + 2].cExist <= 0)) {
-                FCreateAiStarbase(iSetNew, 1, -1, -1);
-                FCreateAiStarbase(iSetNew + 2, 2, -1, -1);
+                FCreateAiStarbase(iSetNew, 1, -1, isbhullAuto);
+                FCreateAiStarbase(iSetNew + 2, 2, -1, isbhullAuto);
             }
         }
     }
@@ -2415,7 +2416,7 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
     return;
 }
 
-int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, int16_t isb) {
+int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, isbhull isb) {
     int16_t i;
     SHDEF   shdef;
     HS     *lphs;
@@ -2427,14 +2428,14 @@ int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, int16_t 
         case 6:
         case 8:
             aisb = 12;
-            isb = 0;
+            isb = isbhullOrbitalFort;
             if (iLevel != 2)
                 break;
             iLevel++;
             break;
         default:
             aisb = 0;
-            isb = 2;
+            isb = isbhullSpaceStation;
         }
     }
     if (FCreateAiShdef(-1, isb, &vrgSBAip[aisb]) == 0) {
@@ -2446,7 +2447,7 @@ int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, int16_t 
             lphs = &shdef.hul.rghs[i];
             if (lphs->cItem >= 4) {
                 lphs->cItem >>= 3 - iLevel;
-            } else if (iLevel <= 1 && rgplr[idPlayer].idAi != 4 && (lphs->grhst == hstSpecialSB || lphs->cItem > 1)) {
+            } else if (iLevel <= 1 && rgplr[idPlayer].idAi != idAiCybertron && (lphs->grhst == hstSpecialSB || lphs->cItem > 1)) {
                 lphs->cItem += 0xff;
             }
         }
@@ -2476,7 +2477,7 @@ int16_t FAIFling(PLANET *lppl, int32_t *rgResAvail) {
 
     cFound = 0;
     iLevelBest = -1;
-    if (rgplr[idPlayer].idAi == 4) {
+    if (rgplr[idPlayer].idAi == idAiCybertron) {
         return 0;
     }
     i = 0;
@@ -2520,12 +2521,12 @@ int16_t FAIFling(PLANET *lppl, int32_t *rgResAvail) {
             sel.pl.idFling = lpplBest->id + 1;
             FLookupPlanet(-1, &sel.pl);
             if (rgResAvail[2] > 20000 && Random(3) != 0) {
-                AddItemToQueue(16, 80, grobjPlanet, 1);
+                AddItemToQueue(iobjPacketGerm, 80, grobjPlanet, addItemEnd);
             }
             if (*rgResAvail > 3000 && rgResAvail[1] > 4000 && rgResAvail[2] > 3000) {
-                AddItemToQueue(17, 30, grobjPlanet, 1);
+                AddItemToQueue(iobjPacketMixed, 30, grobjPlanet, addItemEnd);
             } else if (*rgResAvail > 1500 && rgResAvail[1] > 2250 && rgResAvail[2] > 1500) {
-                AddItemToQueue(17, 15, grobjPlanet, 1);
+                AddItemToQueue(iobjPacketMixed, 15, grobjPlanet, addItemEnd);
             } else {
                 for (iT = 0; iT < 3; iT++) {
                     iKeep = iT == 1 ? 2500 : 1250;
@@ -2536,7 +2537,7 @@ int16_t FAIFling(PLANET *lppl, int32_t *rgResAvail) {
                         } else if (l <= 1) {
                             l = 1;
                         }
-                        AddItemToQueue(iT + 14, LOWORD(l), grobjPlanet, 1);
+                        AddItemToQueue(iT + 14, LOWORD(l), grobjPlanet, addItemEnd);
                     }
                 }
             }
@@ -2566,11 +2567,12 @@ void QueueAiStarbases(PROD *rgprod, int16_t ishdefSBLatest) {
     int16_t i;
     PROD   *lpprod;
 
-    if (ishdefSBLatest != -1 && rgplr[idPlayer].idAi != 5 && ((gd.fTutorial == 0 && (game.lid != 9236297 || rgplr[idPlayer].idAi != 1)) || game.turn <= 30)) {
+    if (ishdefSBLatest != -1 && rgplr[idPlayer].idAi != idAiMacinti &&
+        ((gd.fTutorial == 0 && (game.lid != 9236297 || rgplr[idPlayer].idAi != idAiTurinDrone)) || game.turn <= 30)) {
         lppl = lpPlanets;
         lpplMac = lpPlanets + cPlanet;
         for (; lppl < lpplMac; lppl++) {
-            if (rgplr[idPlayer].idAi == 4) {
+            if (rgplr[idPlayer].idAi == idAiCybertron) {
                 if (lppl->iPlayer != idPlayer)
                     continue;
                 ishdefSBLatest = iBuildCyberStarbase(lppl);
@@ -2593,7 +2595,7 @@ void QueueAiStarbases(PROD *rgprod, int16_t ishdefSBLatest) {
             if (i < lpplProdGlob->iprodMac) {
                 FinishProduction(0);
             } else {
-                AddItemToQueue(ishdefSBLatest + 16, 1, grobjFleet, 1);
+                AddItemToQueue(ishdefSBLatest + 16, 1, grobjFleet, addItemEnd);
                 FinishProduction(1);
             }
         }
@@ -2624,7 +2626,7 @@ int16_t FUpgradeAiStarbase(PLANET *lppl, int16_t ishdefSBLatest) {
             lpprod++;
         }
     }
-    if (rgplr[idPlayer].idAi == 5) {
+    if (rgplr[idPlayer].idAi == idAiMacinti) {
         isbCur = lppl->isb;
         if (vAiMacRecycleSB[isbCur] != 3 && (vAiMacRecycleSB[isbCur] != 2 || Random(100) >= 10)) {
             if (isbCur >= 4 && isbCur != 6 && isbCur != 9 && Random(100) < 8) {
@@ -2652,10 +2654,10 @@ int16_t FUpgradeAiStarbase(PLANET *lppl, int16_t ishdefSBLatest) {
             }
         }
     LDoMacUpgrade2:
-        AddItemToQueue(isbNew + 16, 1, grobjFleet, 1);
+        AddItemToQueue(isbNew + 16, 1, grobjFleet, addItemEnd);
         return 1;
     }
-    if (rgplr[idPlayer].idAi == 4 && game.turn < 40) {
+    if (rgplr[idPlayer].idAi == idAiCybertron && game.turn < 40) {
         return 0;
     }
     if (lppl->fStarbase != 0) {
@@ -2689,7 +2691,7 @@ int16_t FUpgradeAiStarbase(PLANET *lppl, int16_t ishdefSBLatest) {
                 default:
                     ishdef = ishdefSBLatest + lppl->isb % 5;
                 }
-                AddItemToQueue(ishdef + 16, 1, grobjFleet, 1);
+                AddItemToQueue(ishdef + 16, 1, grobjFleet, addItemEnd);
                 return 1;
             }
         } else if (lppl->isb % 5 < (iDesigns - 1) * 2 && rglpshdefSB[idPlayer][lppl->isb + 2].fFree == 0 && Random(100) < 6) {
@@ -2698,7 +2700,7 @@ int16_t FUpgradeAiStarbase(PLANET *lppl, int16_t ishdefSBLatest) {
                     return 0;
                 }
             }
-            AddItemToQueue(lppl->isb + 18, 1, grobjFleet, 1);
+            AddItemToQueue(lppl->isb + 18, 1, grobjFleet, addItemEnd);
             return 1;
         }
     }
@@ -2712,7 +2714,7 @@ int16_t FQueueAiTerraforming(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCo
     int32_t rgItemCost[4];
     PROD   *lpprod;
 
-    if (rgplr[idPlayer].idAi == 4) {
+    if (rgplr[idPlayer].idAi == idAiCybertron) {
         return 0;
     }
     if (lppl->rgwtMin[3] < 200) {
@@ -2738,7 +2740,7 @@ int16_t FQueueAiTerraforming(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCo
     if (j != -1) {
         for (i = 0; i < cProdGlob; i++) {
             if (pProdGlob[i].grobj == grobjPlanet && pProdGlob[i].iItem == mdIdleTerraform && pProdGlob[i].cItem >= 1) {
-                AddItemToQueue(pProdGlob[i].iItem, 4 >= (int32_t)pProdGlob[i].cItem ? pProdGlob[i].cItem : 4, grobjPlanet, 1);
+                AddItemToQueue(pProdGlob[i].iItem, 4 >= (int32_t)pProdGlob[i].cItem ? pProdGlob[i].cItem : 4, grobjPlanet, addItemEnd);
                 pProdGlob[i].cItem = 0;
                 GetProductionCosts(lppl, pProdGlob + i, rgItemCost, idPlayer, 1);
                 for (j = 0; j < 4; j++) {
@@ -2775,7 +2777,7 @@ int16_t FQueueAiScanner(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCost) {
         for (j = 0; j < 4 && (rgItemCost[j] <= 0 || rgItemCost[j] + rgResCost[j] <= rgResAvail[j]); j++) {
         }
         if (j == 4) {
-            AddItemToQueue(pProdGlob[i].iItem, 1, grobjPlanet, 1);
+            AddItemToQueue(pProdGlob[i].iItem, 1, grobjPlanet, addItemEnd);
             for (j = 0; j < 4; j++) {
                 rgResCost[j] += rgItemCost[j];
             }
@@ -2809,7 +2811,7 @@ int16_t FQueueAiDefenses(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCost) 
         if (j > 4) {
             j = 4;
         }
-        AddItemToQueue(9, j, grobjPlanet, 1);
+        AddItemToQueue(mdIdleDefense, j, grobjPlanet, addItemEnd);
         return 1;
     }
     return 0;
@@ -2827,7 +2829,7 @@ void HandleBasicAiTasks(int16_t iroCur, PROD *rgprod, int16_t ishdefSBLatest, in
         lppl = vrglpplAi[ipl];
         if (vrglpplAi[ipl] == 0)
             break;
-        if (rgplr[idPlayer].idAi == 0) {
+        if (rgplr[idPlayer].idAi == idAiRobotoid) {
             if (lppl->rgwtMin[3] < 40)
                 continue;
         } else if (lppl->rgwtMin[3] < 60 && vlpbAiPlanet[lppl->id * 16 + 2] == 0) {
@@ -2835,7 +2837,7 @@ void HandleBasicAiTasks(int16_t iroCur, PROD *rgprod, int16_t ishdefSBLatest, in
         }
         GetResourcesAvailable(lppl, rgResAvail);
         GetProdQCost(lppl, rgResCost);
-        if (rgplr[idPlayer].idAi != 5) {
+        if (rgplr[idPlayer].idAi != idAiMacinti) {
             for (i = 0; i < 4 && rgResAvail[i] >= rgResCost[i]; i++) {
             }
             if (i < 3)
@@ -2844,15 +2846,15 @@ void HandleBasicAiTasks(int16_t iroCur, PROD *rgprod, int16_t ishdefSBLatest, in
         ChangeMainObjSel(grobjPlanet, lppl->id);
         InitProduction(rgprod);
         fWrite = 0;
-        if (rgplr[idPlayer].idAi == 0 || vlpbAiPlanet[lppl->id * 16 + 2] == 0) {
+        if (rgplr[idPlayer].idAi == idAiRobotoid || vlpbAiPlanet[lppl->id * 16 + 2] == 0) {
             if (FUpgradeAiStarbase(lppl, ishdefSBLatest) != 0 || FAIFling(lppl, rgResAvail) != 0 || FQueueAiScanner(lppl, rgResAvail, rgResCost) != 0 ||
                 FQueueAiDefenses(lppl, rgResAvail, rgResCost) != 0) {
                 fWrite = 1;
             }
-        } else if (rgplr[idPlayer].idAi == 4 && FUpgradeAiStarbase(lppl, ishdefSBLatest) != 0) {
+        } else if (rgplr[idPlayer].idAi == idAiCybertron && FUpgradeAiStarbase(lppl, ishdefSBLatest) != 0) {
             fWrite = 1;
         }
-        if (rgplr[idPlayer].idAi != 0 && fWrite == 0 && FQueueAiTerraforming(lppl, rgResAvail, rgResCost) != 0) {
+        if (rgplr[idPlayer].idAi != idAiRobotoid && fWrite == 0 && FQueueAiTerraforming(lppl, rgResAvail, rgResCost) != 0) {
             fWrite = 1;
         }
         FinishProduction(fWrite);
@@ -3055,16 +3057,13 @@ void InitRandomPlanetList() {
     int16_t iT;
     PLANET *lppl;
     int16_t i;
-    int16_t t_a0cb;
 
     vclpplAi = 0;
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
     for (; lppl < lpplMac; lppl++) {
         if (lppl->iPlayer == idPlayer) {
-            t_a0cb = vclpplAi;
-            vclpplAi++;
-            vrglpplAi[t_a0cb] = lppl;
+            vrglpplAi[vclpplAi++] = lppl;
         }
     }
     if (gd.fTutorial == 0) {

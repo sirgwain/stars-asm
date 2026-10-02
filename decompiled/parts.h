@@ -23,7 +23,7 @@ extern SPECIAL   rgspecialM[11];
 extern SPECIAL   rgspecialE[17];
 extern MINES     rgmines[10];
 
-HULDEF    *LphuldefSBFromId(int16_t id);
+HULDEF    *LphuldefSBFromId(isbhull id);
 HULDEF    *LphuldefFromId(int16_t id);
 ENGINE    *LpengineFromId(int16_t id);
 SCANNER   *LpscannerFromId(int16_t id);

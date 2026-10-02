@@ -118,44 +118,44 @@ BTLDATA *BtlDataGet(int16_t i) {
 }
 
 int32_t CBattleUnits(BTLDATA *lpbd, BattleUnitFlags grbitBU) {
-    TOK    *lptok;
-    int16_t ctok;
-    int32_t lUnits;
-    int16_t i;
-    int16_t imd;
+    TOK         *lptok;
+    int16_t      ctok;
+    int32_t      lUnits;
+    int16_t      i;
+    HullCategory imd;
 
     ctok = lpbd->ctok;
     lUnits = 0;
     for (i = 0; i < ctok; i++) {
         lptok = &lpbd->rgtok[i];
         if (lptok->iplr == idPlayer) {
-            if ((grbitBU & 1) == 0)
+            if ((grbitBU & grBuOurUnits) == 0)
                 continue;
-        } else if ((grbitBU & 2) == 0) {
+        } else if ((grbitBU & grBuTheirUnits) == 0) {
             continue;
         }
-        if ((grbitBU & 4) != 0 || lptok->ishdef < 16) {
-            if ((grbitBU & 0xf8) != 0xf8 && lptok->ishdef < 16) {
+        if ((grbitBU & grBuIncludeSb) != 0 || lptok->ishdef < 16) {
+            if ((grbitBU & grBuClassAll) != 0xf8 && lptok->ishdef < 16) {
                 imd = LphuldefFromId(rglpshdef[lptok->iplr][lptok->ishdef].hul.ihuldef)->imdCategory;
-                if (imd <= 1 || imd >= 6) {
-                    if ((grbitBU & 8) == 0)
+                if ((int16_t)imd <= hullCatFreighter || (int16_t)imd >= hullCatMiner) {
+                    if ((grbitBU & grBuClassUnarmed) == 0)
                         continue;
                 } else {
                     switch (imd) {
-                    case 2:
-                        if ((grbitBU & 0x10) == 0)
+                    case hullCatScout:
+                        if ((grbitBU & grBuClassScout) == 0)
                             break;
                         goto L_0600;
-                    case 3:
-                        if ((grbitBU & 0x20) == 0)
+                    case hullCatWarship:
+                        if ((grbitBU & grBuClassWarship) == 0)
                             break;
                         goto L_0600;
-                    case 5:
-                        if ((grbitBU & 0x40) == 0)
+                    case hullCatBomber:
+                        if ((grbitBU & grBuClassBomber) == 0)
                             break;
                         goto L_0600;
-                    case 4:
-                        if ((grbitBU & 0x80) == 0)
+                    case hullCatUtility:
+                        if ((grbitBU & grBuClassUtility) == 0)
                             break;
                     default:
                         goto L_0600;
@@ -278,7 +278,7 @@ int16_t SetVCRBoard(int16_t iStep) {
             viVCRFocus = vlpbrVCR->itok;
             vrgtok[vlpbrVCR->itok].wFlags = (vrgtok[vlpbrVCR->itok].wFlags & 0xfc1f) | (vlpbrVCR->dzDis & 0x1f) * 0x20;
             if (vrgtok[vlpbrVCR->itok].dzDis == 4) {
-                vrgtok[vlpbrVCR->itok].mdTactic = 0;
+                vrgtok[vlpbrVCR->itok].mdTactic = mdTacticDisengage;
             }
         }
     }
@@ -483,7 +483,7 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
             EndDialog(hwnd, i);
             return 1;
         case IDC_HELP:
-            WinHelp(hwnd, szHelpFile, 1, 1082);
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhBattleVCR);
             return 1;
         default:
             return 0;
@@ -599,39 +599,37 @@ void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, 
 }
 
 void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
-    int16_t  ctok;
-    int16_t  ibmpRace;
-    int16_t  bkMode;
-    HBRUSH   hbrSav;
-    int32_t  dpShields;
-    int16_t  itokT;
-    int32_t  dpT;
-    int16_t  fCreatedDC;
-    int32_t  dpArmor;
-    int16_t  y;
-    uint8_t  rgfSeen[256];
-    int16_t  c;
-    int16_t  i;
-    uint8_t  brcT;
-    SHDEF   *lpshdef;
-    int16_t  ibmp;
-    int16_t  csh;
-    char    *psz;
-    int16_t  dx;
-    int16_t  j;
-    char     szT[96];
-    int16_t  fJam;
-    RECT     rc;
-    int16_t  x;
-    int16_t  cshT;
-    int32_t  dpShT;
-    DV       dv;
-    int16_t  xT;
-    int16_t  cshNew;
-    char    *t_merge_2766_0001;
-    uint16_t t_merge_27d6_0001;
-    StringId t_merge_2965_0001;
-    uint8_t  t_merge_2d54_0001;
+    int16_t ctok;
+    int16_t ibmpRace;
+    int16_t bkMode;
+    HBRUSH  hbrSav;
+    int32_t dpShields;
+    int16_t itokT;
+    int32_t dpT;
+    int16_t fCreatedDC;
+    int32_t dpArmor;
+    int16_t y;
+    uint8_t rgfSeen[256];
+    int16_t c;
+    int16_t i;
+    uint8_t brcT;
+    SHDEF  *lpshdef;
+    int16_t ibmp;
+    int16_t csh;
+    char   *psz;
+    int16_t dx;
+    int16_t j;
+    char    szT[96];
+    int16_t fJam;
+    RECT    rc;
+    int16_t x;
+    int16_t cshT;
+    int32_t dpShT;
+    DV      dv;
+    int16_t xT;
+    int16_t cshNew;
+    char   *t_merge_2766_0001;
+    uint8_t t_merge_2d54_0001;
 
     fCreatedDC = hdc == 0 ? 1 : 0;
     if (fCreatedDC != 0) {
@@ -751,8 +749,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
                     y += dyArial8;
                 }
                 if (dpArmor != 0) {
-                    t_merge_27d6_0001 = j <= 0 ? 46 : 44;
-                    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageArmorC), dpArmor, t_merge_27d6_0001);
+                    c = _wsprintf(szWork, PszGetCompressedString(idsLdDamageArmorC), dpArmor, j <= 0 ? 46 : 44);
                     TextOut(hdc, x, y, szWork, c);
                     y += dyArial8;
                 }
@@ -776,8 +773,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
             }
             if (fJam != 0) {
                 SetTextColor(hdc, 127);
-                t_merge_2965_0001 = (fJam & 0x40) != 0 && dpArmor == 0 ? idsTorpedoesDeflected2 : idsTorpedoesDeflected;
-                c = CchGetString(t_merge_2965_0001, szWork);
+                c = CchGetString((fJam & 0x40) != 0 && dpArmor == 0 ? idsTorpedoesDeflected2 : idsTorpedoesDeflected, szWork);
                 TextOut(hdc, x, y, szWork, c);
                 y += dyArial8;
                 SetTextColor(hdc, crButtonText);
@@ -1032,9 +1028,7 @@ void AnimateAttack(HDC hdc) {
     int16_t      t_merge_3fd2_0001;
     int16_t      t_merge_3fd2_0002;
     int16_t      t_scratch_m7c;
-    int16_t      t_call_41c9;
     int16_t      t_merge_41df_0001;
-    int16_t      t_call_41d7;
 
     grfWeapon = 0;
     fKill = 0;
@@ -1192,13 +1186,7 @@ void AnimateAttack(HDC hdc) {
                         }
                         hbmpSav = SelectObject(hdcMem, hbmpScreen);
                         t_scratch_m7c = abs(dx);
-                        if (t_scratch_m7c > abs(dy)) {
-                            t_call_41c9 = abs(dx);
-                            t_merge_41df_0001 = t_call_41c9;
-                        } else {
-                            t_call_41d7 = abs(dy);
-                            t_merge_41df_0001 = t_call_41d7;
-                        }
+                        t_merge_41df_0001 = t_scratch_m7c > abs(dy) ? abs(dx) : abs(dy);
                         cFrame = t_merge_41df_0001 * ((grfWeapon & 4) == 0 ? 4 : 8);
                         ptBase = ptTorp;
                         dxFrame = ptTorp.x - ptDest.x;

@@ -10,8 +10,6 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     int16_t iTech;
     int32_t lPower;
     int16_t rgType[16];
-    int32_t t_merge_5cb9_0001;
-    int32_t t_merge_5cf5_0001;
 
     memset(&score, 0, sizeof(SCORE));
     lppl = lpPlanets;
@@ -76,9 +74,7 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
             }
         }
     }
-    t_merge_5cb9_0001 = rgcsh[1] < score.cPlanet ? rgcsh[1] : score.cPlanet;
-    t_merge_5cf5_0001 = rgcsh[0] < score.cPlanet ? rgcsh[0] : score.cPlanet;
-    score.lScore += (int32_t)(t_merge_5cf5_0001 / 2) + (int32_t)(t_merge_5cb9_0001 * 2);
+    score.lScore += (int32_t)((rgcsh[0] < score.cPlanet ? rgcsh[0] : score.cPlanet) / 2) + (int32_t)((rgcsh[1] < score.cPlanet ? rgcsh[1] : score.cPlanet) * 2);
     if (rgcsh[2] > 0) {
         score.lScore += (int32_t)((int32_t)((int32_t)(rgcsh[2] * 8) * score.cPlanet) / (score.cPlanet + rgcsh[2]));
     }

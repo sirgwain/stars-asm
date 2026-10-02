@@ -13,8 +13,7 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
     HDC         hdc;
     PAINTSTRUCT ps;
     RECT        rcGBox;
-    int16_t     mdSBase;
-    HWND        t_scratch_me_2;
+    ScanView    mdSBase;
     uint16_t    t_scratch_me_3;
 
     switch (message) {
@@ -25,9 +24,9 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
         return 1;
     case WM_PAINT:
         hdc = BeginPaint(hwnd, &ps);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x07D5), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RELATIONS_FRIEND), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x07D6), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RELATIONS_ENEMY), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -43,7 +42,7 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
     case WM_DESTROY:
         if (fDirtyPlan == 0)
             break;
-        mdSBase = grbitScan & 0xf;
+        mdSBase = grbitScan & grbitScanViewMask;
         LogChangeRelations();
         InvalidateRect(hwndScanner, NULL, 1);
         break;
@@ -51,51 +50,48 @@ INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
         if (IS_WM_CTLCOLOR(message) == 0) {
             if (message == WM_INITDIALOG) {
                 StickyDlgPos(hwnd, &ptStickyRelationsDlg, 1);
-                CheckRadioButton(hwnd, 2004, 2006, rgplr[idPlayer].rgmdRelation[idPlayer == 0 ? 1 : 0] + 2004);
+                CheckRadioButton(hwnd, IDC_RELATIONS_NEUTRAL, IDC_RELATIONS_ENEMY, rgplr[idPlayer].rgmdRelation[idPlayer == 0 ? 1 : 0] + 2004);
                 for (i = 0; i < game.cPlayer; i++) {
                     if (i != idPlayer) {
-                        SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), LB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 0, 0, 0, NULL));
+                        SendMessage(GetDlgItem(hwnd, IDC_RELATIONS_PLAYER_LIST), LB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 0, 0, 0, NULL));
                     }
                 }
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), LB_SETCURSEL, 0, 0);
+                SendMessage(GetDlgItem(hwnd, IDC_RELATIONS_PLAYER_LIST), LB_SETCURSEL, 0, 0);
                 fDirtyPlan = 0;
                 goto L_0177;
             }
             if (message == WM_COMMAND) {
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL) {
                     StickyDlgPos(hwnd, &ptStickyRelationsDlg, 0);
-                    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), LB_GETCURSEL, 0, 0));
+                    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_RELATIONS_PLAYER_LIST), LB_GETCURSEL, 0, 0));
                     if (i >= idPlayer) {
                         i++;
                     }
                     EndDialog(hwnd, i + 3);
                     return 1;
                 }
-                if (GET_WM_COMMAND_ID(wParam, lParam) >= 0x7d4 && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_U16_0x07D6) {
-                    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), LB_GETCURSEL, 0, 0));
+                if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RELATIONS_NEUTRAL && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_RELATIONS_ENEMY) {
+                    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_RELATIONS_PLAYER_LIST), LB_GETCURSEL, 0, 0));
                     if (i >= idPlayer) {
                         i++;
                     }
                     t_scratch_me_3 = GET_WM_COMMAND_ID(wParam, lParam) - 2004;
                     rgplr[idPlayer].rgmdRelation[i] = LOBYTE(t_scratch_me_3);
                     fDirtyPlan = 1;
-                } else if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_U16_0x07D3) {
-                    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x07D3), LB_GETCURSEL, 0, 0));
+                } else if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_RELATIONS_PLAYER_LIST) {
+                    i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_RELATIONS_PLAYER_LIST), LB_GETCURSEL, 0, 0));
                     if (i >= idPlayer) {
                         i++;
                     }
-                    CheckRadioButton(hwnd, 2004, 2006, rgplr[idPlayer].rgmdRelation[i] + 2004);
+                    CheckRadioButton(hwnd, IDC_RELATIONS_NEUTRAL, IDC_RELATIONS_ENEMY, rgplr[idPlayer].rgmdRelation[i] + 2004);
                 } else if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                    WinHelp(hwnd, szHelpFile, 1, 1083);
+                    WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhPlayerRelationsDialog);
                     return 1;
                 }
             }
-        } else {
-            t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me_2 != GetDlgItem(hwnd, IDC_U16_0x07D3)) {
-                SetBkColor((HDC)wParam, crButtonFace);
-                return (INT_PTR)hbrButtonFace;
-            }
+        } else if (GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, IDC_RELATIONS_PLAYER_LIST)) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
         }
     }
     return 0;
@@ -108,7 +104,7 @@ INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         if (IS_WM_CTLCOLOR(message) == 0) {
             if (message == WM_INITDIALOG) {
                 SetWindowPos(hwnd, NULL, ptStickyBattlePlansDlg.x + 70, ptStickyBattlePlansDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-                SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0x1f, 0);
+                SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0x1f, 0);
                 SetDlgItemText(hwnd, IDC_EDIT1, btlplan.szName);
                 return 1;
             }
@@ -123,7 +119,7 @@ INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                     EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK ? 1 : 0);
                     return 1;
                 case IDC_HELP:
-                    WinHelp(hwnd, szHelpFile, 1, 1081);
+                    WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhBattlePlansDialog);
                     return 1;
                 }
             }
@@ -145,231 +141,224 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t fRet;
     RECT    rc;
     int16_t cLen;
-    HWND    t_scratch_m16;
-    uint8_t t_11bd;
 
     if (message == WM_ERASEBKGND) {
         GetClientRect(hwnd, &rc);
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        if (message == WM_INITDIALOG) {
-            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 1);
-            iPlanSelDlg = 0;
-            if (sel.grobj == grobjFleet) {
-                iPlanSelDlg = sel.fl.iplan;
-            }
-            btlplan = rglpbtlplan[idPlayer][iPlanSelDlg];
-            for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
-            }
-            SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0);
-            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
-            for (i = 408; i <= 413; i++) {
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
-            }
-            SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
-            for (i = 400; i <= 407; i++) {
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
-            }
-            SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0);
-            if (game.fSinglePlr == 0) {
-                for (i = 120; i <= 123; i++) {
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
-                }
-                for (i = 0; i < game.cPlayer; i++) {
-                    if (i != idPlayer) {
-                        SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, NULL));
-                    }
-                }
-                i = btlplan.iplrAttack;
-                if (i >= idPlayer + 4) {
-                    i--;
-                }
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
-            } else {
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEveryone));
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, 0, 0);
-                EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0422), 0);
-            }
-            for (i = 400; i <= 407; i++) {
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
-            }
-            SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0);
-            SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0);
-            fDirtyPlan = 0;
-            if (gd.fTutorial != 0) {
-                AdvanceTutor();
-            }
-            return 1;
-        }
-        if (message == WM_COMMAND) {
-            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
-            case IDOK:
-            case IDCANCEL:
-                if (fDirtyPlan != 0) {
-                    rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                    LogChangeBtlplan(&btlplan);
-                }
-                StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0);
-                EndDialog(hwnd, iPlanSelDlg);
-                if (sel.grobj == grobjFleet) {
-                    FillBattleDD(sel.fl.iplan + 1);
-                }
-                iPlanSelDlg = -1;
-                return 1;
-            case IDC_U16_0x041D:
-                btlplan.fDumpCargo = LOWORD(SendDlgItemMessage(hwnd, 1053, BM_GETCHECK, 0, 0));
-                fDirtyPlan = 1;
-                break;
-            case IDC_DELETE:
-                if (fDirtyPlan != 0) {
-                    rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                    LogChangeBtlplan(&btlplan);
-                    fDirtyPlan = 0;
-                }
-                btlplan.fDelete = 1;
-                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                btlplan.iplan = iPlanSelDlg;
-                if (FDeleteBattlePlan(iPlanSelDlg, 1) != 0) {
-                    LogChangeBtlplan(&btlplan);
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg - 1, 0);
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0, 0);
-                    for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
-                        SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
-                    }
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg - 1, 0);
-                    goto LSelectName;
-                }
-                btlplan.fDelete = 0;
-                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                break;
-            case IDC_U16_0x041F:
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
-                btlplan.mdTarget1 = i;
-                fDirtyPlan = 1;
-                break;
-            case IDC_U16_0x0420:
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
-                btlplan.mdTarget2 = i;
-                fDirtyPlan = 1;
-                break;
-            case IDC_U16_0x0422:
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
-                if (game.fSinglePlr != 0) {
-                    i = 3;
-                } else if (i >= idPlayer + 4) {
-                    i++;
-                }
-                btlplan.iplrAttack = i;
-                fDirtyPlan = 1;
-                break;
-            case IDC_U16_0x0421:
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 0x407, 0, 0));
-                btlplan.mdTactic = i;
-                fDirtyPlan = 1;
-                break;
-            case IDC_RENAME:
-            LRename:
-                StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0);
-                lpProc = MakeProcInstance(NewPlanNameDlg, hInst);
-                fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc);
-                FreeProcInstance(lpProc);
-                SetFocus(hwnd);
-                if (fRet != 0) {
-                    rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0, 0);
-                    for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
-                        SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
-                    }
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0);
-                }
-                EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-                EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
-                break;
-            case 0x41c:
-                if (rgcbtlplan[idPlayer] == 15) {
-                    return 0;
-                }
-                if (fDirtyPlan != 0) {
-                    rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                    LogChangeBtlplan(&btlplan);
-                    fDirtyPlan = 0;
-                }
-                t_11bd = rgcbtlplan[idPlayer];
-                rgcbtlplan[idPlayer]++;
-                iPlanSelDlg = t_11bd;
-                cLen = strlen(btlplan.szName);
-                if (cLen <= 27) {
-                    if (btlplan.szName[cLen - 1] != ')' || isdigit(btlplan.szName[cLen - 2]) == 0 || btlplan.szName[cLen - 3] != '(') {
-                        strcpy(&btlplan.szName[cLen], " (2)");
-                    } else if (btlplan.szName[cLen - 2] == '9') {
-                        btlplan.szName[cLen - 2] = '0';
-                    } else {
-                        btlplan.szName[cLen - 2] = btlplan.szName[cLen - 2] + 1;
-                    }
-                }
-                btlplan.iplan = iPlanSelDlg;
-                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_RESETCONTENT, 0, 0);
-                for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
-                    SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
-                }
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_SETCURSEL, iPlanSelDlg, 0);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0);
-                i = btlplan.iplrAttack;
-                if (i >= idPlayer + 4) {
-                    i--;
-                }
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
-                fDirtyPlan = 1;
-                wParam = 1055;
-                EnableWindow(GetDlgItem(hwnd, IDC_RENAME), 1);
-                goto LRename;
-            case IDC_U16_0x041E:
-            LSelectName:
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x041E), CB_GETCURSEL, 0, 0));
-                if (i == iPlanSelDlg)
-                    break;
-                if (fDirtyPlan != 0) {
-                    rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
-                    LogChangeBtlplan(&btlplan);
-                    fDirtyPlan = 0;
-                }
-                iPlanSelDlg = i;
-                btlplan = rglpbtlplan[idPlayer][iPlanSelDlg];
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041F), CB_SETCURSEL, btlplan.mdTarget1, 0);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0420), CB_SETCURSEL, btlplan.mdTarget2, 0);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x041D), BM_SETCHECK, btlplan.fDumpCargo, 0);
-                wParam = 1055;
-                EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
-                EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0421), CB_SETCURSEL, btlplan.mdTactic, 0);
-                i = btlplan.iplrAttack;
-                if (i >= idPlayer + 4) {
-                    i--;
-                }
-                SendMessage(GetDlgItem(hwnd, IDC_U16_0x0422), CB_SETCURSEL, i, 0);
-                break;
-            case IDC_HELP:
-                WinHelp(hwnd, szHelpFile, 1, 1081);
-                return 1;
-            }
-        }
-    } else {
-        for (idc = 1053; idc <= 1058; idc++) {
-            t_scratch_m16 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_m16 == GetDlgItem(hwnd, idc))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (idc = 1053; idc <= 1058 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, idc); idc++) {
         }
         if (idc >= 1053 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    if (message == WM_INITDIALOG) {
+        StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 1);
+        iPlanSelDlg = 0;
+        if (sel.grobj == grobjFleet) {
+            iPlanSelDlg = sel.fl.iplan;
+        }
+        btlplan = rglpbtlplan[idPlayer][iPlanSelDlg];
+        for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+        }
+        SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
+        EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
+        EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+        for (i = 408; i <= 413; i++) {
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+        }
+        SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_SETCURSEL, btlplan.mdTactic, 0);
+        for (i = 400; i <= 407; i++) {
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_PRIMARY_TARGET), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+        }
+        SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_PRIMARY_TARGET), CB_SETCURSEL, btlplan.mdTarget1, 0);
+        if (game.fSinglePlr == 0) {
+            for (i = 120; i <= 123; i++) {
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+            }
+            for (i = 0; i < game.cPlayer; i++) {
+                if (i != idPlayer) {
+                    SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, NULL));
+                }
+            }
+            i = btlplan.iplrAttack;
+            if (i >= idPlayer + 4) {
+                i--;
+            }
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, i, 0);
+        } else {
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEveryone));
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, 0, 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), 0);
+        }
+        for (i = 400; i <= 407; i++) {
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
+        }
+        SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0);
+        fDirtyPlan = 0;
+        if (gd.fTutorial != 0) {
+            AdvanceTutor();
+        }
+        return 1;
+    }
+    if (message == WM_COMMAND) {
+        switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+        case IDOK:
+        case IDCANCEL:
+            if (fDirtyPlan != 0) {
+                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+                LogChangeBtlplan(&btlplan);
+            }
+            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0);
+            EndDialog(hwnd, iPlanSelDlg);
+            if (sel.grobj == grobjFleet) {
+                FillBattleDD(sel.fl.iplan + 1);
+            }
+            iPlanSelDlg = -1;
+            return 1;
+        case IDC_BATTLE_PLAN_DUMP_CARGO:
+            btlplan.fDumpCargo = LOWORD(SendDlgItemMessage(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO, BM_GETCHECK, 0, 0));
+            fDirtyPlan = 1;
+            break;
+        case IDC_DELETE:
+            if (fDirtyPlan != 0) {
+                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+                LogChangeBtlplan(&btlplan);
+                fDirtyPlan = 0;
+            }
+            btlplan.fDelete = 1;
+            rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+            btlplan.iplan = iPlanSelDlg;
+            if (FDeleteBattlePlan(iPlanSelDlg, 1) != 0) {
+                LogChangeBtlplan(&btlplan);
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg - 1, 0);
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_RESETCONTENT, 0, 0);
+                for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
+                    SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+                }
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg - 1, 0);
+                goto LSelectName;
+            }
+            btlplan.fDelete = 0;
+            rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+            break;
+        case IDC_BATTLE_PLAN_PRIMARY_TARGET:
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
+            btlplan.mdTarget1 = i;
+            fDirtyPlan = 1;
+            break;
+        case IDC_BATTLE_PLAN_SECONDARY_TARGET:
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
+            btlplan.mdTarget2 = i;
+            fDirtyPlan = 1;
+            break;
+        case IDC_BATTLE_PLAN_ATTACK_WHO:
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
+            if (game.fSinglePlr != 0) {
+                i = 3;
+            } else if (i >= idPlayer + 4) {
+                i++;
+            }
+            btlplan.iplrAttack = i;
+            fDirtyPlan = 1;
+            break;
+        case IDC_BATTLE_PLAN_TACTIC:
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
+            btlplan.mdTactic = i;
+            fDirtyPlan = 1;
+            break;
+        case IDC_RENAME:
+        LRename:
+            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0);
+            lpProc = MakeProcInstance(NewPlanNameDlg, hInst);
+            fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc);
+            FreeProcInstance(lpProc);
+            SetFocus(hwnd);
+            if (fRet != 0) {
+                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_RESETCONTENT, 0, 0);
+                for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
+                    SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+                }
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
+            }
+            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
+            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+            break;
+        case IDC_BATTLE_PLAN_COPY:
+            if (rgcbtlplan[idPlayer] == 15) {
+                return 0;
+            }
+            if (fDirtyPlan != 0) {
+                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+                LogChangeBtlplan(&btlplan);
+                fDirtyPlan = 0;
+            }
+            iPlanSelDlg = rgcbtlplan[idPlayer]++;
+            cLen = strlen(btlplan.szName);
+            if (cLen <= 27) {
+                if (btlplan.szName[cLen - 1] != ')' || isdigit(btlplan.szName[cLen - 2]) == 0 || btlplan.szName[cLen - 3] != '(') {
+                    strcpy(&btlplan.szName[cLen], " (2)");
+                } else if (btlplan.szName[cLen - 2] == '9') {
+                    btlplan.szName[cLen - 2] = '0';
+                } else {
+                    btlplan.szName[cLen - 2] = btlplan.szName[cLen - 2] + 1;
+                }
+            }
+            btlplan.iplan = iPlanSelDlg;
+            rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_SETCURSEL, btlplan.mdTactic, 0);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_RESETCONTENT, 0, 0);
+            for (i = 0; i < rgcbtlplan[idPlayer]; i++) {
+                SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_ADDSTRING, 0, (LPARAM)rglpbtlplan[idPlayer][i].szName);
+            }
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg, 0);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_PRIMARY_TARGET), CB_SETCURSEL, btlplan.mdTarget1, 0);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0);
+            i = btlplan.iplrAttack;
+            if (i >= idPlayer + 4) {
+                i--;
+            }
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, i, 0);
+            fDirtyPlan = 1;
+            wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET;
+            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), 1);
+            goto LRename;
+        case IDC_BATTLE_PLAN_SELECT:
+        LSelectName:
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_GETCURSEL, 0, 0));
+            if (i == iPlanSelDlg)
+                break;
+            if (fDirtyPlan != 0) {
+                rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
+                LogChangeBtlplan(&btlplan);
+                fDirtyPlan = 0;
+            }
+            iPlanSelDlg = i;
+            btlplan = rglpbtlplan[idPlayer][iPlanSelDlg];
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_PRIMARY_TARGET), CB_SETCURSEL, btlplan.mdTarget1, 0);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0);
+            wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET;
+            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), iPlanSelDlg <= 0 ? 0 : 1);
+            EnableWindow(GetDlgItem(hwnd, IDC_DELETE), iPlanSelDlg <= 0 ? 0 : 1);
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_TACTIC), CB_SETCURSEL, btlplan.mdTactic, 0);
+            i = btlplan.iplrAttack;
+            if (i >= idPlayer + 4) {
+                i--;
+            }
+            SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, i, 0);
+            break;
+        case IDC_HELP:
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhBattlePlansDialog);
+            return 1;
         }
     }
     return 0;
@@ -455,7 +444,7 @@ void SpankTheCheaters() {
             if (lpfl->fDead == 0 && (int16_t)(int8_t)rgfCheater[lpfl->iPlayer] != 0) {
                 if (Random(12) == 0) {
                     lpfl->fDead = 1;
-                    FSendPlrMsg2(lpfl->iPlayer, 260, -5, lpfl->id, 0);
+                    FSendPlrMsg2(lpfl->iPlayer, idmHasDefectedRanksDueInabilityProjectLegitimate, gotoSerialNumber, lpfl->id, 0);
                 } else {
                     fSellOff = 0;
                     for (i = 0; i <= 2; i++) {
@@ -472,7 +461,7 @@ void SpankTheCheaters() {
                         }
                     }
                     if (fSellOff != 0) {
-                        FSendPlrMsg2(lpfl->iPlayer, 261, -5, lpfl->id, LOWORD(pctSell));
+                        FSendPlrMsg2(lpfl->iPlayer, idmCrewHasSoldOffCargoBlackMarket, gotoSerialNumber, lpfl->id, LOWORD(pctSell));
                     }
                 }
             }
@@ -488,7 +477,7 @@ void SpankTheCheaters() {
                         lSell = 1;
                     }
                     lppl->cMines -= LOWORD(lSell);
-                    FSendPlrMsg2(lppl->iPlayer, 262, -5, lppl->id, LOWORD(lSell));
+                    FSendPlrMsg2(lppl->iPlayer, idmFreedomFightersHaveAttackedDestroyedMinesPress, gotoSerialNumber, lppl->id, LOWORD(lSell));
                 } else if (Random(15) == 0) {
                     i = Random(3);
                     pctSell = (int16_t)(Random(41) + 5);
@@ -498,7 +487,7 @@ void SpankTheCheaters() {
                             lSell = 30000;
                         }
                         lppl->rgwtMin[i] -= lSell;
-                        FSendPlrMsg(lppl->iPlayer, 263, -5, lppl->id, LOWORD(lSell), i + 1, 0, 0, 0, 0);
+                        FSendPlrMsg(lppl->iPlayer, idmFreedomFightersHaveStolenKtStockpilesPress, gotoSerialNumber, lppl->id, LOWORD(lSell), i + 1, 0, 0, 0, 0);
                     }
                 }
             }
@@ -508,9 +497,9 @@ void SpankTheCheaters() {
 }
 
 int16_t FFleetHasBombs(FLEET *lpfl) {
-    HUL    *lphul;
-    int16_t imd;
-    int16_t ishdef;
+    HUL       *lphul;
+    HullAttack imd;
+    int16_t    ishdef;
 
     for (ishdef = 0; ishdef < 16; ishdef++) {
         if (lpfl->rgcsh[ishdef] != 0) {
@@ -564,7 +553,7 @@ int16_t FHullHasTeeth(HUL *lphul) {
     lphs = lphul->rghs;
     ihs = 0;
     while (ihs < lphul->chs) {
-        if ((lphs->grhst & 0x30) != 0 && lphs->cItem > 0) {
+        if ((lphs->grhst & hstWeapon) != 0 && lphs->cItem > 0) {
             return 1;
         }
         ihs++;
@@ -589,26 +578,26 @@ void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef) {
     iplr = lpfl->iplr;
     lpshdef = rglpshdef[iplr] + ishdef;
     if (FHullHasTeeth(&lpshdef->hul) != 0) {
-        ptok->mdTarget0 = 3;
+        ptok->mdTarget0 = mdTargetArmedShips;
     } else if (FHullHasBombs(&lpshdef->hul) != 0) {
-        ptok->mdTarget0 = 4;
+        ptok->mdTarget0 = mdTargetBombersFreighters;
     } else if (FFuelTanker(lpshdef) != 0) {
-        ptok->mdTarget0 = 6;
+        ptok->mdTarget0 = mdTargetFuelTransports;
     } else if (WtMaxShdefStat(lpshdef, 2) != 0) {
-        ptok->mdTarget0 = 7;
+        ptok->mdTarget0 = mdTargetFreighters;
     } else {
-        ptok->mdTarget0 = 5;
+        ptok->mdTarget0 = mdTargetUnarmedShips;
     }
     ibp = lpfl->iplan;
     lpbtlplan = rglpbtlplan[iplr] + ibp;
     ptok->mdTarget1 = lpbtlplan->mdTarget1;
     ptok->mdTarget2 = lpbtlplan->mdTarget2;
-    if (ptok->mdTarget0 == 3) {
+    if (ptok->mdTarget0 == mdTargetArmedShips) {
         ptok->mdTactic = lpbtlplan->mdTactic;
     } else {
-        ptok->mdTactic = 0;
+        ptok->mdTactic = mdTacticDisengage;
     }
-    if (ptok->mdTactic == 0) {
+    if (ptok->mdTactic == mdTacticDisengage) {
         ptok->dzDis = 7;
     }
     return;
@@ -713,25 +702,25 @@ void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT16 *pp
 }
 
 int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uint16_t *pgrfSpectator) {
-    int16_t  iplrStarbase;
-    FLEET   *lpflCur;
-    int32_t  rgcsh[16];
-    uint16_t grPlr;
-    int16_t  iplrCur;
-    PLANET  *lppl;
-    int16_t  cplr;
-    int16_t  i;
-    int16_t  mdRel;
-    uint8_t  rgctok[16];
-    int16_t  fChange;
-    uint16_t iplrAttack;
-    int16_t  fAttack;
-    int16_t  cshdef;
-    int16_t  ishdef;
-    int16_t  cflTotal;
-    uint16_t grfPlayer;
-    int16_t  ctokNew;
-    int16_t  ctokFleet;
+    int16_t   iplrStarbase;
+    FLEET    *lpflCur;
+    int32_t   rgcsh[16];
+    uint16_t  grPlr;
+    int16_t   iplrCur;
+    PLANET   *lppl;
+    int16_t   cplr;
+    int16_t   i;
+    int16_t   mdRel;
+    uint8_t   rgctok[16];
+    int16_t   fChange;
+    AttackWho iplrAttack;
+    int16_t   fAttack;
+    int16_t   cshdef;
+    int16_t   ishdef;
+    int16_t   cflTotal;
+    uint16_t  grfPlayer;
+    int16_t   ctokNew;
+    int16_t   ctokFleet;
 
     fAttack = 0;
     iplrStarbase = -1;
@@ -750,15 +739,15 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
             iplrAttack = rglpbtlplan[iplrStarbase]->iplrAttack;
             if (FHullHasTeeth(&rglpshdefSB[iplrStarbase][lppl->isb].hul) != 0) {
                 switch (iplrAttack) {
-                case 3:
+                case iplrAttackEveryone:
                     rggrfAttack[iplrCur] = ~(1 << iplrStarbase) & 0xffff;
                     break;
-                case 1:
-                case 2:
+                case iplrAttackEnemies:
+                case iplrAttackNeutralsEnemies:
                     for (i = 0; i < game.cPlayer; i++) {
                         if (i != iplrStarbase) {
                             mdRel = rgplr[iplrStarbase].rgmdRelation[i];
-                            if (mdRel == 2 || (mdRel == 0 && iplrAttack == 2)) {
+                            if (mdRel == 2 || (mdRel == 0 && iplrAttack == iplrAttackNeutralsEnemies)) {
                                 rggrfAttack[iplrStarbase] |= 1 << i;
                             }
                         }
@@ -766,7 +755,7 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
                     break;
                 default:
                     rggrfAttack[iplrCur] |= 1 << (iplrAttack - 4);
-                case 0:
+                case iplrAttackNobody:
                     break;
                 }
             }
@@ -784,18 +773,18 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
                 fAttack = 1;
                 iplrAttack = rglpbtlplan[iplrCur][lpflCur->iplan].iplrAttack;
                 if (rglpbtlplan[lpflCur->iplr][lpflCur->iplan].mdTarget1 == mdTargetNone) {
-                    iplrAttack = 0;
+                    iplrAttack = iplrAttackNobody;
                 }
                 switch (iplrAttack) {
-                case 3:
+                case iplrAttackEveryone:
                     rggrfAttack[iplrCur] = ~(1 << iplrCur) & 0xffff;
                     break;
-                case 1:
-                case 2:
+                case iplrAttackEnemies:
+                case iplrAttackNeutralsEnemies:
                     for (i = 0; i < game.cPlayer; i++) {
                         if (i != iplrCur) {
                             mdRel = rgplr[iplrCur].rgmdRelation[i];
-                            if (mdRel == 2 || (mdRel == 0 && iplrAttack == 2)) {
+                            if (mdRel == 2 || (mdRel == 0 && iplrAttack == iplrAttackNeutralsEnemies)) {
                                 rggrfAttack[iplrCur] |= 1 << i;
                             }
                         }
@@ -803,7 +792,7 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
                     break;
                 default:
                     rggrfAttack[iplrCur] |= 1 << (iplrAttack - 4);
-                case 0:
+                case iplrAttackNobody:
                     break;
                 }
             }
@@ -815,13 +804,13 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
     if (fAttack == 0) {
         return 0;
     }
-    iplrAttack = 0;
+    iplrAttack = iplrAttackNobody;
     for (i = 0; i < game.cPlayer; i++) {
         if (rggrfAttack[i] != 0) {
             iplrAttack |= grfPlayer & rggrfAttack[i];
         }
     }
-    if (iplrAttack == 0) {
+    if (iplrAttack == iplrAttackNobody) {
         return 0;
     }
     for (i = 0; i < game.cPlayer; i++) {
@@ -873,7 +862,7 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
         if ((grfPlayer & grPlr) != 0) {
             for (ishdef = 0; ishdef < 16; ishdef++) {
                 if (lpflCur->rgcsh[ishdef] != 0) {
-                    if (LphuldefFromId(rglpshdef[iplrCur][ishdef].hul.ihuldef)->imdAttack != 0) {
+                    if (LphuldefFromId(rglpshdef[iplrCur][ishdef].hul.ihuldef)->imdAttack != hullAttackNone) {
                         rgcsh[iplrCur] += lpflCur->rgcsh[ishdef];
                     }
                     cshdef++;
@@ -886,7 +875,7 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
         lpflCur = lpflCur->lpflNext;
     } while (lpflCur != lpfl);
     cplr = 0;
-    for (; iplrAttack != 0; iplrAttack >>= 1) {
+    for (; iplrAttack != iplrAttackNobody; iplrAttack >>= 1) {
         if ((iplrAttack & 1) != 0) {
             cplr++;
         }
@@ -958,14 +947,13 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
     int16_t  j;
     int16_t  cEngineT;
     uint16_t wtCargoShdefMax;
-    int16_t  iEngine;
+    iengine  iEngine;
     ENGINE  *lpengine;
-    uint16_t t_scratch_m22;
 
     if (lpshdef == 0) {
         lpshdef = rglpshdef[lpfl->iPlayer] + ishdef;
     }
-    iEngine = -1;
+    iEngine = 0xffff;
     cHalfThruster = 0;
     cThruster = 0;
     for (j = 0; j < lpshdef->hul.chs; j++) {
@@ -976,13 +964,13 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
             case hstEngine:
                 iEngine = lpshdef->hul.rghs[j].iItem;
                 cEngineT = lpshdef->hul.rghs[j].cItem;
-                if (iEngine != 8)
+                if (iEngine != iengineEnigmaPulsar)
                     break;
                 cHalfThruster += lpshdef->hul.rghs[j].cItem;
                 break;
             case hstSpecialM:
-                if (lpshdef->hul.rghs[j].iItem != 7) {
-                    if (lpshdef->hul.rghs[j].iItem != 8)
+                if (lpshdef->hul.rghs[j].iItem != ispecialMManeuveringJet) {
+                    if (lpshdef->hul.rghs[j].iItem != ispecialMOverthruster)
                         break;
                     cThruster += lpshdef->hul.rghs[j].cItem * 2;
                     break;
@@ -990,28 +978,28 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
                 cThruster += lpshdef->hul.rghs[j].cItem;
                 break;
             case hstSpecialE:
-                if (lpshdef->hul.rghs[j].iItem != 4)
+                if (lpshdef->hul.rghs[j].iItem != ispecialEMultiFunctionPod)
                     break;
                 cThruster += lpshdef->hul.rghs[j].cItem;
                 break;
             case hstMining:
-                if (lpshdef->hul.rghs[j].iItem == 6) {
+                if (lpshdef->hul.rghs[j].iItem == iminingAlienMiner) {
                     cHalfThruster += lpshdef->hul.rghs[j].cItem;
                 }
             }
         }
     }
     cThruster += (int16_t)(cHalfThruster + 1) / 2;
-    if (iEngine == -1 || cEngineT == 0) {
+    if (iEngine == 0xffff || cEngineT == 0) {
         return 0;
     }
     lpengine = LpengineFromId(iEngine);
     switch (iEngine) {
-    case 7:
-    case 8:
-    case 9:
-    case 14:
-    case 15:
+    case iengineInterspace10:
+    case iengineEnigmaPulsar:
+    case iengineTransStar10:
+    case iengineTransGalacticMizerScoop:
+    case iengineGalaxyScoop:
         iWarp = 10;
         break;
     default:
@@ -1036,8 +1024,7 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
         if (fDumpCargo != 0) {
             spd--;
         }
-        t_scratch_m22 = Random(15);
-        ptok->dwt = t_scratch_m22;
+        ptok->dwt = Random(15);
     }
     if (ptok != 0) {
         ptok->wt = wt;
@@ -1146,8 +1133,8 @@ int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
     for (ihs = 0; ihs < lphul->chs; ihs++) {
         part.hs = lphul->rghs[ihs];
         if (part.hs.cItem != 0) {
-            if ((part.hs.grhst & 0x800) == 0) {
-                if ((part.hs.grhst & 0x10) != 0 && part.hs.iItem == 18) {
+            if ((part.hs.grhst & hstSpecialE) == 0) {
+                if ((part.hs.grhst & hstBeam) != 0 && part.hs.iItem == 18) {
                     pctBC = 10;
                     for (i = 0; i < (int16_t)part.hs.cItem; i++) {
                         pct += (int16_t)((100 - pct) * pctBC) / 100;
@@ -1223,11 +1210,12 @@ void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit) {
     dxyLim = -1;
     ldp = DpShieldOfShdef(lpshdef, ptok->iplr);
     for (ihs = 0; ihs < lphul->chs; ihs++) {
-        if ((lphul->rghs[ihs].grhst & 0x18be) != 0 && lphul->rghs[ihs].cItem != 0) {
+        if ((lphul->rghs[ihs].grhst & (hstScanner | hstShield | hstArmor | hstBeam | hstTorp | hstMining | hstSpecialE | hstSpecialM)) != 0 &&
+            lphul->rghs[ihs].cItem != 0) {
             pctJam = 100;
             dxyPart = -1;
             part.hs = lphul->rghs[ihs];
-            if ((part.hs.grhst & 0x30) != 0) {
+            if ((part.hs.grhst & hstWeapon) != 0) {
                 idPlayer = ptok->iplr;
                 FLookupPart(&part);
                 idPlayer = -1;
@@ -1243,26 +1231,26 @@ void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit) {
                 if ((uint16_t)(part.hs.iItem - 4) > 11)
                     break;
                 switch (part.hs.iItem) {
-                case 8:
-                case 9:
-                case 10:
-                case 11:
+                case ispecialEJammer10:
+                case ispecialEJammer20:
+                case ispecialEJammer30:
+                case ispecialEJammer50:
                     idPlayer = ptok->iplr;
                     FLookupPart(&part);
                     idPlayer = -1;
                     pctJam = 100 - part.pspecial->grAbility;
                     break;
-                case 4:
+                case ispecialEMultiFunctionPod:
                     pctJam = 90;
                     break;
-                case 14:
+                case ispecialEEnergyDampener:
                     *pfDampeningField = 1;
                     break;
-                case 15:
+                case ispecialETachyonDetector:
                     ptok->fDetector = 1;
                     break;
-                case 12:
-                case 13:
+                case ispecialEEnergyCapacitor:
+                case ispecialEFluxCapacitor:
                     idPlayer = ptok->iplr;
                     FLookupPart(&part);
                     idPlayer = -1;
@@ -1390,7 +1378,6 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
     int16_t   fDumpCargo;
     int16_t   ishdef;
     uint8_t   rgfTorp[16];
-    uint16_t  t_scratch_m44_2;
     uint16_t  t_merge_4b51_0001;
 
     initMin = -1;
@@ -1422,14 +1409,14 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
             CheckWeapons(ptok, &fDampeningField, pinit);
             rgfTorp[iplr] |= LOBYTE(ptok->fTorp);
             if (ptok->initBase == 0xff) {
-                ptok->mdTarget0 = 5;
+                ptok->mdTarget0 = mdTargetUnarmedShips;
             } else {
-                ptok->mdTarget0 = 3;
+                ptok->mdTarget0 = mdTargetArmedShips;
             }
-            ptok->mdTarget1 = 1;
-            ptok->mdTarget2 = 1;
+            ptok->mdTarget1 = mdTargetAny;
+            ptok->mdTarget2 = mdTargetAny;
             ptok->dv.pctDp = lppl->pctDp;
-            ptok->mdTactic = 5;
+            ptok->mdTactic = mdTacticMaxDamage;
             if (ptok->dv.pctDp != 0) {
                 ptok->dv.pctSh = 100;
             }
@@ -1459,8 +1446,7 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
                         CheckWeapons(ptok, &fDampeningField, pinit);
                         rgfTorp[iplr] |= LOBYTE(ptok->fTorp);
                         CheckTarget(ptok, lpflCur, ishdef);
-                        t_scratch_m44_2 = SpdOfShip(lpflCur, ishdef, ptok, fDumpCargo, NULL);
-                        ptok->spd = t_scratch_m44_2;
+                        ptok->spd = SpdOfShip(lpflCur, ishdef, ptok, fDumpCargo, NULL);
                         ptok++;
                         if ((int16_t)((uint8_t *)ptok - (uint8_t *)vrgtok) / 29 > 0xff)
                             goto LTooManyTokens;
@@ -1477,7 +1463,7 @@ LTooManyTokens:
         ptokT->fMoved = 1;
         ptokT->fActive = 1;
         if (ptokT->initMin == 0xff) {
-            ptokT->mdTarget1 = 0;
+            ptokT->mdTarget1 = mdTargetNone;
         }
         t_merge_4b51_0001 = ptokT->dpShield != 0 && GetRaceGrbit(&rgplr[ptokT->iplr], ibitRaceRegeneratingShields) != 0;
         ptokT->fRegen = t_merge_4b51_0001;
@@ -1534,7 +1520,7 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
     }
     lphul = &LpshdefFromTok(ptok)->hul;
     for (ihs = 0; ihs < lphul->chs; ihs++) {
-        if ((lphul->rghs[ihs].grhst & 0x30) != 0 && lphul->rghs[ihs].cItem != 0) {
+        if ((lphul->rghs[ihs].grhst & hstWeapon) != 0 && lphul->rghs[ihs].cItem != 0) {
             part.hs = lphul->rghs[ihs];
             idPlayer = ptok->iplr;
             FLookupPart(&part);
@@ -1569,7 +1555,7 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
                     if (ptokTarget->pctBeamDef < 100) {
                         dp = (int32_t)(dp * (int16_t)ptokTarget->pctBeamDef) / 100;
                     }
-                    if ((part.pbeam->grfAbilities & 1) != 0) {
+                    if ((part.pbeam->grfAbilities & beamSapper) != 0) {
                         dpShieldsLeft = (uint32_t)((uint32_t)ptokTarget->dpShield * (uint32_t)ptok->csh);
                         if (dp > dpShieldsLeft) {
                             dp = dpShieldsLeft;
@@ -1632,7 +1618,7 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
                 idPlayer = ptok->iplr;
                 FLookupPart(&part);
                 idPlayer = -1;
-                if ((part.pbeam->grfAbilities & 1) == 0 && part.pbeam->dRangeMax > dzNonSapper) {
+                if ((part.pbeam->grfAbilities & beamSapper) == 0 && part.pbeam->dRangeMax > dzNonSapper) {
                     dzNonSapper = part.pbeam->dRangeMax;
                 }
             }
@@ -1640,7 +1626,7 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
     } else {
         dzNonSapper = ptok->dxyLim;
     }
-    if (ptok->dxyMax < ptok->dxyLim && (ptok->mdTactic == 5 || ptok->mdTactic == 3)) {
+    if (ptok->dxyMax < ptok->dxyLim && (ptok->mdTactic == mdTacticMaxDamage || ptok->mdTactic == mdTacticMaxNetDamage)) {
         dzMax = ptok->dxyMax + ptok->dMovesLeft;
     }
     ptokTarget = vrgtok;
@@ -1685,11 +1671,11 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
             tok = vrgtok[itokLook];
             if (tok.fActive != 0 && (uint16_t)(mdTarget - 1) <= 6) {
                 switch (mdTarget) {
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
+                case mdTargetArmedShips:
+                case mdTargetBombersFreighters:
+                case mdTargetUnarmedShips:
+                case mdTargetFuelTransports:
+                case mdTargetFreighters:
                     switch (mdTarget) {
                     case mdTargetArmedShips:
                     case mdTargetFuelTransports:
@@ -1702,12 +1688,12 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
                             continue;
                         break;
                     case mdTargetBombersFreighters:
-                        if (tok.mdTarget0 != 4 && tok.mdTarget0 != 7)
+                        if (tok.mdTarget0 != mdTargetBombersFreighters && tok.mdTarget0 != mdTargetFreighters)
                             continue;
                     }
-                case 1:
+                case mdTargetAny:
                     return 1;
-                case 2:
+                case mdTargetStarbase:
                     if (tok.grobj == grobjPlanet) {
                         return 1;
                     }
@@ -1718,35 +1704,35 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
     return 0;
 }
 
-int16_t FIsTargetOfMdTarget(TOK *ptok, int16_t mdTarget) {
-    if ((uint16_t)mdTarget <= 7) {
+int16_t FIsTargetOfMdTarget(TOK *ptok, MdTarget mdTarget) {
+    if (mdTarget <= mdTargetFreighters) {
         switch (mdTarget) {
-        case 0:
+        case mdTargetNone:
             break;
-        case 1:
+        case mdTargetAny:
             return 1;
-        case 2:
+        case mdTargetStarbase:
             if (ptok->grobj == grobjPlanet) {
                 return 1;
             }
             return 0;
-        case 4:
-            if (ptok->mdTarget0 == 4 || ptok->mdTarget0 == 7) {
+        case mdTargetBombersFreighters:
+            if (ptok->mdTarget0 == mdTargetBombersFreighters || ptok->mdTarget0 == mdTargetFreighters) {
                 return 1;
             }
             return 0;
-        case 3:
-        case 6:
-        case 7:
+        case mdTargetArmedShips:
+        case mdTargetFuelTransports:
+        case mdTargetFreighters:
             if (ptok->mdTarget0 == mdTarget) {
                 return 1;
             }
             return 0;
-        case 5:
+        case mdTargetUnarmedShips:
             switch (ptok->mdTarget0) {
-            case 5:
-            case 7:
-            case 6:
+            case mdTargetUnarmedShips:
+            case mdTargetFreighters:
+            case mdTargetFuelTransports:
                 return 1;
             default:
                 return 0;
@@ -1832,7 +1818,7 @@ int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint
                 } else {
                     dpGiven = 0;
                 }
-                dpTaken = DpFromPtokBrcToBrc(ptok, 0, (i & 0xf) << 4 & 0xff, ptokSrc, ptokSrc->mdTactic == 0 ? 1 : 0);
+                dpTaken = DpFromPtokBrcToBrc(ptok, 0, (i & 0xf) << 4 & 0xff, ptokSrc, ptokSrc->mdTactic == mdTacticDisengage ? 1 : 0);
                 scoreThem = ScoreFromGiveAndTakeAndTactic(dpTaken, dpGiven, ptok->mdTactic);
                 if (scoreThem <= scoreThemBest) {
                     scoreThemBest = scoreThem;
@@ -1852,21 +1838,21 @@ int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint
     return scoreUs;
 }
 
-int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, int16_t mdTactic) {
+int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, BattleTactic mdTactic) {
     int32_t score;
 
-    if ((uint16_t)mdTactic > 5) {
+    if (mdTactic > mdTacticMaxDamage) {
         return 0;
     }
     switch (mdTactic) {
-    case 0:
-    case 2:
+    case mdTacticDisengage:
+    case mdTacticMinDamageToSelf:
         return dpTake;
-    case 1:
-    case 5:
+    case mdTacticDisengageIfChallenged:
+    case mdTacticMaxDamage:
         return -dpGive;
-    case 3:
-    case 4:
+    case mdTacticMaxNetDamage:
+    case mdTacticMaxDamageRatio:
         score = -dpGive;
         if (score != 0) {
             score = (int32_t)((int32_t)(score * 100) / (dpTake + 1));
@@ -2076,7 +2062,6 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
     int16_t i;
     int32_t pctHit;
     int32_t cTorpHit;
-    int16_t t_scratch_m12;
 
     if (cTorpBase == 0 || pctBase == 0) {
         return 0;
@@ -2109,8 +2094,7 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
     } else {
         cTorpHit = 0;
         for (i = 0; i < cTorpBase; i++) {
-            t_scratch_m12 = Random(100);
-            if (t_scratch_m12 < (int16_t)LOWORD(pctHit)) {
+            if (Random(100) < (int16_t)LOWORD(pctHit)) {
                 cTorpHit++;
             }
         }
@@ -2167,7 +2151,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
     lpshdef = LpshdefFromTok(ptok);
     lphul = &lpshdef->hul;
     for (ihs = 0; ihs < lphul->chs; ihs++) {
-        if ((lphul->rghs[ihs].grhst & 0x30) != 0 && lphul->rghs[ihs].cItem != 0) {
+        if ((lphul->rghs[ihs].grhst & hstWeapon) != 0 && lphul->rghs[ihs].cItem != 0) {
             part.hs = lphul->rghs[ihs];
             idPlayer = ptok->iplr;
             if (FLookupPart(&part) == 0) {
@@ -2180,7 +2164,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
             }
             if (i == init) {
                 dxRangeCur = (ptok->grobj == grobjPlanet ? 1 : 0) + part.pbeam->dRangeMax;
-                if (part.hs.grhst == hstBeam && (part.pbeam->grfAbilities & 2) != 0) {
+                if (part.hs.grhst == hstBeam && (part.pbeam->grfAbilities & beamGatling) != 0) {
                     dp = (uint32_t)((uint32_t)(part.pbeam->dp * cItem) * (uint32_t)ptok->csh);
                     if (part.pbeam->dp >= 200) {
                         grfWeapon = 2;
@@ -2199,7 +2183,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                             if (ptokE->pctBeamDef < 100) {
                                 dp = (int32_t)(dp * (int16_t)ptokE->pctBeamDef) / 100;
                             }
-                            if (FDamageTok(ptokE, itok, &dp, 0, grfWeapon, part.pbeam->grfAbilities & 1, NULL) != 0) {
+                            if (FDamageTok(ptokE, itok, &dp, 0, grfWeapon, part.pbeam->grfAbilities & beamSapper, NULL) != 0) {
                                 if (fSetItok == 0) {
                                     fSetItok = 1;
                                     lpbtlrec->itokAttack = itok;
@@ -2249,7 +2233,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                         if (ptokE->pctBeamDef < 100) {
                                             lValue = (int32_t)(lValue * (uint32_t)ptokE->pctBeamDef) / 100;
                                         }
-                                        if ((part.pbeam->grfAbilities & 1) != 0) {
+                                        if ((part.pbeam->grfAbilities & beamSapper) != 0) {
                                             if (dpShieldLeft <= 0) {
                                                 score = 0;
                                             } else {
@@ -2326,7 +2310,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                 grfWeapon = 1;
                             }
                             dpT = dp;
-                            if (FDamageTok(ptokTarget, itokTarget, &dp, 0, grfWeapon, part.pbeam->grfAbilities & 1, NULL) != 0) {
+                            if (FDamageTok(ptokTarget, itokTarget, &dp, 0, grfWeapon, part.pbeam->grfAbilities & beamSapper, NULL) != 0) {
                                 if (fSetItok == 0) {
                                     lpbtlrec->itokAttack = itokTarget;
                                     fSetItok = 1;
@@ -2604,8 +2588,8 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
         lpbBattleCur += 8;
         return 1;
     }
-    if (ptok->mdTactic == 1) {
-        ptok->mdTactic = 0;
+    if (ptok->mdTactic == mdTacticDisengageIfChallenged) {
+        ptok->mdTactic = mdTacticDisengage;
         ptok->dzDis = 7;
     }
     lpfl = LpflFromId(ptok->id);
@@ -2746,8 +2730,6 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     jmp_buf *penvMemSav;
     PLANET  *lppl;
     int32_t  lwt;
-    int16_t  t_8f4b;
-    uint16_t t_scratch_m278_2;
     int16_t  t_scratch_m278_3;
 
     if (lpbBattleLog == 0) {
@@ -2817,9 +2799,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     lpbtldata->ctok = LOBYTE(vctok);
     lpbtldata->idPlanet = lpfl->idPlanet;
     lpbtldata->pt = lpfl->pt;
-    t_8f4b = idBattle;
-    idBattle++;
-    lpbtldata->id = t_8f4b;
+    lpbtldata->id = idBattle++;
     for (iRound = 0; iRound < 16; iRound++) {
         grplrLeft = 0;
         for (itok = 0; itok < vctok; itok++) {
@@ -2840,8 +2820,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
                 if (ptok->grobj == grobjPlanet) {
                     ptok->dMovesLeft = 0;
                 } else {
-                    t_scratch_m278_2 = DxyFromSpdRound(ptok->spd, iRound);
-                    ptok->dMovesLeft = t_scratch_m278_2;
+                    ptok->dMovesLeft = DxyFromSpdRound(ptok->spd, iRound);
                 }
             }
             ptok++;
@@ -2876,7 +2855,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
                                 lpbtlrec->iRound = iRound;
                                 lpbtlrec->dzDis = ptok->dzDis;
                                 brcOrig = vrgtok[itok].brc;
-                                if (ptok->mdTactic == 0) {
+                                if (ptok->mdTactic == mdTacticDisengage) {
                                     brcOrig = 0xff;
                                     if (ptok->dzDis == 0) {
                                         lpbtlrec->brcDest = 0xff;
@@ -3005,7 +2984,7 @@ int16_t ITechLearnATech(int16_t iplr, int16_t x, int16_t y, MessageId idm, uint1
                 if (game.fSlowTech != 0) {
                     l = (int32_t)(l * 2);
                 }
-                FSendPlrMsg(iplr, idm, -2, x, y, iTech, LOWORD(l), HIWORD(l), 0, 0);
+                FSendPlrMsg(iplr, idm, gotoResearch, x, y, iTech, LOWORD(l), HIWORD(l), 0, 0);
             } else if (piGoto != 0) {
                 *piGoto = 0xfffe;
             }
@@ -3294,7 +3273,7 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
                     } else if (cUsDead != 0) {
                         FSendPlrMsg(iplr, idm + 2, idBtl | 0x4000, x, y, iThem, cUs, cUsDead, 0, 0);
                     } else if (cUs == 1) {
-                        FSendPlrMsg(iplr, 275, idBtl | 0x4000, x, y, iThem, i, cThemDead, 0, 0);
+                        FSendPlrMsg(iplr, idmBattleTookPlaceAgainstDestroyedEnemyForces, idBtl | 0x4000, x, y, iThem, i, cThemDead, 0, 0);
                     } else {
                         FSendPlrMsg(iplr, idm, idBtl | 0x4000, x, y, iThem, cUs, 0, 0, 0);
                     }
@@ -3310,16 +3289,16 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
                     } else if (cThemDead != 0) {
                         FSendPlrMsg(iplr, idm + 2, idBtl | 0x4000, x, y, iThem, cThem, cThemDead, 0, 0);
                     } else if (cThem == 1) {
-                        FSendPlrMsg(iplr, 276, idBtl | 0x4000, x, y, iThem, cUsDead, j, 0, 0);
+                        FSendPlrMsg(iplr, idmBattleTookPlaceAgainstForcesDestroyed, idBtl | 0x4000, x, y, iThem, cUsDead, j, 0, 0);
                     } else {
                         FSendPlrMsg(iplr, idm, idBtl | 0x4000, x, y, iThem, cThem, 0, 0, 0);
                     }
                 } else if (cUs == 1) {
-                    FSendPlrMsg(iplr, 277, idBtl | 0x4000, x, y, iThem, i, cThem, cThemDead, 0);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceAgainstNeitherNorEnemys, idBtl | 0x4000, x, y, iThem, i, cThem, cThemDead, 0);
                 } else if (cThem == 1) {
-                    FSendPlrMsg(iplr, 278, idBtl | 0x4000, x, y, iThem, cUs, j, cUsDead, 0);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceAgainstNeitherForcesNor2, idBtl | 0x4000, x, y, iThem, cUs, j, cUsDead, 0);
                 } else {
-                    FSendPlrMsg(iplr, 159, idBtl | 0x4000, x, y, iThem, cUs, cThem, cUsDead, cThemDead);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceAgainstNeitherForcesNor, idBtl | 0x4000, x, y, iThem, cUs, cThem, cUsDead, cThemDead);
                 }
                 if (cUsDead == cUs || (lppl != 0 && lppl->iPlayer != -1 && iplr != lppl->iPlayer))
                     continue;
@@ -3328,33 +3307,33 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
             }
             if (cUsDead == 0) {
                 if (cThem == cThemDead) {
-                    FSendPlrMsg(iplr, 164, idBtl | 0x4000, x, y, cplr, cUs, 0, 0, 0);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceInvolvingRacesForcesDestroyed, idBtl | 0x4000, x, y, cplr, cUs, 0, 0, 0);
                     goto L_ab98;
                 }
             } else if (cThemDead == 0) {
                 if (cUs == cUsDead) {
-                    FSendPlrMsg(iplr, 166, idBtl | 0x4000, x, y, cplr, cUs, cThem, 0, 0);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceInvolvingRacesEntireArmada, idBtl | 0x4000, x, y, cplr, cUs, cThem, 0, 0);
                     goto L_ab98;
                 }
             } else {
                 if (cThemDead == cThem) {
-                    FSendPlrMsg(iplr, 165, idBtl | 0x4000, x, y, cplr, cUsDead, cUs, 0, 0);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceInvolvingRacesLostForces, idBtl | 0x4000, x, y, cplr, cUsDead, cUs, 0, 0);
                     goto L_ab98;
                 }
                 if (cUsDead == cUs) {
-                    FSendPlrMsg(iplr, 167, idBtl | 0x4000, x, y, cplr, cUs, cThem, cThemDead, 0);
+                    FSendPlrMsg(iplr, idmBattleTookPlaceInvolvingRacesEntireArmada2, idBtl | 0x4000, x, y, cplr, cUs, cThem, cThemDead, 0);
                     goto L_ab98;
                 }
-                FSendPlrMsg2(iplr, 126, idBtl | 0x4000, x, y);
+                FSendPlrMsg2(iplr, idmBattleTookPlacePressGotoButtonView, idBtl | 0x4000, x, y);
                 goto L_ab98;
             }
-            FSendPlrMsg(iplr, 168, idBtl | 0x4000, x, y, cplr, cUsDead, cUs, cThemDead, cThem);
+            FSendPlrMsg(iplr, idmBattleTookPlaceInvolvingRacesLostForces2, idBtl | 0x4000, x, y, cplr, cUsDead, cUs, cThemDead, cThem);
         L_ab98:
             if (fAlive != 0 && (lppl == 0 || lppl->iPlayer == -1 || iplr == lppl->iPlayer)) {
                 ITechLearnATech(iplr, x, y, idmWreckageDiscoveredBattleHasBoostedResearchResour, NULL);
             }
         } else if (lppl != 0 && lppl->iPlayer == iplr) {
-            FSendPlrMsg2(iplr, 249, lppl->id, lppl->id, 0);
+            FSendPlrMsg2(iplr, idmColonyReportsBattleTookPlaceOrbitForces, lppl->id, lppl->id, 0);
             ITechLearnATech(iplr, x, y, idmFleetFoundWreckageBattleWhichHasBoosted, NULL);
         } else if ((iplr & grfSpectator) != 0) {
             lpfl = lpflBtl;
@@ -3364,7 +3343,7 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
                     break;
             }
             if (lpfl != 0 && lpfl->iPlayer == iplr) {
-                FSendPlrMsg(iplr, 250, lpfl->id | 0x8000, lpfl->id, lpfl->pt.x, lpfl->pt.y, 0, 0, 0, 0);
+                FSendPlrMsg(iplr, idmReportsBattleTookPlaceForcesInvolved, lpfl->id | 0x8000, lpfl->id, lpfl->pt.x, lpfl->pt.y, 0, 0, 0, 0);
                 ITechLearnATech(iplr, x, y, idmWreckageBattleOccurredOrbitHasBoostedResearch, NULL);
             }
         }
@@ -3376,7 +3355,7 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
                     break;
             }
             if (lpfl != 0 && lpfl->iPlayer == iplr && lpfl->fSkipped != 0) {
-                FSendPlrMsg2(iplr, 384, lpfl->id | 0x8000, x, y);
+                FSendPlrMsg2(iplr, idmDueExcessiveFleetManeuveringBattleAreaFleets, lpfl->id | 0x8000, x, y);
             }
         }
     }
@@ -3548,8 +3527,10 @@ void DoBombing() {
                         }
                     }
                     if (pctTot > 0) {
-                        FSendPlrMsg(lpfl->iPlayer, fMulti == 0 ? 302 : 378, lpfl->id | 0x8000, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
-                        FSendPlrMsg(lppl->iPlayer, fMulti == 0 ? 302 : 379, lppl->id, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
+                        FSendPlrMsg(lpfl->iPlayer, fMulti == 0 ? idmHasRetroBombedUndoingTerraforming : idmFleetsHaveRetroBombedUndoingTerraforming,
+                                    lpfl->id | 0x8000, lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
+                        FSendPlrMsg(lppl->iPlayer, fMulti == 0 ? idmHasRetroBombedUndoingTerraforming : idmFleetsHaveRetroBombedUndoingTerraforming2, lppl->id,
+                                    lpfl->id, lppl->id, pctTot, 0, 0, 0, 0);
                     }
                 }
                 cPPE = cKillMine + cKillFact + cKillDefenses;

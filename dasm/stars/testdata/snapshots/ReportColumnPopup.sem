@@ -1,0 +1,248 @@
+/*
+ReportColumnPopup  (report)
+  addr: 0022:74d4  len=1569
+  sig:  void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn)
+  params:
+    POINT16          pt             [BP+0x6]
+    int16_t          icol           [BP+0xa]
+    int16_t          fRightBtn      [BP+0xc]
+  locals:
+    int16_t          iSortLast      [BP-0x73e]
+    int16_t          iHide          [BP-0x73c]
+    int16_t          iRet           [BP-0x73a]
+    int16_t          cch            [BP-0x738]
+    char *[32]       psz            [BP-0x736]
+    int16_t          cItems         [BP-0x6f6]
+    char[50]         szColTitle     [BP-0x6f4]
+    int16_t[32]      rgcol          [BP-0x6c2]
+    int16_t          fccolChange    [BP-0x682]
+    int16_t          ibit           [BP-0x680]
+    int16_t          i              [BP-0x67e]
+    int16_t          j              [BP-0x67c]
+    int16_t          cSubsort       [BP-0x67a]
+    int16_t          iBase          [BP-0x678]
+    char[50][32]     rgsz           [BP-0x676]
+    char[50]         szT            [BP-0x36]
+    HDC              hdc            [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+L_74d4:
+    cSubsort = 0
+    fccolChange = 0
+    hdc = GetDC(hwndReportDlg)
+    call DxReportColHdr(vprptCur->irpt, icol, szColTitle, hdc) -> callresult(int16_t)
+    cItems = 0
+    i = 0
+    goto L_76bb
+
+L_751e:
+    cch = CchGetString((i == 0 ? idsSort : idsReverseSort), rgsz[cItems])
+    call strcpy(&rgsz[cItems][cch], szColTitle) -> callresult(char *)
+    cItems = (cItems + 1)
+    branch vprptCur->irpt != rptPlanets ? L_759a : L_757f
+
+
+
+
+L_757f:
+    branch icol == colPlanetMinConc ? L_75b0 : L_7588
+
+L_7588:
+    branch icol == colPlanetMinerals ? L_75b0 : L_7591
+
+L_7591:
+    branch icol == colPlanetMiningRate ? L_75b0 : L_759a
+
+L_759a:
+    branch vprptCur->irpt != rptFleets ? L_76b6 : L_75a7
+
+L_75a7:
+    branch icol != colFleetCargo ? L_76b6 : L_75b0
+
+L_75b0:
+    call strcpy(rgsz[cItems], rgsz[(cItems - 1)]) -> callresult(char *)
+    rgsz[(cItems - 1)][0] = 0
+    cItems = (cItems + 1)
+    j = 0
+    goto L_7601
+
+L_75fc:
+    j = (j + 1)
+
+L_7601:
+    branch j >= ((vprptCur->irpt == rptFleets ? 1 : 0) + 3) ? L_764b : L_7623
+
+
+
+
+L_7623:
+    call strcpy(rgsz[cItems], rgszMinerals[j]) -> callresult(char *)
+    cItems = (cItems + 1)
+    goto L_75fc
+
+L_764b:
+    rgsz[cItems][0] = -1
+    rgsz[cItems][1] = 0
+    cItems = (cItems + 1)
+    call strcpy(rgsz[cItems], PszGetCompressedString(idsWeightedAverage)) -> callresult(char *)
+    cItems = (cItems + 1)
+    rgsz[cItems++][0] = 0
+    cSubsort = 5
+
+L_76b6:
+    i = (i + 1)
+
+L_76bb:
+    branch i < 2 ? L_751e : L_76c5
+
+L_76c5:
+    rgsz[cItems][0] = -1
+    rgsz[cItems][1] = 0
+    cItems = (cItems + 1)
+    cch = CchGetString(idsHide, rgsz[cItems])
+    call strcpy(&rgsz[cItems][cch], szColTitle) -> callresult(char *)
+    cch = CchGetString(idsColumn, szT)
+    call strcat(rgsz[cItems], szT) -> callresult(char *)
+    iHide = cItems
+    iSortLast = cItems
+    cItems = (cItems + 1)
+    rgsz[cItems][0] = -1
+    rgsz[cItems][1] = 0
+    cItems = (cItems + 1)
+    branch icol != 0 ? L_77a3 : L_7798
+
+L_7798:
+    cItems = (cItems - 2)
+    iHide = -1
+
+L_77a3:
+    iBase = cItems
+    i = 0
+    ibit = 1
+    goto L_77d1
+
+L_77bd:
+    i = (i + 1)
+    ibit = (ibit * 2)
+
+L_77d1:
+    branch i >= vprptCur->cFields ? L_78a1 : L_77e1
+
+L_77e1:
+    branch (sext16to32(ibit) & vprptCur->grbitVisible) != 0 ? L_77bd : L_77ff
+
+
+L_77ff:
+    call DxReportColHdr(vprptCur->irpt, i, szColTitle, hdc) -> callresult(int16_t)
+    cch = CchGetString(idsShow, rgsz[cItems])
+    call strcpy(&rgsz[cItems][cch], szColTitle) -> callresult(char *)
+    cch = CchGetString(idsColumn, szT)
+    call strcat(rgsz[cItems], szT) -> callresult(char *)
+    rgcol[cItems] = i
+    cItems = (cItems + 1)
+
+L_789e:
+    goto L_77bd
+
+L_78a1:
+    branch cItems != iBase ? L_78b3 : L_78ae
+
+L_78ae:
+    cItems = (cItems - 1)
+
+L_78b3:
+    call ReleaseDC(hwndReportDlg, hdc) -> callresult(int16_t)
+    i = 0
+    goto L_7913
+
+L_78c8:
+    branch sext8to16(rgsz[i][0]) == 0 ? L_78fe : L_78e0
+
+L_78e0:
+    psz[i] = rgsz[i]
+    goto L_790e
+
+L_78fe:
+    psz[i] = 0
+
+L_790e:
+    i = (i + 1)
+
+L_7913:
+    branch i < cItems ? L_78c8 : L_7920
+
+L_7920:
+    iRet = PopupMenu(hwndReportDlg, pt.x, pt.y, cItems, NULL, psz, -1, fRightBtn)
+    branch iRet < 0 ? L_7aef : L_7957
+
+L_7957:
+    gd.fChgReports = 1
+    branch iRet >= iSortLast ? L_7a71 : L_7970
+
+L_7970:
+    vicolSortPrev = vprptCur->icolSort
+    viSubsortPrev = vprptCur->iSubsort
+    vfAscendingPrev = vprptCur->fAscending
+    vprptCur->icolSort = icol
+    branch cSubsort != 0 ? L_79bf : L_79a2
+
+L_79a2:
+    vprptCur->fAscending = (iRet == 0 ? 1 : 0)
+    goto L_7a5c
+
+
+
+
+L_79bf:
+    vprptCur->iSubsort = (sext16to32((iRet - 2)) % ((cSubsort + 3) + (vprptCur->irpt == rptFleets ? 1 : 0)))
+    branch vprptCur->iSubsort <= ((vprptCur->irpt == rptFleets ? 1 : 0) + 3) ? L_7a3c : L_7a1c
+
+
+
+
+
+
+
+L_7a1c:
+    vprptCur->iSubsort = ((vprptCur->irpt == rptFleets ? 1 : 0) + 3)
+
+
+
+
+L_7a3c:
+    vprptCur->fAscending = (iRet >= (cSubsort + 2) ? 0 : 1)
+
+
+
+
+L_7a5c:
+    call SortReportCache(vprptCur->irpt, icol) -> callresult(void)
+    goto L_7acb
+
+L_7a71:
+    branch iRet != iHide ? L_7a9b : L_7a7e
+
+L_7a7e:
+    fccolChange = 1
+    vprptCur->grbitVisible = (vprptCur->grbitVisible & sext16to32(~((1 << icol))))
+    goto L_7acb
+
+L_7a9b:
+    branch iRet < iBase ? L_7acb : L_7aa8
+
+L_7aa8:
+    fccolChange = 1
+    vprptCur->grbitVisible = (vprptCur->grbitVisible | sext16to32((1 << rgcol[iRet])))
+
+L_7acb:
+    branch fccolChange == 0 ? L_7ada : L_7ad5
+
+L_7ad5:
+    call SetHScrollBar() -> callresult(void)
+
+L_7ada:
+    call InvalidateRect(hwndReportDlg, NULL, 1) -> callresult(void)
+
+L_7aef:
+    return

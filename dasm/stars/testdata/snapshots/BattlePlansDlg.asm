@@ -643,7 +643,7 @@ MOV       ax, 0x0000
 MOV       dx, 0x0000          
 PUSH      dx                  
 PUSH      ax                  
-CALLF     SendDlgItemMessage        ; LRESULT SendDlgItemMessage(HWND arg1, int16_t arg2, uint16_t arg3, WPARAM arg4, LPARAM arg5)
+CALLF     SendDlgItemMessage        ; LRESULT SendDlgItemMessage(HWND arg1, ControlId arg2, uint16_t arg3, WPARAM arg4, LPARAM arg5)
 MOV       [bp-0x16], ax       
 MOV       ax, [bp-0x16]       
 AND       ax, 0x0001          

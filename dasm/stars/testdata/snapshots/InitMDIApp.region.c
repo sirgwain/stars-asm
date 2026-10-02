@@ -7,7 +7,7 @@ int16_t InitMDIApp() {
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
     wc.hIcon = LoadIcon(hInst, "StarsIco");
-    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00));
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512));
     wc.hbrBackground = (HBRUSH)13;
     wc.lpszMenuName = "StarsMenu";
     wc.lpszClassName = szFrame;
@@ -82,7 +82,7 @@ int16_t InitMDIApp() {
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
     wc.hIcon = 0;
-    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00));
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512));
     wc.hbrBackground = GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName = NULL;
     wc.lpszClassName = szTitle;
@@ -95,7 +95,7 @@ int16_t InitMDIApp() {
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
     wc.hIcon = 0;
-    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(0x7f00));
+    wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(32512));
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.lpszMenuName = NULL;
     wc.lpszClassName = szReport;

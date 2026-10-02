@@ -24,14 +24,16 @@ enum DetType {
 typedef uint16_t DetType;
 
 enum MineralType {
+    SupplyButtonsOnly = -2, // transfer dialog: redraw only the buttons
+    SupplyAll = -1,         // transfer dialog: redraw every cargo row
     Ironium = 0,
     Boranium = 1,
     Germanium = 2,
-    Resources = 3,
     Colonists = 3,
+    Resources = 3,
     Fuel = 4,
 };
-typedef uint16_t MineralType;
+typedef int16_t MineralType;
 
 enum EnvType {
     Gravity = 0,
@@ -55,11 +57,12 @@ enum BattleUnitFlags {
     grBuOurUnits = 0x0001,
     grBuTheirUnits = 0x0002,
     grBuIncludeSb = 0x0004,
-    grBuClassOther = 0x0008,
-    grBuClassFight = 0x0010,
-    grBuClassBomber = 0x0020,
-    grBuClassCap = 0x0040,
-    grBuClassFrig = 0x0080,
+    // hull classes, by HullCategory as the battle report columns count them
+    grBuClassUnarmed = 0x0008,
+    grBuClassScout = 0x0010,
+    grBuClassWarship = 0x0020,
+    grBuClassBomber = 0x0040,
+    grBuClassUtility = 0x0080,
     grBuClassAll = 0x00F8,
 };
 typedef uint16_t BattleUnitFlags;
@@ -147,6 +150,7 @@ enum RaceGrbit {
     ibitRaceARM = 0x02,
     ibitRaceISB = 0x03,
     ibitRaceGeneralizedResearch = 0x04,
+    ibitRaceUltimateRecycling = 0x05,
     ibitRaceMineralAlchemy = 0x06,
     ibitRaceNoRamscoops = 0x07,
     ibitRaceCheapEngines = 0x08,
@@ -161,6 +165,29 @@ enum RaceGrbit {
     ibitRaceLast = 32,
 };
 typedef uint16_t RaceGrbit;
+
+// RaceTraitBits is a race's grbitAttr: one bit per RaceGrbit index, the
+// lesser racial traits and the other per-race switches.
+enum RaceTraitBits {
+    grbitRaceIFE = 0x00000001,
+    grbitRaceTT = 0x00000002,
+    grbitRaceARM = 0x00000004,
+    grbitRaceISB = 0x00000008,
+    grbitRaceGeneralizedResearch = 0x00000010,
+    grbitRaceUltimateRecycling = 0x00000020,
+    grbitRaceMineralAlchemy = 0x00000040,
+    grbitRaceNoRamscoops = 0x00000080,
+    grbitRaceCheapEngines = 0x00000100,
+    grbitRaceOBRM = 0x00000200,
+    grbitRaceNoAdvScanner = 0x00000400,
+    grbitRaceLowStartingPop = 0x00000800,
+    grbitRaceBleedingEdgeTech = 0x00001000,
+    grbitRaceRegeneratingShields = 0x00002000,
+    grbitRaceTech3 = 0x20000000,
+    grbitRaceAIPlayer = 0x40000000,
+    grbitRaceCheapFact = 0x80000000,
+};
+typedef uint32_t RaceTraitBits;
 
 enum RaceStat {
     rsResGen = 0,
@@ -2185,647 +2212,649 @@ enum MessageId {
     idmHackedRaceDiscoveredRaceStatisticsHaveAltered = 0x0182,
 };
 typedef uint16_t MessageId;
+// TutorId is a tutorial text fragment, eight to a page; tutor.idt holds a
+// page's first fragment and tutor.idtBold the highlighted instruction.
 enum TutorId {
-    idtWelcomeStarsTutorialWillGuideThrough36 = 0x1000,
-    idtHomePlanetCoupleScoutsDestroyerFreighterColony = 0x1001,
-    idtThereFiveMessagesMessagesPaneEachYear = 0x1002,
-    idtAboutPlanetsFleetsAboutEventsKnownPlayers = 0x1003,
-    idtYearMessagesPlayingTipsNoneThemRequire = 0x1004,
-    idtReadMessages = 0x1005,
-    idtCanClickButtonUseArrowKey = 0x1006,
-    idt0007Blank = 0x1007,
-    idtExamineTilesCommandPaneUpperLeftPortion = 0x1008,
-    idtControlsTilesGiveFullInformationCommandPlanet = 0x1009,
-    idtFleetsOrbitTileShowsFuelCargoBoard = 0x100a,
-    idtPressTilesGotoButtonCommandArmedProbe = 0x100b,
-    idtPaneGivesInformationCommandFleet = 0x100c,
-    idtLetsSendScoutOffExploringHasAutomatically = 0x100d,
-    idtScannerPaneShowsMapUniverse = 0x100e,
-    idtHoldShiftKeyClickLeftMouseButton = 0x100f,
-    idtAccordingFleetWaypointsTileWillTake2 = 0x1010,
-    idtLongRangeScout2HasSixTimes = 0x1011,
-    idtHitNKeyLookFleet = 0x1012,
-    idtLongRangeScout2UnarmedWeLikely = 0x1013,
-    idtTowardsPlanetsAboveRight = 0x1014,
-    idtHoldShiftKeyLeftClickPlanet90210 = 0x1015,
-    idt0022Blank = 0x1016,
-    idt0023Blank = 0x1017,
-    idtLetsMoveOurFleet = 0x1018,
-    idtTimePressButtonTileShowingLongRange = 0x1019,
-    idtSantaMaria3ColonyFleetWeDont = 0x101a,
-    idtPress = 0x101b,
-    idtTeamster4FreighterWeDontHaveAnything = 0x101c,
-    idtPress2 = 0x101d,
-    idtStalwartDefender5DestroyerWillUsefulScout = 0x101e,
-    idtHoldShiftKeySelectAlexander = 0x101f,
-    idtHitNKey = 0x1020,
-    idtCottonPicker6RemoteMinerWellSend = 0x1021,
-    idtHitNKey2 = 0x1022,
-    idtBackArmedProbe1ThatsFleetsRight = 0x1023,
-    idtOtherThingWeShouldDoYearPick = 0x1024,
-    idtChooseResearchCommandsMenu = 0x1025,
-    idtChangeFieldStudyWeaponsPressDone = 0x1026,
-    idtThatsTurnHitF9GenerateYear = 0x1027,
-    idtReadMessageMessagesPaneWeveGotPlenty = 0x1028,
-    idtBuildingFactories = 0x1029,
-    idtPressChangeButtonProductionTile = 0x102a,
-    idtSelectFactoryLeftHandListboxHoldShift = 0x102b,
-    idtShiftKeyCausesAddButtonAdd10 = 0x102c,
-    idtMessageYearScannerPaneShowsFleetsHave = 0x102d,
-    idtYetArrivedSoThereNothingDoYear = 0x102e,
-    idtHitF9KeyGenerateYear = 0x102f,
-    idtReadFirstMessagePressGotoMessagesPane = 0x1030,
-    idtLetsGiveArmedProbe1BunchPlaces = 0x1031,
-    idtHoldShiftKeyLeftClickHiho = 0x1032,
-    idtVacancy = 0x1033,
-    idtSlime = 0x1034,
-    idtWallaby = 0x1035,
-    idtOxygen = 0x1036,
-    idtReadMessagePressGotoCommandLongRange = 0x1037,
-    idtWeWantSendFleetExploreAreaAbove = 0x1038,
-    idtHoldShiftKeySelectDwarte = 0x1039,
-    idtMobius = 0x103a,
-    idtCastle = 0x103b,
-    idtMoholdi = 0x103c,
-    idtReadMessage = 0x103d,
-    idtAnd = 0x103e,
-    idtGotoStalwartDefender5 = 0x103f,
-    idtHoldShiftKeySelectShaggyDog = 0x1040,
-    idtSeaSquared = 0x1041,
-    idtRedStorm = 0x1042,
-    idtBloop = 0x1043,
-    idtKalamazoo = 0x1044,
-    idtReadTwoMessages = 0x1045,
-    idtAnd2 = 0x1046,
-    idtPressGotoDisplayStatsPruneSummaryPane = 0x1047,
-    idtTopGraphSummaryPaneShowsPruneHas = 0x1048,
-    idtCurrentTechnology = 0x1049,
-    idtDiamondsBottomGraphShowMineralConcentrationsPrun = 0x104a,
-    idtThereMinePlanet = 0x104b,
-    idtClickRightMouseButtonStoveTopSelect = 0x104c,
-    idtShiftClickPrune = 0x104d,
-    idtLookWaypointTaskTile = 0x104e,
-    idtClickDropdownChangeTaskRemoteMining = 0x104f,
-    idtMoveMessageGotoAlexander = 0x1050,
-    idtDiamondsBottomGraphShowAlexandersMineralConcentr = 0x1051,
-    idtSendingCottonPicker6PruneRightThing = 0x1052,
-    idtClickVariousPlacesSummaryPaneGetPopup = 0x1053,
-    idtReadMessage2 = 0x1054,
-    idtAnd3 = 0x1055,
-    idtGotoPlanet90210 = 0x1056,
-    idt0087Blank = 0x1057,
-    idtSince90210FinePlanetHighMineralConcentrations = 0x1058,
-    idtRightClickStoveTopSelectSantaMaria = 0x1059,
-    idtClickXferButtonTileLabeledOrbitingStove = 0x105a,
-    idtClickDragColonistsGaugeFillingHold25kt = 0x105b,
-    idtShiftClick90210 = 0x105c,
-    idtSelectColonizeDropdownWaypointTaskTile = 0x105d,
-    idtThatsYear = 0x105e,
-    idtHitF9GenerateYear = 0x105f,
-    idtFirstMessageQuiteCommonWeDontNeed = 0x1060,
-    idtFilterClickingBlueCheckMarkUpperLeft = 0x1061,
-    idtMoveMessageGotoStoveTop = 0x1062,
-    idtWeDoWantHaveKeepAddingFactories = 0x1063,
-    idtBuild30FactoriesEveryYear = 0x1064,
-    idtPressChangeButtonProductionTile2 = 0x1065,
-    idtSelectFactoriesAutoBuildLeftHandListbox = 0x1066,
-    idt0103Blank = 0x1067,
-    idtReadTwoMessagesGoto90210 = 0x1068,
-    idtProductionQueueHereEmptyWeOughtDo = 0x1069,
-    idtHitQKey = 0x106a,
-    idtDoubleClickFactory3TimesMine3 = 0x106b,
-    idtWillTake10YearsBuild3Factories = 0x106c,
-    idtRightClickStoveTopSelectTeamster4 = 0x106d,
-    idtClickXferButtonCommandPane = 0x106e,
-    idtFillHoldColonistsHitOk = 0x106f,
-    idtShiftClick902102 = 0x1070,
-    idtChangeWaypointTaskTransport = 0x1071,
-    idtRightClickBlueDiamondWaypointTaskTile = 0x1072,
-    idtReadMessageGotoHiho = 0x1073,
-    idtNoticeArmedProbe1WhichBlueTriangle = 0x1074,
-    idtDarkYellowCircleSurroundingArmedProbe1 = 0x1075,
-    idtDoubleClickArmedProbe1 = 0x1076,
-    idt0119Blank = 0x1077,
-    idtArmedProbe1DoesntNeedGoWay = 0x1078,
-    idtClickHiho = 0x1079,
-    idtAnd4 = 0x107a,
-    idtHitDeleteKey = 0x107b,
-    idtArmedProbe1WillGoVacancyWithout = 0x107c,
-    idtThatsYear2 = 0x107d,
-    idtChangePaceInsteadHittingF9 = 0x107e,
-    idtSelectGenerateTurnMenu = 0x107f,
-    idtReadFirstMessageGotoShaggyDog = 0x1080,
-    idtWellAddColonizerQueueBitFirstLets = 0x1081,
-    idtDoubleClickStalwartDefender5JustAbove = 0x1082,
-    idtSelectWaypointShaggyDog = 0x1083,
-    idtPressDeleteKey = 0x1084,
-    idtReadMessageGotoDwarte = 0x1085,
-    idtWhatUnpleasantPlace = 0x1086,
-    idtDoubleClickStoveTop = 0x1087,
-    idtHitChangeButtonProductionTileOpenStove = 0x1088,
-    idtDoubleClickSantaMariaLeftHandListbox = 0x1089,
-    idtNoticeFactoryTopQueueSantaMariaDisplayed = 0x108a,
-    idtProductionTileMeansWillFinishedYear = 0x108b,
-    idtBlueItemsProductionQueueWillMakePartial = 0x108c,
-    idtRedItemsMayNeverFinish = 0x108d,
-    idtGoAhead = 0x108e,
-    idtGenerateWhenReady = 0x108f,
-    idtReadFirstMessageGotoNewSantaMaria = 0x1090,
-    idtHasReplacedOldSantaMariaFleet3 = 0x1091,
-    idtClickCargoGaugeFuelCargoTile = 0x1092,
-    idtDoesSameThingHittingXferButton = 0x1093,
-    idtFillHoldFullColonistsHitOk = 0x1094,
-    idtWhereWeWantedSendColonizer = 0x1095,
-    idtClickButtonToolbarShowPlanetsHowHabitable = 0x1096,
-    idtShiftClickBigGreenShaggyDogBelow = 0x1097,
-    idtSetWaypointTaskColonize = 0x1098,
-    idtSwitchScannerBackNormalViewClickingLeftmost = 0x1099,
-    idtRead2MessagesGotoTeamster4 = 0x109a,
-    idtShiftClickStoveTopSendHome = 0x109b,
-    idtSelect90210PressingGotoButtonTileLabeled = 0x109c,
-    idtNoticeFactoriesWillDone2YearsInstead = 0x109d,
-    idtReadMessageDeleteArmedProbe1sWaypoint = 0x109e,
-    idtThatsYearGenerateWhenReady = 0x109f,
-    idtReadFirstMessageGotoTeamster4 = 0x10a0,
-    idtCottonPicker6HasRemoteMiningPrune = 0x10a1,
-    idtMineralsBackStoveTop = 0x10a2,
-    idtShiftClickPrune2 = 0x10a3,
-    idtSetWaypointTaskTransport = 0x10a4,
-    idtRightClickBlueDiamondSelectQuikloadZip = 0x10a5,
-    idtShiftClickBackStoveTop = 0x10a6,
-    idt0167Blank = 0x10a7,
-    idtNoticeWaypointTaskHasCopiedPreviousWaypoint = 0x10a8,
-    idtPruneStovetop = 0x10a9,
-    idtRightClickBlueDiamondSelectQuikdropZip = 0x10aa,
-    idtClickRepeatOrdersCheckboxFleetWaypointsTile = 0x10ab,
-    idtTeamster4WillContinueHaulMineralsPrune = 0x10ac,
-    idtSelectStoveTop = 0x10ad,
-    idtAddSantaMariaProductionQueue = 0x10ae,
-    idtGoAheadGenerateIDare = 0x10af,
-    idtReadFirstMessageGotoNewSantaMaria2 = 0x10b0,
-    idtClickToolbarButtonPutScannerPlanetValue = 0x10b1,
-    idtRedStormClearlyBestPlanetAvailable = 0x10b2,
-    idtGiveSantaMaria7ColonizeTaskRed = 0x10b3,
-    idtThereLeastTwoColonizablePlanetsSeaSquared = 0x10b4,
-    idtAddThreeSantaMariasStoveTopsProduction = 0x10b5,
-    idtPressLeftmostToolbarButtonPutScannerBack = 0x10b6,
-    idt0183Blank = 0x10b7,
-    idtReadMessage3 = 0x10b8,
-    idtWellKeepGettingMineBuildingMessagesForever = 0x10b9,
-    idtFilterThemClickingBlueCheckMarkMessages = 0x10ba,
-    idtGoMessage = 0x10bb,
-    idtGoto90210OpenProductionQueue = 0x10bc,
-    idtShiftDoubleClickFactoriesAutoBuildMines = 0x10bd,
-    idtReadRestMessages = 0x10be,
-    idt0191Blank = 0x10bf,
-    idtClickRedTriangleBetweenSlimeVacancy = 0x10c0,
-    idtEnemyScoutShipRightClickingFleetImage = 0x10c1,
-    idtArmedAccordingProjectedPathScannerHeadedVacancy = 0x10c2,
-    idtArmedProbe1WontAbleCatchWe = 0x10c3,
-    idtAddTwoArmedProbesStoveTopsQueue = 0x10c4,
-    idtThatsYear3 = 0x10c5,
-    idtGenerateWhenReady2 = 0x10c6,
-    idt0199Blank = 0x10c7,
-    idtReadFirstMessageGotoNewColonyShips = 0x10c8,
-    idtWeHavePlacesSendTwoThemSo = 0x10c9,
-    idtHitSplitButtonFleetCompositionTile = 0x10ca,
-    idtMoveOneSantaMariasFleet10Hit = 0x10cb,
-    idtLeavesTwoSantaMariasFleetCurrentlyCommanding = 0x10cc,
-    idtLoadFleetColonistsGiveColonizeTaskSlime = 0x10cd,
-    idtWeDontWantBothColonizersGoSlime = 0x10ce,
-    idt0207Blank = 0x10cf,
-    idtNoticeFleetHasOneSantaMariaOther = 0x10d0,
-    idtClickWaypointSlimeDragSeaSquared = 0x10d1,
-    idtNoticeThereWaypointLinesGoingStoveTop = 0x10d2,
-    idtSantaMaria8SantaMaria11Have = 0x10d3,
-    idtReadMessageGotoNewArmedScouts = 0x10d4,
-    idtIfHeadDirectlyVacancyEnemyScoutWill = 0x10d5,
-    idtLetsTryHeadThemOffPass = 0x10d6,
-    idtShiftClickHiho = 0x10d7,
-    idtReadMessageFilter = 0x10d8,
-    idtReadLastMessageGotoWallaby = 0x10d9,
-    idtWallabyOwnedBerserkersLightlyPopulatedNearlyTerr = 0x10da,
-    idtClickGreenRadiationBarSummaryPaneRead = 0x10db,
-    idtReason7SoundsFamiliar = 0x10dc,
-    idtHitF5OpenResearchDialog = 0x10dd,
-    idt0222Blank = 0x10de,
-    idt0223Blank = 0x10df,
-    idtRightRadiationTerraform7OneExpectedBenefits = 0x10e0,
-    idtBenefitsListedBlueWillTakeOneAdditional = 0x10e1,
-    idtClickWordRadiationDialogSeeRequirements = 0x10e2,
-    idtCurrentRateResearchWeaponsTech5Will = 0x10e3,
-    idtIncreaseResourcesBudgetedResearch30HitDone = 0x10e4,
-    idtWellSendTroopShipWallabySoonThats = 0x10e5,
-    idtGenerateWhenReady3 = 0x10e6,
-    idt0231Blank = 0x10e7,
-    idtReadFirstMessageGotoResearchDialog = 0x10e8,
-    idtNoticeRadiation7ListedGreenIndicatingWill = 0x10e9,
-    idtCurrentLevelStudyWeaponsEstimatedTimeCompletion = 0x10ea,
-    idtNoticeFieldResearchCurrentlySetSameField = 0x10eb,
-    idtChangeFieldResearchConstructionHitDone = 0x10ec,
-    idtSoonReachTech5WeaponsResearchFocus = 0x10ed,
-    idtReadMessageFilter2 = 0x10ee,
-    idt0239Blank = 0x10ef,
-    idtReadMessageGotoOxygen = 0x10f0,
-    idtRightClickStoveTopSelectSantaMaria2 = 0x10f1,
-    idtLoadColonists = 0x10f2,
-    idtSendColonizeOxygen = 0x10f3,
-    idtSinceWeveSeenOxygenAlreadyWeCan = 0x10f4,
-    idtSelectArmedProbe1DragWaypointOxygen = 0x10f5,
-    idtThatsYear4 = 0x10f6,
-    idtGenerateWhenReady4 = 0x10f7,
-    idtFilterMessageAboutDismantlingColonizer = 0x10f8,
-    idtReadMessageGotoShaggyDog = 0x10f9,
-    idtOpenShaggyDogsProductionQueue = 0x10fa,
-    idtAdd3FactoriesAutoBuild3Mines = 0x10fb,
-    idtWeShouldAlsoSetDefaultQueueSo = 0x10fc,
-    idtColonizersHaveEnRoute = 0x10fd,
-    idtOpenProductionQueue = 0x10fe,
-    idtRightClickBlueDiamondSelectCustomize = 0x10ff,
-    idtHitImportButtonCopyShaggyDogsQueue = 0x1100,
-    idtOkProductionDialog = 0x1101,
-    idtEveryNewPlanetColonizeWillAutomaticallyGet = 0x1102,
-    idtReadMessageGotoBloopLooksLikeNice = 0x1103,
-    idtAddSantaMariaStoveTopsQueue = 0x1104,
-    idtWeWantTakeWallabyTeamster4Busy = 0x1105,
-    idtAddNewTeamsterStoveTopsQueue = 0x1106,
-    idtGenerateWhenReady5 = 0x1107,
-    idtReadFirstMessageGotoArmedProbe1 = 0x1108,
-    idtShiftClickHacker = 0x1109,
-    idtReadMessageGotoLongRangeScout2 = 0x110a,
-    idtGuyIsntWorthMuchAnymoreHesToo = 0x110b,
-    idtShiftClickStoveTopChangeWaypointTask = 0x110c,
-    idtReadMessageSendStalwartDefender5Stove = 0x110d,
-    idtWillAutomaticallyRefueledStarbaseWhenArrives = 0x110e,
-    idtReadMessageGotoArmedProbe9Shift = 0x110f,
-    idtReadMessageGotoNewSantaMaria = 0x1110,
-    idtUseToolbarScannerSummaryPaneFigureWhich = 0x1111,
-    idtGiveSantaMaria3OrdersColonizeDont = 0x1112,
-    idtReadMessageGotoTeamster12 = 0x1113,
-    idtLoadColonistsAssignWaypointWallaby = 0x1114,
-    idtChangeWaypointTaskTransport2 = 0x1115,
-    idtSetSecondDropdownWaypointTaskTileColonists = 0x1116,
-    idtThirdUnload = 0x1117,
-    idtReadMessageAdd70MinesTopStove = 0x1118,
-    idtReadMessageGotoResearchDialog = 0x1119,
-    idtLeaveFieldStudyConstructionChangeFieldResearch = 0x111a,
-    idtReadMessageHitGotoOpenTechnologyBrowser = 0x111b,
-    idtWhenDoneReadingAboutBetaTorpedoClose = 0x111c,
-    idtReadTwoMessagesLookingTechBrowserIf = 0x111d,
-    idtReadMessageGotoArmedProbe = 0x111e,
-    idt0287Blank = 0x111f,
-    idtGollyNailedOneThemNoticeButtonNormally = 0x1120,
-    idtPressViewOpenBattleVcr = 0x1121,
-    idtUseVcrControlsWatchPlaybackBattleHit = 0x1122,
-    idtReadRestMessages2 = 0x1123,
-    idtStoveTopBusyBuildingMinesYearSo = 0x1124,
-    idtGeneralWalkingThroughMessagesHandlingOnesSeem = 0x1125,
-    idtWorkAnyParticularYear = 0x1126,
-    idtGenerateWhenReady6 = 0x1127,
-    idtReadFirstMessageGotoButtonDisabledI = 0x1128,
-    idtReadMessageGotoArmedProbe9 = 0x1129,
-    idtLooksLikeNailedAnotherOneThereYellow = 0x112a,
-    idtSalvageLeftBattle = 0x112b,
-    idtRightClickArmedProbe9SelectSalvage = 0x112c,
-    idtSummaryPaneShowsSalvageConsistsFewKt = 0x112d,
-    idtFreighterAfterAnyway = 0x112e,
-    idtSelectViewFindTypeTeamster4Hit = 0x112f,
-    idtIfCantFindWhereYellowSelectionArrow = 0x1130,
-    idtTeamster4StoveTopWillBackPrune = 0x1131,
-    idtReadMessage4 = 0x1132,
-    idtWellExplainsWhatHappenedArmedProbe1 = 0x1133,
-    idtWatchSadBattleIfWantMoveMessage = 0x1134,
-    idtThatsLikeOneMayWantWatch = 0x1135,
-    idtReadMessageGotoRedStorm = 0x1136,
-    idt0311Blank = 0x1137,
-    idtOtherBitShortColonistsRedStormDoing = 0x1138,
-    idtReadMessageGotoSlime = 0x1139,
-    idtLookSummaryPaneSlimeOutsideHabitableRange = 0x113a,
-    idtWhatWeNeedDoAddTerraformingProduction = 0x113b,
-    idtOpenSlimesProductionQueueAddTwoTerraform = 0x113c,
-    idtLookProductionTileISuspectNeedFew = 0x113d,
-    idtAddTwoTeamstersStoveTopsProductionQueue = 0x113e,
-    idtGenerateWhenReady7 = 0x113f,
-    idtReadFirstMessageLoadTeamster1Colonists = 0x1140,
-    idtSendSlimeOrdersUnloadThem = 0x1141,
-    idtReadMessage5 = 0x1142,
-    idtLooksLikeLoadReinforcementsTeamster1Carrying = 0x1143,
-    idtReadMessageOpenResearchDialogChangeField = 0x1144,
-    idtReadMessageCheckRoboMinerTechBrowser = 0x1145,
-    idtWeCouldUseMinersHelpStripPrune = 0x1146,
-    idtHitF4OpenShipDesigner = 0x1147,
-    idtSelectAvailableHullTypes = 0x1148,
-    idtChooseMiniMinerDropdown = 0x1149,
-    idtHitCopySelectedDesign = 0x114a,
-    idtLeftSideDisplaysListEveryPartCapable = 0x114b,
-    idtDragLongHump6EnginePartsList = 0x114c,
-    idtDragRhinoScannerScannerElectMechSlot = 0x114d,
-    idtSelectMiningRobotsPartsCategoryDropdown = 0x114e,
-    idtDragRoboMinerEachMiningSlots = 0x114f,
-    idtShipDesignNameImageJustFine = 0x1150,
-    idtHitOkFinishEditingDesign = 0x1151,
-    idtDoneCloseDesigner = 0x1152,
-    idtAddOneNewMiniMinersStoveTops = 0x1153,
-    idtWillTake6YearsFinishShipJust = 0x1154,
-    idtOpenStoveTopsQueue = 0x1155,
-    idtSelectMineLeftHandListboxTopQueue = 0x1156,
-    idt0343Blank = 0x1157,
-    idtClickEachItemsProductionTileMiniMiner = 0x1158,
-    idtReadFinalMessage = 0x1159,
-    idtLowEnoughMineralsPointDesigningAdditionalShips = 0x115a,
-    idtWeLeftArmedProbe9HangingNear = 0x115b,
-    idtSendArmedProbe9BackStoveTop = 0x115c,
-    idtThatsEnoughYear = 0x115d,
-    idtGenerateNewYear = 0x115e,
-    idt0351Blank = 0x115f,
-    idtReadFirstMessageGotoSeaSquared = 0x1160,
-    idtOtherNeedingPeopleDoingJustFine = 0x1161,
-    idtReadFinalMessageGotoOxygen = 0x1162,
-    idtPlanetSlightlyHabitableRangeWeShouldAdd = 0x1163,
-    idtAddMinTerraform2OxygensQueueRight = 0x1164,
-    idtThatsYearAutomationMakesYearsFlyFaster = 0x1165,
-    idtGenerateWhenReady8 = 0x1166,
-    idt0359Blank = 0x1167,
-    idtReadFirstMessageSendArmedProbe9 = 0x1168,
-    idtReadMessageGotoNewTeamsterFillColonists = 0x1169,
-    idtWeWouldLikeSendColonistsWhereNeeded = 0x116a,
-    idtChoosePlanetsReportMenu = 0x116b,
-    idtClickTitleValueColumnSortValue = 0x116c,
-    idtPlanetLargestNegativeValueWallabyColonistsWill = 0x116d,
-    idtHitEscKeyClosePlanetSummaryReport = 0x116e,
-    idtSendTeamster7WallabyUnloadColonists = 0x116f,
-    idtReadTwoMessagesOpenResearchDialog = 0x1170,
-    idtExpectedResearchBenefitsEitherBlueBlackWhich = 0x1171,
-    idtWeLearnAnythingFieldResearchAlreadySet = 0x1172,
-    idtCloseDialog = 0x1173,
-    idtReadRemainingMessagesSendTeamster12Back = 0x1174,
-    idtMineDispenser50SoundedInterestingIsntGood = 0x1175,
-    idtGenerateNewYear2 = 0x1176,
-    idt0375Blank = 0x1177,
-    idtReadFirstMessageSendStalwartDefender5 = 0x1178,
-    idtReadMessageGotoNewMiniMiner = 0x1179,
-    idtShiftClickPruneSetWaypointTaskMerge = 0x117a,
-    idtNoticeWaypointPruneHasChangedCottonPicker = 0x117b,
-    idtReadMessageOpenStoveTopsProductionQueue = 0x117c,
-    idtIncreaseNumberAutoBuildFactories60Add = 0x117d,
-    idtReadTwoMessagesChangeFieldResearchConstruction = 0x117e,
-    idtReadFinalMessageGenerate = 0x117f,
-    idtReadMessages2 = 0x1180,
-    idtSendTeamster1BackStoveTop = 0x1181,
-    idtSureEasyTurn = 0x1182,
-    idtGenerateNewYear3 = 0x1183,
-    idt0388Blank = 0x1184,
-    idt0389Blank = 0x1185,
-    idt0390Blank = 0x1186,
-    idt0391Blank = 0x1187,
-    idtReadFirstMessageAddTeamsterStoveTops = 0x1188,
-    idtReadMessageGoto90210 = 0x1189,
-    idtWellWeCouldPlayProductionQueueLooks = 0x118a,
-    idtReadTwoMessagesOpenResearchDialog2 = 0x118b,
-    idtClickDifferentItemsListedExpectedBenefitsBox = 0x118c,
-    idtStargateSoundsLikeFunFrigateAlsoLooks = 0x118d,
-    idtCloseDialogWithoutMakingAnyChanges = 0x118e,
-    idtReadRemainingMessagesGenerateYear = 0x118f,
-    idtReadFirstMessageLoadTeamster12Colonists = 0x1190,
-    idtAddWaypointWallabyUnloadColonists = 0x1191,
-    idtShiftClickBackStoveTopChangeTask = 0x1192,
-    idtClickRepeatOrdersCheckboxFleetWaypointsTile2 = 0x1193,
-    idtEstFuelUsageClaimsWeWillNeed = 0x1194,
-    idtFleetWillLighterWillNeedMuchFuel = 0x1195,
-    idtReadMessageGotoNewTeamster = 0x1196,
-    idtLoadColonists2 = 0x1197,
-    idtAddWaypointOxygenUnloadColonists = 0x1198,
-    idtShiftClickBackStoveTopChangeTask2 = 0x1199,
-    idtClickRepeatOrdersCheckboxFleetWaypointsTile3 = 0x119a,
-    idtBothFreightersWillContinueMovingColonistsAway = 0x119b,
-    idtReadMessageAddMaxTerraformAutoBuild = 0x119c,
-    idtRead3MessagesSendTeamster7Back = 0x119d,
-    idtReadLastMessageGenerateYear = 0x119e,
-    idt0415Blank = 0x119f,
-    idtReadFirstTwoMessagesSendArmedProbe = 0x11a0,
-    idtRead3MessagesChangeFieldResearchWeapons = 0x11a1,
-    idtReadFinalMessageHitF4OpenShip = 0x11a2,
-    idtSelectStarbasesCopySelectedDesign = 0x11a3,
-    idtSelectOrbitalPartsCategoryDragStargate100 = 0x11a4,
-    idtChangeDesignNameGaterClickRightArrow = 0x11a5,
-    idtAddGaterStoveTopsQueue = 0x11a6,
-    idtGenerate = 0x11a7,
-    idtReadFirstMessageLoadTeamster1Colonists2 = 0x11a8,
-    idtSendUnloadColonistsWallaby = 0x11a9,
-    idtWeDoFrequentlyEnoughWeShouldSimplify = 0x11aa,
-    idtRightClickBlueDiamondWaypointTaskTile2 = 0x11ab,
-    idtHitImportNameOrderDropcolOkBoth = 0x11ac,
-    idtFutureWeCanSetFleetsTaskUsing = 0x11ad,
-    idtShiftClickStoveTopChangeTransportOption = 0x11ae,
-    idtClickRepeatOrders = 0x11af,
-    idtReadRestMessages3 = 0x11b0,
-    idtYouveUpgradedStarbaseStoveTopWeDont = 0x11b1,
-    idtHitF3OpenPlanetSummaryReport = 0x11b2,
-    idtFindMinConcColumnRightClickReverse = 0x11b3,
-    idtOxygenSeaSquaredRedStormWallabyHave = 0x11b4,
-    idtWallabyHasHighestPopulationClosestBerserkersPlan = 0x11b5,
-    idtUnfortunatelyWallabyStillHasNegativeGrowthRate = 0x11b6,
-    idtGenerateWhenReady9 = 0x11b7,
-    idtReadFirstMessageGotoTeamster42 = 0x11b8,
-    idtSeemsMiniMinerWeAddedPruneHas = 0x11b9,
-    idtWeCouldDecreaseSpeedEachLegTeamster = 0x11ba,
-    idtRemoteMinersProducing = 0x11bb,
-    idtMineralsWeCanCarryEachTripWe = 0x11bc,
-    idtClickDragFuelGaugeOtherFleetsHere = 0x11bd,
-    idt0446Blank = 0x11be,
-    idt0447Blank = 0x11bf,
-    idtAddTeamsterStoveTopsQueue = 0x11c0,
-    idtRead4MessagesChangeFieldResearchPropulsion = 0x11c1,
-    idtReadRemainingMessagesOpenShipDesigner = 0x11c2,
-    idtViewAvailableHullTypesSelectFrigateDropdown = 0x11c3,
-    idtDragDaddyLongLegs7EngineSlot = 0x11c4,
-    idtSelectMineLayersDropdownDrag3Mine = 0x11c5,
-    idtChangeDesignNameMineLayerOkDesign = 0x11c6,
-    idtAddMineLayerStoveTopsQueue = 0x11c7,
-    idtClickRedTriangleWallaby = 0x11c8,
-    idtBerserkerColonizerHeadedVacancyWarp6 = 0x11c9,
-    idtRightClickWallabySelectStalwartDefender5 = 0x11ca,
-    idtShiftClickEnemyFleet = 0x11cb,
-    idtShouldSufficientYear = 0x11cc,
-    idtGenerateWhenReady10 = 0x11cd,
-    idt0462Blank = 0x11ce,
-    idt0463Blank = 0x11cf,
-    idtReadFirstMessageGotoStalwartDefender5 = 0x11d0,
-    idtFleetDisplayedPurpleScannerMeansThereEnemy = 0x11d1,
-    idtAlsoTellsUsAlthoughCaughtColonizerDidnt = 0x11d2,
-    idtYoullSeeMessageAboutBattleLater = 0x11d3,
-    idtReadMessageGotoTeamster7 = 0x11d4,
-    idtOpenPlanetSummaryReportSortPopulation = 0x11d5,
-    idtOxygenHasLowestPopulationYouveAlreadyGot = 0x11d6,
-    idtHitEscCloseReport = 0x11d7,
-    idtLoadTeamster7ColonistsSendSeaSquared = 0x11d8,
-    idtSetWaypointTaskTransport2 = 0x11d9,
-    idtRightClickBlueDiamondChooseDropcol = 0x11da,
-    idtReadTwoMessagesGotoNewTeamster = 0x11db,
-    idtFreighterWeBuiltMergeOneGoingBack = 0x11dc,
-    idtSelectTeamster4ListboxOtherFleetsHere = 0x11dd,
-    idtPressMergeButtonFleetCompositionTile = 0x11de,
-    idtClickTeamster3MergeFleetsDialogHit = 0x11df,
-    idtReadMessageSetMineLayer8sTask = 0x11e0,
-    idtReadMessageAddMiniMinerStoveTops = 0x11e1,
-    idtRead2MessagesWatchBattle = 0x11e2,
-    idtBerserkersSantaMaria80DamagedCanKill = 0x11e3,
-    idtRightClickBlueDiamondFleetWaypointsTile = 0x11e4,
-    idtReadLastMessageDoubleClickArmedProbe = 0x11e5,
-    idtDragWaypointLaTeDaSpeedBump = 0x11e6,
-    idtShiftClickLeverGenerate = 0x11e7,
-    idtReadFirstMessageSendStalwartDefender52 = 0x11e8,
-    idtReadMessageGotoMiniMiner3Send = 0x11e9,
-    idtReadRemainingMessages = 0x11ea,
-    idtThats = 0x11eb,
-    idtGenerateWill = 0x11ec,
-    idt0493Blank = 0x11ed,
-    idt0494Blank = 0x11ee,
-    idt0495Blank = 0x11ef,
-    idtReadFirstTwoMessages = 0x11f0,
-    idtClickButtonToolbar = 0x11f1,
-    idtNoticeThereLotGreenWorldsWeNeed = 0x11f2,
-    idtHitF4OpenShipDesigner2 = 0x11f3,
-    idtSelectSantaMariaDropdown = 0x11f4,
-    idtHitEditSelectedDesign = 0x11f5,
-    idtDragLongHump6EngineDesignParts = 0x11f6,
-    idtOkDesignHitDoneCloseDialog = 0x11f7,
-    idtAdd3ImprovedSantaMariasStoveTops = 0x11f8,
-    idtReadMessageGotoSeaSquared = 0x11f9,
-    idtSeaSquaredHasBuiltManyFactoriesMines = 0x11fa,
-    idtAddMaxTerraformAutoBuild2End = 0x11fb,
-    idtRead2MessagesChangeFieldResearchConstruction = 0x11fc,
-    idtReadRestMessages4 = 0x11fd,
-    idtAnd5 = 0x11fe,
-    idtGenerateWhenReady11 = 0x11ff,
-    idtReadFirstThreeMessages = 0x1200,
-    idtGoto3NewSantaMarias = 0x1201,
-    idtLoadThemColonistsSendThemColonizeLever = 0x1202,
-    idtHitSplitButtonFleetCompositionTile2 = 0x1203,
-    idtDragSantaMaria10sWaypointSpeedBump = 0x1204,
-    idtSantaMaria11sBloop = 0x1205,
-    idtReadRestMessages5 = 0x1206,
-    idt0519Blank = 0x1207,
-    idtTeamster12WillArriveStoveTopYear = 0x1208,
-    idtAdd3TeamstersStoveTopsQueue = 0x1209,
-    idtAugmentOurTroopLiftEffort = 0x120a,
-    idtClickEnemyShipNearWallaby = 0x120b,
-    idtBerserkersTryingColonizeVacancyFolksNeverLearn = 0x120c,
-    idtSelectStalwartDefender5DragDestinationEnemy = 0x120d,
-    idtYearWellHaveDesignNewDestroyerGo = 0x120e,
-    idtGenerateWhenYoureReady = 0x120f,
-    idtReadFirstMessageGotoStalwartDefender52 = 0x1210,
-    idtOnceWeveWoundedFinishedOffColonizer = 0x1211,
-    idtRightClickBlueDiamondFleetWaypointsTile2 = 0x1212,
-    idtTellsDestroyerFollowDestroyEnemyColonizer = 0x1213,
-    idtReadMessageGotoArmedProbe92 = 0x1214,
-    idtWellLeaveFleetHereGuardLeverSince = 0x1215,
-    idtReadMessageGotoNewFleet = 0x1216,
-    idtFillColonists = 0x1217,
-    idtWeWantMergeNewTeamstersOtherFleet = 0x1218,
-    idtSelectTeamster12PressMergeButtonFleet = 0x1219,
-    idtReadMessage6 = 0x121a,
-    idtWellDealStoveTopAfterWeFinish = 0x121b,
-    idtReadRestMessagesViewingBattleColonizerIf = 0x121c,
-    idtPromisedLastYearLetsDesignDestroyerTake = 0x121d,
-    idtHitF4OpenShipDesigner3 = 0x121e,
-    idt0543Blank = 0x121f,
-    idtWeWantPowerfulWeAlsoWantWeigh = 0x1220,
-    idtSelectAvailableHullTypesChooseDestroyerDropdown = 0x1221,
-    idtAddRadiatingHydroRamScoop2Carbonic = 0x1222,
-    idtAddFuelTankMechanicalSlotBattleComputer = 0x1223,
-    idtTotalMassDesign97kt = 0x1224,
-    idtClickRightArrowButtonBelowShipImage = 0x1225,
-    idtPut10DestroyersStoveTopsQueue = 0x1226,
-    idtGenerate2 = 0x1227,
-    idtReadFirstMessageGotoStalwartDefender53 = 0x1228,
-    idtOnce = 0x1229,
-    idtSendWallaby = 0x122a,
-    idtRead4MessagesGotoNewDestroyerArmada = 0x122b,
-    idtSendWreakHavocBerserkerStarbaseHacker = 0x122c,
-    idtReadRestMessages6 = 0x122d,
-    idtAnd6 = 0x122e,
-    idtGenerateTurn = 0x122f,
-    idtReadFirstMessageGotoTeamster43 = 0x1230,
-    idtWeNeedSlowFleetLegStoveTop = 0x1231,
-    idtClickStoveTopFleetWaypointsTileDecrease = 0x1232,
-    idtOurReturnTripWillTakeExtraYear = 0x1233,
-    idtRead4Messages = 0x1234,
-    idtSendNewDestroyerHackerWell = 0x1235,
-    idtAvoidRepeatWorkSendingEveryNewFleet = 0x1236,
-    idtSelectStoveTopControlClickHacker = 0x1237,
-    idtNoticeProductionTileNewShipsWillRouted = 0x1238,
-    idtRead3Messages = 0x1239,
-    idtOpenResearchDialogSetFieldResearchEnergy = 0x123a,
-    idtReadRestMessages7 = 0x123b,
-    idtGotoTeamster7 = 0x123c,
-    idtDoesntHaveEnoughFuelGetBackStove = 0x123d,
-    idtGiveTeamster7OrdersScrapFleet = 0x123e,
-    idt0575Blank = 0x123f,
-    idtLetsFinishOffBerserkersOnceBuildingBombing = 0x1240,
-    idtHitF4OpenShipDesigner4 = 0x1241,
-    idtSelectAvailableHullTypesChooseB17 = 0x1242,
-    idtAddRadiatingHydroRamScoopEngines = 0x1243,
-    idtHoldShiftKeyDrag4BlackCat = 0x1244,
-    idtOkDesignCloseShipDesigner = 0x1245,
-    idtAdd10B17BombersStoveTops = 0x1246,
-    idtGenerateWhenReady12 = 0x1247,
-    idtCongratulationsYouveDeclaredWinner = 0x1248,
-    idtTutorialWillContinueFewYearsGiveAdditional = 0x1249,
-    idtReadFirst3MessagesGotoNewB = 0x124a,
-    idtNoticeTheyveAlreadyRoutedHacker = 0x124b,
-    idtReadRestMessages8 = 0x124c,
-    idtEverythingElseAutomated = 0x124d,
-    idtGenerateWhenYoureReady2 = 0x124e,
-    idt0591Blank = 0x124f,
-    idtReadFirst4MessagesGotoWallaby = 0x1250,
-    idtTerraformingEffortHasFinallyPaidOffWed = 0x1251,
-    idtAdd100MinesWallabysQueue = 0x1252,
-    idtControlClickAddButtonAdd100Item = 0x1253,
-    idtReadRestMessages9 = 0x1254,
-    idtThereIsntAnythingPressingDoYearOur = 0x1255,
-    idtGenerateWill2 = 0x1256,
-    idt0599Blank = 0x1257,
-    idtReadFirst3MessagesGotoDestroyer13 = 0x1258,
-    idtNotice9DestroyersShownRedBarAbout = 0x1259,
-    idtClickDestroyerFleetCompositionTile = 0x125a,
-    idtIfRunningLeast800x600ModeWillSee = 0x125b,
-    idtRead8MessagesViewAssaultEnemyStarbase = 0x125c,
-    idtWellBerserkersShouldntBuildingAnyColonizersNotic = 0x125d,
-    idtReadRestMessagesGenerate = 0x125e,
-    idt0607Blank = 0x125f,
-    idtReadFirst6MessagesGotoStoveTop = 0x1260,
-    idtAddAnother10B17BombersProduction = 0x1261,
-    idtHoldingPatternWaitingOurBombersArriveHacker = 0x1262,
-    idtReadRestMessagesWatchBattles = 0x1263,
-    idtGenerateWhenReady13 = 0x1264,
-    idt0613Blank = 0x1265,
-    idt0614Blank = 0x1266,
-    idt0615Blank = 0x1267,
-    idtNothingMuchHappeningYearViewBattleHacker = 0x1268,
-    idtWillHaveDesignFasterShipUsingFaster = 0x1269,
-    idtFirstBombersArriveYear = 0x126a,
-    idtReadMessagesGenerateWhenReady = 0x126b,
-    idt0620Blank = 0x126c,
-    idt0621Blank = 0x126d,
-    idt0622Blank = 0x126e,
-    idt0623Blank = 0x126f,
-    idtReadThroughMessages = 0x1270,
-    idtN2B17BombersKilledFewEnemy = 0x1271,
-    idtNewArrivalsSeveralYearsShouldMakeDifference = 0x1272,
-    idtThereNumberThingsWeCouldDoOur = 0x1273,
-    idtGenerateWhenReady14 = 0x1274,
-    idt0629Blank = 0x1275,
-    idt0630Blank = 0x1276,
-    idt0631Blank = 0x1277,
-    idtCongratulationsHaveReachedEndTutorial = 0x1278,
-    idtHitF10ViewScoreNoticeBerserkersHave = 0x1279,
-    idtNeedFinishBombingBerserkerPlanetsBuildShip = 0x127a,
-    idtWillTrulyRuleGalaxy = 0x127b,
-    idtReadMessages3 = 0x127c,
-    idtWhenGenerateYoureOwn = 0x127d,
-    idt0638Blank = 0x127e,
-    idt0639Blank = 0x127f,
+    idtWelcomeStarsTutorialWillGuideThrough36 = 0,
+    idtHomePlanetCoupleScoutsDestroyerFreighterColony = 1,
+    idtThereFiveMessagesMessagesPaneEachYear = 2,
+    idtAboutPlanetsFleetsAboutEventsKnownPlayers = 3,
+    idtYearMessagesPlayingTipsNoneThemRequire = 4,
+    idtReadMessages = 5,
+    idtCanClickButtonUseArrowKey = 6,
+    idt0007Blank = 7,
+    idtExamineTilesCommandPaneUpperLeftPortion = 8,
+    idtControlsTilesGiveFullInformationCommandPlanet = 9,
+    idtFleetsOrbitTileShowsFuelCargoBoard = 10,
+    idtPressTilesGotoButtonCommandArmedProbe = 11,
+    idtPaneGivesInformationCommandFleet = 12,
+    idtLetsSendScoutOffExploringHasAutomatically = 13,
+    idtScannerPaneShowsMapUniverse = 14,
+    idtHoldShiftKeyClickLeftMouseButton = 15,
+    idtAccordingFleetWaypointsTileWillTake2 = 16,
+    idtLongRangeScout2HasSixTimes = 17,
+    idtHitNKeyLookFleet = 18,
+    idtLongRangeScout2UnarmedWeLikely = 19,
+    idtTowardsPlanetsAboveRight = 20,
+    idtHoldShiftKeyLeftClickPlanet90210 = 21,
+    idt0022Blank = 22,
+    idt0023Blank = 23,
+    idtLetsMoveOurFleet = 24,
+    idtTimePressButtonTileShowingLongRange = 25,
+    idtSantaMaria3ColonyFleetWeDont = 26,
+    idtPress = 27,
+    idtTeamster4FreighterWeDontHaveAnything = 28,
+    idtPress2 = 29,
+    idtStalwartDefender5DestroyerWillUsefulScout = 30,
+    idtHoldShiftKeySelectAlexander = 31,
+    idtHitNKey = 32,
+    idtCottonPicker6RemoteMinerWellSend = 33,
+    idtHitNKey2 = 34,
+    idtBackArmedProbe1ThatsFleetsRight = 35,
+    idtOtherThingWeShouldDoYearPick = 36,
+    idtChooseResearchCommandsMenu = 37,
+    idtChangeFieldStudyWeaponsPressDone = 38,
+    idtThatsTurnHitF9GenerateYear = 39,
+    idtReadMessageMessagesPaneWeveGotPlenty = 40,
+    idtBuildingFactories = 41,
+    idtPressChangeButtonProductionTile = 42,
+    idtSelectFactoryLeftHandListboxHoldShift = 43,
+    idtShiftKeyCausesAddButtonAdd10 = 44,
+    idtMessageYearScannerPaneShowsFleetsHave = 45,
+    idtYetArrivedSoThereNothingDoYear = 46,
+    idtHitF9KeyGenerateYear = 47,
+    idtReadFirstMessagePressGotoMessagesPane = 48,
+    idtLetsGiveArmedProbe1BunchPlaces = 49,
+    idtHoldShiftKeyLeftClickHiho = 50,
+    idtVacancy = 51,
+    idtSlime = 52,
+    idtWallaby = 53,
+    idtOxygen = 54,
+    idtReadMessagePressGotoCommandLongRange = 55,
+    idtWeWantSendFleetExploreAreaAbove = 56,
+    idtHoldShiftKeySelectDwarte = 57,
+    idtMobius = 58,
+    idtCastle = 59,
+    idtMoholdi = 60,
+    idtReadMessage = 61,
+    idtAnd = 62,
+    idtGotoStalwartDefender5 = 63,
+    idtHoldShiftKeySelectShaggyDog = 64,
+    idtSeaSquared = 65,
+    idtRedStorm = 66,
+    idtBloop = 67,
+    idtKalamazoo = 68,
+    idtReadTwoMessages = 69,
+    idtAnd2 = 70,
+    idtPressGotoDisplayStatsPruneSummaryPane = 71,
+    idtTopGraphSummaryPaneShowsPruneHas = 72,
+    idtCurrentTechnology = 73,
+    idtDiamondsBottomGraphShowMineralConcentrationsPrun = 74,
+    idtThereMinePlanet = 75,
+    idtClickRightMouseButtonStoveTopSelect = 76,
+    idtShiftClickPrune = 77,
+    idtLookWaypointTaskTile = 78,
+    idtClickDropdownChangeTaskRemoteMining = 79,
+    idtMoveMessageGotoAlexander = 80,
+    idtDiamondsBottomGraphShowAlexandersMineralConcentr = 81,
+    idtSendingCottonPicker6PruneRightThing = 82,
+    idtClickVariousPlacesSummaryPaneGetPopup = 83,
+    idtReadMessage2 = 84,
+    idtAnd3 = 85,
+    idtGotoPlanet90210 = 86,
+    idt0087Blank = 87,
+    idtSince90210FinePlanetHighMineralConcentrations = 88,
+    idtRightClickStoveTopSelectSantaMaria = 89,
+    idtClickXferButtonTileLabeledOrbitingStove = 90,
+    idtClickDragColonistsGaugeFillingHold25kt = 91,
+    idtShiftClick90210 = 92,
+    idtSelectColonizeDropdownWaypointTaskTile = 93,
+    idtThatsYear = 94,
+    idtHitF9GenerateYear = 95,
+    idtFirstMessageQuiteCommonWeDontNeed = 96,
+    idtFilterClickingBlueCheckMarkUpperLeft = 97,
+    idtMoveMessageGotoStoveTop = 98,
+    idtWeDoWantHaveKeepAddingFactories = 99,
+    idtBuild30FactoriesEveryYear = 100,
+    idtPressChangeButtonProductionTile2 = 101,
+    idtSelectFactoriesAutoBuildLeftHandListbox = 102,
+    idt0103Blank = 103,
+    idtReadTwoMessagesGoto90210 = 104,
+    idtProductionQueueHereEmptyWeOughtDo = 105,
+    idtHitQKey = 106,
+    idtDoubleClickFactory3TimesMine3 = 107,
+    idtWillTake10YearsBuild3Factories = 108,
+    idtRightClickStoveTopSelectTeamster4 = 109,
+    idtClickXferButtonCommandPane = 110,
+    idtFillHoldColonistsHitOk = 111,
+    idtShiftClick902102 = 112,
+    idtChangeWaypointTaskTransport = 113,
+    idtRightClickBlueDiamondWaypointTaskTile = 114,
+    idtReadMessageGotoHiho = 115,
+    idtNoticeArmedProbe1WhichBlueTriangle = 116,
+    idtDarkYellowCircleSurroundingArmedProbe1 = 117,
+    idtDoubleClickArmedProbe1 = 118,
+    idt0119Blank = 119,
+    idtArmedProbe1DoesntNeedGoWay = 120,
+    idtClickHiho = 121,
+    idtAnd4 = 122,
+    idtHitDeleteKey = 123,
+    idtArmedProbe1WillGoVacancyWithout = 124,
+    idtThatsYear2 = 125,
+    idtChangePaceInsteadHittingF9 = 126,
+    idtSelectGenerateTurnMenu = 127,
+    idtReadFirstMessageGotoShaggyDog = 128,
+    idtWellAddColonizerQueueBitFirstLets = 129,
+    idtDoubleClickStalwartDefender5JustAbove = 130,
+    idtSelectWaypointShaggyDog = 131,
+    idtPressDeleteKey = 132,
+    idtReadMessageGotoDwarte = 133,
+    idtWhatUnpleasantPlace = 134,
+    idtDoubleClickStoveTop = 135,
+    idtHitChangeButtonProductionTileOpenStove = 136,
+    idtDoubleClickSantaMariaLeftHandListbox = 137,
+    idtNoticeFactoryTopQueueSantaMariaDisplayed = 138,
+    idtProductionTileMeansWillFinishedYear = 139,
+    idtBlueItemsProductionQueueWillMakePartial = 140,
+    idtRedItemsMayNeverFinish = 141,
+    idtGoAhead = 142,
+    idtGenerateWhenReady = 143,
+    idtReadFirstMessageGotoNewSantaMaria = 144,
+    idtHasReplacedOldSantaMariaFleet3 = 145,
+    idtClickCargoGaugeFuelCargoTile = 146,
+    idtDoesSameThingHittingXferButton = 147,
+    idtFillHoldFullColonistsHitOk = 148,
+    idtWhereWeWantedSendColonizer = 149,
+    idtClickButtonToolbarShowPlanetsHowHabitable = 150,
+    idtShiftClickBigGreenShaggyDogBelow = 151,
+    idtSetWaypointTaskColonize = 152,
+    idtSwitchScannerBackNormalViewClickingLeftmost = 153,
+    idtRead2MessagesGotoTeamster4 = 154,
+    idtShiftClickStoveTopSendHome = 155,
+    idtSelect90210PressingGotoButtonTileLabeled = 156,
+    idtNoticeFactoriesWillDone2YearsInstead = 157,
+    idtReadMessageDeleteArmedProbe1sWaypoint = 158,
+    idtThatsYearGenerateWhenReady = 159,
+    idtReadFirstMessageGotoTeamster4 = 160,
+    idtCottonPicker6HasRemoteMiningPrune = 161,
+    idtMineralsBackStoveTop = 162,
+    idtShiftClickPrune2 = 163,
+    idtSetWaypointTaskTransport = 164,
+    idtRightClickBlueDiamondSelectQuikloadZip = 165,
+    idtShiftClickBackStoveTop = 166,
+    idt0167Blank = 167,
+    idtNoticeWaypointTaskHasCopiedPreviousWaypoint = 168,
+    idtPruneStovetop = 169,
+    idtRightClickBlueDiamondSelectQuikdropZip = 170,
+    idtClickRepeatOrdersCheckboxFleetWaypointsTile = 171,
+    idtTeamster4WillContinueHaulMineralsPrune = 172,
+    idtSelectStoveTop = 173,
+    idtAddSantaMariaProductionQueue = 174,
+    idtGoAheadGenerateIDare = 175,
+    idtReadFirstMessageGotoNewSantaMaria2 = 176,
+    idtClickToolbarButtonPutScannerPlanetValue = 177,
+    idtRedStormClearlyBestPlanetAvailable = 178,
+    idtGiveSantaMaria7ColonizeTaskRed = 179,
+    idtThereLeastTwoColonizablePlanetsSeaSquared = 180,
+    idtAddThreeSantaMariasStoveTopsProduction = 181,
+    idtPressLeftmostToolbarButtonPutScannerBack = 182,
+    idt0183Blank = 183,
+    idtReadMessage3 = 184,
+    idtWellKeepGettingMineBuildingMessagesForever = 185,
+    idtFilterThemClickingBlueCheckMarkMessages = 186,
+    idtGoMessage = 187,
+    idtGoto90210OpenProductionQueue = 188,
+    idtShiftDoubleClickFactoriesAutoBuildMines = 189,
+    idtReadRestMessages = 190,
+    idt0191Blank = 191,
+    idtClickRedTriangleBetweenSlimeVacancy = 192,
+    idtEnemyScoutShipRightClickingFleetImage = 193,
+    idtArmedAccordingProjectedPathScannerHeadedVacancy = 194,
+    idtArmedProbe1WontAbleCatchWe = 195,
+    idtAddTwoArmedProbesStoveTopsQueue = 196,
+    idtThatsYear3 = 197,
+    idtGenerateWhenReady2 = 198,
+    idt0199Blank = 199,
+    idtReadFirstMessageGotoNewColonyShips = 200,
+    idtWeHavePlacesSendTwoThemSo = 201,
+    idtHitSplitButtonFleetCompositionTile = 202,
+    idtMoveOneSantaMariasFleet10Hit = 203,
+    idtLeavesTwoSantaMariasFleetCurrentlyCommanding = 204,
+    idtLoadFleetColonistsGiveColonizeTaskSlime = 205,
+    idtWeDontWantBothColonizersGoSlime = 206,
+    idt0207Blank = 207,
+    idtNoticeFleetHasOneSantaMariaOther = 208,
+    idtClickWaypointSlimeDragSeaSquared = 209,
+    idtNoticeThereWaypointLinesGoingStoveTop = 210,
+    idtSantaMaria8SantaMaria11Have = 211,
+    idtReadMessageGotoNewArmedScouts = 212,
+    idtIfHeadDirectlyVacancyEnemyScoutWill = 213,
+    idtLetsTryHeadThemOffPass = 214,
+    idtShiftClickHiho = 215,
+    idtReadMessageFilter = 216,
+    idtReadLastMessageGotoWallaby = 217,
+    idtWallabyOwnedBerserkersLightlyPopulatedNearlyTerr = 218,
+    idtClickGreenRadiationBarSummaryPaneRead = 219,
+    idtReason7SoundsFamiliar = 220,
+    idtHitF5OpenResearchDialog = 221,
+    idt0222Blank = 222,
+    idt0223Blank = 223,
+    idtRightRadiationTerraform7OneExpectedBenefits = 224,
+    idtBenefitsListedBlueWillTakeOneAdditional = 225,
+    idtClickWordRadiationDialogSeeRequirements = 226,
+    idtCurrentRateResearchWeaponsTech5Will = 227,
+    idtIncreaseResourcesBudgetedResearch30HitDone = 228,
+    idtWellSendTroopShipWallabySoonThats = 229,
+    idtGenerateWhenReady3 = 230,
+    idt0231Blank = 231,
+    idtReadFirstMessageGotoResearchDialog = 232,
+    idtNoticeRadiation7ListedGreenIndicatingWill = 233,
+    idtCurrentLevelStudyWeaponsEstimatedTimeCompletion = 234,
+    idtNoticeFieldResearchCurrentlySetSameField = 235,
+    idtChangeFieldResearchConstructionHitDone = 236,
+    idtSoonReachTech5WeaponsResearchFocus = 237,
+    idtReadMessageFilter2 = 238,
+    idt0239Blank = 239,
+    idtReadMessageGotoOxygen = 240,
+    idtRightClickStoveTopSelectSantaMaria2 = 241,
+    idtLoadColonists = 242,
+    idtSendColonizeOxygen = 243,
+    idtSinceWeveSeenOxygenAlreadyWeCan = 244,
+    idtSelectArmedProbe1DragWaypointOxygen = 245,
+    idtThatsYear4 = 246,
+    idtGenerateWhenReady4 = 247,
+    idtFilterMessageAboutDismantlingColonizer = 248,
+    idtReadMessageGotoShaggyDog = 249,
+    idtOpenShaggyDogsProductionQueue = 250,
+    idtAdd3FactoriesAutoBuild3Mines = 251,
+    idtWeShouldAlsoSetDefaultQueueSo = 252,
+    idtColonizersHaveEnRoute = 253,
+    idtOpenProductionQueue = 254,
+    idtRightClickBlueDiamondSelectCustomize = 255,
+    idtHitImportButtonCopyShaggyDogsQueue = 256,
+    idtOkProductionDialog = 257,
+    idtEveryNewPlanetColonizeWillAutomaticallyGet = 258,
+    idtReadMessageGotoBloopLooksLikeNice = 259,
+    idtAddSantaMariaStoveTopsQueue = 260,
+    idtWeWantTakeWallabyTeamster4Busy = 261,
+    idtAddNewTeamsterStoveTopsQueue = 262,
+    idtGenerateWhenReady5 = 263,
+    idtReadFirstMessageGotoArmedProbe1 = 264,
+    idtShiftClickHacker = 265,
+    idtReadMessageGotoLongRangeScout2 = 266,
+    idtGuyIsntWorthMuchAnymoreHesToo = 267,
+    idtShiftClickStoveTopChangeWaypointTask = 268,
+    idtReadMessageSendStalwartDefender5Stove = 269,
+    idtWillAutomaticallyRefueledStarbaseWhenArrives = 270,
+    idtReadMessageGotoArmedProbe9Shift = 271,
+    idtReadMessageGotoNewSantaMaria = 272,
+    idtUseToolbarScannerSummaryPaneFigureWhich = 273,
+    idtGiveSantaMaria3OrdersColonizeDont = 274,
+    idtReadMessageGotoTeamster12 = 275,
+    idtLoadColonistsAssignWaypointWallaby = 276,
+    idtChangeWaypointTaskTransport2 = 277,
+    idtSetSecondDropdownWaypointTaskTileColonists = 278,
+    idtThirdUnload = 279,
+    idtReadMessageAdd70MinesTopStove = 280,
+    idtReadMessageGotoResearchDialog = 281,
+    idtLeaveFieldStudyConstructionChangeFieldResearch = 282,
+    idtReadMessageHitGotoOpenTechnologyBrowser = 283,
+    idtWhenDoneReadingAboutBetaTorpedoClose = 284,
+    idtReadTwoMessagesLookingTechBrowserIf = 285,
+    idtReadMessageGotoArmedProbe = 286,
+    idt0287Blank = 287,
+    idtGollyNailedOneThemNoticeButtonNormally = 288,
+    idtPressViewOpenBattleVcr = 289,
+    idtUseVcrControlsWatchPlaybackBattleHit = 290,
+    idtReadRestMessages2 = 291,
+    idtStoveTopBusyBuildingMinesYearSo = 292,
+    idtGeneralWalkingThroughMessagesHandlingOnesSeem = 293,
+    idtWorkAnyParticularYear = 294,
+    idtGenerateWhenReady6 = 295,
+    idtReadFirstMessageGotoButtonDisabledI = 296,
+    idtReadMessageGotoArmedProbe9 = 297,
+    idtLooksLikeNailedAnotherOneThereYellow = 298,
+    idtSalvageLeftBattle = 299,
+    idtRightClickArmedProbe9SelectSalvage = 300,
+    idtSummaryPaneShowsSalvageConsistsFewKt = 301,
+    idtFreighterAfterAnyway = 302,
+    idtSelectViewFindTypeTeamster4Hit = 303,
+    idtIfCantFindWhereYellowSelectionArrow = 304,
+    idtTeamster4StoveTopWillBackPrune = 305,
+    idtReadMessage4 = 306,
+    idtWellExplainsWhatHappenedArmedProbe1 = 307,
+    idtWatchSadBattleIfWantMoveMessage = 308,
+    idtThatsLikeOneMayWantWatch = 309,
+    idtReadMessageGotoRedStorm = 310,
+    idt0311Blank = 311,
+    idtOtherBitShortColonistsRedStormDoing = 312,
+    idtReadMessageGotoSlime = 313,
+    idtLookSummaryPaneSlimeOutsideHabitableRange = 314,
+    idtWhatWeNeedDoAddTerraformingProduction = 315,
+    idtOpenSlimesProductionQueueAddTwoTerraform = 316,
+    idtLookProductionTileISuspectNeedFew = 317,
+    idtAddTwoTeamstersStoveTopsProductionQueue = 318,
+    idtGenerateWhenReady7 = 319,
+    idtReadFirstMessageLoadTeamster1Colonists = 320,
+    idtSendSlimeOrdersUnloadThem = 321,
+    idtReadMessage5 = 322,
+    idtLooksLikeLoadReinforcementsTeamster1Carrying = 323,
+    idtReadMessageOpenResearchDialogChangeField = 324,
+    idtReadMessageCheckRoboMinerTechBrowser = 325,
+    idtWeCouldUseMinersHelpStripPrune = 326,
+    idtHitF4OpenShipDesigner = 327,
+    idtSelectAvailableHullTypes = 328,
+    idtChooseMiniMinerDropdown = 329,
+    idtHitCopySelectedDesign = 330,
+    idtLeftSideDisplaysListEveryPartCapable = 331,
+    idtDragLongHump6EnginePartsList = 332,
+    idtDragRhinoScannerScannerElectMechSlot = 333,
+    idtSelectMiningRobotsPartsCategoryDropdown = 334,
+    idtDragRoboMinerEachMiningSlots = 335,
+    idtShipDesignNameImageJustFine = 336,
+    idtHitOkFinishEditingDesign = 337,
+    idtDoneCloseDesigner = 338,
+    idtAddOneNewMiniMinersStoveTops = 339,
+    idtWillTake6YearsFinishShipJust = 340,
+    idtOpenStoveTopsQueue = 341,
+    idtSelectMineLeftHandListboxTopQueue = 342,
+    idt0343Blank = 343,
+    idtClickEachItemsProductionTileMiniMiner = 344,
+    idtReadFinalMessage = 345,
+    idtLowEnoughMineralsPointDesigningAdditionalShips = 346,
+    idtWeLeftArmedProbe9HangingNear = 347,
+    idtSendArmedProbe9BackStoveTop = 348,
+    idtThatsEnoughYear = 349,
+    idtGenerateNewYear = 350,
+    idt0351Blank = 351,
+    idtReadFirstMessageGotoSeaSquared = 352,
+    idtOtherNeedingPeopleDoingJustFine = 353,
+    idtReadFinalMessageGotoOxygen = 354,
+    idtPlanetSlightlyHabitableRangeWeShouldAdd = 355,
+    idtAddMinTerraform2OxygensQueueRight = 356,
+    idtThatsYearAutomationMakesYearsFlyFaster = 357,
+    idtGenerateWhenReady8 = 358,
+    idt0359Blank = 359,
+    idtReadFirstMessageSendArmedProbe9 = 360,
+    idtReadMessageGotoNewTeamsterFillColonists = 361,
+    idtWeWouldLikeSendColonistsWhereNeeded = 362,
+    idtChoosePlanetsReportMenu = 363,
+    idtClickTitleValueColumnSortValue = 364,
+    idtPlanetLargestNegativeValueWallabyColonistsWill = 365,
+    idtHitEscKeyClosePlanetSummaryReport = 366,
+    idtSendTeamster7WallabyUnloadColonists = 367,
+    idtReadTwoMessagesOpenResearchDialog = 368,
+    idtExpectedResearchBenefitsEitherBlueBlackWhich = 369,
+    idtWeLearnAnythingFieldResearchAlreadySet = 370,
+    idtCloseDialog = 371,
+    idtReadRemainingMessagesSendTeamster12Back = 372,
+    idtMineDispenser50SoundedInterestingIsntGood = 373,
+    idtGenerateNewYear2 = 374,
+    idt0375Blank = 375,
+    idtReadFirstMessageSendStalwartDefender5 = 376,
+    idtReadMessageGotoNewMiniMiner = 377,
+    idtShiftClickPruneSetWaypointTaskMerge = 378,
+    idtNoticeWaypointPruneHasChangedCottonPicker = 379,
+    idtReadMessageOpenStoveTopsProductionQueue = 380,
+    idtIncreaseNumberAutoBuildFactories60Add = 381,
+    idtReadTwoMessagesChangeFieldResearchConstruction = 382,
+    idtReadFinalMessageGenerate = 383,
+    idtReadMessages2 = 384,
+    idtSendTeamster1BackStoveTop = 385,
+    idtSureEasyTurn = 386,
+    idtGenerateNewYear3 = 387,
+    idt0388Blank = 388,
+    idt0389Blank = 389,
+    idt0390Blank = 390,
+    idt0391Blank = 391,
+    idtReadFirstMessageAddTeamsterStoveTops = 392,
+    idtReadMessageGoto90210 = 393,
+    idtWellWeCouldPlayProductionQueueLooks = 394,
+    idtReadTwoMessagesOpenResearchDialog2 = 395,
+    idtClickDifferentItemsListedExpectedBenefitsBox = 396,
+    idtStargateSoundsLikeFunFrigateAlsoLooks = 397,
+    idtCloseDialogWithoutMakingAnyChanges = 398,
+    idtReadRemainingMessagesGenerateYear = 399,
+    idtReadFirstMessageLoadTeamster12Colonists = 400,
+    idtAddWaypointWallabyUnloadColonists = 401,
+    idtShiftClickBackStoveTopChangeTask = 402,
+    idtClickRepeatOrdersCheckboxFleetWaypointsTile2 = 403,
+    idtEstFuelUsageClaimsWeWillNeed = 404,
+    idtFleetWillLighterWillNeedMuchFuel = 405,
+    idtReadMessageGotoNewTeamster = 406,
+    idtLoadColonists2 = 407,
+    idtAddWaypointOxygenUnloadColonists = 408,
+    idtShiftClickBackStoveTopChangeTask2 = 409,
+    idtClickRepeatOrdersCheckboxFleetWaypointsTile3 = 410,
+    idtBothFreightersWillContinueMovingColonistsAway = 411,
+    idtReadMessageAddMaxTerraformAutoBuild = 412,
+    idtRead3MessagesSendTeamster7Back = 413,
+    idtReadLastMessageGenerateYear = 414,
+    idt0415Blank = 415,
+    idtReadFirstTwoMessagesSendArmedProbe = 416,
+    idtRead3MessagesChangeFieldResearchWeapons = 417,
+    idtReadFinalMessageHitF4OpenShip = 418,
+    idtSelectStarbasesCopySelectedDesign = 419,
+    idtSelectOrbitalPartsCategoryDragStargate100 = 420,
+    idtChangeDesignNameGaterClickRightArrow = 421,
+    idtAddGaterStoveTopsQueue = 422,
+    idtGenerate = 423,
+    idtReadFirstMessageLoadTeamster1Colonists2 = 424,
+    idtSendUnloadColonistsWallaby = 425,
+    idtWeDoFrequentlyEnoughWeShouldSimplify = 426,
+    idtRightClickBlueDiamondWaypointTaskTile2 = 427,
+    idtHitImportNameOrderDropcolOkBoth = 428,
+    idtFutureWeCanSetFleetsTaskUsing = 429,
+    idtShiftClickStoveTopChangeTransportOption = 430,
+    idtClickRepeatOrders = 431,
+    idtReadRestMessages3 = 432,
+    idtYouveUpgradedStarbaseStoveTopWeDont = 433,
+    idtHitF3OpenPlanetSummaryReport = 434,
+    idtFindMinConcColumnRightClickReverse = 435,
+    idtOxygenSeaSquaredRedStormWallabyHave = 436,
+    idtWallabyHasHighestPopulationClosestBerserkersPlan = 437,
+    idtUnfortunatelyWallabyStillHasNegativeGrowthRate = 438,
+    idtGenerateWhenReady9 = 439,
+    idtReadFirstMessageGotoTeamster42 = 440,
+    idtSeemsMiniMinerWeAddedPruneHas = 441,
+    idtWeCouldDecreaseSpeedEachLegTeamster = 442,
+    idtRemoteMinersProducing = 443,
+    idtMineralsWeCanCarryEachTripWe = 444,
+    idtClickDragFuelGaugeOtherFleetsHere = 445,
+    idt0446Blank = 446,
+    idt0447Blank = 447,
+    idtAddTeamsterStoveTopsQueue = 448,
+    idtRead4MessagesChangeFieldResearchPropulsion = 449,
+    idtReadRemainingMessagesOpenShipDesigner = 450,
+    idtViewAvailableHullTypesSelectFrigateDropdown = 451,
+    idtDragDaddyLongLegs7EngineSlot = 452,
+    idtSelectMineLayersDropdownDrag3Mine = 453,
+    idtChangeDesignNameMineLayerOkDesign = 454,
+    idtAddMineLayerStoveTopsQueue = 455,
+    idtClickRedTriangleWallaby = 456,
+    idtBerserkerColonizerHeadedVacancyWarp6 = 457,
+    idtRightClickWallabySelectStalwartDefender5 = 458,
+    idtShiftClickEnemyFleet = 459,
+    idtShouldSufficientYear = 460,
+    idtGenerateWhenReady10 = 461,
+    idt0462Blank = 462,
+    idt0463Blank = 463,
+    idtReadFirstMessageGotoStalwartDefender5 = 464,
+    idtFleetDisplayedPurpleScannerMeansThereEnemy = 465,
+    idtAlsoTellsUsAlthoughCaughtColonizerDidnt = 466,
+    idtYoullSeeMessageAboutBattleLater = 467,
+    idtReadMessageGotoTeamster7 = 468,
+    idtOpenPlanetSummaryReportSortPopulation = 469,
+    idtOxygenHasLowestPopulationYouveAlreadyGot = 470,
+    idtHitEscCloseReport = 471,
+    idtLoadTeamster7ColonistsSendSeaSquared = 472,
+    idtSetWaypointTaskTransport2 = 473,
+    idtRightClickBlueDiamondChooseDropcol = 474,
+    idtReadTwoMessagesGotoNewTeamster = 475,
+    idtFreighterWeBuiltMergeOneGoingBack = 476,
+    idtSelectTeamster4ListboxOtherFleetsHere = 477,
+    idtPressMergeButtonFleetCompositionTile = 478,
+    idtClickTeamster3MergeFleetsDialogHit = 479,
+    idtReadMessageSetMineLayer8sTask = 480,
+    idtReadMessageAddMiniMinerStoveTops = 481,
+    idtRead2MessagesWatchBattle = 482,
+    idtBerserkersSantaMaria80DamagedCanKill = 483,
+    idtRightClickBlueDiamondFleetWaypointsTile = 484,
+    idtReadLastMessageDoubleClickArmedProbe = 485,
+    idtDragWaypointLaTeDaSpeedBump = 486,
+    idtShiftClickLeverGenerate = 487,
+    idtReadFirstMessageSendStalwartDefender52 = 488,
+    idtReadMessageGotoMiniMiner3Send = 489,
+    idtReadRemainingMessages = 490,
+    idtThats = 491,
+    idtGenerateWill = 492,
+    idt0493Blank = 493,
+    idt0494Blank = 494,
+    idt0495Blank = 495,
+    idtReadFirstTwoMessages = 496,
+    idtClickButtonToolbar = 497,
+    idtNoticeThereLotGreenWorldsWeNeed = 498,
+    idtHitF4OpenShipDesigner2 = 499,
+    idtSelectSantaMariaDropdown = 500,
+    idtHitEditSelectedDesign = 501,
+    idtDragLongHump6EngineDesignParts = 502,
+    idtOkDesignHitDoneCloseDialog = 503,
+    idtAdd3ImprovedSantaMariasStoveTops = 504,
+    idtReadMessageGotoSeaSquared = 505,
+    idtSeaSquaredHasBuiltManyFactoriesMines = 506,
+    idtAddMaxTerraformAutoBuild2End = 507,
+    idtRead2MessagesChangeFieldResearchConstruction = 508,
+    idtReadRestMessages4 = 509,
+    idtAnd5 = 510,
+    idtGenerateWhenReady11 = 511,
+    idtReadFirstThreeMessages = 512,
+    idtGoto3NewSantaMarias = 513,
+    idtLoadThemColonistsSendThemColonizeLever = 514,
+    idtHitSplitButtonFleetCompositionTile2 = 515,
+    idtDragSantaMaria10sWaypointSpeedBump = 516,
+    idtSantaMaria11sBloop = 517,
+    idtReadRestMessages5 = 518,
+    idt0519Blank = 519,
+    idtTeamster12WillArriveStoveTopYear = 520,
+    idtAdd3TeamstersStoveTopsQueue = 521,
+    idtAugmentOurTroopLiftEffort = 522,
+    idtClickEnemyShipNearWallaby = 523,
+    idtBerserkersTryingColonizeVacancyFolksNeverLearn = 524,
+    idtSelectStalwartDefender5DragDestinationEnemy = 525,
+    idtYearWellHaveDesignNewDestroyerGo = 526,
+    idtGenerateWhenYoureReady = 527,
+    idtReadFirstMessageGotoStalwartDefender52 = 528,
+    idtOnceWeveWoundedFinishedOffColonizer = 529,
+    idtRightClickBlueDiamondFleetWaypointsTile2 = 530,
+    idtTellsDestroyerFollowDestroyEnemyColonizer = 531,
+    idtReadMessageGotoArmedProbe92 = 532,
+    idtWellLeaveFleetHereGuardLeverSince = 533,
+    idtReadMessageGotoNewFleet = 534,
+    idtFillColonists = 535,
+    idtWeWantMergeNewTeamstersOtherFleet = 536,
+    idtSelectTeamster12PressMergeButtonFleet = 537,
+    idtReadMessage6 = 538,
+    idtWellDealStoveTopAfterWeFinish = 539,
+    idtReadRestMessagesViewingBattleColonizerIf = 540,
+    idtPromisedLastYearLetsDesignDestroyerTake = 541,
+    idtHitF4OpenShipDesigner3 = 542,
+    idt0543Blank = 543,
+    idtWeWantPowerfulWeAlsoWantWeigh = 544,
+    idtSelectAvailableHullTypesChooseDestroyerDropdown = 545,
+    idtAddRadiatingHydroRamScoop2Carbonic = 546,
+    idtAddFuelTankMechanicalSlotBattleComputer = 547,
+    idtTotalMassDesign97kt = 548,
+    idtClickRightArrowButtonBelowShipImage = 549,
+    idtPut10DestroyersStoveTopsQueue = 550,
+    idtGenerate2 = 551,
+    idtReadFirstMessageGotoStalwartDefender53 = 552,
+    idtOnce = 553,
+    idtSendWallaby = 554,
+    idtRead4MessagesGotoNewDestroyerArmada = 555,
+    idtSendWreakHavocBerserkerStarbaseHacker = 556,
+    idtReadRestMessages6 = 557,
+    idtAnd6 = 558,
+    idtGenerateTurn = 559,
+    idtReadFirstMessageGotoTeamster43 = 560,
+    idtWeNeedSlowFleetLegStoveTop = 561,
+    idtClickStoveTopFleetWaypointsTileDecrease = 562,
+    idtOurReturnTripWillTakeExtraYear = 563,
+    idtRead4Messages = 564,
+    idtSendNewDestroyerHackerWell = 565,
+    idtAvoidRepeatWorkSendingEveryNewFleet = 566,
+    idtSelectStoveTopControlClickHacker = 567,
+    idtNoticeProductionTileNewShipsWillRouted = 568,
+    idtRead3Messages = 569,
+    idtOpenResearchDialogSetFieldResearchEnergy = 570,
+    idtReadRestMessages7 = 571,
+    idtGotoTeamster7 = 572,
+    idtDoesntHaveEnoughFuelGetBackStove = 573,
+    idtGiveTeamster7OrdersScrapFleet = 574,
+    idt0575Blank = 575,
+    idtLetsFinishOffBerserkersOnceBuildingBombing = 576,
+    idtHitF4OpenShipDesigner4 = 577,
+    idtSelectAvailableHullTypesChooseB17 = 578,
+    idtAddRadiatingHydroRamScoopEngines = 579,
+    idtHoldShiftKeyDrag4BlackCat = 580,
+    idtOkDesignCloseShipDesigner = 581,
+    idtAdd10B17BombersStoveTops = 582,
+    idtGenerateWhenReady12 = 583,
+    idtCongratulationsYouveDeclaredWinner = 584,
+    idtTutorialWillContinueFewYearsGiveAdditional = 585,
+    idtReadFirst3MessagesGotoNewB = 586,
+    idtNoticeTheyveAlreadyRoutedHacker = 587,
+    idtReadRestMessages8 = 588,
+    idtEverythingElseAutomated = 589,
+    idtGenerateWhenYoureReady2 = 590,
+    idt0591Blank = 591,
+    idtReadFirst4MessagesGotoWallaby = 592,
+    idtTerraformingEffortHasFinallyPaidOffWed = 593,
+    idtAdd100MinesWallabysQueue = 594,
+    idtControlClickAddButtonAdd100Item = 595,
+    idtReadRestMessages9 = 596,
+    idtThereIsntAnythingPressingDoYearOur = 597,
+    idtGenerateWill2 = 598,
+    idt0599Blank = 599,
+    idtReadFirst3MessagesGotoDestroyer13 = 600,
+    idtNotice9DestroyersShownRedBarAbout = 601,
+    idtClickDestroyerFleetCompositionTile = 602,
+    idtIfRunningLeast800x600ModeWillSee = 603,
+    idtRead8MessagesViewAssaultEnemyStarbase = 604,
+    idtWellBerserkersShouldntBuildingAnyColonizersNotic = 605,
+    idtReadRestMessagesGenerate = 606,
+    idt0607Blank = 607,
+    idtReadFirst6MessagesGotoStoveTop = 608,
+    idtAddAnother10B17BombersProduction = 609,
+    idtHoldingPatternWaitingOurBombersArriveHacker = 610,
+    idtReadRestMessagesWatchBattles = 611,
+    idtGenerateWhenReady13 = 612,
+    idt0613Blank = 613,
+    idt0614Blank = 614,
+    idt0615Blank = 615,
+    idtNothingMuchHappeningYearViewBattleHacker = 616,
+    idtWillHaveDesignFasterShipUsingFaster = 617,
+    idtFirstBombersArriveYear = 618,
+    idtReadMessagesGenerateWhenReady = 619,
+    idt0620Blank = 620,
+    idt0621Blank = 621,
+    idt0622Blank = 622,
+    idt0623Blank = 623,
+    idtReadThroughMessages = 624,
+    idtN2B17BombersKilledFewEnemy = 625,
+    idtNewArrivalsSeveralYearsShouldMakeDifference = 626,
+    idtThereNumberThingsWeCouldDoOur = 627,
+    idtGenerateWhenReady14 = 628,
+    idt0629Blank = 629,
+    idt0630Blank = 630,
+    idt0631Blank = 631,
+    idtCongratulationsHaveReachedEndTutorial = 632,
+    idtHitF10ViewScoreNoticeBerserkersHave = 633,
+    idtNeedFinishBombingBerserkerPlanetsBuildShip = 634,
+    idtWillTrulyRuleGalaxy = 635,
+    idtReadMessages3 = 636,
+    idtWhenGenerateYoureOwn = 637,
+    idt0638Blank = 638,
+    idt0639Blank = 639,
 };
 typedef uint16_t TutorId;
 
@@ -2835,6 +2864,19 @@ enum GrStat {
 
 };
 typedef uint16_t GrStat;
+
+// isbhull is a starbase hull's index in rghuldefSB, its HulDef id less
+// ihuldefOrbitalFort.
+enum isbhull {
+    isbhullAuto = -1, // FCreateAiStarbase: choose by design slot
+    isbhullOrbitalFort = 0,
+    isbhullSpaceDock = 1,
+    isbhullSpaceStation = 2,
+    isbhullUltraStation = 3,
+    isbhullDeathStar = 4,
+    isbhullCount = 5,
+};
+typedef int16_t isbhull;
 
 enum iengine {
     iengineSettlersDelight = 0,
@@ -3451,170 +3493,349 @@ typedef uint16_t DialogId;
 #undef IDHELP
 #undef IDC_HELP
 
+// AboutControl names the controls of the About dialog.
+enum AboutControl {
+    IDC_ABOUT_ORDER_INFO = 118,
+    IDC_ABOUT_DEMO_TEXT = 1025,
+    IDC_ABOUT_CREDITS_TEXT = 1055,
+};
+typedef uint16_t AboutControl;
+
+// OrderInfoControl names the controls of the order information dialog.
+enum OrderInfoControl {
+    IDC_ORDER_INFO_TEXT = 1025,
+};
+typedef uint16_t OrderInfoControl;
+
+// PrintMapControl names the controls of the Print Map dialog.
+enum PrintMapControl {
+    IDC_PRINT_MAP_PAGES_X = 268,
+    IDC_PRINT_MAP_PAGES_Y = 269,
+};
+typedef uint16_t PrintMapControl;
+
+// SimpleNewGameControl names the controls of the simple New Game dialog.
+enum SimpleNewGameControl {
+    IDC_SIMPLE_NEW_GAME_EASY = 200,
+    IDC_SIMPLE_NEW_GAME_STANDARD = 201,
+    IDC_SIMPLE_NEW_GAME_HARDER = 202,
+    IDC_SIMPLE_NEW_GAME_EXPERT = 203,
+    IDC_SIMPLE_NEW_GAME_CUSTOMIZE_RACE = 210,
+    IDC_SIMPLE_NEW_GAME_ADVANCED = 211,
+    IDC_SIMPLE_NEW_GAME_TUTORIAL = 212,
+    IDC_SIMPLE_NEW_GAME_TINY = 1000,
+    IDC_SIMPLE_NEW_GAME_SMALL = 1001,
+    IDC_SIMPLE_NEW_GAME_MEDIUM = 1002,
+    IDC_SIMPLE_NEW_GAME_LARGE = 1003,
+    IDC_SIMPLE_NEW_GAME_HUGE = 1004,
+};
+typedef uint16_t SimpleNewGameControl;
+
+// NewGame1Control names the controls of the first advanced New Game wizard page.
+enum NewGame1Control {
+    IDC_NEW_GAME_TINY = 1000,
+    IDC_NEW_GAME_SMALL = 1001,
+    IDC_NEW_GAME_MEDIUM = 1002,
+    IDC_NEW_GAME_LARGE = 1003,
+    IDC_NEW_GAME_HUGE = 1004,
+    IDC_NEW_GAME_SPARSE = 1005,
+    IDC_NEW_GAME_NORMAL = 1006,
+    IDC_NEW_GAME_DENSE = 1007,
+    IDC_NEW_GAME_PACKED = 1008,
+    IDC_NEW_GAME_CLOSE = 1009,
+    IDC_NEW_GAME_MODERATE = 1010,
+    IDC_NEW_GAME_FARTHER = 1011,
+    IDC_NEW_GAME_DISTANT = 1012,
+    IDC_NEW_GAME_MAX_MINERALS = 1016,
+    IDC_NEW_GAME_SLOWER_TECH = 1017,
+    IDC_NEW_GAME_ACCELERATED_BBS = 1018,
+    IDC_NEW_GAME_NO_RANDOM_EVENTS = 1019,
+    IDC_NEW_GAME_AI_ALLIANCES = 1020,
+    IDC_NEW_GAME_PUBLIC_SCORES = 1021,
+    IDC_NEW_GAME_NAME = 1030,
+    IDC_NEW_GAME_GALAXY_CLUMPING = 1050,
+};
+typedef uint16_t NewGame1Control;
+
+// NewGame3Control names the controls of the victory conditions New Game wizard page; the tech level checkbox covers both tech conditions.
+enum NewGame3Control {
+    IDC_VC_OWNS_PLANETS = 291,
+    IDC_VC_TECH_LEVEL = 292,
+    IDC_VC_SCORE = 293,
+    IDC_VC_SECOND_PLACE = 294,
+    IDC_VC_PRODUCTION = 295,
+    IDC_VC_CAPITAL_SHIPS = 296,
+    IDC_VC_HIGHEST_SCORE = 297,
+};
+typedef uint16_t NewGame3Control;
+
+// VcrControl names the controls of the battle VCR dialog.
+enum VcrControl {
+    IDC_VCR_REW_ALL = 161,
+    IDC_VCR_REW = 162,
+    IDC_VCR_PLAY_PAUSE = 163,
+    IDC_VCR_FWD = 164,
+    IDC_VCR_FWD_ALL = 165,
+};
+typedef uint16_t VcrControl;
+
+// HostModeControl names the controls of the host mode dialog.
+enum HostModeControl {
+    IDC_HOST_GENERATE_NOW = 1031,
+    IDC_HOST_AUTO_GENERATE = 1032,
+    IDC_HOST_GAME_NAME_TEXT = 1033,
+    IDC_HOST_FILE_TEXT = 1034,
+    IDC_HOST_PASSWORD = 2015,
+    IDC_HOST_NEXT_YEAR_TEXT = 2016,
+    IDC_HOST_TIME_SINCE_TEXT = 2017,
+};
+typedef uint16_t HostModeControl;
+
+// HostOptionsControl names the controls of the auto generate options dialog; the second and third force generate options have no caption in the template.
+enum HostOptionsControl {
+    IDC_AUTOGEN_WHEN_ALL_IN = 1027,
+    IDC_FORCE_GEN_NEVER = 2066,
+    IDC_FORCE_GEN_OPTION_2 = 2067,
+    IDC_FORCE_GEN_OPTION_3 = 2068,
+};
+typedef uint16_t HostOptionsControl;
+
+// SlotControl names the controls of the ship designer dialog.
+enum SlotControl {
+    IDC_DESIGNER_COMPONENT_LIST = 2060,
+    IDC_DESIGNER_SHIPS = 2064,
+    IDC_DESIGNER_STARBASES = 2065,
+    IDC_DESIGNER_EXISTING = 2066,
+    IDC_DESIGNER_HULLS = 2067,
+    IDC_DESIGNER_ENEMY_HULLS = 2068,
+    IDC_DESIGNER_COMPONENTS = 2069,
+};
+typedef uint16_t SlotControl;
+
+// RaceWizard1Control names the controls of the race wizard name and race page.
+enum RaceWizard1Control {
+    IDC_RACE_NAME = 268,
+    IDC_RACE_PASSWORD = 269,
+    IDC_RACE_HUMANOID = 271,
+    IDC_RACE_RABBITOID = 272,
+    IDC_RACE_INSECTOID = 273,
+    IDC_RACE_NUCLEOTID = 274,
+    IDC_RACE_SILICANOID = 275,
+    IDC_RACE_ANTETHERAL = 276,
+    IDC_RACE_RANDOM = 277,
+    IDC_RACE_CUSTOM = 278,
+    IDC_RACE_PLURAL_NAME = 2075,
+};
+typedef uint16_t RaceWizard1Control;
+
+// RaceWizard2Control names the controls of the race wizard habitability page.
+enum RaceWizard2Control {
+    IDC_IMMUNE_TO_GRAVITY = 291,
+    IDC_IMMUNE_TO_TEMPERATURE = 292,
+    IDC_IMMUNE_TO_RADIATION = 293,
+};
+typedef uint16_t RaceWizard2Control;
+
+// RaceWizard3Control names the controls of the race wizard economy page.
+enum RaceWizard3Control {
+    IDC_RACE_FACTORY_GERMANIUM_DISCOUNT = 291,
+};
+typedef uint16_t RaceWizard3Control;
+
+// RaceWizard4Control names the controls of the race wizard primary racial trait page.
+enum RaceWizard4Control {
+    IDC_RACE_HYPER_EXPANSION = 271,
+    IDC_RACE_SUPER_STEALTH = 272,
+    IDC_RACE_WAR_MONGER = 273,
+    IDC_RACE_CLAIM_ADJUSTER = 274,
+    IDC_RACE_INNER_STRENGTH = 275,
+    IDC_RACE_SPACE_DEMOLITION = 276,
+    IDC_RACE_PACKET_PHYSICS = 277,
+    IDC_RACE_INTERSTELLAR_TRAVELER = 278,
+    IDC_RACE_ALTERNATE_REALITY = 279,
+    IDC_RACE_JACK_OF_ALL_TRADES = 280,
+};
+typedef uint16_t RaceWizard4Control;
+
+// RaceWizard5Control names the controls of the race wizard lesser racial trait page, in RaceGrbit order.
+enum RaceWizard5Control {
+    IDC_RACE_IMPROVED_FUEL_EFFICIENCY = 291,
+    IDC_RACE_TOTAL_TERRAFORMING = 292,
+    IDC_RACE_ADVANCED_REMOTE_MINING = 293,
+    IDC_RACE_IMPROVED_STARBASES = 294,
+    IDC_RACE_GENERALIZED_RESEARCH = 295,
+    IDC_RACE_ULTIMATE_RECYCLING = 296,
+    IDC_RACE_MINERAL_ALCHEMY = 297,
+    IDC_RACE_NO_RAM_SCOOP_ENGINES = 298,
+    IDC_RACE_CHEAP_ENGINES = 299,
+    IDC_RACE_ONLY_BASIC_REMOTE_MINING = 300,
+    IDC_RACE_NO_ADVANCED_SCANNERS = 301,
+    IDC_RACE_LOW_STARTING_POPULATION = 302,
+    IDC_RACE_BLEEDING_EDGE_TECHNOLOGY = 303,
+    IDC_RACE_REGENERATING_SHIELDS = 304,
+};
+typedef uint16_t RaceWizard5Control;
+
+// RaceWizard6Control names the controls of the race wizard research cost page.
+enum RaceWizard6Control {
+    IDC_RACE_ENERGY_COST_EXTRA = 271,
+    IDC_RACE_ENERGY_COST_STANDARD = 272,
+    IDC_RACE_ENERGY_COST_LESS = 273,
+    IDC_RACE_WEAPONS_COST_EXTRA = 274,
+    IDC_RACE_WEAPONS_COST_STANDARD = 275,
+    IDC_RACE_WEAPONS_COST_LESS = 276,
+    IDC_RACE_PROPULSION_COST_EXTRA = 277,
+    IDC_RACE_PROPULSION_COST_STANDARD = 278,
+    IDC_RACE_PROPULSION_COST_LESS = 279,
+    IDC_RACE_CONSTRUCTION_COST_EXTRA = 280,
+    IDC_RACE_CONSTRUCTION_COST_STANDARD = 281,
+    IDC_RACE_CONSTRUCTION_COST_LESS = 282,
+    IDC_RACE_ELECTRONICS_COST_EXTRA = 283,
+    IDC_RACE_ELECTRONICS_COST_STANDARD = 284,
+    IDC_RACE_ELECTRONICS_COST_LESS = 285,
+    IDC_RACE_BIOTECH_COST_EXTRA = 286,
+    IDC_RACE_BIOTECH_COST_STANDARD = 287,
+    IDC_RACE_BIOTECH_COST_LESS = 288,
+    IDC_RACE_START_HIGHER_TECH = 291,
+};
+typedef uint16_t RaceWizard6Control;
+
+// ProductionControl names the controls of the production queue dialog.
+enum ProductionControl {
+    IDC_PRODUCTION_RESEARCH_LEFTOVERS_ONLY = 139,
+    IDC_PRODUCTION_AVAILABLE_ITEMS = 1046,
+    IDC_PRODUCTION_QUEUE = 1047,
+    IDC_PRODUCTION_ADD = 1048,
+    IDC_PRODUCTION_REMOVE = 1049,
+    IDC_PRODUCTION_CLEAR = 1069,
+    IDC_PRODUCTION_ITEM_UP = 1081,
+    IDC_PRODUCTION_ITEM_DOWN = 1082,
+};
+typedef uint16_t ProductionControl;
+
+// MergeFleetsControl names the controls of the merge fleets dialog.
+enum MergeFleetsControl {
+    IDC_MERGE_FLEETS_LIST = 81,
+    IDC_MERGE_FLEETS_SELECT_ALL = 2040,
+    IDC_MERGE_FLEETS_UNSELECT_ALL = 2041,
+};
+typedef uint16_t MergeFleetsControl;
+
+// BattlePlansControl names the controls of the battle plans dialog.
+enum BattlePlansControl {
+    IDC_BATTLE_PLAN_COPY = 1052,
+    IDC_BATTLE_PLAN_DUMP_CARGO = 1053,
+    IDC_BATTLE_PLAN_SELECT = 1054,
+    IDC_BATTLE_PLAN_PRIMARY_TARGET = 1055,
+    IDC_BATTLE_PLAN_SECONDARY_TARGET = 1056,
+    IDC_BATTLE_PLAN_TACTIC = 1057,
+    IDC_BATTLE_PLAN_ATTACK_WHO = 1058,
+};
+typedef uint16_t BattlePlansControl;
+
+// RelationsControl names the controls of the player relations dialog.
+enum RelationsControl {
+    IDC_RELATIONS_PLAYER_LIST = 2003,
+    IDC_RELATIONS_NEUTRAL = 2004,
+    IDC_RELATIONS_FRIEND = 2005,
+    IDC_RELATIONS_ENEMY = 2006,
+};
+typedef uint16_t RelationsControl;
+
+// ResearchControl names the controls of the research dialog.
+enum ResearchControl {
+    IDC_RESEARCH_ENERGY = 1073,
+    IDC_RESEARCH_WEAPONS = 1074,
+    IDC_RESEARCH_PROPULSION = 1075,
+    IDC_RESEARCH_CONSTRUCTION = 1076,
+    IDC_RESEARCH_ELECTRONICS = 1077,
+    IDC_RESEARCH_BIOTECH = 1078,
+    IDC_RESEARCH_NEXT_FIELD = 1083,
+};
+typedef uint16_t ResearchControl;
+
+// ZipProdControl names the controls of the production template dialog.
+enum ZipProdControl {
+    IDC_ZIP_PROD_QUEUE = 1047,
+    IDC_ZIP_PROD_PRESET_1 = 1073,
+    IDC_ZIP_PROD_PRESET_2 = 1074,
+    IDC_ZIP_PROD_PRESET_3 = 1075,
+    IDC_ZIP_PROD_PRESET_4 = 1076,
+};
+typedef uint16_t ZipProdControl;
+
+// GaugeControl names the controls of the progress gauge dialog.
+enum GaugeControl {
+    IDC_GAUGE_TEXT = 1071,
+};
+typedef uint16_t GaugeControl;
+
+// BrowserControl names the controls of the technology browser dialog.
+enum BrowserControl {
+    IDC_BROWSER_AVAILABLE_ONLY = 266,
+    IDC_BROWSER_COMPONENT_CATEGORY = 267,
+};
+typedef uint16_t BrowserControl;
+
+// TutorControl names the controls of the tutorial dialog.
+enum TutorControl {
+    IDC_TUTOR_HINT = 118,
+    IDC_TUTOR_PANIC = 2503,
+};
+typedef uint16_t TutorControl;
+
+// PanicControl names the controls of the tutorial panic dialog.
+enum PanicControl {
+    IDC_PANIC_REDO_TURN = 2505,
+    IDC_PANIC_COMPLETE_TURN = 2506,
+};
+typedef uint16_t PanicControl;
+
+// NewPasswordControl names the controls of the new password dialog.
+enum NewPasswordControl {
+    IDC_PASSWORD_CONFIRM = 269,
+};
+typedef uint16_t NewPasswordControl;
+
+// ScoreControl names the controls of the score dialog.
+enum ScoreControl {
+    IDC_SCORE_SWITCH = 198,
+};
+typedef uint16_t ScoreControl;
+
 enum ControlId {
+    // Controls shared by several dialogs with the same meaning; a dialog's
+    // own controls are in its dialog_controls enum.
     IDOK = 1,
     IDCANCEL = 2,
     IDHELP = 9,
     IDC_HELP = 118,
 
-    // race wizard
-    IDC_EDIT1 = 268,
-    IDC_EDITNAME = 2075,
-    IDC_RADRACE1 = 271,
-
-    IDC_IMMUNE_TO_TEMPERATURE = 292,
-    IDC_IMMUNE_TO_RADIATION = 293,
-    IDC_RENAME = 1051,
-    IDC_SAVE = 1065,
-    IDC_NO_DON_T_SAVE = 1067,
+    // wizard and list navigation
+    IDC_BACK = 1070,
     IDC_NEXT = 1071,
     IDC_FINISH = 1072,
-    IDC_DELETE = 2071,
 
+    // name and text edits
+    IDC_EDIT1 = 268,
+    IDC_EDITTEXT = 268,
+    IDC_EDITNAME = 2075,
+    IDC_PASSWORD_STATUS_TEXT = 2018,
+    IDC_COMBOBOX = 2074,
+
+    // list item buttons
+    IDC_RENAME = 1051,
     IDC_IMPORT = 2070,
+    IDC_DELETE = 2071,
     IDC_EDIT = 2072,
-
-    IDC_PREV = 2064,
-    IDC_NEXT2 = 2065,
-    IDC_FIRST = 2066,
-    IDC_LAST = 2067,
-    IDC_UP = 2068,
-    IDC_DOWN = 2069,
-
     IDC_SHIPLIST = 1035,
-    IDC_EDITTEXT = 0x010C, /* 268 */
-
-    IDC_U16_0x0051 = 0x0051, /* 81 */
-    IDC_U16_0x008B = 0x008B, /* 139 */
-    IDC_VCR_REW_ALL = 0x00A1, /* 161 */
-    IDC_VCR_PLAY_PAUSE = 0x00A3, /* 163 */
-    IDC_U16_0x00C6 = 0x00C6, /* 198 */
-    IDC_U16_0x00CB = 0x00CB, /* 203 */
-    IDC_U16_0x00D3 = 0x00D3, /* 211 */
-
-    IDC_U16_0x010B = 0x010B, /* 267 */
-    IDC_U16_0x010D = 0x010D, /* 269 */
-    IDC_U16_0x0116 = 0x0116, /* 278 */
-    IDC_U16_0x0118 = 0x0118, /* 280 */
-    IDC_U16_0x0123 = 0x0123, /* 291 */
-    IDC_U16_0x0130 = 0x0130, /* 304 */
-
-    IDC_U16_0x0406 = 0x0406, /* 1030 */
-    IDC_U16_0x0416 = 0x0416, /* 1046 */
-    IDC_U16_0x0417 = 0x0417, /* 1047 */
-    IDC_U16_0x041A = 0x041A, /* 1050 */
-    IDC_U16_0x041D = 0x041D, /* 1053 */
-    IDC_U16_0x041E = 0x041E, /* 1054 */
-    IDC_U16_0x041F = 0x041F, /* 1055 */
-    IDC_U16_0x0420 = 0x0420, /* 1056 */
-    IDC_U16_0x0421 = 0x0421, /* 1057 */
-    IDC_U16_0x0422 = 0x0422, /* 1058 */
-    IDC_U16_0x042E = 0x042E, /* 1070 */
-
-    IDC_U16_0x0434 = 0x0434, /* 1076 */
-
-    IDC_U16_0x07D3 = 0x07D3, /* 2003 */
-    IDC_U16_0x07D5 = 0x07D5, /* 2005 */
-    IDC_U16_0x07D6 = 0x07D6, /* 2006 */
-
-    IDC_HOST_PASSWORD = 0x07DF, /* 2015 */
-    IDC_HOST_NEXT_YEAR_TEXT = 0x07E0, /* 2016 */
-    IDC_HOST_TIME_SINCE_TEXT = 0x07E1, /* 2017 */
-    IDC_PASSWORD_STATUS_TEXT = 0x07E2, /* 2018 */
-
-    IDC_U16_0x080C = 0x080C, /* 2060 */
-
-    IDC_COMBOBOX = 0x081A,
-
-    // battle VCR
-    IDC_VCR_REW = 162,
-    IDC_VCR_FWD = 164,
-    IDC_VCR_FWD_ALL = 165,
 
     // save turn
+    IDC_SAVE = 1065,
     IDC_SAVESUBMIT = 1066,
+    IDC_NO_DON_T_SAVE = 1067,
 
-    // host mode / auto generate options
-    IDC_AUTOGEN_WHEN_ALL_IN = 1027,
-    IDC_HOST_GENERATE_NOW = 1031,
-    IDC_HOST_AUTO_GENERATE = 1032,
-    IDC_HOST_GAME_NAME_TEXT = 1033,
-    IDC_HOST_FILE_TEXT = 1034,
-
-};
-typedef uint16_t ControlId;
-
-/* Numeric cursor resources, named after the hcur globals they load into;
- * the others are named (SCANNERCUR, ...). */
-#undef IDC_HAND
-enum CursorId {
-    IDC_NO_WAY = 121,
-    IDC_TRASH_CAN = 122,
-    IDC_RESIZE_WE = 258,
-    IDC_RESIZE_NS = 260,
-    IDC_RESIZE_4WAY = 263,
-    IDC_ARROW_HELP = 264,
-    IDC_HAND = 265,
-};
-typedef uint16_t CursorId;
-
-/* Numeric bitmap resources; the others are named (CARGOBMP, ...). IDB_ ones
- * are loaded with LoadBitmap, IDDIB_ ones as DIBs through FindResource. */
-enum BitmapId {
-    IDDIB_PLAYER_ICONS_TINY = 79,
-    IDDIB_PLAYER_ICONS_SMALL = 80,
-    IDDIB_THING_ICONS = 87,
-    IDDIB_SCANNER_TOOLBAR = 88,
-    IDDIB_PLANET_ICONS = 112,
-    IDB_EMPTY_HULL_SLOT = 119,
-    IDDIB_PLAYER_ICONS = 133,
-    IDB_MSGFILTER_CHECKBOX = 134,
-    IDB_TOOLBAR = 178,
-    IDB_FILTER_CHECKBOX_MONO = 199,
-    IDB_FONT_DIGITS = 249,
-    IDDIB_SPLASH = 449,
-    IDB_MINESPAT_1 = 460,
-    IDB_MINESPAT_2 = 461,
-    IDB_MINESPAT_3 = 462,
-    IDDIB_TECH_ICONS_1 = 500,
-    IDDIB_TECH_ICONS_2 = 501,
-    IDDIB_TECH_ICONS_3 = 502,
-    IDDIB_TECH_ICONS_4 = 503,
-    IDDIB_TECH_ICONS_5 = 504,
-    IDDIB_TECH_ICONS_6 = 505,
-    IDDIB_TECH_ICONS_7 = 506,
-    IDDIB_HULL_ICONS_1 = 552,
-    IDDIB_HULL_ICONS_2 = 553,
-    IDDIB_HULL_ICONS_3 = 554,
-    IDDIB_HULL_ICONS_4 = 555,
-    IDDIB_HULL_ICONS_5 = 556,
-    IDDIB_HULL_ICONS_SMALL_1 = 557,
-    IDDIB_HULL_ICONS_SMALL_2 = 558,
-    IDDIB_HULL_ICONS_SMALL_3 = 559,
-    IDDIB_HULL_ICONS_SMALL_4 = 560,
-    IDDIB_HULL_ICONS_SMALL_5 = 561,
-    IDDIB_NUM_DESIGNS_PLATE = 1079,
-};
-typedef uint16_t BitmapId;
-
-enum AcceleratorId {
-    IDA_MAIN = 116,
-    IDA_TITLE = 1080,
-};
-typedef uint16_t AcceleratorId;
-
-/* Tutorial game files, each stored as its own custom resource type. */
-enum TutorialResourceId {
-    RT_TUTORIAL_HST = 10000,
-    IDR_TUTORIAL_HST = 10001,
-    RT_TUTORIAL_M1 = 10002,
-    IDR_TUTORIAL_M1 = 10003,
-    RT_TUTORIAL_M2 = 10004,
-    IDR_TUTORIAL_M2 = 10005,
-};
-typedef uint16_t TutorialResourceId;
-
-enum WParamMessageId {
+    // ---- Menu and accelerator commands (WM_COMMAND ids) -------------------
     IDM_DEBUG_DUMP_FLEETS = 0x0053,   // DumpFleets()
     IDM_DEBUG_DUMP_PLANETS = 0x0054,  // DumpPlanets()
     IDM_DEBUG_DUMP_UNIVERSE = 0x0055, // DumpUniverse()
@@ -3718,10 +3939,10 @@ enum WParamMessageId {
     IDM_VIEW_FIND = 0x1068,
     IDM_UNKNOWN_1069 = 0x1069,
 
-    IDC_UNKNOWN_0087 = 0x0087,
-    IDC_UNKNOWN_0089 = 0x0089,
+    IDM_GAME_RESEARCH2 = 0x0087,
+    IDM_GAME_SHIP_BUILDER2 = 0x0089,
     IDM_VIEW_GAME_PARAMS = 0x009E,
-    IDC_UNKNOWN_009F = 0x009F,
+    IDM_VIEW_GAME_PARAMS2 = 0x009F,
     IDM_VIEW_TOOLBAR = 0x00B3,
     IDM_FILE_PRINT_MAP = 0x00D5,
     IDM_TITLE_NEW_GAME = 0x00FA,
@@ -3729,7 +3950,7 @@ enum WParamMessageId {
     IDM_TITLE_CONTINUE = 0x00FC,
     IDM_TITLE_EXIT = 0x00FD,
     IDM_CMD_CHANGE_PASSWORD = 0x010E,
-    IDC_UNKNOWN_0428 = 0x0428,
+    IDM_TURN_SAVE_SUBMIT = 0x0428,
 
     WMX_UNKNOWN_0069 = 0x0069,
     WMX_UNKNOWN_006A = 0x006A,
@@ -3737,7 +3958,77 @@ enum WParamMessageId {
     WMX_UNKNOWN_006F = 0x006F,
 
 };
-typedef uint16_t WParamMessageId;
+typedef uint16_t ControlId;
+
+/* Numeric cursor resources, named after the hcur globals they load into;
+ * the others are named (SCANNERCUR, ...). */
+#undef IDC_HAND
+enum CursorId {
+    IDC_NO_WAY = 121,
+    IDC_TRASH_CAN = 122,
+    IDC_RESIZE_WE = 258,
+    IDC_RESIZE_NS = 260,
+    IDC_RESIZE_4WAY = 263,
+    IDC_ARROW_HELP = 264,
+    IDC_HAND = 265,
+};
+typedef uint16_t CursorId;
+
+/* Numeric bitmap resources; the others are named (CARGOBMP, ...). IDB_ ones
+ * are loaded with LoadBitmap, IDDIB_ ones as DIBs through FindResource. */
+enum BitmapId {
+    IDDIB_PLAYER_ICONS_TINY = 79,
+    IDDIB_PLAYER_ICONS_SMALL = 80,
+    IDDIB_THING_ICONS = 87,
+    IDDIB_SCANNER_TOOLBAR = 88,
+    IDDIB_PLANET_ICONS = 112,
+    IDB_EMPTY_HULL_SLOT = 119,
+    IDDIB_PLAYER_ICONS = 133,
+    IDB_MSGFILTER_CHECKBOX = 134,
+    IDB_TOOLBAR = 178,
+    IDB_FILTER_CHECKBOX_MONO = 199,
+    IDB_FONT_DIGITS = 249,
+    IDDIB_SPLASH = 449,
+    IDB_MINESPAT_1 = 460,
+    IDB_MINESPAT_2 = 461,
+    IDB_MINESPAT_3 = 462,
+    IDDIB_TECH_ICONS_1 = 500,
+    IDDIB_TECH_ICONS_2 = 501,
+    IDDIB_TECH_ICONS_3 = 502,
+    IDDIB_TECH_ICONS_4 = 503,
+    IDDIB_TECH_ICONS_5 = 504,
+    IDDIB_TECH_ICONS_6 = 505,
+    IDDIB_TECH_ICONS_7 = 506,
+    IDDIB_HULL_ICONS_1 = 552,
+    IDDIB_HULL_ICONS_2 = 553,
+    IDDIB_HULL_ICONS_3 = 554,
+    IDDIB_HULL_ICONS_4 = 555,
+    IDDIB_HULL_ICONS_5 = 556,
+    IDDIB_HULL_ICONS_SMALL_1 = 557,
+    IDDIB_HULL_ICONS_SMALL_2 = 558,
+    IDDIB_HULL_ICONS_SMALL_3 = 559,
+    IDDIB_HULL_ICONS_SMALL_4 = 560,
+    IDDIB_HULL_ICONS_SMALL_5 = 561,
+    IDDIB_NUM_DESIGNS_PLATE = 1079,
+};
+typedef uint16_t BitmapId;
+
+enum AcceleratorId {
+    IDA_MAIN = 116,
+    IDA_TITLE = 1080,
+};
+typedef uint16_t AcceleratorId;
+
+/* Tutorial game files, each stored as its own custom resource type. */
+enum TutorialResourceId {
+    RT_TUTORIAL_HST = 10000,
+    IDR_TUTORIAL_HST = 10001,
+    RT_TUTORIAL_M1 = 10002,
+    IDR_TUTORIAL_M1 = 10003,
+    RT_TUTORIAL_M2 = 10004,
+    IDR_TUTORIAL_M2 = 10005,
+};
+typedef uint16_t TutorialResourceId;
 
 enum VictoryCondition {
     vcOwnsPercentPlanets = 0,     /* "Owns % of all planets." */
@@ -3908,5 +4199,854 @@ enum AiResearchTarget {
     aiResearchBiotechnology26 = (5 << 5) | 26,
 };
 typedef uint16_t AiResearchTarget;
+
+// AiRace identifies a computer player's race and the AI routine that plays it.
+enum AiRace {
+    idAiRobotoid = 0,
+    idAiTurinDrone = 1,
+    idAiAutomitron = 2,
+    idAiRototill = 3,
+    idAiCybertron = 4,
+    idAiMacinti = 5,
+    idAiRandom = 6, // replaced with a random race when the game is created
+    idAiMaid = 7,   // housekeeping AI that runs a human player's empire
+};
+typedef uint16_t AiRace;
+
+// MineFieldType is a minefield's kind.
+enum MineFieldType {
+    mineStandard = 0,
+    mineHeavy = 1,
+    mineSpeedBump = 2,
+};
+typedef uint16_t MineFieldType;
+
+// ScanView is the scanner's view mode, the low nibble of grbitScan.
+enum ScanView {
+    scanViewNormal = 0,
+    scanViewSurfaceMinerals = 1,
+    scanViewMineralConc = 2,
+    scanViewPlanetValue = 3,
+    scanViewPopulation = 4,
+    scanViewNoPlayerInfo = 5,
+};
+typedef uint16_t ScanView;
+
+// GrbitScan holds the scanner's overlay and filter toggles above the view mode
+// in grbitScan.
+enum GrbitScan {
+    grbitScanViewMask = 0x000f, // ScanView
+    grbitScanAddWaypoints = 0x0010,
+    grbitScanCoverage = 0x0020,
+    grbitScanMineFields = 0x0040,
+    grbitScanFleetPaths = 0x0080,
+    grbitScanIdleFleets = 0x0100,
+    grbitScanDesignFilter = 0x0200,
+    grbitScanPlanetNames = 0x0400,
+    grbitScanEnemyFilter = 0x0800,
+    grbitScanShipCounts = 0x1000,
+    grbitScanPlayerColors = 0x2000,
+    grbitScanToggleMask = 0x3ff0,
+};
+typedef uint16_t GrbitScan;
+
+// ToolbarButton is a scanner toolbar button; the negative values are layout
+// entries of vrgTBBtn.
+enum ToolbarButton {
+    tbScannerRange = -3, // scanner range readout
+    tbSpacer = -2,
+    tbSeparator = -1,
+    tbNormalView = 0,
+    tbSurfaceMineralView = 1,
+    tbMineralConcView = 2,
+    tbPlanetValueView = 3,
+    tbPopulationView = 4,
+    tbNoPlayerInfoView = 5,
+    tbAddWaypoints = 6,
+    tbScannerCoverage = 7,
+    tbMineFields = 8,
+    tbFleetPaths = 9,
+    tbIdleFleets = 10,
+    tbPlanetNames = 11,
+    tbShipDesignFilter = 12,
+    tbShipDesignFilterMenu = 13,
+    tbEnemyClassFilter = 14,
+    tbEnemyClassFilterMenu = 15,
+    tbZoomMenu = 16,
+    tbShipCounts = 17,
+};
+typedef int16_t ToolbarButton;
+
+// UniverseSize is the galaxy size; its width is 400 * (size + 1) light years.
+enum UniverseSize {
+    sizeTiny = 0,
+    sizeSmall = 1,
+    sizeMedium = 2,
+    sizeLarge = 3,
+    sizeHuge = 4,
+};
+typedef uint16_t UniverseSize;
+
+// UniverseDensity is the galaxy's planet density.
+enum UniverseDensity {
+    densitySparse = 0,
+    densityNormal = 1,
+    densityDense = 2,
+    densityPacked = 3,
+};
+typedef uint16_t UniverseDensity;
+
+// StartDistance is the distance between players' homeworlds.
+enum StartDistance {
+    startDistClose = 0,
+    startDistModerate = 1,
+    startDistFarther = 2,
+    startDistDistant = 3,
+};
+typedef uint16_t StartDistance;
+
+// MsgGoto is a message's goto target: a planet id (>= 0), a fleet id, a
+// battle id | 0x4000, a part as 0xc000 | (hst bit << 8) | iItem, or one of
+// these.
+enum MsgGoto {
+    gotoBattleReport = -7,
+    gotoThing = -6, // the thing id is the message's first parameter
+    gotoSerialNumber = -5,
+    gotoScore = -4,
+    gotoShipDesign = -3,
+    gotoResearch = -2,
+    gotoNone = -1,
+    gotoBattle = 0x4000,
+    gotoRelations = 0x4800,
+};
+typedef int16_t MsgGoto;
+
+// MdMsgObj is what the message window's goto button opens.
+enum MdMsgObj {
+    mdMsgObjNone = 0,
+    mdMsgObjPlanet = 1,
+    mdMsgObjFleet = 2,
+    mdMsgObjResearch = 3,
+    mdMsgObjPart = 4,
+    mdMsgObjShipDesign = 5,
+    mdMsgObjBattle = 6,
+    mdMsgObjRelations = 7,
+    mdMsgObjScore = 8,
+    mdMsgObjSerialNumber = 9,
+    mdMsgObjThing = 10,
+    mdMsgObjBattleReport = 11,
+};
+typedef uint16_t MdMsgObj;
+
+// TileBits selects the planet or fleet detail tiles DrawPlanShip draws. A bit
+// shared by both tile sets is named for both.
+enum TileBits {
+    tileMineralsOrCargo = 0x0001,
+    tileShipList = 0x0004,
+    tilePlanetStats = 0x0008,
+    tileFleetOrders = 0x0020,
+    tileProductionOrOrbit = 0x0040,
+    tileBitmap = 0x0080,
+    tileStarbaseOrWaypoint = 0x0100,
+    tileFleetComp = 0x0200,
+    tileAll = 0x0fff,
+    tileMinimized = 0x4000,
+    tileErase = 0x8000,
+};
+typedef uint16_t TileBits;
+
+// ReportType is a report dialog's report.
+enum ReportType {
+    rptPlanets = 0,
+    rptFleets = 1,
+    rptEnemyFleets = 2,
+    rptBattles = 3,
+};
+typedef uint16_t ReportType;
+
+// PlanetReportColumn is a column of the planet report.
+enum PlanetReportColumn {
+    colPlanetName = 0,
+    colPlanetStarbase = 1,
+    colPlanetPopulation = 2,
+    colPlanetCapacity = 3,
+    colPlanetValue = 4,
+    colPlanetProduction = 5,
+    colPlanetMines = 6,
+    colPlanetFactories = 7,
+    colPlanetDefense = 8,
+    colPlanetMinerals = 9,
+    colPlanetMiningRate = 10,
+    colPlanetMinConc = 11,
+    colPlanetResources = 12,
+    colPlanetDriverDest = 13,
+    colPlanetRoutingDest = 14,
+    colPlanetCount = 15,
+};
+typedef uint16_t PlanetReportColumn;
+
+// FleetReportColumn is a column of the fleet report.
+enum FleetReportColumn {
+    colFleetName = 0,
+    colFleetId = 1,
+    colFleetLocation = 2,
+    colFleetDestination = 3,
+    colFleetEta = 4,
+    colFleetTask = 5,
+    colFleetFuel = 6,
+    colFleetCargo = 7,
+    colFleetComposition = 8,
+    colFleetCloak = 9,
+    colFleetBattlePlan = 10,
+    colFleetMass = 11,
+    colFleetCount = 12,
+};
+typedef uint16_t FleetReportColumn;
+
+// EnemyFleetReportColumn is a column of the other players' fleet report.
+enum EnemyFleetReportColumn {
+    colEnemyFleetName = 0,
+    colEnemyFleetId = 1,
+    colEnemyFleetLocation = 2,
+    colEnemyFleetWarp = 3,
+    colEnemyFleetMass = 4,
+    colEnemyFleetComposition = 5,
+    colEnemyFleetShips = 6,
+    colEnemyFleetUnarmed = 7,
+    colEnemyFleetScout = 8,
+    colEnemyFleetWarship = 9,
+    colEnemyFleetBomber = 10,
+    colEnemyFleetUtility = 11,
+    colEnemyFleetCount = 12,
+};
+typedef uint16_t EnemyFleetReportColumn;
+
+// BattleReportColumn is a column of the battle report.
+enum BattleReportColumn {
+    colBattleLocation = 0,
+    colBattleStarbase = 1,
+    colBattleSides = 2,
+    colBattleUnits = 3,
+    colBattleOurs = 4,
+    colBattleTheirs = 5,
+    colBattleUnarmed = 6,
+    colBattleScout = 7,
+    colBattleWarship = 8,
+    colBattleBomber = 9,
+    colBattleUtility = 10,
+    colBattleOurDead = 11,
+    colBattleTheirDead = 12,
+    colBattleOursLeft = 13,
+    colBattleTheirsLeft = 14,
+    colBattleCount = 15,
+};
+typedef uint16_t BattleReportColumn;
+
+// WindowLayout is the main window layout, chosen by screen size.
+enum WindowLayout {
+    layoutLarge = 0,
+    layoutMedium = 1,
+    layoutSmall = 2,
+};
+typedef uint16_t WindowLayout;
+
+// ScanZoom is the scanner zoom level.
+enum ScanZoom {
+    zoom25 = -4,
+    zoom38 = -3,
+    zoom50 = -2,
+    zoom75 = -1,
+    zoom100 = 0,
+    zoom125 = 1,
+    zoom150 = 2,
+    zoom200 = 3,
+    zoom400 = 4,
+};
+typedef int16_t ScanZoom;
+
+// MdMark is the turn-file flag FMarkFile sets and FCheckFile tests.
+enum MdMark {
+    mdMarkInUse = 1,
+    mdMarkDone = 2,
+    mdMarkMulti = 4,
+    mdMarkAi = 8, // the player is run by the housekeeping AI
+};
+typedef uint16_t MdMark;
+
+// HostTimer is the job of the host-mode timer.
+enum HostTimer {
+    hostTimerAutoGen = 13,   // poll for turns to generate
+    hostTimerWaitTurn = 14,  // wait for the next turn after submitting
+    hostTimerTurnReady = 15, // flash the window when a new turn is ready
+};
+typedef uint16_t HostTimer;
+
+// ProgressStep is an UpdateProgressGauge argument that advances the gauge
+// instead of setting it.
+enum ProgressStep {
+    progressStep1 = -927,
+    progressStep4 = -926,
+};
+typedef int16_t ProgressStep;
+
+// AddItemMode is where AddItemToQueue puts an item in the production queue.
+enum AddItemMode {
+    addItemFront = 0,
+    addItemEnd = 1,
+    addItemReplace = 2, // clear the queue first
+};
+typedef uint16_t AddItemMode;
+
+// MainMenu is a top-level menu's position in the frame menu bar.
+enum MainMenu {
+    menuFile = 0,
+    menuView = 1,
+    menuTurn = 2,
+    menuCommands = 3,
+    menuReport = 4,
+    menuHelp = 5,
+};
+typedef uint16_t MainMenu;
+
+// TutorShipBuilderAction is the ship designer button FTutorialEnabledShipBuilder
+// checks against the tutorial's current step.
+enum TutorShipBuilderAction {
+    tutsbDelete = 0,
+    tutsbCopy = 1,
+    tutsbEdit = 2,
+    tutsbAccept = 3,     // OK on an edited design
+    tutsbCancelEdit = 4, // Cancel on an edited design
+};
+typedef uint16_t TutorShipBuilderAction;
+
+// HelpContextId is a topic of stars!.hlp, as WinHelp's HELP_CONTEXT data
+// selects it: the [MAP] numbers of the help file's |CTXOMAP, named by topic
+// title. Many share their number with the dialog control they explain.
+// Generated by scripts/hlp-context-enum.py.
+enum HelpContextId {
+    idhStarsPlayersGuideContents = 1, // Stars! Player's Guide - Contents
+    idhIntroductionAndPlayerSupport = 2, // Introduction and Player Support
+    idhTheStarsScreen = 3, // The Stars! Screen
+    idhStarsDialogs = 4, // Stars! dialogs
+    idhPlayingStars = 6, // Playing Stars!
+    idhTheGuts = 7, // The Guts
+    idhHowTo = 8, // How To...
+    idhSetupAndHosting = 9, // Setup and Hosting
+    idhNewGameSetupBasic = 1002, // New Game Setup (Basic)
+    idhBeginTutorial = 1003, // Begin Tutorial
+    idhDifficultyLevel = 1004, // Difficulty Level
+    idhTinyUniverse = 1005, // Tiny Universe
+    idhSmallUniverse = 1006, // Small Universe
+    idhMediumUniverse = 1007, // Medium Universe
+    idhLargeUniverse = 1008, // Large Universe
+    idhHugeUniverse = 1009, // Huge Universe
+    idhPlayerRace = 1010, // Player Race
+    idhNewGameSetupAdvanced = 1011, // New Game Setup (Advanced)
+    idhStep1SpecifyingTheUniverse = 1012, // Step 1: Specifying the Universe
+    idhGameName = 1013, // Game Name
+    idhDensity = 1014, // Density
+    idhPlayerPositions = 1015, // Player Positions
+    idhBeginnerUnlimitedMinerals = 1016, // Beginner: Unlimited Minerals
+    idhSlowerTechAdvances = 1017, // Slower Tech Advances
+    idhComputerPlayersFormAlliances = 1018, // Computer Players Form Alliances
+    idhAcceleratedBBSPlay = 1019, // Accelerated BBS Play
+    idhStep2SpecifyingThePlayers = 1020, // Step 2: Specifying the Players
+    idhStep3VictoryConditions = 1021, // Step 3: Victory Conditions
+    idhCustomRaceWizard = 1022, // Custom Race Wizard
+    idhStep1BasicDefinition = 1023, // Step 1: Basic Definition
+    idhRaceNameAndPassword = 1024, // Race Name and Password
+    idhPredefinedRaces = 1025, // Predefined Races
+    idhLeftoverAdvantagePointsSurfaceMinerals = 1026, // Leftover Advantage Points -- Surface Minerals
+    idhLeftoverAdvantagePointsMines = 1028, // Leftover Advantage Points -- Mines
+    idhLeftoverAdvantagePointsFactories = 1029, // Leftover Advantage Points -- Factories
+    idhLeftoverAdvantagePointsDefenses = 1030, // Leftover Advantage Points -- Defenses
+    idhRaceIcon = 1031, // Race Icon
+    idhStep2PrimaryRacialTraits = 1032, // Step 2: Primary Racial Traits
+    idhHyperExpansion = 1033, // Hyper-Expansion
+    idhSuperStealth = 1034, // Super-Stealth
+    idhWarMonger = 1035, // War Monger
+    idhInnerStrength = 1036, // Inner-Strength
+    idhSpaceDemolition = 1037, // Space Demolition
+    idhPacketPhysics = 1038, // Packet Physics
+    idhInterstellarTraveller = 1039, // Interstellar Traveller
+    idhJackOfAllTrades = 1040, // Jack of All Trades
+    idhStep3LesserTraitsPlayerRace = 1041, // Step 3: Lesser Traits (Player Race)
+    idhImprovedFuelEfficiency = 1042, // Improved Fuel Efficiency
+    idhTotalTerraforming1043 = 1043, // Total Terraforming
+    idhImprovedStarbases = 1044, // Improved Starbases
+    idhGeneralizedResearch = 1045, // Generalized Research
+    idhMineralAlchemy1046 = 1046, // Mineral Alchemy
+    idhNoRamscoopEngines = 1047, // No Ramscoop Engines
+    idhCheapEngines = 1048, // Cheap Engines
+    idhOnlyBasicRemoteMining = 1049, // Only Basic Remote Mining
+    idhNoAdvancedScanners = 1050, // No Advanced Scanners
+    idhLowStartingPopulation = 1051, // Low Starting Population
+    idhRegeneratingShields = 1052, // Regenerating Shields
+    idhStep4PopulationGrowthFactors = 1053, // Step 4: Population Growth Factors
+    idhGrowthConditions = 1054, // Growth Conditions
+    idhMaximumPopulationGrowth = 1055, // Maximum Population Growth
+    idhStep5PopulationEfficiencyPlayerRace = 1056, // Step 5: Population Efficiency (Player Race)
+    idhStep6ResearchCostsPlayerRace = 1057, // Step 6: Research Costs (Player Race)
+    idhFinishAndSave = 1058, // Finish and Save
+    idhProductionDialog = 1059, // Production Dialog
+    idhProductionInventory = 1060, // Production Inventory
+    idhProductionQueue = 1061, // Production Queue
+    idhShipDesigner = 1066, // Ship Designer
+    idhShipSchematic = 1068, // Ship Schematic
+    idhShipComponentList = 1069, // Ship Component List
+    idhResearchDialog = 1070, // Research Dialog
+    idhTechnologyStatus = 1071, // Technology Status
+    idhExpectedResearchBenefits = 1072, // Expected Research Benefits
+    idhCurrentlyResearching = 1073, // Currently Researching
+    idhResourceAllocation = 1074, // Resource Allocation
+    idhCargoTransferDialogs = 1075, // Cargo Transfer Dialogs
+    idhBetweenYourPlanetAndYourFleet = 1076, // Between Your Planet And Your Fleet
+    idhBetweenYourFleetAndAPlanet = 1077, // Between Your Fleet and a Planet
+    idhBetweenYourFleets = 1078, // Between Your Fleets
+    idhBetweenYourFleetAndAnOpponentsFleet = 1079, // Between Your Fleet and an Opponents Fleet
+    idhShipTransferDialog = 1080, // Ship Transfer Dialog
+    idhBattlePlansDialog = 1081, // Battle Plans Dialog
+    idhBattleVCR = 1082, // Battle VCR
+    idhPlayerRelationsDialog = 1083, // Player Relations Dialog
+    idhChangePassword = 1084, // Change Password
+    idhFindPlanetOrFleet = 1085, // Find Planet or Fleet
+    idhHostModeDialog = 1088, // Host Mode Dialog
+    idhRenameFleetDialog = 1095, // Rename Fleet dialog
+    idhAdvancedRemoteMining = 1096, // Advanced Remote Mining
+    idhPublicPlayerScores = 1097, // Public Player Scores
+    idhCustomZipOrdersDialog = 1098, // Custom Zip Orders dialog
+    idhLeftoverAdvantagePointsMineralConcentration = 1099, // Leftover Advantage Points  Mineral Concentration
+    idhClaimAdjuster = 1100, // Claim Adjuster
+    idhAlternateReality = 1101, // Alternate Reality
+    idhUltimateRecycling = 1102, // Ultimate Recycling
+    idhBleedingEdgeTechnology = 1103, // Bleeding Edge Technology
+    idhNoRandomEvents = 1104, // No Random Events
+    idhCustomizeProductionTemplatesDialog = 1106, // Customize Production Templates dialog
+    idhMergeFleetsDialog = 1107, // Merge Fleets dialog
+    idhGalaxyClumping = 1108, // Galaxy Clumping
+    idhScoreSheet = 1109, // Score sheet
+    idhChangingTheBasicLayout = 1502, // Changing the Basic Layout
+    idhShrinkingAndGrowingPanes = 1503, // Shrinking and Growing Panes
+    idhMovingAndCollapsingTiles = 1504, // Moving and Collapsing Tiles
+    idhCommandingAPlanet = 1505, // Commanding a Planet
+    idhPlanetTile = 1506, // Planet Tile
+    idhProductionTile = 1507, // Production Tile
+    idhStatusTile = 1508, // Status Tile
+    idhMineralsOnHandTile = 1509, // Minerals on Hand Tile
+    idhFleetsInOrbitTile = 1510, // Fleets in Orbit Tile
+    idhStarbaseTile = 1511, // Starbase Tile
+    idhCommandingAFleet = 1512, // Commanding a Fleet
+    idhFleetTile = 1513, // Fleet Tile
+    idhLocationTile = 1514, // Location Tile
+    idhFuelAndCargoTile = 1515, // Fuel and Cargo Tile
+    idhFleetCompositionTile = 1516, // Fleet Composition Tile
+    idhOtherFleetsHereTile = 1517, // Other Fleets Here Tile
+    idhFleetWaypointsTile = 1518, // Fleet Waypoints Tile
+    idhWaypointTaskTile = 1519, // Waypoint Task Tile
+    idhTransport = 1520, // Transport
+    idhColonize = 1522, // Colonize
+    idhPatrol = 1523, // Patrol
+    idhRemoteMining1524 = 1524, // Remote Mining
+    idhScrapFleet = 1525, // Scrap Fleet
+    idhSelectingAnObjectToCommand = 1526, // Selecting an Object to Command
+    idhObtainingAPlanetOrFleetSummary = 1527, // Obtaining a Planet or Fleet Summary
+    idhLayMineFields = 1528, // Lay Mine Fields
+    idhMergeWithFleet = 1530, // Merge with Fleet
+    idhRoute = 1531, // Route
+    idhRemoteTerraforming1532 = 1532, // Remote Terraforming
+    idhTransferFleet = 1533, // Transfer Fleet
+    idhTheGutsOfCombat = 2008, // The Guts of Combat
+    idhAboutTheBattleBoard = 2009, // About the Battle Board
+    idhDamageRepair = 2013, // Damage Repair
+    idhMovementInitiativeAndFiringInBattle = 2014, // Movement, Initiative and Firing in Battle
+    idhWeaponProperties = 2015, // Weapon Properties
+    idhTheGutsOfMassDrivers = 2016, // The Guts of Mass Drivers
+    idhFilesUsedInStars = 2017, // Files Used in Stars!
+    idhArmorShieldsAndDamage = 2018, // Armor, Shields and Damage
+    idhTheGutsOfMinefields = 2022, // The Guts of Minefields
+    idhAlternateRealityRaces = 2024, // Alternate Reality Races
+    idhTheGutsOfCloaking = 2025, // The Guts of Cloaking
+    idhAboutDataTables = 2501, // About Data Tables
+    idhArmor = 2502, // Armor
+    idhBeamWeapons = 2503, // Beam Weapons
+    idhBombsTable = 2504, // Bombs table
+    idhEnginesTable = 2506, // Engines table
+    idhScannersTable = 2508, // Scanners table
+    idhShieldsTable = 2509, // Shields table
+    idhMiningTable = 2511, // Mining table
+    idhTerraformingTable = 2513, // Terraforming table
+    idhOrbitalDevicesTable = 2516, // Orbital Devices table
+    idhElectricalDevicesTable = 2518, // Electrical Devices table
+    idhMechanicalDevicesTable = 2519, // Mechanical Devices table
+    idhMineLayingTable = 2520, // Mine Laying table
+    idhPlanetaryInstallationsTable = 2521, // Planetary Installations table
+    idhShipHullsTable = 2522, // Ship Hulls table
+    idhStarbaseHullsTable = 2523, // Starbase Hulls table
+    idhTorpedoesTable = 2524, // Torpedoes table
+    idhPlanets3002 = 3002, // Planets
+    idhYourHomeWorldAndOtherInhabitedPlanets = 3003, // Your Home World and Other Inhabited Planets
+    idhPopulation = 3004, // Population
+    idhMinerals = 3005, // Minerals
+    idhMines = 3006, // Mines
+    idhFactories = 3007, // Factories
+    idhTerraforming = 3009, // Terraforming
+    idhTypesOfTerraformingTechnology = 3011, // Types of Terraforming Technology
+    idhTotalTerraforming3012 = 3012, // Total Terraforming
+    idhBuildingPlanetaryDefenses = 3013, // Building Planetary Defenses
+    idhPlanetBasedScanners = 3014, // Planet-based Scanners
+    idhOrbitalDevices = 3015, // Orbital Devices
+    idhStarbases = 3016, // Starbases
+    idhStargates = 3017, // Stargates
+    idhMassDriverBasics = 3018, // Mass Driver Basics
+    idhProduction = 3019, // Production
+    idhHowProductionWorks = 3020, // How Production Works
+    idhAddingAnItemToTheProductionQueue = 3021, // Adding an Item to the Production Queue
+    idhAddAnItemToTheTopOfTheQueue = 3022, // Add an item to the top of the queue
+    idhAddAnItemToTheMiddleOfTheQueue = 3023, // Add an item to the middle of the queue
+    idhAddAnItemToTheBottomOfTheQueue = 3024, // Add an item to the bottom of the queue
+    idhMoveAnItemInTheQueue = 3025, // Move an item in the queue
+    idhRemovingAnItemFromTheProductionQueue = 3026, // Removing an Item from the Production Queue
+    idhClearingTheProductionQueue = 3027, // Clearing the Production Queue
+    idhUnblockingAProductionQueue = 3028, // Unblocking a Production Queue
+    idhAddingAutoBuildItemsToTheQueue = 3029, // Adding Auto Build Items to the Queue
+    idhConditionsThatAffectProduction = 3031, // Conditions that Affect Production
+    idhResearch = 3032, // Research
+    idhFieldsOfStudy = 3033, // Fields of Study
+    idhAllocatingResourcesForResearch = 3034, // Allocating Resources for Research
+    idhTheCostOfResearch = 3035, // The Cost of Research
+    idhDesigningShips = 3037, // Designing Ships
+    idhHowToApproachShipDesign = 3038, // How to Approach Ship Design
+    idhDesigningANewShipFromScratch = 3039, // Designing a New Ship from Scratch
+    idhEditingAnExistingShipDesign = 3040, // Editing an Existing Ship Design
+    idhDeletingAnExistingShipDesign = 3041, // Deleting an Existing Ship Design
+    idhReachingTheMaximumNumberOfDesigns = 3042, // Reaching the Maximum Number of Designs
+    idhCountingTheNumberOfShipDesigns = 3043, // Counting the Number of Ship Designs
+    idhAddingShipBasedScanners = 3044, // Adding Ship-based Scanners
+    idhAddingCloakingDevices = 3045, // Adding Cloaking Devices
+    idhEngines = 3046, // Engines
+    idhLearningAboutOtherPlayersHulls = 3047, // Learning About Other Player's Hulls
+    idhManagingFleets = 3048, // Managing Fleets
+    idhAssemblingFleets = 3049, // Assembling Fleets
+    idhWarpSpeed = 3050, // Warp Speed
+    idhFindingASingleFleet = 3051, // Finding a Single Fleet
+    idhFindingASpecificFleetComposition = 3052, // Finding a Specific Fleet Composition
+    idhSwitchingBetweenFleets = 3053, // Switching Between Fleets
+    idhNamingFleets = 3054, // Naming Fleets
+    idhUsingFuel = 3055, // Using Fuel
+    idhRendezvousingFleets = 3056, // Rendezvousing Fleets
+    idhTransferringCargo = 3057, // Transferring Cargo
+    idhJettisoningCargo = 3058, // Jettisoning Cargo
+    idhSplittingAndMergingFleets = 3059, // Splitting and Merging Fleets
+    idhScrappingFleets = 3060, // Scrapping Fleets
+    idhNavigation = 3061, // Navigation
+    idhAddingFleetWaypoints = 3062, // Adding Fleet Waypoints
+    idhMovingFleetWaypoints = 3063, // Moving Fleet Waypoints
+    idhDeletingFleetWaypoints = 3064, // Deleting Fleet Waypoints
+    idhStargateNavigation = 3065, // Stargate Navigation
+    idhWormholeNavigation = 3066, // Wormhole Navigation
+    idhColonization = 3068, // Colonization
+    idhChoosingPlanetsToColonize = 3069, // Choosing Planets to Colonize
+    idhColonizingAnUninhabitedPlanet = 3070, // Colonizing an Uninhabited Planet
+    idhShuttlingColonistsWithFreighters = 3071, // Shuttling Colonists with Freighters
+    idhHeyThatPlanetsAlreadyInhabited = 3072, // Hey, that Planet's Already Inhabited!
+    idhMining = 3073, // Mining
+    idhMiningColonizedWorlds = 3074, // Mining Colonized Worlds
+    idhRemoteMining3075 = 3075, // Remote Mining
+    idhCreatingARobotMiningFleet = 3076, // Creating a Robot Mining Fleet
+    idhTransportingFreight = 3078, // Transporting Freight
+    idhShippingFreight = 3079, // Shipping Freight
+    idhFlingingMassPackets = 3080, // Flinging Mass Packets
+    idhTheBasicsOfCombat = 3081, // The Basics of Combat
+    idhFleetToFleetCombat = 3082, // Fleet-to-fleet Combat
+    idhBombingPlanets = 3083, // Bombing Planets
+    idhGroundCombat = 3084, // Ground Combat
+    idhLayingMinefields = 3085, // Laying Minefields
+    idhStarbaseCombat = 3086, // Starbase Combat
+    idhDeclaringEnemiesAndFriends = 3087, // Declaring Enemies and Friends
+    idhBattlePlans = 3088, // Battle Plans
+    idhMakingANewBattlePlan = 3089, // Making a New Battle Plan
+    idhReviewABattleInSpace = 3092, // Review a Battle in Space
+    idhViewingEnemyFleetsInTheSummaryPane = 3093, // Viewing Enemy Fleets in the Summary Pane
+    idhViewingEnemyShipDesigns = 3094, // Viewing Enemy Ship Designs
+    idhPatroling = 3095, // Patroling
+    idhScanningAndCloaking = 3096, // Scanning and Cloaking
+    idhSelectingFleetsInTheScannerPane = 3097, // Selecting Fleets in the Scanner Pane
+    idhScanningPlanets = 3098, // Scanning Planets
+    idhCloakingOrHidingFromAnOpponentsScanners = 3099, // Cloaking, or Hiding from an Opponents Scanners
+    idhDetectingAnOpponentsFleets = 3100, // Detecting an Opponents Fleets
+    idhScannerTechnology = 3102, // Scanner Technology
+    idhCreatingACustomTransportZipOrder = 3103, // Creating a Custom Transport Zip Order
+    idhChangingTheContentsOfABattlePlan = 3105, // Changing the Contents of a Battle Plan
+    idhHowToTerraform = 3106, // How to Terraform
+    idhMinefields = 3107, // Minefields
+    idhSweepingMinefields = 3108, // Sweeping Minefields
+    idhPiratingUsingStealthBasedScanners = 3114, // Pirating using Stealth-based Scanners
+    idhDiplomacyAndTrade = 3115, // Diplomacy and Trade
+    idhRoutingFleets = 3116, // Routing Fleets
+    idhProductionTemplates = 3117, // Production Templates
+    idhTargeting = 3118, // Targeting
+    idhTactics = 3119, // Tactics
+    idhRemoteTerraforming3120 = 3120, // Remote Terraforming
+    idhRemotelyDetonatingMinefields = 3121, // Remotely Detonating Minefields
+    idhSalvageFromSpaceBattles = 3122, // Salvage from Space Battles
+    idhPlanetReports = 3123, // Planet Reports
+    idhChangingTheOrderOfPlanetsInTheProductionDialog = 3124, // Changing the Order of Planets in the Production dialog
+    idhViewingStarsTechnology = 3125, // Viewing Stars! Technology
+    idhReportsOnYourFleets = 3126, // Reports on Your Fleets
+    idhJointVenturesInRemoteMining = 3127, // Joint Ventures in Remote Mining
+    idhMineralPacketBombardment = 3128, // Mineral Packet Bombardment
+    idhBattleReports = 3129, // Battle Reports
+    idhFleetReportsOnEnemiesAndOtherPlayers = 3130, // Fleet Reports on Enemies and other Players
+    idhReports = 3131, // Reports
+    idhPrintingAMapOfTheUniverse = 3132, // Printing a Map of the Universe
+    idhWhatYouNeedToPlay = 3501, // What You Need to Play
+    idhTuningStarsForYourScreenResolution = 3502, // Tuning Stars for Your Screen Resolution
+    idhStartingASinglePlayerGame = 3504, // Starting a Single Player Game
+    idhHostingAMultiPlayerGame = 3505, // Hosting a Multi-Player Game
+    idhWhatEachPlayerNeedsToDo = 3507, // What Each Player Needs to Do
+    idhHostingANetworkGame = 3508, // Hosting a Network Game
+    idhBeingAbsentFromPlay = 3511, // Being Absent from Play
+    idhWinning = 3512, // Winning
+    idhOptionsForLaunchingStars = 3513, // Options for Launching Stars!
+    idhExitingStars = 3514, // Exiting Stars!
+    idhCopyProtection = 3516, // Copy Protection
+    idhPlayingWithACustomRace = 3517, // Playing with a Custom Race
+    idhCreatingAndSavingACustomRace = 3518, // Creating and Saving a Custom Race
+    idhAddingAnExistingRaceToANewGame = 3520, // Adding an Existing Race to a New Game
+    idhEditingAnExistingCustomRace = 3521, // Editing an Existing Custom Race
+    idhSubmittingBugReports = 3523, // Submitting Bug Reports
+    idhHostingModemAndEmailGames = 3526, // Hosting Modem and Email Games
+    idhSavingYourGameWhatItMeans = 3528, // Saving Your Game--What it Means
+    idhCreatingAPassword = 3529, // Creating a Password
+    idhCreatingAUniverseFromTheCommandLine = 3531, // Creating a Universe from the Command Line
+    idhStarsWebSite = 3532, // Stars! Web Site
+    idhPlayingTheTutorial = 3533, // Playing the Tutorial
+    idhReplayingAPreviousTurn = 3534, // Replaying a Previous Turn
+    idhHostingHotSeatGames = 3535, // Hosting Hot-Seat Games
+    idhAddingExpansionPlayers = 3538, // Adding Expansion Players
+    idhOrderingTheRetailVersionOfStars = 4001, // Ordering the Retail Version of Stars!
+    idhWelcomeToStars = 4501, // Welcome to Stars!
+    idhMultiPlayerGames = 4506, // Multi-player games
+    idhAddedCostOfResearch = 5501, // Added Cost of Research
+    idhAIs = 5502, // AIs
+    idhAIsAndAdvantagePoints = 5503, // AIs and Advantage Points
+    idhAnnualGrowthRate = 5504, // Annual Growth Rate
+    idhBestWarpSpeed = 5505, // Best Warp Speed
+    idhDefensesAndInvadingTroops = 5507, // Defenses and Invading Troops
+    idhDisengaging = 5508, // Disengaging
+    idhEnergySourcesForStarships = 5509, // Energy Sources for Starships
+    idhFactory = 5510, // Factory
+    idhFibonacciSeries = 5511, // Fibonacci Series
+    idhFleetColors = 5512, // Fleet Colors
+    idhFuelPoorPlanets = 5513, // Fuel Poor Planets
+    idhLoadFromFleet = 5514, // Load from Fleet
+    idhLoadOptimal = 5515, // Load Optimal
+    idhLosingColonists = 5516, // Losing Colonists
+    idhMaximumShipDesignsAndShips = 5517, // Maximum Ship Designs and Ships
+    idhMine = 5519, // Mine
+    idhMineralAlchemy5520 = 5520, // Mineral Alchemy
+    idhOrbitRingColors = 5521, // Orbit Ring Colors
+    idhPlanetPenetratingScanners = 5522, // Planet penetrating scanners
+    idhResources = 5523, // Resources
+    idhRoundOfBattle = 5524, // Round of Battle
+    idhShipClasses = 5527, // Ship Classes
+    idhToken = 5528, // Token
+    idhWaitForFleet = 5529, // Wait for Fleet
+    idhCollateralDamage = 5530, // Collateral Damage
+    idhDefineInitiative = 5531, // define Initiative
+    idhViewsInTheScannerPane = 5532, // Views in the Scanner pane
+    idhBattleSpeed = 5533, // Battle Speed
+    idhCapitalShip = 5534, // Capital Ship
+    idhDialogsAndDisplays = 5535, // Dialogs and Displays
+    idhKeyboardShortcuts = 6001, // Keyboard Shortcuts
+    idhRating = 6501, // Rating
+    idhRaceDescriptionFileNameRNFiles = 6502, // Race Description file -- name.rN files
+    idhHostFile = 6503, // Host file
+    idhPlayerLogFile = 6504, // Player Log file
+    idhRaceFile = 6505, // Race file
+    idhRaceFileHowToPopup = 12003, // Race File How to Popup
+    idhHowToManageProduction = 12004, // How to Manage Production
+    idhHowToAssignWaypoints = 12005, // How to Assign Waypoints
+    idhHowToManageBattles = 12006, // How to Manage Battles
+    idhHowToDesignShips = 12007, // How to Design Ships
+    idhHowToColonize = 12008, // How to Colonize
+    idhPopupPlanetTiles = 12009, // Popup Planet Tiles
+    idhPopupFleetTiles = 12010, // Popup Fleet Tiles
+    idhPopupWaypointTasks = 12011, // Popup Waypoint Tasks
+    idhPopupScannerTopics = 12012, // popup Scanner Topics
+    idhPopupBattleDetails = 12015, // popup Battle Details
+    idhPopupTables = 12017, // popup Tables
+    idhPlanets12018 = 12018, // Planets
+    idhPopupTerraforming = 12020, // popup Terraforming
+    idhPopupOrbitalDevices = 12021, // popup Orbital Devices
+    idhPopupProduction = 12022, // popup Production
+    idhPopupResearch = 12023, // popup Research
+    idhPopupShipDesign = 12024, // popup Ship Design
+    idhPopupFleetManagement = 12025, // popup Fleet Management
+    idhPopupNavigation = 12026, // popup Navigation
+    idhPopupColonization = 12027, // popup Colonization
+    idhPopupMining = 12028, // popup Mining
+    idhPopupFreight = 12029, // popup Freight
+    idhPopupCombat = 12030, // popup Combat
+    idhPopupScanning = 12033, // popup Scanning
+    idhMenuCustomRaceWizardSteps = 12040, // menu Custom Race Wizard Steps
+    idhMenuAdvancedSetup = 12041, // menu Advanced Setup
+    idhHowToManageFleets = 12042, // How to Manage Fleets
+    idhScannerViews = 12043, // Scanner Views
+    idhPopupResDialog = 12046, // popup res dialog
+    idhPopupMinefields = 12048, // popup Minefields
+    idhPopupBattlePlans = 12049, // popup Battle Plans
+    idhPopupMessagesPane = 12050, // popup Messages Pane
+    idhHostingMultiPlayerGames = 12051, // Hosting Multi-Player Games
+    idhMessagesPane = 14001, // Messages Pane
+    idhTheGotoPreviousAndNextButtons = 14002, // The Goto, Previous and Next Buttons
+    idhSendingMessagesToOtherPlayers = 14003, // Sending Messages to other Players
+    idhFilteredMessageCheckbox = 14004, // Filtered Message Checkbox
+    idhFilteringMessageTypes = 14005, // Filtering Message Types
+    idhScannerPane = 14006, // Scanner Pane
+    idhChoosingYourViewOfTheUniverse = 14008, // Choosing Your View of the Universe
+    idhNormalView = 14009, // Normal View
+    idhPlanetValueView = 14010, // Planet Value View
+    idhMineralsAtPlanetView = 14011, // Minerals at Planet View
+    idhPopulationView = 14012, // Population View
+    idhNoPlayerInformationView = 14013, // No Player Information View
+    idhAddWaypointsOverlay = 14014, // Add Waypoints Overlay
+    idhRadarOverlay = 14015, // Radar Overlay
+    idhFleetOverlay = 14016, // Fleet Overlay
+    idhShipFilterOverlay = 14017, // Ship Filter Overlay
+    idhPlanetNamesOverlay = 14018, // Planet Names Overlay
+    idhStatusBar = 14019, // Status Bar
+    idhZooming = 14022, // Zooming
+    idhSelectionSummaryPane = 14023, // Selection Summary pane
+    idhPlanetSummary = 14024, // Planet Summary
+    idhMultipleObjectsIndicator = 14025, // Multiple Objects Indicator
+    idhReportVintage = 14026, // Report Vintage
+    idhPopulationStatus = 14027, // Population Status
+    idhSelectionValue = 14028, // Selection Value
+    idhStarbaseIndicator = 14029, // Starbase Indicator
+    idhEnvironmentGraph = 14030, // Environment Graph
+    idhMineralContentGraph = 14031, // Mineral Content Graph
+    idhFleetSummary = 14032, // Fleet Summary
+    idhMineFieldsOverlay = 14033, // Mine Fields overlay
+    idhKeyToTheScanner = 14034, // Key to the Scanner
+    idhIdleFleetsOverlay = 14035, // Idle Fleets Overlay
+    idhQuickReferenceToScannerUsage = 14036, // Quick Reference to Scanner Usage
+    idhFilterEnemyShipsOverlay = 14037, // Filter Enemy Ships overlay
+    idhMineralConcentrationView = 14038, // Mineral Concentration view
+    idhShipCountOverlay = 14039, // Ship Count overlay
+    idhRainbowEffect = 14040, // Rainbow Effect
+    idhDisplayingPlayerColors = 14041, // Displaying Player Colors
+    idhTroubleshootingWhatToDoWhenTheShipHitsTheFan = 52224, // Troubleshooting: What to Do when the Ship Hits the Fan
+};
+typedef uint16_t HelpContextId;
+
+// HullCategory is a hull's role, as the fleet and battle reports group
+// ships: unarmed hulls are colony ships, freighters, miners and fuel
+// transports.
+enum HullCategory {
+    hullCatColony = 0,
+    hullCatFreighter = 1,
+    hullCatScout = 2,         // scout, frigate, destroyer
+    hullCatWarship = 3,       // cruiser through dreadnought
+    hullCatUtility = 4,       // privateer, rogue, galleon, mine layers, Nubian, morphs
+    hullCatBomber = 5,
+    hullCatMiner = 6,
+    hullCatFuelTransport = 7,
+};
+typedef uint16_t HullCategory;
+
+// HullAttack is how a hull fights; battle code treats any nonzero value as armed.
+enum HullAttack {
+    hullAttackNone = 0,
+    hullAttackLight = 1,  // scout, frigate, destroyer, privateer
+    hullAttackHeavy = 2,  // cruisers and up, rogue, galleon, Nubian, morphs
+    hullAttackBomber = 3,
+};
+typedef uint16_t HullAttack;
+
+// BeamAbility is a beam weapon's grfAbilities.
+enum BeamAbility {
+    beamSapper = 0x0001,  // damages shields only
+    beamGatling = 0x0002, // hits every target in range
+};
+typedef uint16_t BeamAbility;
+
+// EngineAbility is a special engine's grfAbilities, which selects its
+// description and restrictions.
+enum EngineAbility {
+    engineAbilityNone = 0,
+    engineSettlersDelight = 1,      // mini-colonizer hulls only
+    engineRadiatingRamScoop = 2,    // radiation kills colonists
+    engineFuelMizer = 3,            // requires Improved Fuel Efficiency
+    engineGalaxyScoop = 4,          // requires Improved Fuel Efficiency
+    engineInterspace10 = 5,         // unavailable with No Ram Scoop Engines
+    engineEnigmaPulsar = 6,         // origin unknown
+};
+typedef uint16_t EngineAbility;
+
+// ScannerAbility is a scanner's grfAbilities.
+enum ScannerAbility {
+    scannerAbilityNone = 0,
+    scannerPenetrating50 = 1,
+    scannerPenetrating100 = 2,
+    scannerPenetrating200 = 3,
+    scannerSteals = 4, // Super Stealth mineral thieves
+};
+typedef uint16_t ScannerAbility;
+
+// PaneSplitter is the set of frame splitter bars a point is on.
+enum PaneSplitter {
+    splitVertical = 0x0001, // between the left panes and the scanner
+    splitMessages = 0x0002, // below the messages pane
+    splitLower = 0x0004,    // the second horizontal bar
+};
+typedef uint16_t PaneSplitter;
+
+// RaceWizardPage is the race wizard page shown, in wizard order.
+enum RaceWizardPage {
+    rwPageNone = -1,
+    rwPageRace = 1,          // IDD_RACE_WIZARD_1
+    rwPagePrimaryTrait = 2,  // IDD_RACE_WIZARD_4
+    rwPageLesserTraits = 3,  // IDD_RACE_WIZARD_5
+    rwPageHabitability = 4,  // IDD_RACE_WIZARD_2
+    rwPageEconomy = 5,       // IDD_RACE_WIZARD_3
+    rwPageResearch = 6,      // IDD_RACE_WIZARD_6
+};
+typedef int16_t RaceWizardPage;
+
+// WizardButton is a wizard page's result: the index of the button pressed
+// in rgidRaceBtn.
+enum WizardButton {
+    wizCancel = 0,
+    wizBack = 1,
+    wizNext = 2,
+    wizFinish = 3,
+    wizHelp = 4,
+};
+typedef uint16_t WizardButton;
+
+// PacketDecay is how many warps a mineral packet was flung over its
+// driver's rating, and so how fast it decays.
+enum PacketDecay {
+    decayNone = 0,
+    decay10Pct = 1,
+    decay25Pct = 2,
+    decay50Pct = 3,
+};
+typedef uint16_t PacketDecay;
+
+// CompassDir is a direction on the map, counterclockwise from east; y
+// grows southward.
+enum CompassDir {
+    dirEast = 0,
+    dirNorthEast = 1,
+    dirNorth = 2,
+    dirNorthWest = 3,
+    dirWest = 4,
+    dirSouthWest = 5,
+    dirSouth = 6,
+    dirSouthEast = 7,
+};
+typedef uint16_t CompassDir;
 
 #endif

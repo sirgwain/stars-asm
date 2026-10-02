@@ -35,7 +35,7 @@ L_72d8:
     return 0;
 
 L_72de:
-    if (FCheckFleetWP(ifl, iord, grobj, id, 1, iWarp) != 0)
+    if (FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) != 0)
         goto L_7308;
     else
         goto L_7302;
@@ -46,7 +46,7 @@ L_7302:
 L_7308:
     ord = lpfl->lpplord->rgord[iord];
     piaCur = ord.txp.rgia;
-    tutor.idh = 1519;
+    tutor.idh = idhWaypointTaskTile;
     i = 0;
     goto L_7361;
 
@@ -74,7 +74,7 @@ L_738c:
         goto L_73a1;
 
 L_73a1:
-    TutorError(616);
+    TutorError(idsTutorialHaveGivenIncorrectTransferOrderPlease);
 
 L_73ad:
     goto LReturn;

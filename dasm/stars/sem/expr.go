@@ -706,6 +706,59 @@ type TableJump struct {
 	Index    Expr
 	MetaInfo machine.Meta
 	Targets  []machine.BlockID
+	// CaseEnum names case values ahead of the switched value's own enum,
+	// such as a dialog's control enum for a switch on a ControlId.
+	CaseEnum *typeinfo.Enum
+	// CharCases writes printable case values as character literals, for a
+	// switch on a character code such as WM_CHAR's wParam.
+	CharCases bool
+}
+
+// SwitchedExpr returns the value the table switches on. The table index is
+// that value scaled and shifted by constants, possibly through casts and the
+// sign extension that promotes a char, so those layers are peeled; an
+// enum-typed layer is the value itself.
+func (e *TableJump) SwitchedExpr() Expr {
+	index := e.Index
+	for index != nil {
+		if _, ok := index.ExprType().(*typeinfo.Enum); ok {
+			return index
+		}
+		switch x := index.(type) {
+		case *Binary:
+			if x.Op != OpMul && x.Op != OpAdd && x.Op != OpSub {
+				return index
+			}
+			if _, ok := x.RHS.(*Const); !ok {
+				return index
+			}
+			index = x.LHS
+		case *Cast:
+			index = x.Value
+		case *SignExtend:
+			if x.FromBits != 8 {
+				return index
+			}
+			index = x.Parent
+		default:
+			return index
+		}
+	}
+	return nil
+}
+
+// SwitchedValue returns the enum type of the value the table switches on, or
+// whether that value is a char.
+func (e *TableJump) SwitchedValue() (*typeinfo.Enum, bool) {
+	switched := e.SwitchedExpr()
+	if switched == nil {
+		return nil, false
+	}
+	if enumType, ok := switched.ExprType().(*typeinfo.Enum); ok {
+		return enumType, false
+	}
+	prim, ok := switched.ExprType().(*typeinfo.Primitive)
+	return nil, ok && prim.TypeKind == typeinfo.KInt && prim.Name == "char"
 }
 
 // effect marks TableJump as a semantic effect.

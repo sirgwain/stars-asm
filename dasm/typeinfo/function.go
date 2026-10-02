@@ -28,6 +28,11 @@ const ParamSemanticAllocSize = "alloc_size"
 // file layout, such as WriteRt's rg.
 const ParamSemanticRecord = "record"
 
+// SemanticMayBeMinusOne marks a value that may be -1, such as an index
+// meaning "none": a function's return value, or a pointer parameter the
+// function may store -1 through.
+const SemanticMayBeMinusOne = "may_be_minus_one"
+
 // Function describes a function from nb09 data
 type Function struct {
 	// NativeDecl overrides emitted C without changing the Win16 analysis signature.
@@ -38,6 +43,12 @@ type Function struct {
 	Module     string
 	Conv       CallConv
 	Ret        Type
+	// RetSemantic is semantic metadata for the return value, such as
+	// SemanticMayBeMinusOne.
+	RetSemantic string
+	// WritesNone marks a Win32 or runtime function that stores to no memory
+	// of the program and runs none of its code, such as GetSystemMetrics.
+	WritesNone bool
 	Params     []FunctionVar
 	// CallParams are the arguments callers pass when they differ from
 	// Params: the original declared the function without a prototype, so

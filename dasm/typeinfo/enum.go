@@ -6,6 +6,11 @@ type Enum struct {
 	Values   []EnumValue
 	Size     int
 
+	// CharCodes reports that the enum's digit and capital letter values are
+	// their ASCII characters, as virtual key codes are, so values with no
+	// member of their own print as character literals.
+	CharCodes bool
+
 	// Typedef is the integer type the enum name is declared as in the
 	// generated enums.h, sized to the original 16-bit int. It is nil for
 	// Win16 constant families, whose name is never declared and whose values
@@ -39,6 +44,9 @@ func (e *Enum) Kind() Kind {
 func (e *Enum) Bytes() int {
 	if e.Size > 0 {
 		return e.Size
+	}
+	if e.Typedef != nil {
+		return e.Typedef.Bytes()
 	}
 	return 2
 }
@@ -118,10 +126,15 @@ type EnumUseRule struct {
 
 // DependentEnumRule maps one discriminator enum value to the enum type of a target path.
 type DependentEnumRule struct {
-	Type          *Struct
-	Target        []string
-	Discriminator []string
-	EnumByValue   map[int]*Enum
+	// Type is the struct the paths are rooted at. A rule with Func set
+	// instead roots its paths at that function's params, locals or globals,
+	// and names its discriminator's enum in DiscriminatorEnum.
+	Type              *Struct
+	Func              string
+	DiscriminatorEnum *Enum
+	Target            []string
+	Discriminator     []string
+	EnumByValue       map[int]*Enum
 }
 
 // TargetEnumForValue returns the target enum selected by a discriminator value.
@@ -132,6 +145,9 @@ func (r *DependentEnumRule) TargetEnumForValue(value int) (*Enum, bool) {
 
 // AppliesToType reports whether the rule is rooted at typ.
 func (r *DependentEnumRule) AppliesToType(typ Type) bool {
+	if r.Type == nil {
+		return false
+	}
 	strct, ok := namedStructType(typ)
 	if !ok {
 		return false
@@ -198,4 +214,17 @@ type MessagePart struct {
 	// #define in the generated headers. Crackers of different messages with
 	// the same definition read the same value.
 	Win32 string
+
+	// Char reports that the part is a character code, such as WM_CHAR's
+	// wParam, whose printable constants read as character literals.
+	Char bool
+}
+
+// CharCode returns the character a value with no member stands for in an
+// enum of character codes: a digit or capital letter.
+func (e *Enum) CharCode(val int) (byte, bool) {
+	if !e.CharCodes || !(val >= '0' && val <= '9' || val >= 'A' && val <= 'Z') {
+		return 0, false
+	}
+	return byte(val), true
 }

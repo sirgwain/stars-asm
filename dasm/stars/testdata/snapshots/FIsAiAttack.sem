@@ -6,7 +6,7 @@ FIsAiAttack  (aiutil)
     FLEET *          lpfl           [BP+0x6]
   locals:
     int16_t          i              [BP-0x6]
-    int16_t          ihul           [BP-0x4]
+    HulDef           ihul           [BP-0x4]
 
   stats: blocks=0  labels=0
 */
@@ -19,16 +19,16 @@ L_4a83:
 
 L_4aa0:
     ihul = rgshdef[i].hul.ihuldef
-    branch ihul <= 5 ? L_4ac7 : L_4ab8
+    branch (int16_t)ihul <= ihuldefFrigate ? L_4ac7 : L_4ab8
 
 L_4ab8:
-    branch ihul > 10 ? L_4ac7 : L_4ac1
+    branch (int16_t)ihul > ihuldefDreadnought ? L_4ac7 : L_4ac1
 
 L_4ac1:
     return 1
 
 L_4ac7:
-    branch ihul != 5 ? L_4b11 : L_4ad0
+    branch ihul != ihuldefFrigate ? L_4b11 : L_4ad0
 
 L_4ad0:
     branch rglpshdef[idPlayer][i].lPower <= 0 ? L_4b0b : L_4b05
@@ -44,10 +44,10 @@ L_4b0e:
     return 0
 
 L_4b11:
-    branch ihul == 31 ? L_4b23 : L_4b1a
+    branch ihul == ihuldefMetaMorph ? L_4b23 : L_4b1a
 
 L_4b1a:
-    branch ihul != 29 ? L_4b81 : L_4b23
+    branch ihul != ihuldefNubian ? L_4b81 : L_4b23
 
 L_4b23:
     branch WtMaxShdefStat(&rgshdef[i], 2) >= 500 ? L_4b81 : L_4b46

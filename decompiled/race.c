@@ -10,22 +10,22 @@ char    rgRaceStatMax[16] = {25, 15, 25, 25, 25, 15, 25, 6, 2, 2, 2, 2, 2, 2, 9}
 char    rgRaceStatMin[16] = {7, 5, 5, 5, 5, 2, 5};
 
 int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrite) {
-    int16_t mdRet;
-    FARPROC lpProc;
-    RECT    rgrcStack[17];
-    int16_t cpts;
+    WizardButton mdRet;
+    FARPROC      lpProc;
+    RECT         rgrcStack[17];
+    int16_t      cpts;
 
     vrgrcRCW = rgrcStack;
     fRCWReadOnly = fReadOnly;
     hwndRaceParent = hwndParent;
     while (1) {
-        iPanelActive = 1;
+        iPanelActive = rwPageRace;
         lpProc = MakeProcInstance(RaceWizardDlg1, hInst);
         mdRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RACE_WIZARD_1), hwndRaceParent, lpProc);
         FreeProcInstance(lpProc);
-        if (mdRet == 0)
+        if (mdRet == wizCancel)
             break;
-        if (mdRet == 3) {
+        if (mdRet == wizFinish) {
         Finish:
             if (fRCWReadOnly != 0) {
                 return 0;
@@ -43,89 +43,89 @@ int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrit
             switch (iPanelActive) {
             default:
                 continue;
-            case 2:
+            case rwPagePrimaryTrait:
                 break;
-            case 3:
+            case rwPageLesserTraits:
                 goto Step3;
-            case 4:
+            case rwPageHabitability:
                 goto Step4;
-            case 5:
+            case rwPageEconomy:
                 goto Step5;
-            case 6:
+            case rwPageResearch:
                 goto Step6;
             }
         }
     Step2:
-        iPanelActive = 2;
+        iPanelActive = rwPagePrimaryTrait;
         lpProc = MakeProcInstance(RaceWizardDlg4, hInst);
         mdRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RACE_WIZARD_4), hwndRaceParent, lpProc);
         FreeProcInstance(lpProc);
         switch (mdRet) {
-        case 1:
+        case wizBack:
             continue;
-        case 0:
+        case wizCancel:
             return 0;
         default:
             break;
-        case 3:
+        case wizFinish:
             goto Finish;
         }
     Step3:
-        iPanelActive = 3;
+        iPanelActive = rwPageLesserTraits;
         lpProc = MakeProcInstance(RaceWizardDlg5, hInst);
         mdRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RACE_WIZARD_5), hwndRaceParent, lpProc);
         FreeProcInstance(lpProc);
         switch (mdRet) {
-        case 1:
+        case wizBack:
             goto Step2;
-        case 0:
+        case wizCancel:
             return 0;
         default:
             break;
-        case 3:
+        case wizFinish:
             goto Finish;
         }
     Step4:
-        iPanelActive = 4;
+        iPanelActive = rwPageHabitability;
         lpProc = MakeProcInstance(RaceWizardDlg2, hInst);
         mdRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RACE_WIZARD_2), hwndRaceParent, lpProc);
         FreeProcInstance(lpProc);
         switch (mdRet) {
-        case 1:
+        case wizBack:
             goto Step3;
-        case 0:
+        case wizCancel:
             return 0;
         default:
             break;
-        case 3:
+        case wizFinish:
             goto Finish;
         }
     Step5:
-        iPanelActive = 5;
+        iPanelActive = rwPageEconomy;
         lpProc = MakeProcInstance(RaceWizardDlg3, hInst);
         mdRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RACE_WIZARD_3), hwndRaceParent, lpProc);
         FreeProcInstance(lpProc);
         switch (mdRet) {
-        case 1:
+        case wizBack:
             goto Step4;
-        case 0:
+        case wizCancel:
             return 0;
         default:
             break;
-        case 3:
+        case wizFinish:
             goto Finish;
         }
     Step6:
-        iPanelActive = 6;
+        iPanelActive = rwPageResearch;
         lpProc = MakeProcInstance(RaceWizardDlg6, hInst);
         mdRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RACE_WIZARD_6), hwndRaceParent, lpProc);
         FreeProcInstance(lpProc);
         switch (mdRet) {
-        case 1:
+        case wizBack:
             goto Step5;
-        case 0:
+        case wizCancel:
             return 0;
-        case 3:
+        case wizFinish:
         default:
             goto Finish;
         }
@@ -154,8 +154,6 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     RECT        rcGBox;
     int16_t     k;
     char        szBuf[32];
-    HWND        t_scratch_me;
-    HWND        t_call_0f64;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -169,9 +167,9 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         GetClientRect(hwnd, &rc);
         DrawRaceAdvantagePoints(hdc, &rc, pplr);
-        GetWindowRect(GetDlgItem(hwnd, IDC_RADRACE1), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RACE_HUMANOID), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0116), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RACE_CUSTOM), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -208,160 +206,155 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        switch (message) {
-        case WM_INITDIALOG:
-            iPlrBmp = vplr.iPlrBmp;
-            SetRCWTitle(hwnd, iPanelActive);
-            SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
-            SetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames);
-            if ((int16_t)(int8_t)vplr.szName[0] == 0) {
-                GetDlgItemText(hwnd, IDC_RADRACE1, vplr.szName, 16);
-                SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
-            }
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
-            if (game.fTutorial != 0 && idPlayer == 0 && fRCWReadOnly != 0) {
-                i = 0;
-            } else {
-                for (i = 0; i < 7; i++) {
-                    vplr.iPlrBmp = vrgplrDef[i].iPlrBmp;
-                    if (fmemcmp(&vplr, &vrgplrDef[i], 128) == 0)
-                        break;
-                }
-                vplr.iPlrBmp = iPlrBmp;
-            }
-            CheckRadioButton(hwnd, 271, 278, i + 271);
-            SendDlgItemMessage(hwnd, 268, EM_LIMITTEXT, 0xf, 0);
-            SendDlgItemMessage(hwnd, 2075, EM_LIMITTEXT, 0xf, 0);
-            SendDlgItemMessage(hwnd, 269, EM_LIMITTEXT, 0x10, 0);
-            hwndCB = GetDlgItem(hwnd, IDC_COMBOBOX);
-            for (i = 262; i <= 266; i++) {
-                psz = PszGetCompressedString(i);
-                SendMessage(hwndCB, CB_ADDSTRING, 0, (LPARAM)psz);
-            }
-            i = GetRaceStat(&vplr, rsUseLeftover);
-            SendMessage(hwndCB, CB_SETCURSEL, i, 0);
-            if (vplr.lSalt != 0) {
-                SetDlgItemText(hwnd, IDC_U16_0x010D, szRacePass);
-            }
-            if (fRCWReadOnly != 0) {
-                for (i = 268; i <= 269; i++) {
-                    EnableWindow(GetDlgItem(hwnd, i), 0);
-                }
-                EnableWindow(GetDlgItem(hwnd, IDC_EDITNAME), 0);
-                for (i = 271; i <= 278; i++) {
-                    EnableWindow(GetDlgItem(hwnd, i), 0);
-                }
-                EnableWindow(hwndCB, 0);
-            }
-            return 1;
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONDBLCLK:
-            pt.x = LOWORD(lParam);
-            pt.y = HIWORD(lParam);
-            if (fRCWReadOnly != 0 || (PtInRect(rgrcBuildSpin, PointFrom16(pt)) == 0 && PtInRect(&rgrcBuildSpin[1], PointFrom16(pt)) == 0))
-                break;
-            if (PtInRect(rgrcBuildSpin, PointFrom16(pt)) != 0) {
-                iDir = -1;
-                bt = 34;
-                prc = rgrcBuildSpin;
-            } else {
-                iDir = 1;
-                bt = 35;
-                prc = &rgrcBuildSpin[1];
-            }
-            iCur = vplr.iPlrBmp;
-            if (iCur >= 32) {
-                iCur = 0;
-            }
-            hdc = GetDC(hwnd);
-            SelectPalette(hdc, vhpal, 0);
-            RealizePalette(hdc);
-            InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, 0, 0, NULL);
-            while (FTrackBtn(&btnt) != 0) {
-                iCur = (int16_t)(iCur + 32 + iDir) % 32;
-                DibBlt(hdc, rgrcBuildSpin[0].left - 2, rgrcBuildSpin[0].top - 35, 32, 32, hdibRaces, (iCur & 7) * 0x20, (3 - (iCur >> 3)) * 0x20, 32, 32,
-                       13369376);
-            }
-            vplr.iPlrBmp = iCur;
-            ReleaseDC(hwnd, hdc);
-            return 1;
-        case WM_COMMAND:
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 0x3ff);
-                return 1;
-            }
-            for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
-            }
-            if (i < 4) {
-                if (GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL) {
-                    iPlrBmp = vplr.iPlrBmp;
-                    for (j = 271; j <= 278 && IsDlgButtonChecked(hwnd, j) == 0; j++) {
-                    }
-                    if (j <= 277) {
-                        k = j - 271;
-                        vplr = vrgplrDef[k];
-                    }
-                    GetDlgItemText(hwnd, IDC_EDIT1, vplr.szName, 32);
-                    GetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames, 32);
-                    GetRaceStat(&vplr, rsUseLeftover);
-                    GetDlgItemText(hwnd, IDC_U16_0x010D, szRacePass, 16);
-                    j = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0, 0));
-                    SetRaceStat(&vplr, rsUseLeftover, j);
-                    vplr.lSalt = LSaltFromSz(szRacePass);
-                    vplr.iPlrBmp = iPlrBmp;
-                }
-                StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
-                EndDialog(hwnd, i);
-                return 1;
-            }
-            if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RADRACE1 &&
-                GET_WM_COMMAND_ID(wParam, lParam) <= IDC_U16_0x0116) {
-                memset(vplr.szName, 0, 32);
-                GetDlgItemText(hwnd, IDC_EDIT1, vplr.szName, 32);
-                memset(vplr.szNames, 0, 32);
-                GetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames, 32);
-                GetDlgItemText(hwnd, GET_WM_COMMAND_ID(wParam, lParam), szBuf, 32);
-                for (i = 0; i < 7 && strcmp(vplr.szName, PszGetCompressedString(i + 1383)) != 0; i++) {
-                }
-                if (i < 7 && GET_WM_COMMAND_ID(wParam, lParam) < IDC_U16_0x0116) {
-                    memset(vplr.szName, 0, 32);
-                    CchGetString(GET_WM_COMMAND_ID(wParam, lParam) + 1112, vplr.szName);
-                    SetDlgItemText(hwnd, IDC_EDIT1, vplr.szName);
-                    memset(vplr.szNames, 0, 32);
-                    psz = PszPlayerName(0, 1, 1, 0, 0, &vplr);
-                    strcpy(vplr.szNames, psz);
-                    SetDlgItemText(hwnd, IDC_EDITNAME, vplr.szNames);
-                }
-                if (GET_WM_COMMAND_ID(wParam, lParam) <= 0x115) {
-                    pplr = &vrgplrDef[GET_WM_COMMAND_ID(wParam, lParam) - 271];
-                } else {
-                    pplr = &vplr;
-                }
-                InvalidateAdvPtsRect(hwnd);
-                i = GetRaceStat(pplr, rsUseLeftover);
-                SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_SETCURSEL, i, 0);
-                t_call_0f64 = GetDlgItem(hwnd, IDC_NEXT);
-                EnableWindow(t_call_0f64, GET_WM_COMMAND_ID(wParam, lParam) == 0x115 ? 0 : 1);
-                vplr.iPlrBmp = pplr->iPlrBmp;
-                GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &rc);
-                ScreenToClient(hwnd, (POINT *)&rc.right);
-                rc.left = rc.right + 32;
-                rc.top = rc.bottom - 32;
-                rc.right = rc.left + 32;
-                rc.bottom = rc.top + 32;
-                InvalidateRect(hwnd, &rc, 1);
-            }
-        }
-    } else {
-        for (i = 271; i <= 278; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 271; i <= 278 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 278 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    switch (message) {
+    case WM_INITDIALOG:
+        iPlrBmp = vplr.iPlrBmp;
+        SetRCWTitle(hwnd, iPanelActive);
+        SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
+        SetDlgItemText(hwnd, IDC_RACE_PLURAL_NAME, vplr.szNames);
+        if ((int16_t)(int8_t)vplr.szName[0] == 0) {
+            GetDlgItemText(hwnd, IDC_RACE_HUMANOID, vplr.szName, 16);
+            SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
+        }
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        if (game.fTutorial != 0 && idPlayer == 0 && fRCWReadOnly != 0) {
+            i = 0;
+        } else {
+            for (i = 0; i < 7; i++) {
+                vplr.iPlrBmp = vrgplrDef[i].iPlrBmp;
+                if (fmemcmp(&vplr, &vrgplrDef[i], 128) == 0)
+                    break;
+            }
+            vplr.iPlrBmp = iPlrBmp;
+        }
+        CheckRadioButton(hwnd, IDC_RACE_HUMANOID, IDC_RACE_CUSTOM, i + 271);
+        SendDlgItemMessage(hwnd, IDC_RACE_NAME, EM_LIMITTEXT, 0xf, 0);
+        SendDlgItemMessage(hwnd, IDC_RACE_PLURAL_NAME, EM_LIMITTEXT, 0xf, 0);
+        SendDlgItemMessage(hwnd, IDC_RACE_PASSWORD, EM_LIMITTEXT, 0x10, 0);
+        hwndCB = GetDlgItem(hwnd, IDC_COMBOBOX);
+        for (i = 262; i <= 266; i++) {
+            psz = PszGetCompressedString(i);
+            SendMessage(hwndCB, CB_ADDSTRING, 0, (LPARAM)psz);
+        }
+        i = GetRaceStat(&vplr, rsUseLeftover);
+        SendMessage(hwndCB, CB_SETCURSEL, i, 0);
+        if (vplr.lSalt != 0) {
+            SetDlgItemText(hwnd, IDC_RACE_PASSWORD, szRacePass);
+        }
+        if (fRCWReadOnly != 0) {
+            for (i = 268; i <= 269; i++) {
+                EnableWindow(GetDlgItem(hwnd, i), 0);
+            }
+            EnableWindow(GetDlgItem(hwnd, IDC_RACE_PLURAL_NAME), 0);
+            for (i = 271; i <= 278; i++) {
+                EnableWindow(GetDlgItem(hwnd, i), 0);
+            }
+            EnableWindow(hwndCB, 0);
+        }
+        return 1;
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONDBLCLK:
+        pt.x = LOWORD(lParam);
+        pt.y = HIWORD(lParam);
+        if (fRCWReadOnly != 0 || (PtInRect(rgrcBuildSpin, PointFrom16(pt)) == 0 && PtInRect(&rgrcBuildSpin[1], PointFrom16(pt)) == 0))
+            break;
+        if (PtInRect(rgrcBuildSpin, PointFrom16(pt)) != 0) {
+            iDir = -1;
+            bt = 34;
+            prc = rgrcBuildSpin;
+        } else {
+            iDir = 1;
+            bt = 35;
+            prc = &rgrcBuildSpin[1];
+        }
+        iCur = vplr.iPlrBmp;
+        if (iCur >= 32) {
+            iCur = 0;
+        }
+        hdc = GetDC(hwnd);
+        SelectPalette(hdc, vhpal, 0);
+        RealizePalette(hdc);
+        InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, 0, 0, NULL);
+        while (FTrackBtn(&btnt) != 0) {
+            iCur = (int16_t)(iCur + 32 + iDir) % 32;
+            DibBlt(hdc, rgrcBuildSpin[0].left - 2, rgrcBuildSpin[0].top - 35, 32, 32, hdibRaces, (iCur & 7) * 0x20, (3 - (iCur >> 3)) * 0x20, 32, 32, 13369376);
+        }
+        vplr.iPlrBmp = iCur;
+        ReleaseDC(hwnd, hdc);
+        return 1;
+    case WM_COMMAND:
+        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep1BasicDefinition);
+            return 1;
+        }
+        for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
+        }
+        if (i < 4) {
+            if (GET_WM_COMMAND_ID(wParam, lParam) != IDCANCEL) {
+                iPlrBmp = vplr.iPlrBmp;
+                for (j = 271; j <= 278 && IsDlgButtonChecked(hwnd, j) == 0; j++) {
+                }
+                if (j <= 277) {
+                    k = j - 271;
+                    vplr = vrgplrDef[k];
+                }
+                GetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName, 32);
+                GetDlgItemText(hwnd, IDC_RACE_PLURAL_NAME, vplr.szNames, 32);
+                GetRaceStat(&vplr, rsUseLeftover);
+                GetDlgItemText(hwnd, IDC_RACE_PASSWORD, szRacePass, 16);
+                j = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0, 0));
+                SetRaceStat(&vplr, rsUseLeftover, j);
+                vplr.lSalt = LSaltFromSz(szRacePass);
+                vplr.iPlrBmp = iPlrBmp;
+            }
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            EndDialog(hwnd, i);
+            return 1;
+        }
+        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RACE_HUMANOID &&
+            GET_WM_COMMAND_ID(wParam, lParam) <= IDC_RACE_CUSTOM) {
+            memset(vplr.szName, 0, 32);
+            GetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName, 32);
+            memset(vplr.szNames, 0, 32);
+            GetDlgItemText(hwnd, IDC_RACE_PLURAL_NAME, vplr.szNames, 32);
+            GetDlgItemText(hwnd, GET_WM_COMMAND_ID(wParam, lParam), szBuf, 32);
+            for (i = 0; i < 7 && strcmp(vplr.szName, PszGetCompressedString(i + 1383)) != 0; i++) {
+            }
+            if (i < 7 && GET_WM_COMMAND_ID(wParam, lParam) < IDC_RACE_CUSTOM) {
+                memset(vplr.szName, 0, 32);
+                CchGetString(GET_WM_COMMAND_ID(wParam, lParam) + 1112, vplr.szName);
+                SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
+                memset(vplr.szNames, 0, 32);
+                psz = PszPlayerName(0, 1, 1, 0, 0, &vplr);
+                strcpy(vplr.szNames, psz);
+                SetDlgItemText(hwnd, IDC_RACE_PLURAL_NAME, vplr.szNames);
+            }
+            if (GET_WM_COMMAND_ID(wParam, lParam) <= IDC_RACE_RANDOM) {
+                pplr = &vrgplrDef[GET_WM_COMMAND_ID(wParam, lParam) - 271];
+            } else {
+                pplr = &vplr;
+            }
+            InvalidateAdvPtsRect(hwnd);
+            i = GetRaceStat(pplr, rsUseLeftover);
+            SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_SETCURSEL, i, 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEXT), GET_WM_COMMAND_ID(wParam, lParam) == IDC_RACE_RANDOM ? 0 : 1);
+            vplr.iPlrBmp = pplr->iPlrBmp;
+            GetWindowRect(GetDlgItem(hwnd, IDC_COMBOBOX), &rc);
+            ScreenToClient(hwnd, (POINT *)&rc.right);
+            rc.left = rc.right + 32;
+            rc.top = rc.bottom - 32;
+            rc.right = rc.left + 32;
+            rc.bottom = rc.top + 32;
+            InvalidateRect(hwnd, &rc, 1);
         }
     }
     return 0;
@@ -382,7 +375,6 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     POINT16     pt;
     int16_t     iVar;
     uint16_t    t_scratch_m30;
-    HWND        t_scratch_me;
     POINT       t_pt_15a4;
     POINT       t_pt_15b3_1;
 
@@ -398,104 +390,101 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        switch (message) {
-        case WM_INITDIALOG:
-            SetRCWTitle(hwnd, iPanelActive);
-            viStore = -1;
-            hdc = GetDC(hwnd);
-            GetClientRect(hwnd, &rc);
-            hfontSav = SelectObject(hdc, rghfontArial8[1]);
-            cch = CchGetString(idsTemperature, szTemp);
-            dxLabel = LOWORD(GetTextExtent(hdc, szTemp, cch)) + 10;
-            dxMiddle = LOWORD(GetTextExtent(hdc, "200mR", 5)) + 10;
-            dxMiddle = rc.right - dxLabel - dxMiddle;
-            dy = (int16_t)(3 * dyArial8) / 2;
-            yTop = 3 * dyArial8;
-            SetRect(vrgrcRCW, dxLabel, yTop, dxLabel + dy, yTop + dy);
-            SetRect(vrgrcRCW + 1, dxLabel + dy + 6, yTop, dxLabel + dxMiddle - dy - 6, yTop + dy);
-            SetRect(vrgrcRCW + 2, dxLabel + dxMiddle - dy, yTop, dxLabel + dxMiddle, yTop + dy);
-            SetRect(vrgrcRCW + 3, dxLabel, yTop + dy + 4, 3 * dy + dxLabel, dy * 2 + yTop + 4);
-            SetRect(vrgrcRCW + 4, dxLabel + dxMiddle - 3 * dy, yTop + dy + 4, dxLabel + dxMiddle, dy * 2 + yTop + 4);
-            for (i = 0; i < 5; i++) {
-                vrgrcRCW[i + 5] = vrgrcRCW[i];
-                OffsetRect((RECT *)&vrgrcRCW[i + 5].left, 0, 3 * dy);
-                vrgrcRCW[i + 10] = vrgrcRCW[i];
-                OffsetRect((RECT *)&vrgrcRCW[i + 0xa].left, 0, 6 * dy);
-            }
-            for (i = 0; i < 3; i++) {
-                SetWindowPos(GetDlgItem(hwnd, i + 291), NULL, 3 * dy + dxLabel + 6, vrgrcRCW[5 * i + 3].top, dxMiddle - 6 * dy - 12, dy, SWP_NOZORDER);
-                CheckDlgButton(hwnd, i + 291, vplr.rgEnvVarMax[i] >= 0 ? 0 : 1);
-            }
-            cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
-            t_scratch_m30 = LOWORD(GetTextExtent(hdc, "15%", 3));
-            vrgrcRCW[15].left = dxLabel + LOWORD(GetTextExtent(hdc, szWork, cch)) + t_scratch_m30 + 4;
-            vrgrcRCW[15].top = 9 * dy + yTop - 3;
-            vrgrcRCW[15].right = vrgrcRCW[15].left + 15;
-            vrgrcRCW[15].bottom = (dyArial8 >> 1) + vrgrcRCW[15].top + 3;
-            vrgrcRCW[16] = vrgrcRCW[15];
-            OffsetRect(vrgrcRCW + 16, 0, vrgrcRCW[15].bottom - vrgrcRCW[15].top - 1);
-            crcRCW = 17;
-            SelectObject(hdc, hfontSav);
-            ReleaseDC(hwnd, hdc);
-            if (fRCWReadOnly != 0) {
-                for (i = 291; i <= 293; i++) {
-                    EnableWindow(GetDlgItem(hwnd, i), 0);
-                }
-            }
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
-            return 1;
-        case WM_SETCURSOR:
-            GetCursorPos(&t_pt_15a4);
-            pt = PointTo16(t_pt_15a4);
-            t_pt_15b3_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_15b3_1);
-            pt = PointTo16(t_pt_15b3_1);
-            if (IrcRaceDlgHitTest(pt) < 0)
-                break;
-            SetCursor(hcurHand);
-            return 1;
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONDBLCLK:
-            pt.x = LOWORD(lParam);
-            pt.y = HIWORD(lParam);
-            return FTrackRaceDlg2(hwnd, pt, wParam);
-        case WM_COMMAND:
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 1053);
-                return 1;
-            }
-            for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
-            }
-            if (i < 4) {
-                StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
-                EndDialog(hwnd, i);
-                return 1;
-            }
-            if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_U16_0x0123 && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_IMMUNE_TO_RADIATION) {
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
-                iVar = GET_WM_COMMAND_ID(wParam, lParam) - 291;
-                if (i == 1) {
-                    vplr.rgEnvVar[iVar] = -1;
-                    vplr.rgEnvVarMax[iVar] = -1;
-                    vplr.rgEnvVarMin[iVar] = -1;
-                } else {
-                    vplr.rgEnvVarMin[iVar] = 20;
-                    vplr.rgEnvVarMax[iVar] = 80;
-                    vplr.rgEnvVar[iVar] = 50;
-                }
-                DrawRace2(hwnd, NULL, 1 << iVar | 0xff00);
-            }
-        }
-    } else {
-        for (i = 291; i <= 293; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 291; i <= 293 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 293 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    switch (message) {
+    case WM_INITDIALOG:
+        SetRCWTitle(hwnd, iPanelActive);
+        viStore = -1;
+        hdc = GetDC(hwnd);
+        GetClientRect(hwnd, &rc);
+        hfontSav = SelectObject(hdc, rghfontArial8[1]);
+        cch = CchGetString(idsTemperature, szTemp);
+        dxLabel = LOWORD(GetTextExtent(hdc, szTemp, cch)) + 10;
+        dxMiddle = LOWORD(GetTextExtent(hdc, "200mR", 5)) + 10;
+        dxMiddle = rc.right - dxLabel - dxMiddle;
+        dy = (int16_t)(3 * dyArial8) / 2;
+        yTop = 3 * dyArial8;
+        SetRect(vrgrcRCW, dxLabel, yTop, dxLabel + dy, yTop + dy);
+        SetRect(vrgrcRCW + 1, dxLabel + dy + 6, yTop, dxLabel + dxMiddle - dy - 6, yTop + dy);
+        SetRect(vrgrcRCW + 2, dxLabel + dxMiddle - dy, yTop, dxLabel + dxMiddle, yTop + dy);
+        SetRect(vrgrcRCW + 3, dxLabel, yTop + dy + 4, 3 * dy + dxLabel, dy * 2 + yTop + 4);
+        SetRect(vrgrcRCW + 4, dxLabel + dxMiddle - 3 * dy, yTop + dy + 4, dxLabel + dxMiddle, dy * 2 + yTop + 4);
+        for (i = 0; i < 5; i++) {
+            vrgrcRCW[i + 5] = vrgrcRCW[i];
+            OffsetRect((RECT *)&vrgrcRCW[i + 5].left, 0, 3 * dy);
+            vrgrcRCW[i + 10] = vrgrcRCW[i];
+            OffsetRect((RECT *)&vrgrcRCW[i + 0xa].left, 0, 6 * dy);
+        }
+        for (i = 0; i < 3; i++) {
+            SetWindowPos(GetDlgItem(hwnd, i + 291), NULL, 3 * dy + dxLabel + 6, vrgrcRCW[5 * i + 3].top, dxMiddle - 6 * dy - 12, dy, SWP_NOZORDER);
+            CheckDlgButton(hwnd, i + 291, vplr.rgEnvVarMax[i] >= 0 ? 0 : 1);
+        }
+        cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
+        t_scratch_m30 = LOWORD(GetTextExtent(hdc, "15%", 3));
+        vrgrcRCW[15].left = dxLabel + LOWORD(GetTextExtent(hdc, szWork, cch)) + t_scratch_m30 + 4;
+        vrgrcRCW[15].top = 9 * dy + yTop - 3;
+        vrgrcRCW[15].right = vrgrcRCW[15].left + 15;
+        vrgrcRCW[15].bottom = (dyArial8 >> 1) + vrgrcRCW[15].top + 3;
+        vrgrcRCW[16] = vrgrcRCW[15];
+        OffsetRect(vrgrcRCW + 16, 0, vrgrcRCW[15].bottom - vrgrcRCW[15].top - 1);
+        crcRCW = 17;
+        SelectObject(hdc, hfontSav);
+        ReleaseDC(hwnd, hdc);
+        if (fRCWReadOnly != 0) {
+            for (i = 291; i <= 293; i++) {
+                EnableWindow(GetDlgItem(hwnd, i), 0);
+            }
+        }
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        return 1;
+    case WM_SETCURSOR:
+        GetCursorPos(&t_pt_15a4);
+        pt = PointTo16(t_pt_15a4);
+        t_pt_15b3_1 = PointFrom16(pt);
+        ScreenToClient(hwnd, &t_pt_15b3_1);
+        pt = PointTo16(t_pt_15b3_1);
+        if (IrcRaceDlgHitTest(pt) < 0)
+            break;
+        SetCursor(hcurHand);
+        return 1;
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONDBLCLK:
+        pt.x = LOWORD(lParam);
+        pt.y = HIWORD(lParam);
+        return FTrackRaceDlg2(hwnd, pt, wParam);
+    case WM_COMMAND:
+        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep4PopulationGrowthFactors);
+            return 1;
+        }
+        for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
+        }
+        if (i < 4) {
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            EndDialog(hwnd, i);
+            return 1;
+        }
+        if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_IMMUNE_TO_GRAVITY && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_IMMUNE_TO_RADIATION) {
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
+            iVar = GET_WM_COMMAND_ID(wParam, lParam) - 291;
+            if (i == 1) {
+                vplr.rgEnvVar[iVar] = -1;
+                vplr.rgEnvVarMax[iVar] = -1;
+                vplr.rgEnvVarMin[iVar] = -1;
+            } else {
+                vplr.rgEnvVarMin[iVar] = 20;
+                vplr.rgEnvVarMax[iVar] = 80;
+                vplr.rgEnvVar[iVar] = 50;
+            }
+            DrawRace2(hwnd, NULL, 1 << iVar | 0xff00);
         }
     }
     return 0;
@@ -669,7 +658,7 @@ int16_t IrcRaceDlgHitTest(POINT16 pt) {
     for (i = 0; i < crcRCW && PtInRect((RECT *)&vrgrcRCW[i].left, PointFrom16(pt)) == 0; i++) {
     }
     if (i < crcRCW) {
-        if (iPanelActive == 4 && vplr.rgEnvVarMax[i / 5] < 0) {
+        if (iPanelActive == rwPageHabitability && vplr.rgEnvVarMax[i / 5] < 0) {
             return -1;
         }
         return i;
@@ -805,7 +794,6 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     POINT16     pt;
     HDC         hdc;
     PAINTSTRUCT ps;
-    HWND        t_scratch_me;
     POINT       t_pt_28b3;
     POINT       t_pt_28c2_1;
 
@@ -824,9 +812,9 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         switch (message) {
         case WM_INITDIALOG:
             SetRCWTitle(hwnd, iPanelActive);
-            SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceCheapFact), 0);
+            SendMessage(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceCheapFact), 0);
             if (fRCWReadOnly != 0 || GetRaceStat(&vplr, rsMajorAdv) == raMacintosh) {
-                EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0123), 0);
+                EnableWindow(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), 0);
             }
             StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
             return 1;
@@ -847,7 +835,7 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             return FTrackRaceDlg3(hwnd, pt, wParam);
         case WM_COMMAND:
             if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 1056);
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep5PopulationEfficiencyPlayerRace);
                 return 1;
             }
             for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
@@ -857,18 +845,15 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 EndDialog(hwnd, i);
                 return 1;
             }
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_U16_0x0123) {
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), BM_GETCHECK, 0, 0));
+            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_RACE_FACTORY_GERMANIUM_DISCOUNT) {
+                i = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), BM_GETCHECK, 0, 0));
                 SetRaceGrbit(&vplr, ibitRaceCheapFact, i);
                 DrawRace3(hwnd, NULL, 99);
             }
         }
-    } else {
-        t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-        if (t_scratch_me == GetDlgItem(hwnd, IDC_U16_0x0123) || HIWORD(lParam) == 6) {
-            SetBkColor((HDC)wParam, crButtonFace);
-            return (INT_PTR)hbrButtonFace;
-        }
+    } else if (GET_WM_CTLCOLOR_HWND(wParam, lParam) == GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT) || HIWORD(lParam) == 6) {
+        SetBkColor((HDC)wParam, crButtonFace);
+        return (INT_PTR)hbrButtonFace;
     }
     return 0;
 }
@@ -916,7 +901,7 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
         }
         if (i == 4) {
             if (iDraw == -1) {
-                SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x0123), NULL, 6, yTop, rc.right - 12, (int16_t)(3 * dyArial8) / 2, SWP_NOZORDER);
+                SetWindowPos(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), NULL, 6, yTop, rc.right - 12, (int16_t)(3 * dyArial8) / 2, SWP_NOZORDER);
             }
             yTop += (int16_t)(5 * dyArial8) / 2;
         }
@@ -1057,7 +1042,6 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     PAINTSTRUCT ps;
     int16_t     cch;
     RECT        rcGBox;
-    HWND        t_scratch_me;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -1065,9 +1049,9 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         DrawRaceAdvantagePoints(hdc, &rc, NULL);
         SelectObject(hdc, rghfontArial8[1]);
         SetBkColor(hdc, crButtonFace);
-        GetWindowRect(GetDlgItem(hwnd, IDC_RADRACE1), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RACE_HYPER_EXPANSION), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0118), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RACE_JACK_OF_ALL_TRADES), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -1106,56 +1090,53 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        if (message == WM_INITDIALOG) {
-            SetRCWTitle(hwnd, iPanelActive);
-            CheckRadioButton(hwnd, 271, 280, GetRaceStat(&vplr, rsMajorAdv) + 271);
-            if (fRCWReadOnly != 0) {
-                for (i = 271; i <= 280; i++) {
-                    EnableWindow(GetDlgItem(hwnd, i), 0);
-                }
-            }
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
-            return 1;
-        }
-        if (message == WM_COMMAND) {
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 1032);
-                return 1;
-            }
-            for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
-            }
-            if (i < 4) {
-                StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
-                EndDialog(hwnd, i);
-                return 1;
-            }
-            if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RADRACE1 &&
-                GET_WM_COMMAND_ID(wParam, lParam) <= IDC_U16_0x0118) {
-                i = GET_WM_COMMAND_ID(wParam, lParam) - 271;
-                SetRaceStat(&vplr, rsMajorAdv, i);
-                if (GetRaceStat(&vplr, rsMajorAdv) == raMacintosh) {
-                    SetRaceStat(&vplr, rsFactProd, 10);
-                    SetRaceStat(&vplr, rsFactBuild, 10);
-                    SetRaceStat(&vplr, rsFactOperate, 10);
-                    SetRaceStat(&vplr, rsMineProd, 10);
-                    SetRaceStat(&vplr, rsMineBuild, 5);
-                    SetRaceStat(&vplr, rsMineOperate, 10);
-                    SetRaceGrbit(&vplr, ibitRaceCheapFact, 0);
-                }
-                InvalidateAdvPtsRect(hwnd);
-                InvalidateRect(hwnd, &rcCargo, 0);
-            }
-        }
-    } else {
-        for (i = 271; i <= 280; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 271; i <= 280 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 280 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    if (message == WM_INITDIALOG) {
+        SetRCWTitle(hwnd, iPanelActive);
+        CheckRadioButton(hwnd, IDC_RACE_HYPER_EXPANSION, IDC_RACE_JACK_OF_ALL_TRADES, GetRaceStat(&vplr, rsMajorAdv) + 271);
+        if (fRCWReadOnly != 0) {
+            for (i = 271; i <= 280; i++) {
+                EnableWindow(GetDlgItem(hwnd, i), 0);
+            }
+        }
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        return 1;
+    }
+    if (message == WM_COMMAND) {
+        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep2PrimaryRacialTraits);
+            return 1;
+        }
+        for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
+        }
+        if (i < 4) {
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            EndDialog(hwnd, i);
+            return 1;
+        }
+        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RACE_HYPER_EXPANSION &&
+            GET_WM_COMMAND_ID(wParam, lParam) <= IDC_RACE_JACK_OF_ALL_TRADES) {
+            i = GET_WM_COMMAND_ID(wParam, lParam) - 271;
+            SetRaceStat(&vplr, rsMajorAdv, i);
+            if (GetRaceStat(&vplr, rsMajorAdv) == raMacintosh) {
+                SetRaceStat(&vplr, rsFactProd, 10);
+                SetRaceStat(&vplr, rsFactBuild, 10);
+                SetRaceStat(&vplr, rsFactOperate, 10);
+                SetRaceStat(&vplr, rsMineProd, 10);
+                SetRaceStat(&vplr, rsMineBuild, 5);
+                SetRaceStat(&vplr, rsMineOperate, 10);
+                SetRaceGrbit(&vplr, ibitRaceCheapFact, 0);
+            }
+            InvalidateAdvPtsRect(hwnd);
+            InvalidateRect(hwnd, &rcCargo, 0);
         }
     }
     return 0;
@@ -1169,7 +1150,6 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     PAINTSTRUCT ps;
     int16_t     cch;
     RECT        rcGBox;
-    HWND        t_scratch_me;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -1177,7 +1157,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         DrawRaceAdvantagePoints(hdc, &rc, NULL);
         SelectObject(hdc, rghfontArial8[1]);
         SetBkColor(hdc, crButtonFace);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x0130), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_RACE_REGENERATING_SHIELDS), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox.right);
         GetClientRect(hwnd, &rc);
         rc.top = rcGBox.bottom + 12;
@@ -1220,7 +1200,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         if (message == WM_COMMAND) {
             if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 1041);
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep3LesserTraitsPlayerRace);
                 return 1;
             }
             for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
@@ -1230,7 +1210,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 EndDialog(hwnd, i);
                 return 1;
             }
-            if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_U16_0x0123 && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_U16_0x0130) {
+            if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RACE_IMPROVED_FUEL_EFFICIENCY && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_RACE_REGENERATING_SHIELDS) {
                 i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
                 cColDrop = GET_WM_COMMAND_ID(wParam, lParam) - 291;
                 SetRaceGrbit(&vplr, cColDrop, i);
@@ -1239,10 +1219,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             }
         }
     } else {
-        for (i = 291; i <= 304; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+        for (i = 291; i <= 304 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 304 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
@@ -1259,10 +1236,7 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     PAINTSTRUCT ps;
     int16_t     cch;
     RECT        rcGBox;
-    int16_t     t_scratch_me;
     uint16_t    t_merge_3c78_0001;
-    HWND        t_scratch_me_2;
-    HWND        t_scratch_me_3;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -1292,25 +1266,18 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         return 1;
     }
     if (IS_WM_CTLCOLOR(message) != 0) {
-        for (i = 271; i <= 288; i++) {
-            t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me_2 == GetDlgItem(hwnd, i))
-                break;
+        for (i = 271; i <= 288 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
-        if (i > 288) {
-            t_scratch_me_3 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me_3 != GetDlgItem(hwnd, IDC_U16_0x0123) && HIWORD(lParam) != 6) {
-                return 0;
-            }
+        if (i <= 288 || GET_WM_CTLCOLOR_HWND(wParam, lParam) == GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH) || HIWORD(lParam) == 6) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
         }
-        SetBkColor((HDC)wParam, crButtonFace);
-        return (INT_PTR)hbrButtonFace;
+        return 0;
     }
     if (message == WM_INITDIALOG) {
         SetRCWTitle(hwnd, iPanelActive);
         for (i = 0; i < 6; i++) {
-            t_scratch_me = GetRaceStat(&vplr, i + 8);
-            CheckRadioButton(hwnd, 3 * i + 271, 3 * i + 273, 3 * i + 271 + t_scratch_me);
+            CheckRadioButton(hwnd, 3 * i + 271, 3 * i + 273, 3 * i + 271 + GetRaceStat(&vplr, i + 8));
         }
         if (fRCWReadOnly != 0) {
             for (i = 271; i <= 288; i++) {
@@ -1319,17 +1286,17 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         t_merge_3c78_0001 = GetRaceStat(&vplr, rsMajorAdv) == raNone ? 1 : 0;
         _wsprintf(szWork, PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech), t_merge_3c78_0001 + 3);
-        SetWindowText(GetDlgItem(hwnd, IDC_U16_0x0123), szWork);
-        SendMessage(GetDlgItem(hwnd, IDC_U16_0x0123), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceTech3), 0);
+        SetWindowText(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), szWork);
+        SendMessage(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceTech3), 0);
         if (fRCWReadOnly != 0) {
-            EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0123), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), 0);
         }
         StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
         return 1;
     }
     if (message == WM_COMMAND) {
         if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-            WinHelp(hwnd, szHelpFile, 1, 1057);
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep6ResearchCostsPlayerRace);
             return 1;
         }
         for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
@@ -1339,11 +1306,12 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             EndDialog(hwnd, i);
             return 1;
         }
-        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RADRACE1 && GET_WM_COMMAND_ID(wParam, lParam) <= 0x120) {
+        if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_RACE_ENERGY_COST_EXTRA &&
+            GET_WM_COMMAND_ID(wParam, lParam) <= IDC_RACE_BIOTECH_COST_LESS) {
             i = GET_WM_COMMAND_ID(wParam, lParam) - 271;
             SetRaceStat(&vplr, i / 3 + 8, i % 3);
             InvalidateAdvPtsRect(hwnd);
-        } else if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_U16_0x0123) {
+        } else if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_RACE_START_HIGHER_TECH) {
             i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
             SetRaceGrbit(&vplr, ibitRaceTech3, i);
             InvalidateAdvPtsRect(hwnd);
@@ -1403,18 +1371,18 @@ void BoundsCheckPlayer(PLAYER *pplr) {
 }
 
 int16_t CAdvantagePoints(PLAYER *pplr) {
-    int16_t pctGrowth;
-    int16_t iSpread;
-    int32_t cPoints;
-    int16_t cBad;
-    int16_t cCur;
-    int16_t i;
-    int16_t rgi[3];
-    int16_t cGood;
-    int32_t lInnate;
-    int16_t raMajor;
-    int16_t cOperate;
-    int16_t cProduce;
+    int16_t       pctGrowth;
+    int16_t       iSpread;
+    int32_t       cPoints;
+    int16_t       cBad;
+    int16_t       cCur;
+    int16_t       i;
+    int16_t       rgi[3];
+    int16_t       cGood;
+    int32_t       lInnate;
+    RaceAttribute raMajor;
+    int16_t       cOperate;
+    int16_t       cProduce;
 
     cPoints = 0;
     cPoints = 1650;
@@ -1470,7 +1438,7 @@ int16_t CAdvantagePoints(PLAYER *pplr) {
     if (cOperate > 10 || cProduce > 10) {
         cOperate = 1 <= cOperate - 9 ? cOperate - 9 : 1;
         cProduce = 1 <= cProduce - 9 ? cProduce - 9 : 1;
-        cProduce = (raMajor == 0 ? 3 : 2) * cProduce;
+        cProduce = (raMajor == raCheapCol ? 3 : 2) * cProduce;
         if (cGood >= 2) {
             cPoints -= (int32_t)((uint32_t)(cOperate * cProduce) * pctGrowth) / 2;
         } else {
@@ -1488,7 +1456,7 @@ int16_t CAdvantagePoints(PLAYER *pplr) {
     } else if (i > 10) {
         cPoints += (int16_t)((i - 10) * 120);
     }
-    if (raMajor != 8) {
+    if (raMajor != raMacintosh) {
         rgi[0] = 10 - GetRaceStat(pplr, rsFactProd);
         rgi[1] = 10 - GetRaceStat(pplr, rsFactBuild);
         rgi[2] = 10 - GetRaceStat(pplr, rsFactOperate);
@@ -1574,13 +1542,13 @@ int16_t CAdvantagePoints(PLAYER *pplr) {
     }
     if (GetRaceGrbit(pplr, ibitRaceNoAdvScanner) != 0) {
         switch (raMajor) {
-        case 6:
+        case raMassAccel:
             cPoints -= 280;
             break;
-        case 1:
+        case raStealth:
             cPoints -= 200;
             break;
-        case 9:
+        case raNone:
             cPoints -= 40;
         }
     }
@@ -1604,7 +1572,7 @@ int16_t CAdvantagePoints(PLAYER *pplr) {
     if (GetRaceGrbit(pplr, ibitRaceTech3) != 0) {
         cPoints -= 180;
     }
-    if (raMajor == 8 && GetRaceStat(pplr, rsTechBonus1) == 2) {
+    if (raMajor == raMacintosh && GetRaceStat(pplr, rsTechBonus1) == 2) {
         cPoints -= 100;
     }
     return LOWORD((int32_t)(cPoints / 3));
@@ -1897,7 +1865,7 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr) {
     szDirName[0] = 0;
     CchGetString(idsStarsRaceFilesR, szFilter);
     for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-        if ((int16_t)(int8_t)szFilter[i] == 124) {
+        if ((int16_t)(int8_t)szFilter[i] == '|') {
             szFilter[i] = 0;
         }
     }

@@ -103,7 +103,7 @@ L_1545:
     t_1545 = psz
     psz = &psz[1]
     *pszT++ = *t_1545
-    branch sext8to16(*t_1545) != 38 ? L_1536 : L_1564
+    branch sext8to16(*t_1545) != '&' ? L_1536 : L_1564
 
 L_1564:
     *pszT++ = '&'
@@ -172,7 +172,7 @@ L_16d0:
     t_16d0 = psz
     psz = &psz[1]
     *pszT++ = *t_16d0
-    branch sext8to16(*t_16d0) != 38 ? L_16c1 : L_16ef
+    branch sext8to16(*t_16d0) != '&' ? L_16c1 : L_16ef
 
 L_16ef:
     *pszT++ = '&'
@@ -221,7 +221,7 @@ L_17e3:
     t_17e3 = psz
     psz = &psz[1]
     *pszT++ = *t_17e3
-    branch sext8to16(*t_17e3) != 38 ? L_17d4 : L_1802
+    branch sext8to16(*t_17e3) != '&' ? L_17d4 : L_1802
 
 L_1802:
     *pszT++ = '&'

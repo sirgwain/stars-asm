@@ -130,6 +130,7 @@ func (p *unionContextProcessor) initialState() *unionFlowState {
 		p.addDirectAliases(state, root)
 		p.addDependentEnumAliases(state, root)
 	}
+	p.addFunctionDependentEnumAliases(state)
 	p.addExternalDiscriminatorAliases(state)
 	p.addConditionalSelectionFacts(state)
 	return state
@@ -262,6 +263,7 @@ func (p *unionContextProcessor) processBlock(state *unionFlowState, block Block,
 		case *CallEffect:
 			p.processCall(state, e)
 		case *Branch:
+			p.addComparedDependentEnumAliases(state, e.Cond)
 			trueState := state.clone()
 			falseState := state.clone()
 			p.applyBranchFact(e.Cond, trueState, falseState)
@@ -525,16 +527,39 @@ func singletonPossibleEnumValue(values map[int]typeinfo.EnumValue) (typeinfo.Enu
 // discriminator's possible values when enum constant typing runs later.
 func unionCompareFact(compare *Compare, state *unionFlowState) (symresolve.SymbolPath, typeinfo.EnumValue, bool) {
 	if path, ok := symbolPathForExpr(compare.LHS); ok {
-		if value, ok := enumValueForComparison(compare.RHS, state.possibleEnums[symbolPathKey(path)]); ok {
+		if value, ok := discriminatorCompareValue(compare.RHS, state, symbolPathKey(path)); ok {
 			return path, value, true
 		}
 	}
 	if path, ok := symbolPathForExpr(compare.RHS); ok {
-		if value, ok := enumValueForComparison(compare.LHS, state.possibleEnums[symbolPathKey(path)]); ok {
+		if value, ok := discriminatorCompareValue(compare.LHS, state, symbolPathKey(path)); ok {
 			return path, value, true
 		}
 	}
 	return nil, typeinfo.EnumValue{}, false
+}
+
+// discriminatorCompareValue resolves the enum value a discriminator at key is
+// compared with. A raw constant is looked up in the discriminator's possible
+// values, or else in the enum of its dependent enum aliases: in a loop, the
+// first paths to reach the head may have excluded the compared value, and the
+// comparison must still narrow the path it guards.
+func discriminatorCompareValue(expr Expr, state *unionFlowState, key string) (typeinfo.EnumValue, bool) {
+	if value, ok := enumValueForComparison(expr, state.possibleEnums[key]); ok {
+		return value, true
+	}
+	constant, ok := expr.(*Const)
+	if !ok {
+		return typeinfo.EnumValue{}, false
+	}
+	for _, target := range state.enumAliases[key] {
+		for _, value := range target.Enum.Values {
+			if value.Value == int(constant.U64) {
+				return value, true
+			}
+		}
+	}
+	return typeinfo.EnumValue{}, false
 }
 
 // enumValueForComparison resolves either an already typed enum constant or a
@@ -594,12 +619,19 @@ func (p *unionContextProcessor) addDirectAliases(state *unionFlowState, root sym
 
 // addDependentEnumAliases adds aliases for every dependent enum discriminator rooted at root.
 func (p *unionContextProcessor) addDependentEnumAliases(state *unionFlowState, root symresolve.SymbolPath) {
+	p.addDependentEnumAliasesFor(state, root, "")
+}
+
+// addDependentEnumAliasesFor adds the dependent enum aliases rooted at root
+// whose discriminator path has key discriminatorKey, or all of them when
+// discriminatorKey is empty.
+func (p *unionContextProcessor) addDependentEnumAliasesFor(state *unionFlowState, root symresolve.SymbolPath, discriminatorKey string) {
 	for _, rule := range p.ctx.sdb.DependentEnumRules {
 		if !rule.AppliesToType(root.Type()) {
 			continue
 		}
 		discriminator, ok := appendSymbolFieldPath(root, rule.Discriminator)
-		if !ok {
+		if !ok || discriminatorKey != "" && symbolPathKey(discriminator) != discriminatorKey {
 			continue
 		}
 		targetPath, ok := appendSymbolFieldPath(root, rule.Target)
@@ -610,17 +642,86 @@ func (p *unionContextProcessor) addDependentEnumAliases(state *unionFlowState, r
 		if !ok {
 			continue
 		}
-		target := dependentEnumAliasTarget{
-			Key:    dependentEnumAliasTargetKey(targetPath, rule),
-			Target: targetPath,
-			Rule:   rule,
-			Enum:   discriminatorEnum,
-			Direct: true,
-		}
-		key := symbolPathKey(discriminator)
-		addDependentEnumAliasTarget(state.enumAliases, key, target)
-		state.possibleEnums[key] = possibleEnumValuesForAliases(state.aliases[key], state.enumAliases[key])
+		addDependentEnumAlias(state, discriminator, targetPath, rule, discriminatorEnum)
 	}
+}
+
+// addFunctionDependentEnumAliases adds the aliases of the dependent enum rules
+// rooted at the function's own variables, such as a report column whose enum
+// depends on the report type.
+func (p *unionContextProcessor) addFunctionDependentEnumAliases(state *unionFlowState) {
+	for _, rule := range p.ctx.sdb.DependentEnumRules {
+		if rule.Func != p.ctx.fs.Name {
+			continue
+		}
+		discriminator, ok := p.symbolPathByComponents(rule.Discriminator)
+		if !ok {
+			p.ctx.log.Error("dependent enum discriminator not found", "func", rule.Func, "path", rule.Discriminator)
+			continue
+		}
+		target, ok := p.symbolPathByComponents(rule.Target)
+		if !ok {
+			p.ctx.log.Error("dependent enum target not found", "func", rule.Func, "path", rule.Target)
+			continue
+		}
+		addDependentEnumAlias(state, discriminator, target, rule, rule.DiscriminatorEnum)
+	}
+}
+
+// addDependentEnumAlias records that rule selects target's enum from the
+// value of discriminator, an enum of discriminatorEnum.
+func addDependentEnumAlias(state *unionFlowState, discriminator, target symresolve.SymbolPath, rule *typeinfo.DependentEnumRule, discriminatorEnum *typeinfo.Enum) {
+	alias := dependentEnumAliasTarget{
+		Key:    dependentEnumAliasTargetKey(target, rule),
+		Target: target,
+		Rule:   rule,
+		Enum:   discriminatorEnum,
+		Direct: true,
+	}
+	key := symbolPathKey(discriminator)
+	addDependentEnumAliasTarget(state.enumAliases, key, alias)
+	state.possibleEnums[key] = possibleEnumValuesForAliases(state.aliases[key], state.enumAliases[key])
+}
+
+// addComparedDependentEnumAliases registers the dependent enum aliases of a
+// struct reached below a root, such as the hull slot lphul->rghs[j], when a
+// branch compares its discriminator, so the comparison narrows its target's
+// enum as it does for a root of the struct's type.
+func (p *unionContextProcessor) addComparedDependentEnumAliases(state *unionFlowState, cond Expr) {
+	compare, ok := cond.(*Compare)
+	if !ok {
+		return
+	}
+	for _, side := range []Expr{compare.LHS, compare.RHS} {
+		path, ok := symbolPathForExpr(side)
+		if !ok {
+			continue
+		}
+		key := symbolPathKey(path)
+		if len(state.enumAliases[key]) != 0 {
+			continue
+		}
+		// A loop merge drops aliases registered inside the loop but keeps
+		// the values its paths narrowed the discriminator to.
+		narrowed := state.possibleEnums[key]
+		for base, ok := fieldPathBase(path); ok; base, ok = fieldPathBase(base) {
+			p.addDependentEnumAliasesFor(state, base, key)
+		}
+		if len(narrowed) != 0 && len(state.enumAliases[key]) != 0 {
+			state.possibleEnums[key] = narrowed
+		}
+	}
+}
+
+// fieldPathBase returns the path a field or bitfield path selects from.
+func fieldPathBase(path symresolve.SymbolPath) (symresolve.SymbolPath, bool) {
+	switch v := path.(type) {
+	case *symresolve.SymbolField:
+		return v.Base, true
+	case *symresolve.SymbolBitfield:
+		return v.Base, true
+	}
+	return nil, false
 }
 
 // symbolRoots returns all function and global symbols as symbolic roots.
@@ -1025,6 +1126,9 @@ func unionAliasTargetKey(root symresolve.SymbolPath, rule *typeinfo.UnionVariant
 
 // dependentEnumAliasTargetKey returns a stable key for a dependent enum target/rule pair.
 func dependentEnumAliasTargetKey(target symresolve.SymbolPath, rule *typeinfo.DependentEnumRule) string {
+	if rule.Type == nil {
+		return strings.ToLower(target.String()) + "|" + strings.ToLower(rule.Func)
+	}
 	return strings.ToLower(target.String()) + "|" + strings.ToLower(rule.Type.String())
 }
 

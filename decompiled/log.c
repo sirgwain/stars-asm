@@ -4,7 +4,7 @@ void LogSplitFleet(int16_t id) {
     if (gd.fGeneratingTurn != 0) {
         LpflFromId(id)->fCompChg = 1;
     } else {
-        WriteMemRt(24, 2, &id);
+        WriteMemRt(rtLogFleetSplit, 2, &id);
     }
     return;
 }
@@ -28,7 +28,7 @@ void LogMergeFleet(int16_t id) {
                     }
                 }
             }
-            WriteMemRt(37, j * 2, rgid);
+            WriteMemRt(rtLogFleetMerge, j * 2, rgid);
         }
     }
     return;
@@ -43,13 +43,13 @@ void LogChangeShDef(SHDEF *lpshdefNew) {
         RawStore16(rgb, (RawLoad16(rgb) & 0xff0f) | (idPlayer & 0xf) << 4);
         if (lpshdefNew->fFree != 0) {
             RawStore16(rgb, RawLoad16(rgb) & 0xfff0);
-            WriteMemRt(27, 2, rgb);
+            WriteMemRt(rtLogShDef, 2, rgb);
         } else {
             RawStore16(rgb, (RawLoad16(rgb) & 0xfff0) | 1);
             lpshdefNew->det = detAll;
             pb = &rgb[2];
             WriteRtShDef(lpshdefNew, &pb);
-            WriteMemRt(27, pb - rgb, rgb);
+            WriteMemRt(rtLogShDef, pb - rgb, rgb);
         }
         if (gd.fTutorial != 0 && idPlayer == 0) {
             tutor.fChange = 1;
@@ -88,7 +88,7 @@ void LogChangeName(GrobjClass grobj, int16_t id, char *szName) {
         }
         rtchgname.grobj = grobj;
         rtchgname.id = id;
-        WriteMemRt(44, cOut + 5, &rtchgname);
+        WriteMemRt(rtLogFleetName, cOut + 5, &rtchgname);
         if (gd.fTutorial != 0) {
             AdvanceTutor();
         }
@@ -149,12 +149,12 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
                 if (pfl->iplan != pflNew->iplan) {
                     rtsi.id = pflNew->id;
                     rtsi.i = pflNew->iplan;
-                    WriteMemRt(42, 4, &rtsi);
+                    WriteMemRt(rtLogFleetPlan, 4, &rtsi);
                 }
                 if (pfl->fRepOrders != pflNew->fRepOrders) {
                     rtsi.id = pflNew->id;
                     rtsi.i = pflNew->fRepOrders;
-                    WriteMemRt(10, 4, &rtsi);
+                    WriteMemRt(rtLogFleetFlagBit9, 4, &rtsi);
                 }
                 d = pflNew->cord - pfl->cord;
                 for (iordOld = 0; iordOld < pfl->cord && iordOld < pflNew->cord &&
@@ -169,7 +169,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
                         if (d == -2) {
                             rtsi.i |= 0x8000;
                         }
-                        WriteMemRt(3, 4, &rtsi);
+                        WriteMemRt(rtLogFleetOrderDelete, 4, &rtsi);
                     } else if (d > 0) {
                         cbWp = 22;
                         rtwp.id = pflNew->id;
@@ -179,7 +179,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
                         while (cbWp-- > 0 && (int16_t)(int8_t)pbWp[cbWp] == 0) {
                         }
                         cbWp++;
-                        WriteMemRt(4, cbWp, &rtwp);
+                        WriteMemRt(rtLogFleetOrderInsert, cbWp, &rtwp);
                     } else {
                         cbWp = 22;
                         if (FGetPrevLogRt(&hdr, rgbCur) != 0 && hdr.rt == rtLogFleetOrderUpdate && RawLoad16(rgbCur) == pflNew->id &&
@@ -193,7 +193,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
                         while (cbWp-- > 0 && (int16_t)(int8_t)pbWp[cbWp] == 0) {
                         }
                         cbWp++;
-                        WriteMemRt(5, cbWp, &rtwp);
+                        WriteMemRt(rtLogFleetOrderUpdate, cbWp, &rtwp);
                     }
                 }
             }
@@ -208,7 +208,7 @@ void LogChangeRelations() {
     if (FGetPrevLogRt(&hdr, rgbCur) != 0 && hdr.rt == rtLogRelations) {
         imemLogCur = imemLogPrev;
     }
-    WriteMemRt(38, game.cPlayer, rgplr[idPlayer].rgmdRelation);
+    WriteMemRt(rtLogRelations, game.cPlayer, rgplr[idPlayer].rgmdRelation);
     if (gd.fTutorial != 0 && idPlayer == 0) {
         tutor.fChange = 1;
         AdvanceTutor();
@@ -265,7 +265,7 @@ void LogChangePlanet(PLANET *ppl, PLANET *pplNew) {
     L_9573:
         if (ppl != 0) {
             if (pplNew->lpplprod == 0 && ppl->lpplprod != 0) {
-                WriteMemRt(29, 2, &lxNew);
+                WriteMemRt(rtLogPlanetProdQ, 2, &lxNew);
             } else if (pplNew->lpplprod != 0 && (ppl->lpplprod == 0 || ppl->lpplprod->iprodMac != pplNew->lpplprod->iprodMac ||
                                                  fmemcmp(ppl->lpplprod->rgprod, pplNew->lpplprod->rgprod, ppl->lpplprod->iprodMac * 4) != 0)) {
                 if (FGetPrevLogRt(&hdr, rgbCur) != 0 && hdr.rt == rtLogPlanetProdQ && RawLoad16(rgbCur) == ppl->id) {
@@ -273,7 +273,7 @@ void LogChangePlanet(PLANET *ppl, PLANET *pplNew) {
                 }
                 RawStore16(rgbCur, ppl->id);
                 fmemmove(&rgbCur[2], pplNew->lpplprod->rgprod, pplNew->lpplprod->iprodMac * 4);
-                WriteMemRt(29, pplNew->lpplprod->iprodMac * 4 + 2, rgbCur);
+                WriteMemRt(rtLogPlanetProdQ, pplNew->lpplprod->iprodMac * 4 + 2, rgbCur);
             }
             if ((uint32_t)ppl->fNoResearch != pplNew->fNoResearch || ppl->idFling != pplNew->idFling || ppl->iWarpFling != pplNew->iWarpFling ||
                 ppl->idRoute != pplNew->idRoute) {
@@ -283,7 +283,7 @@ void LogChangePlanet(PLANET *ppl, PLANET *pplNew) {
                 RawStore32(&rgbCur[2], (RawLoad32(&rgbCur[2]) & 0xfffff801) | (int32_t)((uint32_t)(LOWORD((uint32_t)pplNew->idFling) & 0x3ff) << 1));
                 RawStore32(&rgbCur[2], (RawLoad32(&rgbCur[2]) & 0xffff87ff) | (int32_t)((uint32_t)(LOWORD((uint32_t)pplNew->iWarpFling) & 0xf) << 0xb));
                 RawStore32(&rgbCur[2], (RawLoad32(&rgbCur[2]) & 0xfe007fff) | (int32_t)((uint32_t)(LOWORD((uint32_t)pplNew->idRoute) & 0x3ff) << 0xf));
-                WriteMemRt(35, 6, rgbCur);
+                WriteMemRt(rtLogPlanetRouting, 6, rgbCur);
             }
         }
     }
@@ -470,7 +470,7 @@ void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2) {
                 cb += 2;
             }
         }
-        WriteMemRt(23, cb, rgbuf);
+        WriteMemRt(rtLogFleetCargoXfer, cb, rgbuf);
     }
     return;
 }
@@ -481,7 +481,7 @@ void CancelMemRt(RecordType rt) {
     return;
 }
 
-void WriteMemRt(int16_t rt, int16_t cb, void *rg) {
+void WriteMemRt(RecordType rt, int16_t cb, void *rg) {
     HDR      hdr;
     uint8_t *lpv;
 
@@ -500,7 +500,7 @@ void WriteMemRt(int16_t rt, int16_t cb, void *rg) {
             fmemcpy(lpv + 2, rg, cb);
         }
         imemLogCur += cb + 2;
-        if (rt != 0) {
+        if (rt != rtEOF) {
             hdrPrev = hdr;
         }
     }
@@ -579,13 +579,11 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     COLDROP  *lpcdT;
     XFERFULL *lpxfMax;
     MessageId idm;
-    int16_t   t_b926;
-    int16_t   t_b9dc;
 
     lpxfCur = NULL;
     if (rt <= rtLogPlayerZpq1) {
         switch (rt) {
-        case 29:
+        case rtLogPlanetProdQ:
             lppl = lpPlanets;
             lpplMac = lpPlanets + cPlanet;
             for (; lppl < lpplMac && lppl->id != RawLoad16(lpb); lppl++) {
@@ -634,10 +632,10 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 return 1;
             }
             return 0;
-        case 38:
+        case rtLogRelations:
             fmemcpy(rgplr[idPlayer].rgmdRelation, lpb, game.cPlayer);
             return 1;
-        case 46:
+        case rtLogPlayerZpq1:
             if (gd.fGeneratingTurn == 0) {
                 return 1;
             }
@@ -646,7 +644,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             }
             fmemcpy(&rgplr[idPlayer].zpq1, lpb, cb);
             return 1;
-        case 44:
+        case rtLogFleetName:
             cOut = 32;
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl == 0) {
@@ -668,14 +666,14 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             lpfl->lpszName = LpAlloc(fstrlen(lpb + 5) + 1, htString);
             fstrcpy(lpfl->lpszName, lpb + 5);
             return 1;
-        case 43:
+        case rtThing:
             lpth = LpthFromId(RawLoad16(lpb));
             if (lpth == 0 || lpth->ith != ithMinefield) {
                 return 0;
             }
             lpth->thm.fDetonate = LOBYTE(RawLoad16((uint8_t *)lpb + 0x2));
             return 1;
-        case 27:
+        case rtLogShDef:
             i = RawLoad16(lpb) >> 8 & 0x1f;
             iLook = RawLoad16(lpb) >> 4 & 0xf;
             if (iLook >= game.cPlayer || iLook != idPlayer) {
@@ -727,9 +725,9 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             }
             rgplr[iLook].cShDef--;
             return 1;
-        case 1:
-        case 2:
-        case 25:
+        case rtLogCargoXfer8:
+        case rtLogCargoXfer16:
+        case rtLogCargoXfer32:
             if (FLookupObject(lpb[4] & 0xf, RawLoad16(lpb), &rgxf[0].fl) == 0) {
                 return 0;
             }
@@ -769,7 +767,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                             if (l != cXfer) {
                                 id = (lpb[4] & 0xf) == 2 ? -32768 : 0;
                                 id |= rgxf[0].fl.id;
-                                FSendPlrMsg(rgxf[0].fl.iPlayer, 221, id, id, LOWORD(cXfer) - LOWORD(l), i, LOWORD(cXfer), 0, 0, 0);
+                                FSendPlrMsg(rgxf[0].fl.iPlayer, idmUnableTransferKtKtRequest, id, id, LOWORD(cXfer) - LOWORD(l), i, LOWORD(cXfer), 0, 0, 0);
                                 rgcXfer[i] = l;
                             }
                         }
@@ -843,7 +841,8 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                                     } else {
                                         id = (lpb[4] & 0xf) == 2 ? -32768 : 0;
                                         id |= rgxf[0].fl.id;
-                                        FSendPlrMsg(rgxf[0].fl.iPlayer, 221, id, id, -LOWORD(l) - LOWORD(cXfer), i, -LOWORD(cXfer), 0, 0, 0);
+                                        FSendPlrMsg(rgxf[0].fl.iPlayer, idmUnableTransferKtKtRequest, id, id, -LOWORD(l) - LOWORD(cXfer), i, -LOWORD(cXfer), 0,
+                                                    0, 0);
                                     }
                                 }
                             }
@@ -871,8 +870,8 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 FLookupThing(-1, &rgxf[1].th);
             }
             return 1;
-        case 24:
-        case 37:
+        case rtLogFleetSplit:
+        case rtLogFleetMerge:
             if (FLookupObject(grobjFleet, RawLoad16(lpb), &rgxf[0].fl) == 0) {
                 return 0;
             }
@@ -890,9 +889,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                     if (rglpfl[ifl] == 0)
                         break;
                     if (lpfl->iPlayer == idPlayer && lpfl->fDead == 0 && lpfl->pt.x == rgxf[0].fl.pt.x && lpfl->pt.y == rgxf[0].fl.pt.y) {
-                        t_b926 = vcflMerge;
-                        vcflMerge++;
-                        rgifl[t_b926] = lpfl->id;
+                        rgifl[vcflMerge++] = lpfl->id;
                         lpfl->fCompChg = 1;
                     }
                 }
@@ -903,9 +900,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                         if (rglpfl[ifl] == 0)
                             break;
                         if (lpfl->id == RawLoad16(lpb)) {
-                            t_b9dc = vcflMerge;
-                            vcflMerge++;
-                            rgifl[t_b9dc] = lpfl->id;
+                            rgifl[vcflMerge++] = lpfl->id;
                             lpfl->fCompChg = 1;
                             break;
                         }
@@ -917,7 +912,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 return 1;
             }
             return 0;
-        case 23:
+        case rtLogFleetCargoXfer:
             if (FLookupObject(grobjFleet, RawLoad16(lpb), &rgxf[0].fl) == 0) {
                 return 0;
             }
@@ -970,7 +965,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 }
             }
             return 1;
-        case 3:
+        case rtLogFleetOrderDelete:
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl != 0 && lpfl->cord > 0) {
                 iLook = RawLoad16((uint8_t *)lpb + 0x2) & 0x7fff;
@@ -986,7 +981,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 }
             }
             return 0;
-        case 4:
+        case rtLogFleetOrderInsert:
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl == 0 || (int16_t)RawLoad16((uint8_t *)lpb + 0x2) < 0 || (int16_t)RawLoad16((uint8_t *)lpb + 0x2) > lpfl->cord) {
                 return 0;
@@ -1004,7 +999,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             lpfl->cord++;
             lpfl->lpplord->iordMac++;
             return 1;
-        case 5:
+        case rtLogFleetOrderUpdate:
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl != 0 && lpfl->cord >= 0) {
                 iLook = RawLoad16((uint8_t *)lpb + 0x2);
@@ -1018,7 +1013,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 }
             }
             return 0;
-        case 30:
+        case rtBtlPlan:
             i = RawLoad16(lpb) >> 4 & 0xf;
             if ((RawLoad16(lpb) & 0xf) != idPlayer || i < 0 || i > rgcbtlplan[idPlayer]) {
                 if ((RawLoad16(lpb) >> 0xe & 1) != 0) {
@@ -1039,14 +1034,14 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             }
             UnpackBattlePlan(lpb, rglpbtlplan[idPlayer] + i, i);
             return 1;
-        case 42:
+        case rtLogFleetPlan:
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl == 0)
                 break;
             lpfl->iplan = LOBYTE(RawLoad16((uint8_t *)lpb + 0x2));
             return 1;
-        case 10:
-        case 11:
+        case rtLogFleetFlagBit9:
+        case rtLogFleetOrderAttrNib:
             lpfl = LpflFromId(RawLoad16(lpb));
             if (lpfl == 0)
                 break;
@@ -1058,7 +1053,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
                 break;
             lpfl->lpplord->rgord[RawLoad16((uint8_t *)lpb + 0x2)].grTask = RawLoad16((uint8_t *)lpb + 0x4);
             return 1;
-        case 35:
+        case rtLogPlanetRouting:
             lppl = LpplFromId(RawLoad16(lpb));
             if (lppl == 0 || lppl->iPlayer != idPlayer)
                 break;
@@ -1067,13 +1062,13 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             lppl->iWarpFling = LOWORD((uint32_t)(RawLoad32((uint8_t *)lpb + 0x2) >> 0xb)) & 0xf;
             lppl->idRoute = LOWORD((uint32_t)(RawLoad32((uint8_t *)lpb + 0x2) >> 0xf)) & 0x3ff;
             return 1;
-        case 36:
+        case rtChgPassword:
             if (gd.fGeneratingTurn == 0) {
                 return 1;
             }
             rgplr[idPlayer].lSalt = RawLoad32(lpb);
             return 1;
-        case 34:
+        case rtLogResearch:
             ch = *lpb;
             if (ch < 0 || ch > 100)
                 break;
@@ -1082,31 +1077,31 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
             if ((ch & 0xf) >= 6 || (ch >> 4 & 0xf) > 7)
                 break;
             rgplr[idPlayer].iTechCur = ch;
-        case 0:
-        case 6:
-        case 7:
-        case 8:
+        case rtEOF:
+        case rtPlr:
+        case rtGame:
+        case rtBOF:
         case 9:
-        case 12:
-        case 13:
-        case 14:
+        case rtMsg:
+        case rtPlanet:
+        case rtPlanetB:
         case 15:
-        case 16:
-        case 17:
+        case rtFleetA:
+        case rtFleetB:
         case 18:
-        case 19:
-        case 20:
-        case 21:
-        case 22:
-        case 26:
-        case 28:
-        case 31:
-        case 32:
-        case 33:
-        case 39:
-        case 40:
-        case 41:
-        case 45:
+        case rtOrderA:
+        case rtOrderB:
+        case rtString:
+        case rtSel:
+        case rtShDef:
+        case rtProdQ:
+        case rtBtlData:
+        case rtHistHdr:
+        case rtMsgFilt:
+        case rtContinue:
+        case rtPlrMsg:
+        case rtAiData:
+        case rtScore:
             return 1;
         }
         return 0;
@@ -1297,7 +1292,7 @@ int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer) {
     if (iPlayer == idPlayer && rgplr[iPlayer].fAi == 0 && hdrPrev.rt != rtLogPlayerZpq1) {
         cb = 26 - (12 - vrgZipProd[0].cpq) * 2;
         if (memcmp(&rgplr[iPlayer].zpq1, (uint8_t *)(ZIPPRODQ *)vrgZipProd + 14, cb) != 0) {
-            WriteMemRt(46, cb, (uint8_t *)(ZIPPRODQ *)vrgZipProd + 14);
+            WriteMemRt(rtLogPlayerZpq1, cb, (uint8_t *)(ZIPPRODQ *)vrgZipProd + 14);
         }
     }
     strcpy(szBase, pszFileBase);
@@ -1384,7 +1379,7 @@ int16_t FWriteTutorialMFile(int16_t iTurn) {
             }
             cch = CchGetString(idsTutorial, szT);
             strcpy(&szT[cch], iTurn == 37 ? ".hst" : ".m1");
-            StreamOpen(szT, 4114);
+            StreamOpen(szT, mdCreate);
             do {
                 RgToStream(vlpMemStream, (RawLoad16(vlpMemStream) & 0x3ff) + 2);
                 vlpMemStream += 2 + (RawLoad16(vlpMemStream) & 0x3ff);
@@ -1429,7 +1424,7 @@ int16_t FWriteHistFile(int16_t iPlayer) {
     i = 0;
     lppl = lpPlanets;
     while (i < cPlanet) {
-        WritePlanet(lppl, lppl->det < detSome ? 0xf : rtPlanetB, 1);
+        WritePlanet(lppl, lppl->det < detSome ? 15 : rtPlanetB, 1);
         i++;
         lppl++;
     }

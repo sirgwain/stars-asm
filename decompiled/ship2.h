@@ -18,7 +18,7 @@ int16_t          FScout(FLEET *lpfl);
 void             AutoFleetOrder(FLEET *lpfl, PLANET *lppl);
 int32_t          CMineFromLpfl(FLEET *lpfl);
 int32_t          PctTerraFromLpfl(FLEET *lpfl);
-int32_t          CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef);
+int32_t          CLayMinesFromLpfl(FLEET *lpfl, MineFieldType iType, int16_t ishdef);
 int32_t          CMineSweepFromLpfl(FLEET *lpfl);
 int32_t          CMineSweepFromLphul(HUL *lphul);
 int16_t          PctCloakFromLpfl(FLEET *lpfl);

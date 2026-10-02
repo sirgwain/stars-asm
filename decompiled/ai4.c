@@ -70,6 +70,7 @@ void DoCyberAiTurn(PROD *rgprod) {
     int16_t        cFr;
     int16_t        iSBDef;
     PLANET        *lpplEnemy;
+    uint8_t        rgbOrdFrame[150];
 
     dOffsetPlanTemp = game.cPlanMax * 2 + 2;
     cSBDefenderFleets = 0;
@@ -140,9 +141,9 @@ void DoCyberAiTurn(PROD *rgprod) {
             for (j = i * 4 + 9; j >= i * 4 + 6; j--) {
                 if (rgshdef[j].fFree == 0) {
                     if (rgshdef[j].cExist == 0 && (fScrap != 0 || j != i * 4 + 6)) {
-                        shdef = rgshdef[j];
-                        shdef.fFree = 1;
-                        FChangeAiShdef(&shdef, j);
+                        *(SHDEF *)rgbOrdFrame = rgshdef[j];
+                        (*(SHDEF *)rgbOrdFrame).fFree = 1;
+                        FChangeAiShdef((SHDEF *)rgbOrdFrame, j);
                     } else {
                         rgRecycleShdef[j] = 1;
                         fScrap = 0;
@@ -157,16 +158,16 @@ void DoCyberAiTurn(PROD *rgprod) {
     cExistColony = rgshdef[1].cExist;
     if (game.turn > 80) {
         SplitOutShdefs(rgRecycleShdef);
-        memset(rgRecycleSBShdef, 0, 16);
-        rgRecycleSBShdef[0] = 2;
-        SplitOutShdefs(rgRecycleSBShdef);
-        memset(rgRecycleSBShdef, 0, 16);
-        rgRecycleSBShdef[1] = 2;
-        SplitOutShdefs(rgRecycleSBShdef);
-        memset(rgRecycleSBShdef, 0, 16);
-        rgRecycleSBShdef[3] = 2;
-        rgRecycleSBShdef[2] = 2;
-        SplitOutShdefs(rgRecycleSBShdef);
+        memset(&rgbOrdFrame[134], 0, 16);
+        rgbOrdFrame[134] = 2;
+        SplitOutShdefs(&rgbOrdFrame[134]);
+        memset(&rgbOrdFrame[134], 0, 16);
+        rgbOrdFrame[135] = 2;
+        SplitOutShdefs(&rgbOrdFrame[134]);
+        memset(&rgbOrdFrame[134], 0, 16);
+        rgbOrdFrame[137] = 2;
+        rgbOrdFrame[136] = 2;
+        SplitOutShdefs(&rgbOrdFrame[134]);
     }
     lpciPlanTemp = (CYBERINFOTEMP *)(vlpbAiData + dOffsetPlanTemp);
     fmemset(lpciPlanTemp, 0, game.cPlanMax * sizeof(CYBERINFOTEMP));
@@ -261,7 +262,7 @@ void DoCyberAiTurn(PROD *rgprod) {
             }
         }
     }
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     for (ifl = 0; ifl < cFleet; ifl++) {
         lpfl = rglpfl[ifl];
         if (rglpfl[ifl] == 0)
@@ -333,7 +334,7 @@ void DoCyberAiTurn(PROD *rgprod) {
                             if (lpfl->idPlanet != -1) {
                                 FLookupPlanet(lpfl->idPlanet, &sel.pl);
                                 if (sel.pl.iPlayer == idPlayer) {
-                                    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 250);
+                                    XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, Colonists, 250);
                                     FLookupFleet(lpfl->id, &sel.fl);
                                 }
                             }
@@ -361,13 +362,13 @@ void DoCyberAiTurn(PROD *rgprod) {
                                     idPlanDst = IdRandomPlanetNearby(lpfl->pt, 105, 1);
                                     if (idPlanDst != -1 && idPlanDst != lpfl->idPlanet) {
                                         ClearAiCurrentTask(lpfl, 1);
-                                        ord.id = idPlanDst;
-                                        ord.grobj = grobjPlanet;
-                                        ord.pt = rgptPlan[idPlanDst];
-                                        ord.grTask = grTaskLayMines;
-                                        ord.fValidTask = 1;
-                                        ord.iWarp = 4;
-                                        FMoveAiFleet(lpfl, &ord, 0);
+                                        (*(ORDER *)&rgbOrdFrame[132]).id = idPlanDst;
+                                        (*(ORDER *)&rgbOrdFrame[132]).grobj = grobjPlanet;
+                                        (*(ORDER *)&rgbOrdFrame[132]).pt = rgptPlan[idPlanDst];
+                                        (*(ORDER *)&rgbOrdFrame[132]).grTask = grTaskLayMines;
+                                        (*(ORDER *)&rgbOrdFrame[132]).fValidTask = 1;
+                                        (*(ORDER *)&rgbOrdFrame[132]).iWarp = 4;
+                                        FMoveAiFleet(lpfl, (ORDER *)&rgbOrdFrame[132], 0);
                                         continue;
                                     }
                                 }
@@ -385,7 +386,7 @@ void DoCyberAiTurn(PROD *rgprod) {
             }
         }
     }
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     for (ipl = 0; ipl < vclpplAi; ipl++) {
         lppl = vrglpplAi[ipl];
         if (vrglpplAi[ipl] == 0)
@@ -406,11 +407,11 @@ void DoCyberAiTurn(PROD *rgprod) {
         pctValueIdeal = PctPlanetOptValue(lppl, idPlayer);
         if (pctValue < 10) {
             i = LOWORD((int32_t)((rgResAvail[3] - rgResCost[3]) / 70)) + 1;
-            AddItemToQueue(12, i, grobjPlanet, 1);
+            AddItemToQueue(mdIdleTerraform, i, grobjPlanet, addItemEnd);
             fWrite = 1;
         } else {
             if (pctValue < pctValueIdeal && rgResAvail[3] - rgResCost[3] > 70) {
-                AddItemToQueue(12, 1, grobjPlanet, 1);
+                AddItemToQueue(mdIdleTerraform, 1, grobjPlanet, addItemEnd);
                 fWrite = 1;
             }
             if (lppl->fStarbase != 0) {
@@ -418,18 +419,18 @@ void DoCyberAiTurn(PROD *rgprod) {
                 default:
                     if ((lpciPlan->fBltColony == 0 || lNewPop > 5500) && lpciPlanTemp->fIdleColonizers == 0 && cExistColony < 40 &&
                         FShouldPlanetBuildColonizer(lppl) != 0) {
-                        AddItemToQueue(1, 1, grobjFleet, 1);
+                        AddItemToQueue(1, 1, grobjFleet, addItemEnd);
                         lpciPlan->fBltColony = 1;
                         fWrite = 1;
                         if (lNewPop > 15000 && game.turn < 100) {
-                            AddItemToQueue(1, 1, grobjFleet, 1);
+                            AddItemToQueue(1, 1, grobjFleet, addItemEnd);
                         }
                     } else {
                         lpciPlan->fBltColony = 0;
                     }
                     if (lppl->rgwtMin[3] > 2000 && rgshdef[2].fFree == 0 && cExistCargo < 50 && lpciPlanTemp->cIdleFreighters < 1 &&
                         LpplFindClosestEnum(lppl, FEnumDropOffStage2) != 0) {
-                        AddItemToQueue(iLatestCargo, 1, grobjFleet, 1);
+                        AddItemToQueue(iLatestCargo, 1, grobjFleet, addItemEnd);
                         fWrite = 1;
                     }
                     if (rgshdef[0].hul.ihuldef == ihuldefFrigate && Random(4) == 0 && cMineLayers < 10000) {
@@ -445,7 +446,7 @@ void DoCyberAiTurn(PROD *rgprod) {
                             }
                         }
                         if ((cFr < 10 || (cFr < 17 && Random(10) == 0)) && Random(cFr * 2 + 1) == 0) {
-                            AddItemToQueue(0, 4, grobjFleet, 1);
+                            AddItemToQueue(0, 4, grobjFleet, addItemEnd);
                             fWrite = 1;
                         }
                     }
@@ -486,11 +487,11 @@ void DoCyberAiTurn(PROD *rgprod) {
     LFinishProduction:
         FinishProduction(fWrite);
     }
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     HandleBasicAiTasks(iroCur, rgprod, IshdefAiSBLatest(), rgResAvail, rgResCost);
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     DoCyberPackets();
-    UpdateProgressGauge(-926);
+    UpdateProgressGauge(progressStep4);
     FillProductionQueue();
     return;
 }
@@ -527,7 +528,6 @@ void DoCyberPackets() {
     int32_t        lMinNeeded;
     double         dDistanceTgt;
     int16_t        iMin;
-    int32_t        t_merge_20f9_0001;
 
     dOffsetPlanTemp = game.cPlanMax * 2 + 2;
     for (ipl = 0; ipl < vclpplAi; ipl++) {
@@ -572,21 +572,21 @@ void DoCyberPackets() {
                             }
                             if (lpplDst->rgwtMin[0] < iMinLimit && lppl->rgwtMin[0] > 700) {
                                 iPacketAdd = iPacketMax >= 7 ? 7 : iPacketMax;
-                                AddItemToQueue(14, iPacketAdd, grobjPlanet, 0);
+                                AddItemToQueue(iobjPacketIron, iPacketAdd, grobjPlanet, addItemFront);
                                 iPacketMax -= iPacketAdd;
                                 lpciPlanT->fNeedsMin1 = 0;
                                 fWrite = 1;
                             }
                             if (lpplDst->rgwtMin[1] < iMinLimit && lppl->rgwtMin[1] > 700) {
                                 iPacketAdd = iPacketMax >= 7 ? 7 : iPacketMax;
-                                AddItemToQueue(15, iPacketAdd, grobjPlanet, 0);
+                                AddItemToQueue(iobjPacketBor, iPacketAdd, grobjPlanet, addItemFront);
                                 iPacketMax -= iPacketAdd;
                                 lpciPlanT->fNeedsMin2 = 0;
                                 fWrite = 1;
                             }
                             if (lpplDst->rgwtMin[2] < iMinLimit && lppl->rgwtMin[2] > 700) {
                                 iPacketAdd = iPacketMax >= 7 ? 7 : iPacketMax;
-                                AddItemToQueue(16, iPacketAdd, grobjPlanet, 0);
+                                AddItemToQueue(iobjPacketGerm, iPacketAdd, grobjPlanet, addItemFront);
                                 iPacketMax -= iPacketAdd;
                                 lpciPlanT->fNeedsMin3 = 0;
                                 fWrite = 1;
@@ -621,8 +621,7 @@ void DoCyberPackets() {
                 lMineral = rgResAvail[0] - 70 + (rgResAvail[1] - 70) + (rgResAvail[2] - 70);
                 cResLeft = LOWORD((int32_t)(rgResAvail[3] / 2));
                 lPackets = (int16_t)((int16_t)(cResLeft - 5) / 5);
-                t_merge_20f9_0001 = lMineral < (int32_t)(uint32_t)(lPackets * 70) ? lMineral : (uint32_t)(lPackets * 70);
-                *plMinMax = t_merge_20f9_0001;
+                *plMinMax = lMineral < (int32_t)(uint32_t)(lPackets * 70) ? lMineral : (uint32_t)(lPackets * 70);
                 if (lMineral > 150) {
                     lpplDst = LpplFindClosestEnum(lppl, FEnumPktAttack);
                 } else {
@@ -668,13 +667,13 @@ void DoCyberPackets() {
                         rgResAvail[iMin] -= 70;
                     }
                     if (cPacket[0] > 0) {
-                        AddItemToQueue(14, cPacket[0], grobjPlanet, 0);
+                        AddItemToQueue(iobjPacketIron, cPacket[0], grobjPlanet, addItemFront);
                     }
                     if (cPacket[1] > 0) {
-                        AddItemToQueue(15, cPacket[1], grobjPlanet, 0);
+                        AddItemToQueue(iobjPacketBor, cPacket[1], grobjPlanet, addItemFront);
                     }
                     if (cPacket[2] > 0) {
-                        AddItemToQueue(16, cPacket[2], grobjPlanet, 0);
+                        AddItemToQueue(iobjPacketGerm, cPacket[2], grobjPlanet, addItemFront);
                     }
                     sel.pl.iWarpFling = iWarp - 4;
                     sel.pl.idFling = lpplDst->id + 1;
@@ -726,7 +725,7 @@ void DoCyberPackets() {
     return;
 }
 
-int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
+int16_t IdGetBestScannerDest(PLANET *lppl, CompassDir iDir) {
     int16_t iDistance;
     int16_t iWarp;
     PLANET *lpplDst;
@@ -741,14 +740,14 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
     iDistance = iWarp * iWarp;
     ptEdge.x -= 1000;
     ptEdge.y -= 1000;
-    if ((uint16_t)iDir > 7) {
+    if (iDir > dirSouthEast) {
         return -1;
     }
     switch (iDir) {
-    case 0:
+    case dirEast:
         ptEdge.x = iSize;
         break;
-    case 1:
+    case dirNorthEast:
         if (iSize - ptEdge.x > ptEdge.y) {
             ptEdge.x += ptEdge.y;
             ptEdge.y = 0;
@@ -757,10 +756,10 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
         ptEdge.y -= iSize - ptEdge.x;
         ptEdge.x = iSize;
         break;
-    case 2:
+    case dirNorth:
         ptEdge.y = 0;
         break;
-    case 3:
+    case dirNorthWest:
         if (ptEdge.x > ptEdge.y) {
             ptEdge.x -= ptEdge.y;
             ptEdge.y = 0;
@@ -769,10 +768,10 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
         ptEdge.y -= ptEdge.x;
         ptEdge.x = 0;
         break;
-    case 4:
+    case dirWest:
         ptEdge.x = 0;
         break;
-    case 5:
+    case dirSouthWest:
         if (iSize - ptEdge.x > ptEdge.y) {
             ptEdge.y += ptEdge.x;
             ptEdge.x = 0;
@@ -781,10 +780,10 @@ int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir) {
         ptEdge.x -= iSize - ptEdge.y;
         ptEdge.y = iSize;
         break;
-    case 6:
+    case dirSouth:
         ptEdge.y = iSize;
         break;
-    case 7:
+    case dirSouthEast:
         if (ptEdge.x > ptEdge.y) {
             ptEdge.y += iSize - ptEdge.x;
             ptEdge.x = iSize;
@@ -865,7 +864,7 @@ int16_t FAddPacketToQueue(PLANET *lppl) {
         iMineral = 2;
     }
     if (rgResAvail[iMineral] - rgResCost[iMineral] >= 170) {
-        AddItemToQueue(iMineral + 14, 1, grobjPlanet, 0);
+        AddItemToQueue(iMineral + 14, 1, grobjPlanet, addItemFront);
         return 1;
     }
     return 0;
@@ -972,13 +971,13 @@ int16_t FFillProdMinesAndFactories(PLANET *lppl) {
             }
         }
     }
-    if (iMaxTerra > 0 && rgplr[idPlayer].idAi == 5) {
+    if (iMaxTerra > 0 && rgplr[idPlayer].idAi == idAiMacinti) {
         cAdd = LOWORD((int32_t)((rgResLeft[3] + 69) / 70));
         if (cAdd > iMaxTerra) {
             cAdd = iMaxTerra;
         }
         if (cAdd > 0) {
-            AddItemToQueue(12, cAdd, grobjPlanet, 0);
+            AddItemToQueue(mdIdleTerraform, cAdd, grobjPlanet, addItemFront);
             return 1;
         }
     }
@@ -1045,13 +1044,13 @@ int16_t FFillProdMinesAndFactories(PLANET *lppl) {
     }
     rgResLeft[3] -= (uint32_t)(iAddAlchemy * rgAlchCost[3]);
     if (iAddFactories > 0) {
-        AddItemToQueue(7, iAddFactories, grobjPlanet, 1);
+        AddItemToQueue(mdIdleFactory, iAddFactories, grobjPlanet, addItemEnd);
     }
     if (iAddMines > 0) {
-        AddItemToQueue(8, iAddMines, grobjPlanet, 0);
+        AddItemToQueue(mdIdleMine, iAddMines, grobjPlanet, addItemFront);
     }
     if (iAddAlchemy > 0 && game.turn > 100) {
-        AddItemToQueue(11, iAddAlchemy, grobjPlanet, fInsert == 0 ? 1 : 0);
+        AddItemToQueue(mdIdleAlchemy, iAddAlchemy, grobjPlanet, fInsert == 0 ? addItemEnd : addItemFront);
     }
     if (iAddMines + iAddFactories + iAddAlchemy > 0) {
         return 1;
@@ -1078,11 +1077,11 @@ void DoCyberFreighter(FLEET *lpfl, CYBERINFOTEMP *lpciPlanTemp) {
     } else {
         if (lpplCur->iPlayer == idPlayer) {
             if (lpplCur->rgwtMin[3] > 2000) {
-                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, 1000);
+                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, Colonists, 1000);
                 FLookupFleet(lpfl->id, &sel.fl);
                 fDropOff = 1;
             } else {
-                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, -1000);
+                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, Colonists, -1000);
                 FLookupFleet(lpfl->id, &sel.fl);
             }
         } else if (lpplCur->iPlayer != -1 && GetRaceStat(&rgplr[lpplCur->iPlayer], rsMajorAdv) != raMacintosh && lpplCur->fStarbase == 0) {
@@ -1117,7 +1116,7 @@ void DoCyberFreighter(FLEET *lpfl, CYBERINFOTEMP *lpciPlanTemp) {
                     lpciPlanTemp[lpplDst->id].cFreightersDst = lpciPlanTemp[lpplDst->id].cFreightersDst + 1;
                 }
             } else if (lpplCur->iPlayer == idPlayer) {
-                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, 3, -1000);
+                XferAiSupply(grobjPlanet, lpfl->idPlanet, grobjFleet, lpfl->id, Colonists, -1000);
                 FLookupFleet(lpfl->id, &sel.fl);
                 if (lpciPlanTemp[lpplCur->id].cIdleFreighters < 3) {
                     lpciPlanTemp[lpplCur->id].cIdleFreighters = lpciPlanTemp[lpplCur->id].cIdleFreighters + 1;
@@ -1335,40 +1334,40 @@ void EnsureCyberAiShdefs(int16_t iroCur) {
         FChangeAiShdef(&shdef, 0);
     }
     if (rgshdef[0].fFree != 0) {
-        FCreateAiShdef(0, 5, &vrgCyberAip[vrgCyberIshAip[12]]);
+        FCreateAiShdef(0, ihuldefFrigate, &vrgCyberAip[vrgCyberIshAip[12]]);
     }
-    if (rgshdef[4].fFree != 0 && game.turn > 30 && (game.turn > 75 || FCreateAiShdef(4, 6, &vrgCyberAip[vrgCyberIshAip[0]]) == 0)) {
-        for (i = 5; i > 0 && FCreateAiShdef(4, 6, &vrgCyberAip[vrgCyberIshAip[Random(i)]]) == 0; i--) {
+    if (rgshdef[4].fFree != 0 && game.turn > 30 && (game.turn > 75 || FCreateAiShdef(4, ihuldefDestroyer, &vrgCyberAip[vrgCyberIshAip[0]]) == 0)) {
+        for (i = 5; i > 0 && FCreateAiShdef(4, ihuldefDestroyer, &vrgCyberAip[vrgCyberIshAip[Random(i)]]) == 0; i--) {
         }
     }
     if (rgshdef[5].fFree != 0 && rgshdef[4].fFree == 0 && game.turn > (uint16_t)(rgshdef[4].turn + 20) &&
-        (game.turn > 75 || FCreateAiShdef(5, 6, &vrgCyberAip[vrgCyberIshAip[5]]) == 0)) {
-        for (i = 5; i > 0 && FCreateAiShdef(5, 6, &vrgCyberAip[vrgCyberIshAip[Random(i) + 5]]) == 0; i--) {
+        (game.turn > 75 || FCreateAiShdef(5, ihuldefDestroyer, &vrgCyberAip[vrgCyberIshAip[5]]) == 0)) {
+        for (i = 5; i > 0 && FCreateAiShdef(5, ihuldefDestroyer, &vrgCyberAip[vrgCyberIshAip[Random(i) + 5]]) == 0; i--) {
         }
     }
     if (rgshdef[2].fFree != 0 && game.turn > 20) {
-        FCreateAiShdef(2, 11, &vrgCyberAip[vrgCyberIshAip[10]]);
+        FCreateAiShdef(2, ihuldefPrivateer, &vrgCyberAip[vrgCyberIshAip[10]]);
     }
     if (rgshdef[3].fFree != 0 && rgshdef[2].fFree == 0 && game.turn > (uint16_t)(rgshdef[2].turn + 20)) {
-        FCreateAiShdef(3, 11, &vrgCyberAip[vrgCyberIshAip[11]]);
+        FCreateAiShdef(3, ihuldefPrivateer, &vrgCyberAip[vrgCyberIshAip[11]]);
     }
     for (ish = 6; ish <= 10; ish += 4) {
         if (rgshdef[ish].fFree != 0 && ((ish == 6 && game.turn > 40) || (rgshdef[6].fFree == 0 && game.turn > (uint16_t)(rgshdef[6].turn + 30)))) {
             ishCur = ish + 2;
             for (i = 3; i > 0; i--) {
-                if (FCreateAiShdef(ishCur, 29, &vrgCyberAip[vrgCyberIshAip[Random(i) + 33]]) != 0) {
+                if (FCreateAiShdef(ishCur, ihuldefNubian, &vrgCyberAip[vrgCyberIshAip[Random(i) + 33]]) != 0) {
                     ishCur--;
                     break;
                 }
             }
             for (i = 4; i > 0; i--) {
-                if (FCreateAiShdef(ishCur, 9, &vrgCyberAip[vrgCyberIshAip[Random(i) + 29]]) != 0) {
+                if (FCreateAiShdef(ishCur, ihuldefBattleship, &vrgCyberAip[vrgCyberIshAip[Random(i) + 29]]) != 0) {
                     ishCur--;
                     break;
                 }
             }
             for (i = 3; i > 0; i--) {
-                if (FCreateAiShdef(ishCur, 9, &vrgCyberAip[vrgCyberIshAip[Random(i) + 26]]) != 0) {
+                if (FCreateAiShdef(ishCur, ihuldefBattleship, &vrgCyberAip[vrgCyberIshAip[Random(i) + 26]]) != 0) {
                     ishCur--;
                     break;
                 }
@@ -1377,7 +1376,7 @@ void EnsureCyberAiShdefs(int16_t iroCur) {
                 high = 9 - (ishCur - ish) * 3;
                 low = 26 - (9 - (ishCur - ish) * 3);
                 while (1) {
-                    for (i = high; i > 0 && FCreateAiShdef(ishCur, 7, &vrgCyberAip[vrgCyberIshAip[Random(i) + low]]) == 0; i--) {
+                    for (i = high; i > 0 && FCreateAiShdef(ishCur, ihuldefCruiser, &vrgCyberAip[vrgCyberIshAip[Random(i) + low]]) == 0; i--) {
                     }
                     ishCur--;
                     if (ishCur < ish)
@@ -1386,22 +1385,23 @@ void EnsureCyberAiShdefs(int16_t iroCur) {
                     low = ishCur == ish ? 17 : 20;
                 }
             }
-            if (FCreateAiShdef(ish + 3, 29, &vrgCyberAip[vrgCyberIshAip[16]]) == 0 && FCreateAiShdef(ish + 3, 9, &vrgCyberAip[vrgCyberIshAip[15]]) == 0 &&
-                FCreateAiShdef(ish + 3, 19, &vrgCyberAip[vrgCyberIshAip[14]]) == 0) {
-                FCreateAiShdef(ish + 3, 19, &vrgCyberAip[vrgCyberIshAip[13]]);
+            if (FCreateAiShdef(ish + 3, ihuldefNubian, &vrgCyberAip[vrgCyberIshAip[16]]) == 0 &&
+                FCreateAiShdef(ish + 3, ihuldefBattleship, &vrgCyberAip[vrgCyberIshAip[15]]) == 0 &&
+                FCreateAiShdef(ish + 3, ihuldefB52Bomber, &vrgCyberAip[vrgCyberIshAip[14]]) == 0) {
+                FCreateAiShdef(ish + 3, ihuldefB52Bomber, &vrgCyberAip[vrgCyberIshAip[13]]);
             }
         }
     }
     for (ish = 14; ish <= 15; ish++) {
         if (rgshdef[ish].fFree != 0 && ((ish == 14 && game.turn > 30) || (rgshdef[14].fFree == 0 && game.turn > (uint16_t)(rgshdef[14].turn + 20)))) {
-            for (i = 7; i > 0 && FCreateAiShdef(ish, 9, &vrgCyberAip[vrgCyberIshAip[Random(i) + 26]]) == 0; i--) {
+            for (i = 7; i > 0 && FCreateAiShdef(ish, ihuldefBattleship, &vrgCyberAip[vrgCyberIshAip[Random(i) + 26]]) == 0; i--) {
             }
             if (i == 0) {
-                for (i = 9; i > 0 && FCreateAiShdef(ish, 7, &vrgCyberAip[vrgCyberIshAip[Random(i) + 17]]) == 0; i--) {
+                for (i = 9; i > 0 && FCreateAiShdef(ish, ihuldefCruiser, &vrgCyberAip[vrgCyberIshAip[Random(i) + 17]]) == 0; i--) {
                 }
             }
             if (i == 0) {
-                for (i = 10; i > 0 && FCreateAiShdef(ish, 6, &vrgCyberAip[vrgCyberIshAip[Random(i)]]) == 0; i--) {
+                for (i = 10; i > 0 && FCreateAiShdef(ish, ihuldefDestroyer, &vrgCyberAip[vrgCyberIshAip[Random(i)]]) == 0; i--) {
                 }
             }
         }
@@ -1442,25 +1442,25 @@ int16_t iAddAttackFleet(PLANET *lppl, int16_t iAttackStr, int16_t iBestDestroyer
     }
     if (iBestBattle != -1 && iRand > 50) {
         if (rgshdef[iBestBattle * 4 + 6].fFree == 0) {
-            AddItemToQueue(iBestBattle * 4 + 6, 2, grobjFleet, 1);
+            AddItemToQueue(iBestBattle * 4 + 6, 2, grobjFleet, addItemEnd);
         }
         if (rgshdef[iBestBattle * 4 + 7].fFree == 0) {
-            AddItemToQueue(iBestBattle * 4 + 7, 2, grobjFleet, 1);
+            AddItemToQueue(iBestBattle * 4 + 7, 2, grobjFleet, addItemEnd);
         }
         if (rgshdef[iBestBattle * 4 + 8].fFree == 0 && Random(100) < 75) {
-            AddItemToQueue(iBestBattle * 4 + 8, 1, grobjFleet, 1);
+            AddItemToQueue(iBestBattle * 4 + 8, 1, grobjFleet, addItemEnd);
         }
         if (rgshdef[iBestBattle * 4 + 9].fFree == 0 && Random(100) < 50) {
-            AddItemToQueue(iBestBattle * 4 + 9, 1, grobjFleet, 1);
+            AddItemToQueue(iBestBattle * 4 + 9, 1, grobjFleet, addItemEnd);
         }
         return 1;
     }
     if (iBestSBDefender != -1 && iRand > 25) {
-        AddItemToQueue(iBestSBDefender, 1, grobjFleet, 1);
+        AddItemToQueue(iBestSBDefender, 1, grobjFleet, addItemEnd);
         return 2;
     }
     if (iBestDestroyer != -1) {
-        AddItemToQueue(iBestDestroyer, 1, grobjFleet, 1);
+        AddItemToQueue(iBestDestroyer, 1, grobjFleet, addItemEnd);
         return 3;
     }
     return 0;

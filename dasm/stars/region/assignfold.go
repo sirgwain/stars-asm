@@ -106,7 +106,7 @@ func foldIf(n *If, locals map[string]typeinfo.Type) (*ir.Assign, bool) {
 	if isZero(then.Src) && isOne(els.Src) && boolValued(n.Cond) {
 		return &ir.Assign{Dst: v, Src: Negate(n.Cond), Merge: true}, true
 	}
-	return &ir.Assign{Dst: v, Src: &ir.Cond{Cond: n.Cond, Then: then.Src, Else: els.Src}, Merge: true}, true
+	return &ir.Assign{Dst: v, Src: &ir.Cond{Cond: n.Cond, Then: then.Src, Else: els.Src}, Merge: true, Fits: then.Fits && els.Fits}, true
 }
 
 // condArms counts the values a chain of conditional expressions chooses
@@ -187,7 +187,9 @@ func constValue(e ir.Expr) (int64, bool) {
 // forwardFoldedTemps moves each merge temp assigned by a statement in nodes
 // into its single use in body, in the statement or test right after it,
 // when its value is a constant or a 0-or-1 test that fits the temp's type,
-// so the temp's conversion changes nothing, and every call in the use takes
+// or a value without side effects each of whose arms has the temp's C type
+// and fits it, as lowering recorded, so the temp's conversion changes nothing,
+// and every call in the use takes
 // the temp as an argument, so nothing the use runs comes before the value.
 // body is the whole function, where the temp's references are counted.
 func forwardFoldedTemps(nodes, body []Node, locals map[string]typeinfo.Type) {
@@ -213,7 +215,7 @@ func forwardFoldedTemps(nodes, body []Node, locals map[string]typeinfo.Type) {
 				continue
 			}
 			t, ok := def.Dst.(*ir.Var)
-			if !ok || !strings.HasPrefix(t.Name, "t_merge_") || !fitsInt(def.Src, locals[t.Name]) {
+			if !ok || !strings.HasPrefix(t.Name, "t_merge_") || !(fitsInt(def.Src, locals[t.Name]) || def.Fits && !hasSideEffects(def.Src)) {
 				continue
 			}
 			var use *ir.Expr

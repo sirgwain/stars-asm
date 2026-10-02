@@ -1,0 +1,845 @@
+/*
+MessageWndProc  (msg)
+  addr: 0007:5c92  len=5510
+  sig:  LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+  params:
+    HWND             hwnd           [BP+0xe]
+    UINT             message        [BP+0xc]
+    WPARAM           wParam         [BP+0xa]
+    LPARAM           lParam         [BP+0x6]
+  locals:
+    PAINTSTRUCT      ps             [BP-0x28]
+    char *           psz            [BP-0x8]
+    int16_t          i              [BP-0x6]
+    HDC              hdc            [BP-0x4]
+    block 0007:5EF1  len=0x165
+      RECT             rc             [BP-0x34]
+      int16_t          dx             [BP-0x2c]
+      int16_t          dy             [BP-0x2a]
+    block 0007:6059  len=0x2B
+      RECT             rc             [BP-0x30]
+    block 0007:6084  len=0x4B
+      HCURSOR          hcs            [BP-0x2e]
+      POINT16          pt             [BP-0x2c]
+    block 0007:60CF  len=0x30E
+      HtMsgType        ht             [BP-0x2e]
+      POINT16          pt             [BP-0x2c]
+      block 0007:6109  len=0xB7
+        MessageId        idm            [BP-0x32]
+        int16_t          fSet           [BP-0x30]
+      block 0007:62C6  len=0xAB
+        MSGPLR *         lpmpSrc        [BP-0x36]
+        MSGPLR *         lpmp           [BP-0x32]
+    block 0007:643A  len=0x63C
+      RECT             rc             [BP-0x72]
+      char[32]         szT            [BP-0x6a]
+      int16_t          iMode          [BP-0x4a]
+      int16_t          cch            [BP-0x48]
+      int16_t          dx             [BP-0x46]
+      RECT             rcActual       [BP-0x44]
+      int16_t          idm            [BP-0x3c]
+      COLORREF         crBack         [BP-0x3a]
+      int16_t          dy             [BP-0x36]
+      int16_t          dxMax          [BP-0x34]
+      COLORREF         crFore         [BP-0x32]
+      HBRUSH           hbrSav         [BP-0x2e]
+      char *           lpsz           [BP-0x2c]
+      block 0007:65EC  len=0x1A7
+        MSGPLR *         lpmsgplr       [BP-0x76]
+    block 0007:6AFF  len=0x4E
+      int16_t          i              [BP-0x2a]
+    block 0007:6DB8  len=0xB6
+      int16_t          idm            [BP-0x2a]
+    block 0007:6EA6  len=0x5F
+      THING *          lpth           [BP-0x2c]
+      block 0007:6ECA  len=0x38
+        SCAN             scan           [BP-0x3c]
+    block 0007:6FEE  len=0xC2
+      int16_t          fRet           [BP-0x2e]
+      FARPROC          lpProc         [BP-0x2c]
+      block 0007:704C  len=0x64
+        int32_t          lSerial        [BP-0x32]
+    block 0007:70FD  len=0x15
+
+  stats: blocks=15  labels=8
+    SetupNewMsg: L_6c2a
+    Default: L_718a
+    CheckBox: L_6109
+    ZoomBox: L_61cc
+    NextMsg: L_6ca9
+    PrevMsg: L_6ba0
+    ToggleMsgMode: L_6298
+    GotoMsg: L_6d8d
+*/
+L_5c92:
+    goto L_71a4
+
+L_5ca1:
+    i = 0
+    goto L_5d3c
+
+L_5ca9:
+    hwndMessage = hwnd
+    rghwndMsgBtn[i] = CreateWindow("BUTTON", PszGetCompressedString((i + 1356)), WS_CHILD, 100, 100, (i == 3 ? 50 : 44), (((3 * dyArial8) sar 1) - 1), hwnd, NULL, hInst, NULL)
+    call SendMessage(rghwndMsgBtn[i], WM_SETFONT, (WPARAM)rghfontArial8[1], 0) -> callresult(LRESULT)
+    i = (i + 1)
+
+
+
+
+L_5d3c:
+    branch i < 4 ? L_5ca9 : L_5d45
+
+L_5d45:
+    hwndMsgDrop = CreateWindow("COMBOBOX", "MsgDD", CBS_DROPDOWNLIST|WS_CHILD|WS_VSCROLL, 100, 100, 200, 80, hwnd, NULL, hInst, NULL)
+    call SendMessage(hwndMsgDrop, WM_SETFONT, (WPARAM)rghfontArial8[1], 0) -> callresult(LRESULT)
+    hwndMsgEdit = CreateWindow("EDIT", NULL, ES_MULTILINE|ES_AUTOVSCROLL|WS_CHILD|WS_BORDER, 100, 100, 200, 50, hwnd, NULL, hInst, NULL)
+    call SendMessage(hwndMsgEdit, EM_LIMITTEXT, 0x3c8, 0) -> callresult(LRESULT)
+    call SendMessage(hwndMsgEdit, WM_SETFONT, (WPARAM)rghfontArial8[1], 0) -> callresult(LRESULT)
+    hwndMsgScroll = CreateWindow("EDIT", NULL, ES_MULTILINE|ES_AUTOVSCROLL|ES_READONLY|WS_CHILD|WS_BORDER|WS_VSCROLL, 100, 100, 200, 50, hwnd, NULL, hInst, NULL)
+    call SetMsgTitle(hwnd) -> callresult(void)
+    call SendMessage(hwndMsgDrop, CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEverybody)) -> callresult(LRESULT)
+    i = 0
+    goto L_5e8d
+
+L_5e89:
+    i = (i + 1)
+
+L_5e8d:
+    branch i >= game.cPlayer ? L_5ed5 : L_5e98
+
+L_5e98:
+    psz = PszPlayerName(i, 1, 1, 1, 0, NULL)
+    call SendMessage(hwndMsgDrop, CB_ADDSTRING, 0, (LPARAM)psz) -> callresult(LRESULT)
+    goto L_5e89
+
+L_5ed5:
+    call SendMessage(hwndMsgDrop, CB_SETCURSEL, 0, 0) -> callresult(LRESULT)
+    goto L_7207
+
+L_5ef1:
+    dx = LOWORD(lParam)
+    dy = hiword(lParam)
+    i = 0
+    goto L_5f62
+
+L_5f19:
+    call SetWindowPos(rghwndMsgBtn[i], NULL, (dx - 48), ((((((3 * dyArial8) sar 1) + 2) * i) + 3) + (dyArial8 * 2)), 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_SHOWWINDOW) -> callresult(int16_t)
+    i = (i + 1)
+
+L_5f62:
+    branch i < 3 ? L_5f19 : L_5f6b
+
+L_5f6b:
+    call SetRect(&rcMsgText, 4, ((dyArial8 * 2) + 3), (dx - 52), (dy - 4)) -> callresult(void)
+    call SetRect(&rcMsgTitle, 4, 4, (dx - 4), ((dyArial8 * 2) - 4)) -> callresult(void)
+    rc = rcMsgText
+    call ExpandRc(&rc, -4, -4) -> callresult(void)
+    call SetWindowPos(hwndMsgDrop, NULL, (rc.left + 30), rc.top, ((rc.right - rc.left) - 84), (rc.bottom - rc.top), SWP_NOZORDER) -> callresult(int16_t)
+    call SetWindowPos(rghwndMsgBtn[3], NULL, (rc.right - 50), rc.top, 0, 0, SWP_NOSIZE|SWP_NOZORDER) -> callresult(int16_t)
+    rc.top = (rc.top + (dyShipDD + 3))
+    call SetWindowPos(hwndMsgEdit, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER) -> callresult(int16_t)
+    goto L_718a
+
+L_6059:
+    call GetClientRect(hwnd, &rc) -> callresult(void)
+    call FillRect((HDC)wParam, &rc, hbrButtonFace) -> callresult(int16_t)
+    return 1
+
+L_6084:
+    hcs = 0
+    call GetCursorPos(&t_pt_6090) -> callresult(void)
+    pt = PointTo16(t_pt_6090)
+    t_pt_609f_1 = PointFrom16(pt)
+    call ScreenToClient(hwnd, &t_pt_609f_1) -> callresult(void)
+    pt = PointTo16(t_pt_609f_1)
+    branch HtMsgBox(pt) == htMsgNone ? L_718a : L_60ba
+
+L_60ba:
+    call SetCursor(hcurHand) -> callresult(HCURSOR)
+    return 1
+
+L_60cf:
+    pt.x = LOWORD(lParam)
+    pt.y = hiword(lParam)
+    ht = HtMsgBox(pt)
+    branch ht != htMsgCurrent ? L_61c3 : L_6109
+
+CheckBox:
+    branch iMsgCur < 0 ? L_7207 : L_6116
+
+L_6116:
+    idm = IdmGetMessageN(iMsgCur)
+    fSet = ((bitfMsgFiltered[(idm sar 3)] & (1 << (idm & 7))) == 0 ? 0 : 1)
+    call SetFilteringGroups(idm, (fSet == 0 ? 1 : 0)) -> callresult(void)
+    call DirtyGame(1) -> callresult(void)
+    branch gd.fTutorial == 0 ? L_61a0 : L_619b
+
+
+
+
+
+
+
+L_619b:
+    call AdvanceTutor() -> callresult(void)
+
+L_61a0:
+    call InvalidateRect(hwndMessage, NULL, 1) -> callresult(void)
+    call SetMsgTitle(hwnd) -> callresult(void)
+    goto L_7207
+
+L_61c3:
+    branch ht != htMsgZoom ? L_628f : L_61cc
+
+ZoomBox:
+    fViewFilteredMsg = (fViewFilteredMsg == 0 ? 1 : 0)
+    branch iMsgCur < 0 ? L_623f : L_61ec
+
+
+
+
+L_61ec:
+    t_scratch_m30 = (1 << (IdmGetMessageN(iMsgCur) & 7))
+    branch ((bitfMsgFiltered[(IdmGetMessageN(iMsgCur) sar 3)] & t_scratch_m30) == 0 ? 0 : 1) == fViewFilteredMsg ? L_626c : L_623f
+
+
+
+
+L_623f:
+    i = IMsgNext(fViewFilteredMsg)
+    branch i != -1 ? L_6266 : L_6257
+
+L_6257:
+    i = IMsgPrev(fViewFilteredMsg)
+
+L_6266:
+    iMsgCur = i
+
+L_626c:
+    call InvalidateRect(hwndMessage, NULL, 1) -> callresult(void)
+    call SetMsgTitle(hwnd) -> callresult(void)
+    goto L_7207
+
+L_628f:
+    branch ht != htMsgMode ? L_7207 : L_6298
+
+ToggleMsgMode:
+    branch gd.fSendMsgMode == 0 ? L_62ba : L_62ab
+
+L_62ab:
+    call FFinishPlrMsgEntry(0) -> callresult(int16_t)
+    goto L_637a
+
+L_62ba:
+    branch iMsgCur < cMsg ? L_6374 : L_62c6
+
+L_62c6:
+    lpmpSrc = vlpmsgplrIn
+    i = (iMsgCur - cMsg)
+
+L_62dd:
+    t_62dd = i
+    i = (i - 1)
+    branch t_62dd == 0 ? L_62ff : L_62ec
+
+L_62ec:
+    lpmpSrc = lpmpSrc->lpmsgplrNext
+    goto L_62dd
+
+L_62ff:
+    lpmp = vlpmsgplrOut
+    iMsgSendCur = 0
+    goto L_6352
+
+L_6315:
+    branch (lpmp->iPlrTo - 1) != lpmpSrc->iPlrFrom ? L_633d : L_632b
+
+L_632b:
+    branch lpmp->iInRe == iMsgCur ? L_6364 : L_633d
+
+L_633d:
+    lpmp = lpmp->lpmsgplrNext
+    iMsgSendCur = (iMsgSendCur + 1)
+
+L_6352:
+    branch lpmp != 0 ? L_6315 : L_6364
+
+
+L_6364:
+    viInRe = (lpmpSrc->iPlrFrom + 1)
+    goto L_637a
+
+L_6374:
+    viInRe = 0
+
+L_637a:
+    gd.fSendMsgMode = (gd.fSendMsgMode == 0 ? 1 : 0)
+    call InvalidateRect(hwndMessage, NULL, 1) -> callresult(void)
+    call SetMsgTitle(hwnd) -> callresult(void)
+    call SetFocus(hwndMsgEdit) -> callresult(HWND)
+
+
+
+
+L_63dd:
+    goto L_7207
+
+L_63e0:
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.x = ((dxWinFrame * 2) + 198)
+    ((MINMAXINFO *)lParam)->ptMinTrackSize.y = (((0xd * dyArial8) sar 1) + 0x16)
+    goto L_718a
+
+L_640f:
+    branch GET_WM_CTLCOLOR_HWND(wParam, lParam) != hwndMsgScroll ? L_718a : L_641e
+
+L_641e:
+    call SetBkColor((HDC)wParam, crButtonFace) -> callresult(COLORREF)
+    return (LRESULT)hbrButtonFace
+
+L_643a:
+    hdc = BeginPaint(hwnd, &ps)
+    call _Draw3dFrame(hdc, &rcMsgTitle, 0) -> callresult(void)
+    crFore = SetTextColor(hdc, crButtonText)
+    crBack = SetBkColor(hdc, crButtonFace)
+    cch = strlen(szMsgTitle)
+    dxMax = ((rcMsgTitle.right - rcMsgTitle.left) - 48)
+
+L_64a7:
+    branch cch <= 0 ? L_64d1 : L_64b0
+
+L_64b0:
+    branch (int16_t)loword(GetTextExtent(hdc, szMsgTitle, cch)) <= dxMax ? L_64d1 : L_64ca
+
+L_64ca:
+    cch = (cch - 1)
+    goto L_64a7
+
+L_64d1:
+    call RcCtrTextOut(hdc, &rcMsgTitle, szMsgTitle, cch) -> callresult(void)
+    call DecorateMsgTitleBar(hdc, &rcMsgTitle) -> callresult(void)
+    rc = rcMsgText
+    dx = (rc.right - rc.left)
+    dy = (rc.bottom - rc.top)
+    hbrSav = SelectObject(hdc, hbrButtonShadow)
+    call PatBlt(hdc, rc.left, rc.top, dx, 1, PATCOPY) -> callresult(int16_t)
+    call PatBlt(hdc, rc.left, rc.top, 1, dy, PATCOPY) -> callresult(int16_t)
+    call SelectObject(hdc, hbrButtonHilite) -> callresult(HGDIOBJ)
+    call PatBlt(hdc, rc.left, (rc.bottom - 1), dx, 1, PATCOPY) -> callresult(int16_t)
+    call PatBlt(hdc, (rc.right - 1), rc.top, 1, dy, PATCOPY) -> callresult(int16_t)
+    call SelectObject(hdc, hbrSav) -> callresult(HGDIOBJ)
+    call ExpandRc(&rc, -4, -4) -> callresult(void)
+    branch gd.fSendMsgMode != 0 ? L_69ee : L_65e0
+
+L_65e0:
+    branch iMsgCur < cMsg ? L_6796 : L_65ec
+
+L_65ec:
+    lpmsgplr = vlpmsgplrIn
+    i = cMsg
+    goto L_6616
+
+L_6602:
+    lpmsgplr = lpmsgplr->lpmsgplrNext
+    i = (i + 1)
+
+L_6616:
+    branch i < iMsgCur ? L_6602 : L_6621
+
+L_6621:
+    branch CchGetString(idsSCC, szT) >= 32 ? L_663f : L_6639
+
+L_6639:
+    goto L_6642
+
+L_663f:
+
+L_6642:
+    cch = _wsprintf(lpb2k, szT, PszPlayerName(lpmsgplr->iPlrFrom, 1, 1, 1, 0, NULL), 13, 10)
+    branch CchGetString(idsSCC2, szT) >= 32 ? L_66a9 : L_66a3
+
+L_66a3:
+    goto L_66ac
+
+L_66a9:
+
+L_66ac:
+    branch lpmsgplr->iPlrTo != 0 ? L_66d2 : L_66c1
+
+L_66c1:
+    t_merge_66fb_0001 = PszGetCompressedString(idsEverybody)
+    goto L_66fb
+
+L_66d2:
+    t_merge_66fb_0001 = PszPlayerName((lpmsgplr->iPlrTo - 1), 1, 1, 1, 0, NULL)
+
+L_66fb:
+    cch = (cch + _wsprintf(&lpb2k[cch], szT, t_merge_66fb_0001, 13, 10))
+    branch lpmsgplr->cLen < 0 ? L_6762 : L_672b
+
+L_672b:
+    i = 1000
+    call FDecompressUserString(lpmsgplr->rgbMsg, lpmsgplr->cLen, &lpb2k[cch], &i) -> callresult(int16_t)
+    goto L_6786
+
+L_6762:
+    call fstrcpy(&lpb2k[cch], lpmsgplr->rgbMsg) -> callresult(char *)
+
+L_6786:
+    lpsz = lpb2k
+    goto L_683c
+
+L_6796:
+    idm = IdmGetMessageN(iMsgCur)
+    branch iMsgCur >= 0 ? L_67d0 : L_67af
+
+L_67af:
+    branch cMsg <= 0 ? L_67d0 : L_67b9
+
+L_67b9:
+    lpsz = &*PszGetCompressedString(idsMessagesHaveSentYearFilteredIfWant)
+    goto L_683c
+
+L_67d0:
+    branch iMsgCur < 0 ? L_6828 : L_67da
+
+L_67da:
+    branch (bitfMsgFiltered[(idm sar 3)] & (1 << (idm & 7))) == 0 ? L_6828 : L_6807
+
+L_6807:
+    branch fViewFilteredMsg != 0 ? L_6828 : L_6811
+
+L_6811:
+    lpsz = &*PszGetCompressedString(idsMessageTypeHasFilteredWillShownDefault)
+    goto L_683c
+
+L_6828:
+    lpsz = &*PszGetMessageN(iMsgCur)
+
+L_683c:
+    call SetTextColor(hdc, 0xffffff) -> callresult(COLORREF)
+    iMode = SetBkMode(hdc, TRANSPARENT)
+    branch iMsgCur >= 0 ? L_686f : L_6865
+
+L_6865:
+    branch cMsg > 0 ? L_68c6 : L_686f
+
+L_686f:
+    branch iMsgCur < 0 ? L_6903 : L_6879
+
+L_6879:
+    branch iMsgCur >= cMsg ? L_6903 : L_6885
+
+L_6885:
+    t_scratch_m74_2 = (1 << (IdmGetMessageN(iMsgCur) & 7))
+    branch (bitfMsgFiltered[(IdmGetMessageN(iMsgCur) sar 3)] & t_scratch_m74_2) == 0 ? L_6903 : L_68c6
+
+L_68c6:
+    cch = CchGetString(idsFiltered, szWork)
+    call DiaganolTextOut(hdc, &rc, szWork, cch) -> callresult(void)
+    lpsz = &*PszGetMessageN(iMsgCur)
+
+L_6903:
+    call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
+    rcActual = rc
+    call DrawText(hdc, lpsz, fstrlen(lpsz), &rcActual, DT_WORDBREAK|DT_CALCRECT|DT_NOPREFIX) -> callresult(int16_t)
+    branch rcActual.bottom > rc.bottom ? L_6998 : L_6955
+
+L_6955:
+    branch rcActual.right > rc.right ? L_6998 : L_6960
+
+L_6960:
+    call ShowWindow(hwndMsgScroll, SW_HIDE) -> callresult(int16_t)
+    call DrawText(hdc, lpsz, fstrlen(lpsz), &rc, DT_WORDBREAK|DT_NOPREFIX) -> callresult(int16_t)
+    goto L_69e0
+
+L_6998:
+    call SetWindowText(hwndMsgScroll, lpsz) -> callresult(void)
+    call ExpandRc(&rc, 4, 4) -> callresult(void)
+    call SetWindowPos(hwndMsgScroll, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), SWP_NOZORDER|SWP_SHOWWINDOW) -> callresult(int16_t)
+
+L_69e0:
+    call SetBkMode(hdc, iMode) -> callresult(int16_t)
+    goto L_6a4b
+
+L_69ee:
+    iMode = SetBkMode(hdc, TRANSPARENT)
+    call SetTextColor(hdc, crButtonText) -> callresult(COLORREF)
+    cch = CchGetString(idsTo3, szT)
+    call RightTextOut(hdc, (rc.left + 26), rc.top, szT, cch, 0) -> callresult(void)
+    call SetBkMode(hdc, iMode) -> callresult(int16_t)
+
+L_6a4b:
+    call SetTextColor(hdc, crFore) -> callresult(COLORREF)
+    call SetBkColor(hdc, crBack) -> callresult(COLORREF)
+    call EndPaint(hwnd, &ps) -> callresult(void)
+    goto L_7207
+
+L_6a79:
+    branch wParam == VK_DOWN ? L_6ca9 : L_6a88
+
+L_6a88:
+    branch wParam == VK_UP ? L_6ba0 : L_6a94
+
+L_6a94:
+    branch gd.fSendMsgMode != 0 ? L_718a : L_6aaa
+
+L_6aaa:
+    branch wParam != VK_HOME ? L_6abf : L_6ab3
+
+L_6ab3:
+    iMsgCur = -1
+    goto L_6ca9
+
+L_6abf:
+    branch wParam != VK_END ? L_7207 : L_6ac8
+
+L_6ac8:
+    iMsgCur = (cMsg + vcmsgplrIn)
+    goto L_6ba0
+
+L_6ad8:
+    branch wParam == '\r' ? L_6d8d : L_6ae7
+
+L_6ae7:
+    branch wParam == '+' ? L_6109 : L_6af6
+
+L_6af6:
+    branch wParam != '-' ? L_7207 : L_6aff
+
+L_6aff:
+    i = 0
+    goto L_6b34
+
+L_6b07:
+    branch (bitfMsgSent[i] & bitfMsgFiltered[i]) != 0 ? L_6b3f : L_6b30
+
+L_6b30:
+    i = (i + 1)
+
+L_6b34:
+    branch (uint16_t)i < 49 ? L_6b07 : L_6b3f
+
+L_6b3f:
+    branch i != 49 ? L_61cc : L_6b47
+
+L_6b47:
+    goto L_7207
+
+L_6b50:
+    branch GET_WM_COMMAND_CMD(wParam, lParam) != 0 ? L_6b75 : L_6b6c
+
+L_6b6c:
+    call SetFocus(hwndFrame) -> callresult(HWND)
+
+L_6b75:
+    branch GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[0] ? L_6c7e : L_6b84
+
+L_6b84:
+    branch GET_WM_COMMAND_CMD(wParam, lParam) != 0 ? L_6c7e : L_6ba0
+
+PrevMsg:
+    branch gd.fSendMsgMode == 0 ? L_6bc2 : L_6bb3
+
+L_6bb3:
+    call FFinishPlrMsgEntry(-1) -> callresult(int16_t)
+    goto L_6c2a
+
+L_6bc2:
+    branch (GetAsyncKeyState(VK_SHIFT) & 0xfffe) == 0 ? L_6bee : L_6bd6
+
+L_6bd6:
+    iMsgCur = -1
+    i = IMsgNext(0)
+    goto L_6bfd
+
+L_6bee:
+    i = IMsgPrev(0)
+
+L_6bfd:
+    branch i == -1 ? L_6c0f : L_6c06
+
+L_6c06:
+    iMsgCur = i
+    goto L_6c2a
+
+L_6c0f:
+    branch iMsgCur != (cMsg + vcmsgplrIn) ? L_7207 : L_6c1f
+
+L_6c1f:
+    iMsgCur = (iMsgCur - 1)
+
+SetupNewMsg:
+    gd.fGotoVCR = 0
+    call SetMsgTitle(hwnd) -> callresult(void)
+    call InvalidateRect(hwnd, &rcMsgText, 1) -> callresult(void)
+    branch gd.fTutorial == 0 ? L_7207 : L_6c67
+
+L_6c67:
+    tutor.fChange = 1
+    call AdvanceTutor() -> callresult(void)
+
+L_6c78:
+    goto L_7207
+
+L_6c7e:
+    branch GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[2] ? L_6d25 : L_6c8d
+
+L_6c8d:
+    branch GET_WM_COMMAND_CMD(wParam, lParam) != 0 ? L_6d25 : L_6ca9
+
+NextMsg:
+    branch gd.fSendMsgMode == 0 ? L_6ccb : L_6cbc
+
+L_6cbc:
+    call FFinishPlrMsgEntry(1) -> callresult(int16_t)
+    goto L_6c2a
+
+L_6ccb:
+    branch (GetAsyncKeyState(VK_SHIFT) & 0xfffe) == 0 ? L_6cfb : L_6cdf
+
+L_6cdf:
+    iMsgCur = (cMsg + vcmsgplrIn)
+    i = IMsgPrev(0)
+    goto L_6d0a
+
+L_6cfb:
+    i = IMsgNext(0)
+
+L_6d0a:
+    branch i == -1 ? L_7207 : L_6d13
+
+L_6d13:
+    iMsgCur = i
+    goto L_6c2a
+
+L_6d25:
+    branch GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[3] ? L_6d62 : L_6d34
+
+L_6d34:
+    branch GET_WM_COMMAND_CMD(wParam, lParam) != 0 ? L_6d62 : L_6d50
+
+L_6d50:
+    call FFinishPlrMsgEntry(1000) -> callresult(int16_t)
+    goto L_6c2a
+
+L_6d62:
+    branch GET_WM_COMMAND_HWND(wParam, lParam) != rghwndMsgBtn[1] ? L_718a : L_6d71
+
+L_6d71:
+    branch GET_WM_COMMAND_CMD(wParam, lParam) != 0 ? L_718a : L_6d8d
+
+GotoMsg:
+    branch gd.fSendMsgMode != 0 ? L_6298 : L_6da0
+
+L_6da0:
+    branch iMsgCur >= cMsg ? L_6298 : L_6daf
+
+L_6daf:
+    goto L_713a
+
+L_6db8:
+    call SelectAdjPlanet(0, idMsgObj) -> callresult(void)
+    call UpdateWindow(hwndScanner) -> callresult(void)
+    call SendMessage(hwndScanner, WM_CHAR, 'v', 0) -> callresult(LRESULT)
+    idm = IdmGetMessageN(iMsgCur)
+    branch idm == 62 ? L_6e1f : L_6e02
+
+L_6e02:
+    branch idm == 63 ? L_6e1f : L_6e0b
+
+L_6e0b:
+    branch idm < 175 ? L_7163 : L_6e15
+
+L_6e15:
+    branch idm > 180 ? L_7163 : L_6e1f
+
+L_6e1f:
+    branch gd.fGotoVCR != 0 ? L_6e4c : L_6e32
+
+L_6e32:
+    gd.fGotoVCR = 1
+    call SetMsgTitle(hwnd) -> callresult(void)
+    goto L_7163
+
+L_6e4c:
+    branch sel.grobj != grobjPlanet ? L_7163 : L_6e56
+
+L_6e56:
+    branch sel.id != idMsgObj ? L_7163 : L_6e62
+
+L_6e62:
+    call ChangeProduction(0) -> callresult(int16_t)
+
+L_6e6e:
+    goto L_7163
+
+L_6e71:
+    call SelectAdjFleet(0, idMsgObj) -> callresult(void)
+    call UpdateWindow(hwndScanner) -> callresult(void)
+    call SendMessage(hwndScanner, WM_CHAR, 'v', 0) -> callresult(LRESULT)
+    goto L_7163
+
+L_6ea6:
+    lpth = LpthFromId(vptMsg.x)
+    branch lpth != 0 ? L_6eca : L_7163
+
+
+L_6eca:
+    scan.pt = lpth->pt
+    scan.grobj = grobjThing
+    call ChangeScanSel(&scan, 0) -> callresult(void)
+    call CtrPointScan(scan.pt, 1) -> callresult(void)
+
+L_6f02:
+    goto L_7163
+
+L_6f05:
+    call SelectOursAtObject(&vptMsg) -> callresult(void)
+    branch gd.fGotoVCR == 0 ? L_6f33 : L_6f24
+
+L_6f24:
+    call BattleVCR(idMsgObj) -> callresult(void)
+    goto L_7163
+
+L_6f33:
+    gd.fGotoVCR = 1
+    call SetMsgTitle(hwnd) -> callresult(void)
+
+L_6f4a:
+    goto L_7163
+
+L_6f4d:
+    call PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_RESEARCH, 0) -> callresult(int16_t)
+    goto L_7163
+
+L_6f69:
+    call PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_SCORE, 0) -> callresult(int16_t)
+    goto L_7163
+
+L_6f85:
+    call PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_SHIP_BUILDER, 0) -> callresult(int16_t)
+    goto L_7163
+
+L_6fa1:
+    call PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_RELATIONS2, 0) -> callresult(int16_t)
+    goto L_7163
+
+L_6fbd:
+    branch hwndReportDlg == 0 ? L_6fd2 : L_6fc7
+
+L_6fc7:
+    branch vprptCur == &vrptBattle ? L_7163 : L_6fd2
+
+L_6fd2:
+    call PostMessage(hwndFrame, WM_COMMAND, IDM_REPORT_BATTLE, 0) -> callresult(int16_t)
+
+L_6feb:
+    goto L_7163
+
+L_6fee:
+    szWork[200] = 2
+    lpProc = MakeProcInstance(MsgDlg, hInst)
+    fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_SERIAL_NUMBER), (hwndTitle == 0 ? hwndFrame : hwndTitle), lpProc)
+    call FreeProcInstance(lpProc) -> callresult(void)
+    branch fRet == 0 ? L_7163 : L_704c
+
+
+
+
+L_704c:
+    branch FValidSerialNo(szWork, &lSerial) == 0 ? L_7088 : L_7064
+
+L_7064:
+    vSerialNumber = lSerial
+    call memcpy(vrgbMachineConfig, vrgbEnvCur, 11) -> callresult(void *)
+    goto L_7163
+
+L_7088:
+    branch vSerialNumber != 0 ? L_7163 : L_709c
+
+
+L_709c:
+    call memcpy(vrgbMachineConfig, vrgbEnvCur, 11) -> callresult(void *)
+
+L_70b0:
+    goto L_7163
+
+L_70b3:
+    vpartBrowser.hs.grhst = (1 << ((idMsgObj sar 8) & 0xf))
+    vpartBrowser.hs.iItem = (idMsgObj & 0xff)
+    call FLookupPart(&vpartBrowser) -> callresult(int16_t)
+    branch hwndBrowser == 0 ? L_7115 : L_70fd
+
+L_70fd:
+    call InvalidateRect(hwndBrowserChild, NULL, 1) -> callresult(void)
+    goto L_7163
+
+L_7115:
+    fBrowserValid = 1
+    call PostMessage(hwndFrame, WM_COMMAND, IDM_VIEW_BROWSER_TOGGLE2, 0) -> callresult(int16_t)
+
+L_7134:
+    goto L_7163
+
+L_713a:
+    branch mdMsgObj > mdMsgObjBattleReport ? L_7163 : L_7142
+
+L_7142:
+    tablejump (mdMsgObj * 2) [0x0: L_7163, 0x2: L_6db8, 0x4: L_6e71, 0x6: L_6f4d, 0x8: L_70b3, 0xa: L_6f85, 0xc: L_6f05, 0xe: L_6fa1, 0x10: L_6f69, 0x12: L_6fee, 0x14: L_6ea6, 0x16: L_6fbd]
+
+L_7163:
+    branch gd.fTutorial == 0 ? L_7207 : L_7176
+
+L_7176:
+    tutor.fChange = 1
+    call AdvanceTutor() -> callresult(void)
+
+L_7187:
+    goto L_7207
+
+Default:
+    return DefWindowProc(hwnd, message, wParam, lParam)
+
+L_71a4:
+    branch message == WM_CREATE ? L_5ca1 : L_71ac
+
+L_71ac:
+    branch message == WM_SIZE ? L_5ef1 : L_71b4
+
+L_71b4:
+    branch message == WM_PAINT ? L_643a : L_71bc
+
+L_71bc:
+    branch message == WM_ERASEBKGND ? L_6059 : L_71c4
+
+L_71c4:
+    branch IS_WM_CTLCOLOR(message) != 0 ? L_640f : L_71cc
+
+L_71cc:
+    branch message == WM_SETCURSOR ? L_6084 : L_71d4
+
+L_71d4:
+    branch message == WM_GETMINMAXINFO ? L_63e0 : L_71dc
+
+L_71dc:
+    branch message == WM_KEYDOWN ? L_6a79 : L_71e4
+
+L_71e4:
+    branch message == WM_CHAR ? L_6ad8 : L_71ec
+
+L_71ec:
+    branch message == WM_COMMAND ? L_6b50 : L_71f4
+
+L_71f4:
+    branch message == WM_LBUTTONDOWN ? L_60cf : L_71fc
+
+L_71fc:
+    branch message != WM_LBUTTONDBLCLK ? L_718a : L_7201
+
+L_7201:
+    goto L_60cf
+
+L_7207:
+    return 0
+

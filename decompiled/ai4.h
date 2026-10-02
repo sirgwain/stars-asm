@@ -10,7 +10,7 @@ extern uint8_t  vrgAiCybertronResOrder[42];
 
 void    DoCyberAiTurn(PROD *rgprod);
 void    DoCyberPackets();
-int16_t IdGetBestScannerDest(PLANET *lppl, int16_t iDir);
+int16_t IdGetBestScannerDest(PLANET *lppl, CompassDir iDir);
 int16_t FAddPacketToQueue(PLANET *lppl);
 void    FillProductionQueue();
 int16_t FFillProdMinesAndFactories(PLANET *lppl);

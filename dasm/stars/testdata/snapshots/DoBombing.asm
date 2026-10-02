@@ -1177,7 +1177,7 @@ L_b97d:
 PUSH      ax                  
 LES       bx, [bp-lpfl]             ; bx, [bp-0x36]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4334
 MOV       ax, 0x0000          
@@ -1209,7 +1209,7 @@ L_b9c4:
 PUSH      ax                  
 LES       bx, [bp-lppl]             ; bx, [bp-0x30]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
 
 L_b9d4:                             ; battle.c:4339
@@ -1363,7 +1363,7 @@ PUSH      ax
 PUSH      [bp-idmSrc]               ; [bp-0x20]
 LES       bx, [bp-lpfl]             ; bx, [bp-0x36]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4367
 MOV       ax, 0x0000          
@@ -1387,7 +1387,7 @@ PUSH      es:[bx]
 PUSH      [bp-idmDst]               ; [bp-0x4]
 LES       bx, [bp-lppl]             ; bx, [bp-0x30]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4369
 JMP       L_be65              
@@ -1432,7 +1432,7 @@ PUSH      ax
 PUSH      [bp-idmSrc]               ; [bp-0x20]
 LES       bx, [bp-lpfl]             ; bx, [bp-0x36]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4379
 MOV       ax, 0x0000          
@@ -1468,7 +1468,7 @@ PUSH      es:[bx]
 PUSH      [bp-idmDst]               ; [bp-0x4]
 LES       bx, [bp-lppl]             ; bx, [bp-0x30]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
 
 L_bc07:                             ; battle.c:4382
@@ -1511,7 +1511,7 @@ PUSH      ax
 PUSH      [bp-idmSrc]               ; [bp-0x20]
 LES       bx, [bp-lpfl]             ; bx, [bp-0x36]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4392
 MOV       ax, 0x0000          
@@ -1534,7 +1534,7 @@ PUSH      es:[bx]
 PUSH      [bp-idmDst]               ; [bp-0x4]
 LES       bx, [bp-lppl]             ; bx, [bp-0x30]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4394
 JMP       L_be65              
@@ -1578,7 +1578,7 @@ PUSH      ax
 PUSH      [bp-idmSrc]               ; [bp-0x20]
 LES       bx, [bp-lpfl]             ; bx, [bp-0x36]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4403
 MOV       ax, 0x0000          
@@ -1613,7 +1613,7 @@ PUSH      es:[bx]
 PUSH      [bp-idmDst]               ; [bp-0x4]
 LES       bx, [bp-lppl]             ; bx, [bp-0x30]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
 
 L_bd5e:                             ; battle.c:4407
@@ -1721,7 +1721,7 @@ PUSH      ax
 PUSH      [bp-idmSrc]               ; [bp-0x20]
 LES       bx, [bp-lpfl]             ; bx, [bp-0x36]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
                                     ; battle.c:4423
 MOV       ax, 0x0000          
@@ -1744,7 +1744,7 @@ PUSH      es:[bx]
 PUSH      [bp-idmDst]               ; [bp-0x4]
 LES       bx, [bp-lppl]             ; bx, [bp-0x30]
 PUSH      es:[bx+0x2]         
-CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, int16_t iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
+CALLF     FSendPlrMsg               ; int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, MsgGoto iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 ADD       sp, 0x0014          
 
 L_be65:                             ; battle.c:4426

@@ -118,7 +118,7 @@ PUSH      ax
 PUSH      [game+0x8]                ; [0x0078]
 CALLF     MulDiv                    ; int16_t MulDiv(int16_t arg1, int16_t arg2, int16_t arg3)
 PUSH      ax                  
-CALLF     UpdateProgressGauge       ; void UpdateProgressGauge(int16_t pctX10)
+CALLF     UpdateProgressGauge       ; void UpdateProgressGauge(ProgressStep pctX10)
 ADD       sp, 0x0002          
                                     ; mdi.c:2801
 MOV       ax, [bp-iPlayer]          ; ax, [bp-0xe]

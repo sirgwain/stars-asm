@@ -5,7 +5,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     double   lBIR4;
     int16_t  dRangeT;
     int16_t  fHasScanner;
-    int16_t  iScanner;
+    iscanner iScanner;
     int16_t  fBuiltIn;
     int16_t  cDetectors;
     double   lPlanRange4;
@@ -144,7 +144,7 @@ L_52d9:
     lT = (double)((long double)lT * (uint32_t)lphs->cItem);
     lRange4 = (double)((long double)lRange4 + lT);
     dRangeT = LpscannerFromId(iScanner)->grfAbilities;
-    if (iScanner != 6)
+    if (iScanner != iscannerChameleonScanner)
         goto L_5390;
     else
         goto L_5385;
@@ -154,7 +154,7 @@ L_5385:
     goto LPlanScan;
 
 L_5390:
-    if (iScanner != 5)
+    if (iScanner != iscannerPickPocketScanner)
         goto L_53a8;
     else
         goto L_5399;
@@ -165,7 +165,7 @@ L_5399:
     goto LPlanScan;
 
 L_53a8:
-    if (iScanner != 14)
+    if (iScanner != iscannerRobberBaronScanner)
         goto L_53c0;
     else
         goto L_53b1;

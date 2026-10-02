@@ -1,6 +1,8 @@
 package stars
 
 import (
+	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/stars/symresolve"
 	"io"
 
 	"github.com/sirgwain/stars-asm/dasm/stars/asm"
@@ -10,7 +12,7 @@ import (
 
 // DumpFuncEffects disassembles and then extracts effects from the disassembly.
 func DumpFuncEffects(w io.Writer, img *asm.ImageNE, sdb *typeinfo.SymbolDB, fs *typeinfo.Function, opt DumpEffectsOptions) error {
-	analysis, err := analyzeFunc(img, sdb, fs, opt.DumpOptions)
+	analysis, err := analyzeFunc(img, sdb, fs, opt.DumpOptions, machine.NewWriteSummaries(img, sdb, symresolve.NewResolver(img, sdb)))
 	if err != nil {
 		return err
 	}

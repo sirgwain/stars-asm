@@ -11,6 +11,12 @@ import (
 type resolveEnumsProcessor struct {
 	ctx       *FuncContext
 	callTypes map[callResultKey]typeinfo.Type
+	// wParam is the window procedure's wParam, and wParamEnum the enum or
+	// wParamChar the character code the message handled by the current block
+	// gives it.
+	wParam     *typeinfo.FunctionVar
+	wParamEnum *typeinfo.Enum
+	wParamChar bool
 }
 
 type callResultKey struct {
@@ -23,6 +29,7 @@ func (p *resolveEnumsProcessor) ProcessBlock(result *Result, f Func, b Block) (B
 	if p.callTypes == nil {
 		p.callTypes = make(map[callResultKey]typeinfo.Type)
 	}
+	p.wParam, p.wParamEnum, p.wParamChar = p.blockWParam(b.ID)
 	effects, changed := p.rewriter().rewriteEffects(b.Effects)
 	if !changed {
 		return b, false
@@ -100,6 +107,31 @@ func (p *resolveEnumsProcessor) rewriter() *semRewriter {
 				next.Dst = dst
 				next.Src = src
 				return &next, true, true
+			case *TableJump:
+				// A switch on a value whose enum depends on context, such
+				// as a part's item under a known slot type, names its cases
+				// by that enum.
+				index, changed := w.rewriteExpr(e.Index)
+				next := *e
+				next.Index = index
+				if p.wParamChar && !e.CharCases && p.isWParam(next.SwitchedExpr()) {
+					next.CharCases = true
+					changed = true
+				}
+				if e.CaseEnum == nil {
+					if enumType, _ := next.SwitchedValue(); enumType == nil {
+						if switched := next.SwitchedExpr(); switched != nil {
+							if enumType, ok := p.expectedEnumType(switched); ok {
+								next.CaseEnum = enumType
+								changed = true
+							}
+						}
+					}
+				}
+				if !changed {
+					return effect, false, true
+				}
+				return &next, true, true
 			default:
 				return effect, false, false
 			}
@@ -128,6 +160,45 @@ func (p *resolveEnumsProcessor) rewriter() *semRewriter {
 						lhsChanged = true
 					}
 				}
+				if p.wParamChar {
+					if p.isWParam(lhs) {
+						if next := markCharLiteral(rhs); next != rhs {
+							rhs, rhsChanged = next, true
+						}
+					}
+					if p.isWParam(rhs) {
+						if next := markCharLiteral(lhs); next != lhs {
+							lhs, lhsChanged = next, true
+						}
+					}
+				}
+				if !lhsChanged && !rhsChanged {
+					return expr, false, true
+				}
+				next := *e
+				next.LHS = lhs
+				next.RHS = rhs
+				return &next, true, true
+			case *Binary:
+				if e.Op != OpAnd && e.Op != OpOr && e.Op != OpXor {
+					return expr, false, false
+				}
+				lhs, lhsChanged := w.rewriteExpr(e.LHS)
+				rhs, rhsChanged := w.rewriteExpr(e.RHS)
+				// a mask of a flag enum is a set of its flags; a mask of any
+				// other enum selects bits that are not its values
+				if enumType, ok := p.expectedEnumType(lhs); ok && enumType.EnumKind == typeinfo.EnumFlags {
+					if nextRHS, changed := p.resolveExpectedEnum(rhs, enumType); changed {
+						rhs = nextRHS
+						rhsChanged = true
+					}
+				}
+				if enumType, ok := p.expectedEnumType(rhs); ok && enumType.EnumKind == typeinfo.EnumFlags {
+					if nextLHS, changed := p.resolveExpectedEnum(lhs, enumType); changed {
+						lhs = nextLHS
+						lhsChanged = true
+					}
+				}
 				if !lhsChanged && !rhsChanged {
 					return expr, false, true
 				}
@@ -144,6 +215,33 @@ func (p *resolveEnumsProcessor) rewriter() *semRewriter {
 			return next, changed, true
 		},
 	}
+}
+
+// blockWParam returns the window procedure's wParam with the enum the
+// message handled on entry to block gives its whole value, such as VirtualKey
+// for WM_KEYDOWN, or whether it is a character code, as for WM_CHAR. It
+// returns nil and false when the block's message is unknown or gives wParam
+// neither.
+func (p *resolveEnumsProcessor) blockWParam(block machine.BlockID) (*typeinfo.FunctionVar, *typeinfo.Enum, bool) {
+	message := p.ctx.messageByBlock[block]
+	if message == nil || message.WParam == nil {
+		return nil, nil, false
+	}
+	enumType, isEnum := message.WParam.Whole.Type.(*typeinfo.Enum)
+	if !isEnum && !message.WParam.Whole.Char {
+		return nil, nil, false
+	}
+	params, ok := p.ctx.windowProcParams()
+	if !ok || params.wParam == nil {
+		return nil, nil, false
+	}
+	return params.wParam, enumType, message.WParam.Whole.Char
+}
+
+// isWParam reports whether expr reads the window procedure's whole wParam.
+func (p *resolveEnumsProcessor) isWParam(expr Expr) bool {
+	local, ok := expr.(*Local)
+	return ok && p.wParam != nil && local.Name == p.wParam.Name
 }
 
 // resolveExpectedEnum applies an expected enum type to a compatible expression.
@@ -182,6 +280,9 @@ func (p *resolveEnumsProcessor) resolveExpectedEnum(expr Expr, enumType *typeinf
 func (p *resolveEnumsProcessor) expectedEnumType(expr Expr) (*typeinfo.Enum, bool) {
 	if enumType, ok := exprEnumType(expr); ok {
 		return enumType, true
+	}
+	if p.wParamEnum != nil && p.isWParam(expr) {
+		return p.wParamEnum, true
 	}
 	path, ok := symbolPathForExpr(expr)
 	if !ok {

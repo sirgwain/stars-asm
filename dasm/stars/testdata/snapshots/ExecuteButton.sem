@@ -1,9 +1,9 @@
 /*
 ExecuteButton  (tb)
   addr: 000e:0db6  len=2250
-  sig:  void ExecuteButton(int16_t itb, int16_t fDown)
+  sig:  void ExecuteButton(ToolbarButton itb, int16_t fDown)
   params:
-    int16_t          itb            [BP+0x6]
+    ToolbarButton    itb            [BP+0x6]
     int16_t          fDown          [BP+0x8]
   locals:
     uint16_t         grbitNew       [BP-0x4]
@@ -53,7 +53,7 @@ L_0dd4:
     branch fDown == 0 ? L_167a : L_0de0
 
 L_0de0:
-    grbitScan = (itb + (grbitScan & 0x3ff0))
+    grbitScan = (itb + (grbitScan & grbitScanToggleMask))
     goto L_1644
 
 L_0df2:
@@ -103,7 +103,7 @@ L_0e46:
 L_0e4e:
     grbit = 1
     c = 0
-    branch (grbitScan & 0x40) != 0 ? L_0e6c : L_0e66
+    branch (grbitScan & grbitScanMineFields) != 0 ? L_0e6c : L_0e66
 
 L_0e66:
     grbitScanMines = 0
@@ -189,7 +189,7 @@ L_1047:
     branch grbitScanMines == 0 ? L_1059 : L_1051
 
 L_1051:
-    grbitScan = (grbitScan | 0x40)
+    grbitScan = (grbitScan | grbitScanMineFields)
     goto L_105e
 
 L_1059:
@@ -272,7 +272,7 @@ L_122d:
     grbitScanShip = 0
 
 L_1233:
-    branch (grbitScan & 0x200) != 0 ? L_12e6 : L_1241
+    branch (grbitScan & grbitScanDesignFilter) != 0 ? L_12e6 : L_1241
 
 L_1241:
     branch grbitScanShip != 0 ? L_12cb : L_1248
@@ -300,17 +300,17 @@ L_1294:
 
 L_129d:
     grbitScanShip = (grbitScanShip ^ (1 << ish))
-    branch (grbitScan & 0x200) != 0 ? L_12e6 : L_12b7
+    branch (grbitScan & grbitScanDesignFilter) != 0 ? L_12e6 : L_12b7
 
 L_12b7:
     branch ((1 << ish) & grbitScanShip) == 0 ? L_12e6 : L_12cb
 
 LInvalS:
-    grbitScan = (grbitScan | 0x200)
+    grbitScan = (grbitScan | grbitScanDesignFilter)
     call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
 
 L_12e6:
-    branch (grbitScan & 0x200) == 0 ? L_167a : L_12f1
+    branch (grbitScan & grbitScanDesignFilter) == 0 ? L_167a : L_12f1
 
 L_12f1:
     goto L_1644
@@ -380,7 +380,7 @@ L_1494:
     grbitScanEShip = 0
 
 L_149a:
-    branch (grbitScan & 0x800) != 0 ? L_1505 : L_14a8
+    branch (grbitScan & grbitScanEnemyFilter) != 0 ? L_1505 : L_14a8
 
 L_14a8:
     branch grbitScanEShip != 0 ? L_14ea : L_14af
@@ -391,17 +391,17 @@ L_14af:
 L_14b8:
     iSel = (iSel - 4)
     grbitScanEShip = (grbitScanEShip ^ (1 << iSel))
-    branch (grbitScan & 0x800) != 0 ? L_1505 : L_14d6
+    branch (grbitScan & grbitScanEnemyFilter) != 0 ? L_1505 : L_14d6
 
 L_14d6:
     branch ((1 << iSel) & grbitScanEShip) == 0 ? L_1505 : L_14ea
 
 LInvalE:
-    grbitScan = (grbitScan | 0x800)
+    grbitScan = (grbitScan | grbitScanEnemyFilter)
     call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
 
 L_1505:
-    branch (grbitScan & 0x800) == 0 ? L_167a : L_1510
+    branch (grbitScan & grbitScanEnemyFilter) == 0 ? L_167a : L_1510
 
 L_1510:
     goto L_1644
@@ -437,13 +437,13 @@ L_15f6:
     goto L_167a
 
 L_160f:
-    branch (uint16_t)itb > 17 ? L_167a : L_1617
+    branch (uint16_t)itb > tbShipCounts ? L_167a : L_1617
 
 L_1617:
     tablejump (itb * 2) [0x0: L_0dd4, 0x2: L_0dd4, 0x4: L_0dd4, 0x6: L_0dd4, 0x8: L_0dd4, 0xa: L_0dd4, 0xc: L_0df2, 0xe: L_0e16, 0x10: L_0e4e, 0x12: L_0e1e, 0x14: L_0e26, 0x16: L_0e2e, 0x18: L_0e3e, 0x1a: L_1076, 0x1c: L_0e46, 0x1e: L_12fa, 0x20: L_1519, 0x22: L_0e36]
 
 L_1644:
-    branch itb == 6 ? L_1662 : L_164d
+    branch itb == tbAddWaypoints ? L_1662 : L_164d
 
 L_164d:
     call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)

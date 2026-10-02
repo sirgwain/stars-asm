@@ -20,7 +20,6 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     HUL     *lphul;
     PART     part;
     HS      *t_fields_1;
-    uint32_t t_fields_2;
     uint32_t t_fields_3;
 
     memset(&shdef, 0, sizeof(SHDEF));
@@ -90,9 +89,8 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
                 lphul->rghs[0].cItem = lphulBase->rghs[0].cItem;
                 part.hs.grhst = lphul->rghs[0].grhst;
                 t_fields_1 = &part.hs;
-                t_fields_2 = lphul->rghs[0].iItem;
                 t_fields_3 = lphul->rghs[0].cItem;
-                t_fields_1->iItem = t_fields_2;
+                t_fields_1->iItem = lphul->rghs[0].iItem;
                 t_fields_1->cItem = t_fields_3;
                 FLookupPart(&part);
                 wt += (uint32_t)(part.pcom->cMass * lphul->rghs[0].cItem);
@@ -211,8 +209,8 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
             ReadRt();
             if (hdrCur.rt == rtEOF) {
                 StreamClose();
-                if (((int16_t)(int8_t)*pszExt == 104 || (int16_t)(int8_t)*pszExt == 72) &&
-                    ((int16_t)(int8_t)pszExt[1] == 115 || (int16_t)(int8_t)pszExt[1] == 83)) {
+                if (((int16_t)(int8_t)*pszExt == 'h' || (int16_t)(int8_t)*pszExt == 'H') &&
+                    ((int16_t)(int8_t)pszExt[1] == 's' || (int16_t)(int8_t)pszExt[1] == 'S')) {
                     dt = 2;
                     iPlayer = -1;
                 } else {
@@ -763,7 +761,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                                 if (lppl != 0 && lppl->iPlayer == iPlayer) {
                                     iWarp = IWarpMAFromLppl(lppl, &fTwo);
                                     if (iWarp + fTwo < lpth->thp.iWarp + 4) {
-                                        FSendPlrMsg2XGen(0, 337, -6, lpth->idFull, lppl->id);
+                                        FSendPlrMsg2XGen(0, idmMassPacketAppearsCollisionCourseWhichCurrently, gotoThing, lpth->idFull, lppl->id);
                                     }
                                 }
                             }
@@ -790,13 +788,13 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                                         lpprod++;
                                     }
                                     if (fWorking != 0) {
-                                        FSendPlrMsg2XGen(0, 338, lppl->id, lppl->id, 0);
+                                        FSendPlrMsg2XGen(0, idmStarbaseScheduledCompleteRemainingProductionItem, lppl->id, lppl->id, 0);
                                     }
                                 }
                             }
                             i = CBattles();
                             if (i > 0) {
-                                FSendPlrMsg2XGen(1, (i <= 1 ? 0 : 1) + 339, -7, i, 0);
+                                FSendPlrMsg2XGen(1, (i <= 1 ? 0 : 1) + 339, gotoBattleReport, i, 0);
                             }
                         }
                     }
@@ -1021,12 +1019,12 @@ LFinishBRecord:
         pb += 2;
     } else if (fFirstYear != 0) {
         if (lppl->iPlayer != -1) {
-            FSendPlrMsg2XGen(0, 170, lppl->id, lppl->id, lppl->iPlayer | 0x30);
+            FSendPlrMsg2XGen(0, idmHaveFoundPlanetOccupiedSomeoneElseCurrently, lppl->id, lppl->id, lppl->iPlayer | 0x30);
         } else if (lppl->det <= detMinimal) {
-            FSendPlrMsg2XGen(0, 173, lppl->id, lppl->id, 0);
+            FSendPlrMsg2XGen(0, idmHaveFoundNewPlanetDontKnowIf, lppl->id, lppl->id, 0);
         } else if (GetRaceStat(&rgplr[iPlayer], rsMajorAdv) == raTerra) {
             pctOpt = PctPlanetOptValue(lppl, iPlayer);
-            FSendPlrMsg2XGen(0, 349, lppl->id, lppl->id, pctOpt);
+            FSendPlrMsg2XGen(0, idmHaveInfoNewPlanetIfColonizeCan, lppl->id, lppl->id, pctOpt);
         } else {
             pct = PctPlanetDesirability(lppl, iPlayer);
             if (pct > 0) {
@@ -1262,7 +1260,7 @@ INT_PTR CALLBACK AskSaveDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
             EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDC_NO_DON_T_SAVE ? 0 : GET_WM_COMMAND_ID(wParam, lParam) == IDC_SAVESUBMIT ? -1 : 1);
             return 1;
         case IDC_HELP:
-            WinHelp(hwnd, szHelpFile, 1, 1090);
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, 1090);
             return 1;
         }
     case WM_DESTROY:
@@ -1452,14 +1450,13 @@ void GetFileStatus(int16_t dt, int16_t iPlayer) {
 }
 
 int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
-    RTBOF     rtbof;
-    StringId  ids;
-    int16_t   fCheckMulti;
-    int16_t   fRewind;
-    int16_t   fSilentSav;
-    jmp_buf  *penvMemSav;
-    jmp_buf   env;
-    MessageId t_merge_4c1e_0001;
+    RTBOF    rtbof;
+    StringId ids;
+    int16_t  fCheckMulti;
+    int16_t  fRewind;
+    int16_t  fSilentSav;
+    jmp_buf *penvMemSav;
+    jmp_buf  env;
 
     fSilentSav = fFileErrSilent;
     ids = idsCantOpenFile;
@@ -1485,10 +1482,9 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     if (hdrCur.rt != rtBOF || (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2 || (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49 ||
         (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84) {
         if (hdrCur.rt == rtBOF) {
-            t_merge_4c1e_0001 =
-                (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) > 84) ? 0x2ca
-                                                                                                                                                    : 0x4d3;
-            FileError(t_merge_4c1e_0001);
+            FileError((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) > 84)
+                          ? 714
+                          : 1235);
         } else {
             FileError(idmColonistsDroppedDestroyedSpiritedFighting);
         }
@@ -1562,7 +1558,7 @@ int16_t FNewTurnAvail(int16_t idPlayer) {
     wGenOld = game.wGen;
     fFileErrSilent = 1;
     game.turn = 0;
-    fNew = FOpenFile(0x2003, idPlayer, 32);
+    fNew = FOpenFile(8195, idPlayer, 32);
     if (fNew != 0) {
         StreamClose();
         fNew = game.turn <= turnOld ? 0 : 1;
@@ -1572,7 +1568,7 @@ int16_t FNewTurnAvail(int16_t idPlayer) {
     return fNew;
 }
 
-int16_t FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md) {
+int16_t FCheckFile(DtFileType dt, int16_t iPlayer, MdMark md) {
     int16_t  fReturn;
     int16_t  fOpened;
     uint16_t wGenOld;
@@ -1588,28 +1584,28 @@ int16_t FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md) {
     fFileErrSilent = 1;
     fOpened = FOpenFile(dt, iPlayer, 32);
     switch (md) {
-    case 1:
+    case mdMarkInUse:
         if (fOpened == 0 || (RawLoad16(&rgbCur[14]) >> 9 & 1) != 0) {
             fReturn = 1;
             break;
         }
         fReturn = 0;
         break;
-    case 2:
+    case mdMarkDone:
         if (fOpened != 0 && (RawLoad16(&rgbCur[14]) >> 8 & 1) != 0) {
             fReturn = 1;
             break;
         }
         fReturn = 0;
         break;
-    case 4:
+    case mdMarkMulti:
         if (fOpened != 0 && (RawLoad16(&rgbCur[14]) >> 0xa & 1) != 0) {
             fReturn = 1;
             break;
         }
         fReturn = 0;
         break;
-    case 8:
+    case mdMarkAi:
         if (fOpened == 0) {
             fReturn = 0;
         } else {
@@ -1659,7 +1655,7 @@ int16_t FBadFileError(StringId ids) {
     }
 }
 
-void StreamOpen(char *szFile, int16_t mdOpen) {
+void StreamOpen(char *szFile, MdOpenFlags mdOpen) {
     uint32_t dwTick;
     OFSTRUCT of;
     int16_t  fNoErr;

@@ -8,7 +8,12 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
-type forwardTempsProcessor struct{}
+type forwardTempsProcessor struct {
+	// fs is the function being lowered.
+	fs *typeinfo.Function
+	// writes returns what a call of a function may store to.
+	writes func(*typeinfo.Function) machine.Writes
+}
 
 // ProcessFunc removes temps that only relay a value to the next effect:
 //
@@ -16,7 +21,7 @@ type forwardTempsProcessor struct{}
 //	t = x; v = t; use(t)   becomes v = x; use(v)
 //
 // Each rewrite must keep the program's behavior, not only its value in
-// the common case: see forwardableValue for the conversion the temp
+// the common case: see ForwardableValue for the conversion the temp
 // performed, and forwardOrderSafe for the order the value and the rest of
 // its use are evaluated in. The copy form keeps the assignment, so it only
 // needs v to hold the temp's value wherever the temp was read. A merge temp
@@ -46,7 +51,7 @@ func (p *forwardTempsProcessor) ProcessFunc(_ *Result, f *Func) bool {
 				changed = true
 				continue
 			}
-			if forwardTempUse(f, bi, i, temp, value, addressed) {
+			if forwardTempUse(p.fs, p.writes, f, bi, i, temp, value, addressed) {
 				changed = true
 				i--
 			}
@@ -282,23 +287,41 @@ func assignsLocal(effect Effect, local *Local) bool {
 	return false
 }
 
+// maxForwardDistance is the most effects a temp's value may move past to
+// reach its use.
+const maxForwardDistance = 8
+
 // forwardTempUse replaces the single read of the temp defined at
-// f.Blocks[bi].Effects[index], when it is in the next effect to run, with
-// the assigned value and drops the definition.
-func forwardTempUse(f *Func, bi, index int, temp *Temp, value Expr, addressed map[string]bool) bool {
-	ui, uj, ok := nextEffect(f, bi, index)
-	if !ok {
-		return false
-	}
-	use := f.Blocks[ui].Effects[uj]
-	if countTempRefs([]Effect{use}, temp) != 1 {
-		return false
-	}
+// f.Blocks[bi].Effects[index], when it is in one of the next effects to
+// run, with the assigned value and drops the definition. The value then
+// runs after the effects between, which must allow it; see forwardsPast.
+// fs is the function being lowered, whose return type converts a returned
+// temp, and writes returns what a call may store to.
+func forwardTempUse(fs *typeinfo.Function, writes func(*typeinfo.Function) machine.Writes, f *Func, bi, index int, temp *Temp, value Expr, addressed map[string]bool) bool {
 	total := 0
 	for _, block := range f.Blocks {
 		total += countTempRefs(block.Effects, temp)
 	}
-	if total != 2 || !forwardableValue(value, temp.TypeInfo) || !forwardOrderSafe(value, use, temp, addressed) {
+	if total != 2 {
+		return false
+	}
+	var between []Effect
+	ui, uj := bi, index
+	for {
+		var ok bool
+		if ui, uj, ok = nextEffect(f, ui, uj); !ok || len(between) > maxForwardDistance {
+			return false
+		}
+		if countTempRefs(f.Blocks[ui].Effects[uj:uj+1], temp) > 0 {
+			break
+		}
+		between = append(between, f.Blocks[ui].Effects[uj])
+	}
+	use := f.Blocks[ui].Effects[uj]
+	if !forwardsPast(value, between, addressed, writes) {
+		return false
+	}
+	if !ForwardableValue(value, temp.TypeInfo) && !convertedOnUse(fs, value, use, temp) || !forwardOrderSafe(value, use, temp, addressed, writes) {
 		return false
 	}
 	rewriter := &semRewriter{
@@ -316,6 +339,70 @@ func forwardTempUse(f *Func, bi, index int, temp *Temp, value Expr, addressed ma
 	f.Blocks[ui].Effects = slices.Clone(f.Blocks[ui].Effects)
 	f.Blocks[ui].Effects[uj] = next
 	f.Blocks[bi].Effects = slices.Delete(slices.Clone(f.Blocks[bi].Effects), index, index+1)
+	return true
+}
+
+// forwardsPast reports whether value can be evaluated after the effects
+// between instead of before them: none of them stores to a variable or
+// memory value reads, and the calls in value store to nothing they read or
+// store to.
+func forwardsPast(value Expr, between []Effect, addressed map[string]bool, writes func(*typeinfo.Function) machine.Writes) bool {
+	v := evalAccesses{addressed: addressed, writes: writes}
+	v.add(value, nil)
+	reads := map[string]bool{}
+	walkExpr(value, func(e Expr) {
+		switch e := e.(type) {
+		case *Local:
+			reads[e.Name] = true
+		case *Temp:
+			reads[e.Name] = true
+		}
+	})
+	for _, effect := range between {
+		e := evalAccesses{addressed: addressed, writes: writes}
+		var dst Expr
+		switch x := effect.(type) {
+		case *Assign:
+			e.addAddress(x.Dst, nil)
+			e.add(x.Src, nil)
+			dst = x.Dst
+		case *CallEffect:
+			e.add(x.Call, nil)
+			if x.Result != nil {
+				e.addAddress(x.Result, nil)
+				dst = x.Result
+			}
+		default:
+			return false
+		}
+		switch root := storageRoot(dst).(type) {
+		case nil:
+			if temp, ok := dst.(*Temp); ok {
+				if reads[temp.Name] {
+					return false
+				}
+			} else if dst != nil {
+				// A store through a pointer, which counts as reading the
+				// memory too, so a call in value storing there conflicts.
+				e.stores.Any = true
+				e.pointers = true
+			}
+		case *Local:
+			if reads[root.Name] {
+				return false
+			}
+			if addressed[root.Name] {
+				e.stores.Any = true
+				e.addressedLocal = true
+			}
+		case *Global:
+			e.stores.Globals = append(e.stores.Globals, root.GlobalVar)
+			e.globals = append(e.globals, root.GlobalVar)
+		}
+		if v.observes(e.stores) || e.observes(v.stores) {
+			return false
+		}
+	}
 	return true
 }
 
@@ -345,12 +432,12 @@ func nextEffect(f *Func, bi, index int) (int, int, bool) {
 	return next, 0, true
 }
 
-// forwardableValue reports whether storing value in a temp of type want and
+// ForwardableValue reports whether storing value in a temp of type want and
 // reading it back yields the value itself in every C expression: each
 // possible result already fits want, and for types that do not promote to
 // int, the C type of value is want's C type. A conditional is judged by its
 // arms, whose C types decide the type of the whole expression.
-func forwardableValue(value Expr, want typeinfo.Type) bool {
+func ForwardableValue(value Expr, want typeinfo.Type) bool {
 	arms := []Expr{value}
 	if cond, ok := value.(*Cond); ok {
 		arms = []Expr{cond.Then, cond.Else}
@@ -380,10 +467,112 @@ func forwardableValue(value Expr, want typeinfo.Type) bool {
 	}
 	if want.Bytes() < 4 {
 		// Both the temp and the value promote to int.
-		return true
+		return !unsignedArm
 	}
 	// A 32-bit temp keeps its signedness; the value must have the same one.
 	return unsignedArm == !isSignedInt(want)
+}
+
+// convertedOnUse reports whether the temp's one read in use converts it at
+// once to an integer type no wider than the temp: the whole source of an
+// assignment, a prototyped call argument, the returned value, or a cast.
+// Converting an integer to a narrower or equal width keeps only its low
+// bits, so converting value through the temp first changes nothing, even
+// when value does not fit the temp. fs is the function being lowered.
+func convertedOnUse(fs *typeinfo.Function, value Expr, use Effect, temp *Temp) bool {
+	tempInt, ok := cIntType(temp.TypeInfo)
+	if !ok || !integerValue(value) {
+		return false
+	}
+	target, ok := tempConversionTarget(fs, use, temp)
+	if !ok {
+		return false
+	}
+	targetInt, ok := cIntType(target)
+	return ok && targetInt.Size <= tempInt.Size
+}
+
+// tempConversionTarget returns the type C converts the temp's one read in
+// use to, when the read is the whole operand of that conversion: the source
+// of an assignment or of a stored call result, an argument matched to a
+// declared parameter, the returned value, or the operand of a cast.
+func tempConversionTarget(fs *typeinfo.Function, use Effect, temp *Temp) (typeinfo.Type, bool) {
+	isTemp := func(expr Expr) bool { return sameExpr(expr, temp) }
+	switch e := use.(type) {
+	case *Assign:
+		if isTemp(e.Src) {
+			return cExprType(e.Dst), true
+		}
+	case *Return:
+		if isTemp(e.Value) && fs.NativeDecl == "" {
+			return fs.Ret, true
+		}
+	}
+	var target typeinfo.Type
+	visit := func(expr Expr) {
+		switch e := expr.(type) {
+		case *Cast:
+			if isTemp(e.Value) {
+				target = e.TypeInfo
+			}
+		case *Call:
+			for i, arg := range e.Args {
+				if isTemp(arg) {
+					target = declaredParamType(e, i)
+				}
+			}
+		}
+	}
+	if call, ok := use.(*CallEffect); ok {
+		// The walk visits the arguments of the effect's own call, not the call.
+		visit(call.Call)
+	}
+	walkEffect(use, visit)
+	return target, target != nil
+}
+
+// declaredParamType returns the type the C prototype of call declares for
+// argument i, or nil when the prototype the native compile uses may differ:
+// a variadic argument, an unprototyped function, a native declaration, or a
+// Win32 or runtime function whose parameter is spelled as a fixed-width
+// integer standing in for the header's own type.
+func declaredParamType(call *Call, i int) typeinfo.Type {
+	fn := call.Function
+	if fn == nil || fn.Macro || fn.NativeDecl != "" || len(fn.CallParams) != 0 || i >= len(fn.Params) {
+		return nil
+	}
+	typ := fn.Params[i].Type
+	if fn.IsOverride() && fixedWidthInt(typ) {
+		return nil
+	}
+	return typ
+}
+
+// fixedWidthInt reports whether typ is spelled as a C fixed-width integer,
+// such as int16_t, rather than a named type such as HWND or COLORREF.
+func fixedWidthInt(typ typeinfo.Type) bool {
+	p, ok := typ.(*typeinfo.Primitive)
+	if !ok || p.TypeKind != typeinfo.KInt {
+		return false
+	}
+	switch p.Name {
+	case "int8_t", "uint8_t", "int16_t", "uint16_t", "int32_t", "uint32_t":
+		return true
+	}
+	return false
+}
+
+// integerValue reports whether value has an integer C type: its semantic
+// type is an integer, or for a conditional, both arms are.
+func integerValue(value Expr) bool {
+	if cond, ok := value.(*Cond); ok {
+		return integerValue(cond.Then) && integerValue(cond.Else)
+	}
+	if _, ok := value.(*Const); ok {
+		return true
+	}
+	_, _, ok := cIntRange(cExprType(value))
+	return ok
 }
 
 // pointerArmFits reports whether arm has the C pointer type want: a null
@@ -401,34 +590,138 @@ func pointerArmFits(arm Expr, want typeinfo.Type) bool {
 
 // armIntRange returns the range of values arm can hold in C and whether its
 // C type is a 32-bit unsigned int. A constant's range is its printed value;
-// any other arm must be a leaf whose type is a fixed-width integer.
-func armIntRange(arm Expr) (min, max int64, unsigned, ok bool) {
-	if c, ok := arm.(*Const); ok {
-		v := int64(c.U64)
-		if i64, signed := c.Int64(); signed {
+// a leaf's is its type's, or its width's for a bitfield; a word or byte of
+// a value, or a value sign-extended from a width, holds that width; and
+// arithmetic on such values holds what its operands' ranges allow, in the
+// int or unsigned int C evaluates it in.
+func armIntRange(arm Expr) (lo, hi int64, unsigned, ok bool) {
+	switch e := arm.(type) {
+	case *Const:
+		v := int64(e.U64)
+		if i64, signed := e.Int64(); signed {
 			v = i64
 		}
 		// A literal above INT_MAX has an unsigned or wider C type.
 		return v, v, false, v <= math.MaxInt32
+	case *FieldAccess:
+		if bf := e.Field.Bitfield; bf != nil && bf.BitWidth < 32 {
+			// A bitfield narrower than int promotes to int.
+			bits := uint(bf.BitWidth)
+			if bf.Signed() {
+				return -(1 << (bits - 1)), 1<<(bits-1) - 1, false, true
+			}
+			return 0, 1<<bits - 1, false, true
+		}
+	case *Word:
+		// LOWORD and HIWORD are WORDs, which promote to int.
+		return 0, math.MaxUint16, false, e.Part == machine.WordLow || e.Part == machine.WordHigh
+	case *Byte:
+		// LOBYTE and HIBYTE are BYTEs; a byte replaced in a value is not.
+		return 0, math.MaxUint8, false, e.Value == nil
+	case *SignExtend:
+		// The value is read as a signed integer of its source width, then
+		// widened to a signed int or promoted to one.
+		bits := uint(e.FromBits)
+		return -(1 << (bits - 1)), 1<<(bits-1) - 1, false, (bits == 8 || bits == 16) && isSignedInt(e.TypeInfo) && e.TypeInfo.Bytes() <= 4
+	case *Cond:
+		thenMin, thenMax, thenUnsigned, thenOK := armIntRange(e.Then)
+		elseMin, elseMax, elseUnsigned, elseOK := armIntRange(e.Else)
+		return min(thenMin, elseMin), max(thenMax, elseMax), thenUnsigned || elseUnsigned, thenOK && elseOK
+	case *Compare:
+		return 0, 1, false, true
+	case *Binary:
+		return binaryIntRange(e)
 	}
 	if !forwardLeaf(arm) {
 		return 0, 0, false, false
 	}
 	typ := cExprType(arm)
-	min, max, ok = cIntRange(typ)
-	return min, max, ok && typ.Bytes() == 4 && !isSignedInt(typ), ok
+	lo, hi, ok = cIntRange(typ)
+	return lo, hi, ok && typ.Bytes() == 4 && !isSignedInt(typ), ok
+}
+
+// binaryIntRange returns the range of values integer arithmetic e can hold
+// in C and whether C evaluates it in unsigned int, as armIntRange does. An
+// operation whose range the operands do not bound holds any value of that
+// C type.
+func binaryIntRange(e *Binary) (lo, hi int64, unsigned, ok bool) {
+	lMin, lMax, lUnsigned, ok := armIntRange(e.LHS)
+	if !ok {
+		return 0, 0, false, false
+	}
+	rMin, rMax, rUnsigned, ok := armIntRange(e.RHS)
+	if !ok {
+		return 0, 0, false, false
+	}
+	unsigned = lUnsigned || rUnsigned
+	switch e.Op {
+	case OpShl, OpShr, OpSar:
+		// A shift has the type of its promoted left operand.
+		unsigned = lUnsigned
+	}
+	full := func() (int64, int64, bool, bool) {
+		if unsigned {
+			return 0, math.MaxUint32, true, true
+		}
+		return math.MinInt32, math.MaxInt32, false, true
+	}
+	switch e.Op {
+	case OpAnd:
+		// Masking with a nonnegative value keeps at most its bits.
+		switch {
+		case lMin >= 0 && rMin >= 0:
+			return 0, min(lMax, rMax), unsigned, true
+		case lMin >= 0:
+			return 0, lMax, unsigned, true
+		case rMin >= 0:
+			return 0, rMax, unsigned, true
+		}
+	case OpShl:
+		if lMin >= 0 && rMin >= 0 && rMax < 31 && lMax<<rMax <= math.MaxInt32 {
+			return lMin << rMin, lMax << rMax, unsigned, true
+		}
+	case OpShr, OpSar:
+		if lMin >= 0 && rMin >= 0 && rMax < 32 {
+			return lMin >> rMax, lMax >> rMin, unsigned, true
+		}
+	case OpAdd, OpSub, OpMul:
+		if unsigned && e.Op == OpMul {
+			// The product of two unsigned ranges may not fit an int64.
+			break
+		}
+		var candidates []int64
+		switch e.Op {
+		case OpAdd:
+			candidates = []int64{lMin + rMin, lMax + rMax}
+		case OpSub:
+			candidates = []int64{lMin - rMax, lMax - rMin}
+		case OpMul:
+			candidates = []int64{lMin * rMin, lMin * rMax, lMax * rMin, lMax * rMax}
+		}
+		lo, hi = slices.Min(candidates), slices.Max(candidates)
+		fullMin, fullMax, _, _ := full()
+		if lo >= fullMin && hi <= fullMax {
+			return lo, hi, unsigned, true
+		}
+	}
+	return full()
 }
 
 // forwardLeaf reports whether expr's C type is its semantic type: a
 // variable, field, element, dereference, cast, or call of a function whose
-// generated prototype returns its semantic return type. Arithmetic is not a
-// leaf, since C evaluates it in at least int whatever its semantic type.
+// C prototype returns its semantic return type. That is a generated
+// prototype, or a Win32 or runtime function or a message cracker macro
+// whose return type is named as the headers name it, such as HWND, rather
+// than a fixed-width integer standing in for the header's int. Arithmetic
+// is not a leaf, since C evaluates it in at least int whatever its semantic
+// type.
 func forwardLeaf(expr Expr) bool {
 	switch e := expr.(type) {
 	case *Local, *Global, *Temp, *FieldAccess, *ArrayIndex, *Deref, *Cast:
 		return true
 	case *Call:
-		return e.Function != nil && !e.Function.Macro && !e.Function.IsOverride() && e.Function.NativeDecl == ""
+		fn := e.Function
+		return fn != nil && fn.NativeDecl == "" && (!fn.IsOverride() && !fn.Macro || !fixedWidthInt(fn.Ret))
 	}
 	return false
 }
@@ -436,17 +729,8 @@ func forwardLeaf(expr Expr) bool {
 // cIntRange returns the range of the fixed-width C integer type typ is
 // declared as, or false for any other type.
 func cIntRange(typ typeinfo.Type) (min, max int64, ok bool) {
-	if enum, isEnum := typ.(*typeinfo.Enum); isEnum {
-		if enum.Typedef != nil && enum.String() == enum.Name {
-			return cIntRange(enum.Typedef)
-		}
-		if enum.Storage == nil {
-			return 0, 0, false
-		}
-		return cIntRange(enum.Storage)
-	}
-	p, isPrim := typ.(*typeinfo.Primitive)
-	if !isPrim || p.TypeKind != typeinfo.KInt || p.Native != typeinfo.NativeInt || p.Size < 1 || p.Size > 4 {
+	p, ok := cIntType(typ)
+	if !ok {
 		return 0, 0, false
 	}
 	bits := uint(p.Size * 8)
@@ -454,6 +738,26 @@ func cIntRange(typ typeinfo.Type) (min, max int64, ok bool) {
 		return -(1 << (bits - 1)), 1<<(bits-1) - 1, true
 	}
 	return 0, 1<<bits - 1, true
+}
+
+// cIntType returns the fixed-width C integer type typ is declared as: the
+// type itself, or for an enum, the typedef its name is declared as or the
+// storage its use is declared with. It is false for any other type.
+func cIntType(typ typeinfo.Type) (*typeinfo.Primitive, bool) {
+	if enum, isEnum := typ.(*typeinfo.Enum); isEnum {
+		if enum.Typedef != nil && enum.String() == enum.Name {
+			return cIntType(enum.Typedef)
+		}
+		if enum.Storage == nil {
+			return nil, false
+		}
+		return cIntType(enum.Storage)
+	}
+	p, isPrim := typ.(*typeinfo.Primitive)
+	if !isPrim || p.TypeKind != typeinfo.KInt || p.Native != typeinfo.NativeInt || p.Size < 1 || p.Size > 4 {
+		return nil, false
+	}
+	return p, true
 }
 
 // isSignedInt reports whether typ is declared as a signed integer.
@@ -476,13 +780,17 @@ func isCPointer(typ typeinfo.Type) bool {
 // forwardOrderSafe reports whether moving value into use keeps the order of
 // everything that can observe it. A value without calls only reads memory,
 // so no call in use may run before it: every call there must take the temp
-// among its arguments. A value with a call must still be evaluated exactly
-// once, so not in a conditional arm, and nothing else use evaluates may
-// read or write memory the call can change.
-func forwardOrderSafe(value Expr, use Effect, temp *Temp, addressed map[string]bool) bool {
+// among its arguments, unless the value reads nothing a call can change. A
+// value with a call must still be evaluated exactly once, so not in a
+// conditional arm, and nothing else use evaluates may read or write memory
+// the call can change. Either way, what the calls store to, as writes
+// reports, may show that the value and the rest of use cannot observe each
+// other; see independentOrder.
+func forwardOrderSafe(value Expr, use Effect, temp *Temp, addressed map[string]bool, writes func(*typeinfo.Function) machine.Writes) bool {
 	isTemp := func(expr Expr) bool { return sameExpr(expr, temp) }
+	iso := callIsolation{temp: temp, addressed: addressed}
 	if !hasSideEffects(value) {
-		return callsEnclose(use, isTemp)
+		return iso.value(value) || callsEnclose(use, isTemp) || independentOrder(value, use, temp, addressed, writes)
 	}
 	inArm := false
 	walkEffect(use, func(expr Expr) {
@@ -493,16 +801,154 @@ func forwardOrderSafe(value Expr, use Effect, temp *Temp, addressed map[string]b
 	if inArm {
 		return false
 	}
-	iso := callIsolation{temp: temp, addressed: addressed}
+	isolated := false
 	switch e := use.(type) {
 	case *Assign:
-		return iso.address(e.Dst) && iso.value(e.Src)
+		isolated = iso.address(e.Dst) && iso.value(e.Src)
 	case *CallEffect:
-		return (e.Result == nil || iso.address(e.Result)) && iso.call(e.Call)
+		isolated = (e.Result == nil || iso.address(e.Result)) && iso.call(e.Call)
 	case *Branch:
-		return iso.value(e.Cond)
+		isolated = iso.value(e.Cond)
 	case *Return:
-		return e.Value == nil || iso.value(e.Value)
+		isolated = e.Value == nil || iso.value(e.Value)
+	case *TableJump:
+		isolated = iso.value(e.Index)
+	}
+	return isolated || independentOrder(value, use, temp, addressed, writes)
+}
+
+// independentOrder reports whether value and the rest of use, which C may
+// evaluate in either order once value replaces the temp, cannot observe
+// each other: neither calls a function that may store to memory the other
+// reads, and a call reads anything, so at most one of them calls a
+// function that stores at all. A call in use that takes the temp among its
+// arguments runs after value either way, so only its other arguments count.
+// The store use makes runs after both, as it did.
+func independentOrder(value Expr, use Effect, temp *Temp, addressed map[string]bool, writes func(*typeinfo.Function) machine.Writes) bool {
+	a := evalAccesses{addressed: addressed, writes: writes}
+	a.add(value, nil)
+	b := evalAccesses{addressed: addressed, writes: writes}
+	takesTemp := func(call *Call) bool {
+		found := false
+		walkCall(call, func(x Expr) {
+			found = found || sameExpr(x, temp)
+		})
+		return found
+	}
+	switch e := use.(type) {
+	case *Assign:
+		b.addAddress(e.Dst, takesTemp)
+		b.add(e.Src, takesTemp)
+	case *CallEffect:
+		if e.Result != nil {
+			b.addAddress(e.Result, takesTemp)
+		}
+		b.add(e.Call, takesTemp)
+	case *Branch:
+		b.add(e.Cond, takesTemp)
+	case *Return:
+		b.add(e.Value, takesTemp)
+	case *TableJump:
+		b.add(e.Index, takesTemp)
+	default:
+		return false
+	}
+	return !a.observes(b.stores) && !b.observes(a.stores)
+}
+
+// evalAccesses collects what evaluating expressions reads, and what the
+// functions they call may store to.
+type evalAccesses struct {
+	addressed map[string]bool
+	writes    func(*typeinfo.Function) machine.Writes
+
+	// stores is what the calls may store to.
+	stores machine.Writes
+	// calls is set when a function is called, which may read any memory.
+	calls bool
+	// globals are the globals read.
+	globals []*typeinfo.GlobalVar
+	// addressedLocal is set when a local whose address is taken is read.
+	addressedLocal bool
+	// pointers is set when memory is read through a pointer.
+	pointers bool
+}
+
+// add collects the evaluation of expr. A call skip reports true for runs
+// after the forwarded value either way, so only its arguments are collected.
+func (a *evalAccesses) add(expr Expr, skip func(*Call) bool) {
+	walkExpr(expr, func(e Expr) {
+		switch e := e.(type) {
+		case *Call:
+			if e.Function != nil && e.Function.Macro || skip != nil && skip(e) {
+				return
+			}
+			a.calls = true
+			if _, direct := e.Target.(*FunctionRef); !direct || e.Function == nil {
+				a.stores.Any = true
+				return
+			}
+			a.stores.Union(a.writes(e.Function))
+		case *Unary:
+			if e.Op == OpPostInc || e.Op == OpPostDec {
+				a.calls = true
+				a.stores.Any = true
+			}
+		case *Global:
+			a.globals = append(a.globals, e.GlobalVar)
+		case *Local:
+			a.addressedLocal = a.addressedLocal || a.addressed[e.Name]
+		case *Deref, *Memory:
+			a.pointers = true
+		case *FieldAccess:
+			a.pointers = a.pointers || isCPointer(e.Base.ExprType())
+		case *ArrayIndex:
+			_, array := e.Base.ExprType().(*typeinfo.Array)
+			a.pointers = a.pointers || !array
+		}
+	})
+}
+
+// addAddress collects computing the address of lvalue, without reading the
+// storage it names.
+func (a *evalAccesses) addAddress(lvalue Expr, skip func(*Call) bool) {
+	switch e := lvalue.(type) {
+	case *Local, *Global, *Temp:
+	case *FieldAccess:
+		if isCPointer(e.Base.ExprType()) {
+			a.add(e.Base, skip)
+			return
+		}
+		a.addAddress(e.Base, skip)
+	case *ArrayIndex:
+		a.add(e.Index, skip)
+		if _, array := e.Base.ExprType().(*typeinfo.Array); array {
+			a.addAddress(e.Base, skip)
+			return
+		}
+		a.add(e.Base, skip)
+	case *Deref:
+		a.add(e.Pointer, skip)
+	default:
+		a.add(lvalue, skip)
+	}
+}
+
+// observes reports whether stores could change what a reads, or, for the
+// storage a counts as read, what it stores to.
+func (a evalAccesses) observes(stores machine.Writes) bool {
+	switch {
+	case stores.None():
+		return false
+	case a.calls || a.pointers:
+		return true
+	case stores.Any:
+		return a.addressedLocal || len(a.globals) > 0
+	}
+	for _, g := range a.globals {
+		if slices.Contains(stores.Globals, g) {
+			return true
+		}
 	}
 	return false
 }
@@ -659,7 +1105,7 @@ func addressTakenLocals(f *Func) map[string]bool {
 		for _, effect := range block.Effects {
 			walkEffect(effect, func(expr Expr) {
 				if addr, ok := expr.(*AddressOf); ok {
-					if local := rootLocal(addr.Target); local != nil {
+					if local, ok := storageRoot(addr.Target).(*Local); ok {
 						out[local.Name] = true
 					}
 				}
@@ -669,20 +1115,21 @@ func addressTakenLocals(f *Func) map[string]bool {
 	return out
 }
 
-// rootLocal returns the local an lvalue's storage belongs to, or nil when
-// it is not part of a local.
-func rootLocal(expr Expr) *Local {
+// storageRoot returns the variable, a *Local or a *Global, an lvalue's
+// storage belongs to through fields and array elements, or nil when it is
+// reached through a pointer.
+func storageRoot(expr Expr) Expr {
 	switch e := expr.(type) {
-	case *Local:
+	case *Local, *Global:
 		return e
 	case *FieldAccess:
 		if isCPointer(e.Base.ExprType()) {
 			return nil
 		}
-		return rootLocal(e.Base)
+		return storageRoot(e.Base)
 	case *ArrayIndex:
 		if _, array := e.Base.ExprType().(*typeinfo.Array); array {
-			return rootLocal(e.Base)
+			return storageRoot(e.Base)
 		}
 	}
 	return nil

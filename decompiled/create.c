@@ -39,342 +39,349 @@ BTLPLAN rgbtlplanT[5] = {{
                              .iplrAttack = iplrAttackNeutralsEnemies,
                              .szName = "Chicken",
                          }};
-PLAYER  vrgplrComp[6][4] = {{{
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {-1, -1, -1},
-                                 .rgEnvVarMin = {-1, -1, -1},
-                                 .rgEnvVarMax = {-1, -1, -1},
-                                 .pctIdealGrowth = 5,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 12, 10, 16, 10, 5, 10, 0, 1, 1, 2, 1, 1},
-                                 .grbitAttr = 4929,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {-1, -1, -1},
-                                 .rgEnvVarMin = {-1, -1, -1},
-                                 .rgEnvVarMax = {-1, -1, -1},
-                                 .pctIdealGrowth = 6,
-                                 .pctResearch = 15,
-                                 .rgAttr = {9, 13, 9, 16, 10, 4, 11, 0, 1, 1, 2, 1, 1},
-                                 .grbitAttr = 833,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {-1, -1, -1},
-                                 .rgEnvVarMin = {-1, -1, -1},
-                                 .rgEnvVarMax = {-1, -1, -1},
-                                 .pctIdealGrowth = 6,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 13, 9, 18, 10, 4, 12, 0, 1, 2, 2, 2, 1},
-                                 .grbitAttr = 2147484257,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {-1, -1, -1},
-                                 .rgEnvVarMin = {-1, -1, -1},
-                                 .rgEnvVarMax = {-1, -1, -1},
-                                 .pctIdealGrowth = 7,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 13, 9, 16, 10, 4, 8, 0, 1, 2, 1, 2, 1},
-                                 .grbitAttr = 2147484257,
-                            }},
-                            {{
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {58, 35, 65},
-                                 .rgEnvVarMin = {27, 7, 35},
-                                 .rgEnvVarMax = {89, 63, 95},
-                                 .pctIdealGrowth = 14,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 9, 10, 9, 9, 5, 8, 0, 1, 0, 1, 1, 1, 0, 1},
-                                 .grbitAttr = 8261,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {62, 33, 61},
-                                 .rgEnvVarMin = {32, 6, 26},
-                                 .rgEnvVarMax = {92, 60, 96},
-                                 .pctIdealGrowth = 14,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 10, 10, 10, 10, 5, 9, 0, 1, 1, 1, 1, 1, 1, 1},
-                                 .grbitAttr = 2147491909,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {63, 28, 62},
-                                 .rgEnvVarMin = {31, 4, 30},
-                                 .rgEnvVarMax = {95, 52, 94},
-                                 .pctIdealGrowth = 14,
-                                 .pctResearch = 15,
-                                 .rgAttr = {9, 11, 10, 10, 10, 5, 9, 0, 0, 1, 0, 1, 1, 1, 1},
-                                 .grbitAttr = 2147491909,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {62, 29, -1},
-                                 .rgEnvVarMin = {31, 5, -1},
-                                 .rgEnvVarMax = {93, 53, -1},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 15, 10, 25, 10, 5, 9, 0, 0, 0, 0, 0, 0, 0, 1},
-                                 .grbitAttr = 2684362821,
-                            }},
-                            {{
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {35, 60, 38},
-                                 .rgEnvVarMin = {7, 26, 5},
-                                 .rgEnvVarMax = {63, 94, 71},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {9, 11, 10, 14, 11, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4},
-                                 .grbitAttr = 536874768,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {35, 60, 38},
-                                 .rgEnvVarMin = {7, 26, 5},
-                                 .rgEnvVarMax = {63, 94, 71},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 13, 9, 14, 10, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4},
-                                 .grbitAttr = 2684358416,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {35, 60, 38},
-                                 .rgEnvVarMin = {7, 26, 5},
-                                 .rgEnvVarMax = {63, 94, 71},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 14, 9, 15, 14, 5, 15, 1, 0, 0, 0, 0, 0, 0, 4},
-                                 .grbitAttr = 2684358160,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {35, -1, 50},
-                                 .rgEnvVarMin = {7, -1},
-                                 .rgEnvVarMax = {63, -1, 100},
-                                 .pctIdealGrowth = 16,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 14, 9, 14, 14, 5, 14, 1, 0, 0, 0, 0, 0, 0, 4},
-                                 .grbitAttr = 2684358160,
-                            }},
-                            {{
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {32, 31, 31},
-                                 .rgEnvVarMax = {68, 69, 69},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 10, 10, 10, 10, 5, 10, 1, 0, 0, 0, 0, 0, 2, 3},
-                                 .grbitAttr = 536878850,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {32, 31, 31},
-                                 .rgEnvVarMax = {68, 69, 69},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3},
-                                 .grbitAttr = 536878594,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {23, 24, 25},
-                                 .rgEnvVarMax = {77, 76, 75},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3},
-                                 .grbitAttr = 536878594,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {-1, 50, 50},
-                                 .rgEnvVarMin = {-1, 24, 25},
-                                 .rgEnvVarMax = {-1, 76, 75},
-                                 .pctIdealGrowth = 15,
-                                 .pctResearch = 15,
-                                 .rgAttr = {8, 15, 10, 15, 15, 5, 15, 1, 0, 0, 0, 0, 0, 2, 3},
-                                 .grbitAttr = 536878594,
-                            }},
-                            {{
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {22, 22, 22},
-                                 .rgEnvVarMax = {78, 78, 78},
-                                 .pctIdealGrowth = 12,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 9, 18, 9, 9, 10, 8, 1, 1, 0, 0, 1, 0, 0, 6},
-                                 .grbitAttr = 536873475,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {19, 19, 19},
-                                 .rgEnvVarMax = {81, 81, 81},
-                                 .pctIdealGrowth = 17,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 10, 13, 19, 10, 10, 7, 1, 1, 0, 0, 1, 1, 1, 6},
-                                 .grbitAttr = 536874499,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {18, 18, 18},
-                                 .rgEnvVarMax = {82, 82, 82},
-                                 .pctIdealGrowth = 17,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 14, 10, 20, 10, 10, 6, 1, 1, 1, 0, 1, 1, 2, 6},
-                                 .grbitAttr = 2684358211,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {17, 17, 17},
-                                 .rgEnvVarMax = {83, 83, 83},
-                                 .pctIdealGrowth = 19,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 15, 9, 25, 10, 10, 5, 1, 2, 2, 0, 2, 1, 1, 6},
-                                 .grbitAttr = 2684358211,
-                            }},
-                            {{
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {20, 20, 20},
-                                 .rgEnvVarMax = {80, 80, 80},
-                                 .pctIdealGrowth = 10,
-                                 .pctResearch = 15,
-                                 .rgAttr = {16, 10, 10, 10, 10, 5, 10, 0, 1, 1, 1, 1, 0, 1, 8},
-                                 .grbitAttr = 283,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {15, 15, 15},
-                                 .rgEnvVarMax = {85, 85, 85},
-                                 .pctIdealGrowth = 14,
-                                 .pctResearch = 15,
-                                 .rgAttr = {12, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 0, 1, 8},
-                                 .grbitAttr = 27,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {15, 15, 15},
-                                 .rgEnvVarMax = {85, 85, 85},
-                                 .pctIdealGrowth = 17,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 1, 1, 8},
-                                 .grbitAttr = 127,
-                            },
-                             {
-                                 .iPlayer = -1,
-                                 .det = detAll,
-                                 .reserved = 7,
-                                 .wMdPlr = 7,
-                                 .lSalt = -1,
-                                 .rgEnvVar = {50, 50, 50},
-                                 .rgEnvVarMin = {15, 15, 15},
-                                 .rgEnvVarMax = {85, 85, 85},
-                                 .pctIdealGrowth = 20,
-                                 .pctResearch = 15,
-                                 .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 2, 1, 1, 8},
-                                 .grbitAttr = 127,
-                            }}};
+PLAYER  vrgplrComp[6][4] = {
+    {{
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {-1, -1, -1},
+          .rgEnvVarMin = {-1, -1, -1},
+          .rgEnvVarMax = {-1, -1, -1},
+          .pctIdealGrowth = 5,
+          .pctResearch = 15,
+          .rgAttr = {10, 12, 10, 16, 10, 5, 10, 0, 1, 1, 2, 1, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceMineralAlchemy | grbitRaceCheapEngines | grbitRaceOBRM | grbitRaceBleedingEdgeTech,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {-1, -1, -1},
+          .rgEnvVarMin = {-1, -1, -1},
+          .rgEnvVarMax = {-1, -1, -1},
+          .pctIdealGrowth = 6,
+          .pctResearch = 15,
+          .rgAttr = {9, 13, 9, 16, 10, 4, 11, 0, 1, 1, 2, 1, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceMineralAlchemy | grbitRaceCheapEngines | grbitRaceOBRM,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {-1, -1, -1},
+          .rgEnvVarMin = {-1, -1, -1},
+          .rgEnvVarMax = {-1, -1, -1},
+          .pctIdealGrowth = 6,
+          .pctResearch = 15,
+          .rgAttr = {8, 13, 9, 18, 10, 4, 12, 0, 1, 2, 2, 2, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceUltimateRecycling | grbitRaceMineralAlchemy | grbitRaceOBRM | grbitRaceCheapFact,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {-1, -1, -1},
+          .rgEnvVarMin = {-1, -1, -1},
+          .rgEnvVarMax = {-1, -1, -1},
+          .pctIdealGrowth = 7,
+          .pctResearch = 15,
+          .rgAttr = {8, 13, 9, 16, 10, 4, 8, 0, 1, 2, 1, 2, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceUltimateRecycling | grbitRaceMineralAlchemy | grbitRaceOBRM | grbitRaceCheapFact,
+     }},
+    {{
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {58, 35, 65},
+          .rgEnvVarMin = {27, 7, 35},
+          .rgEnvVarMax = {89, 63, 95},
+          .pctIdealGrowth = 14,
+          .pctResearch = 15,
+          .rgAttr = {10, 9, 10, 9, 9, 5, 8, 0, 1, 0, 1, 1, 1, 0, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceARM | grbitRaceMineralAlchemy | grbitRaceRegeneratingShields,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {62, 33, 61},
+          .rgEnvVarMin = {32, 6, 26},
+          .rgEnvVarMax = {92, 60, 96},
+          .pctIdealGrowth = 14,
+          .pctResearch = 15,
+          .rgAttr = {10, 10, 10, 10, 10, 5, 9, 0, 1, 1, 1, 1, 1, 1, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceARM | grbitRaceMineralAlchemy | grbitRaceRegeneratingShields | grbitRaceCheapFact,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {63, 28, 62},
+          .rgEnvVarMin = {31, 4, 30},
+          .rgEnvVarMax = {95, 52, 94},
+          .pctIdealGrowth = 14,
+          .pctResearch = 15,
+          .rgAttr = {9, 11, 10, 10, 10, 5, 9, 0, 0, 1, 0, 1, 1, 1, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceARM | grbitRaceMineralAlchemy | grbitRaceRegeneratingShields | grbitRaceCheapFact,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {62, 29, -1},
+          .rgEnvVarMin = {31, 5, -1},
+          .rgEnvVarMax = {93, 53, -1},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {8, 15, 10, 25, 10, 5, 9, 0, 0, 0, 0, 0, 0, 0, 1},
+          .grbitAttr = grbitRaceIFE | grbitRaceARM | grbitRaceMineralAlchemy | grbitRaceRegeneratingShields | grbitRaceTech3 | grbitRaceCheapFact,
+     }},
+    {{
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {35, 60, 38},
+          .rgEnvVarMin = {7, 26, 5},
+          .rgEnvVarMax = {63, 94, 71},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {9, 11, 10, 14, 11, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4},
+          .grbitAttr = grbitRaceGeneralizedResearch | grbitRaceCheapEngines | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {35, 60, 38},
+          .rgEnvVarMin = {7, 26, 5},
+          .rgEnvVarMax = {63, 94, 71},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {8, 13, 9, 14, 10, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4},
+          .grbitAttr = grbitRaceGeneralizedResearch | grbitRaceCheapEngines | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3 |
+                      grbitRaceCheapFact,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {35, 60, 38},
+          .rgEnvVarMin = {7, 26, 5},
+          .rgEnvVarMax = {63, 94, 71},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {8, 14, 9, 15, 14, 5, 15, 1, 0, 0, 0, 0, 0, 0, 4},
+          .grbitAttr = grbitRaceGeneralizedResearch | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3 | grbitRaceCheapFact,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {35, -1, 50},
+          .rgEnvVarMin = {7, -1},
+          .rgEnvVarMax = {63, -1, 100},
+          .pctIdealGrowth = 16,
+          .pctResearch = 15,
+          .rgAttr = {8, 14, 9, 14, 14, 5, 14, 1, 0, 0, 0, 0, 0, 0, 4},
+          .grbitAttr = grbitRaceGeneralizedResearch | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3 | grbitRaceCheapFact,
+     }},
+    {{
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {32, 31, 31},
+          .rgEnvVarMax = {68, 69, 69},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {10, 10, 10, 10, 10, 5, 10, 1, 0, 0, 0, 0, 0, 2, 3},
+          .grbitAttr =
+             grbitRaceTT | grbitRaceCheapEngines | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceBleedingEdgeTech | grbitRaceTech3,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {32, 31, 31},
+          .rgEnvVarMax = {68, 69, 69},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3},
+          .grbitAttr = grbitRaceTT | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceBleedingEdgeTech | grbitRaceTech3,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {23, 24, 25},
+          .rgEnvVarMax = {77, 76, 75},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3},
+          .grbitAttr = grbitRaceTT | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceBleedingEdgeTech | grbitRaceTech3,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {-1, 50, 50},
+          .rgEnvVarMin = {-1, 24, 25},
+          .rgEnvVarMax = {-1, 76, 75},
+          .pctIdealGrowth = 15,
+          .pctResearch = 15,
+          .rgAttr = {8, 15, 10, 15, 15, 5, 15, 1, 0, 0, 0, 0, 0, 2, 3},
+          .grbitAttr = grbitRaceTT | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceBleedingEdgeTech | grbitRaceTech3,
+     }},
+    {{
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {22, 22, 22},
+          .rgEnvVarMax = {78, 78, 78},
+          .pctIdealGrowth = 12,
+          .pctResearch = 15,
+          .rgAttr = {10, 9, 18, 9, 9, 10, 8, 1, 1, 0, 0, 1, 0, 0, 6},
+          .grbitAttr = grbitRaceIFE | grbitRaceTT | grbitRaceOBRM | grbitRaceLowStartingPop | grbitRaceTech3,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {19, 19, 19},
+          .rgEnvVarMax = {81, 81, 81},
+          .pctIdealGrowth = 17,
+          .pctResearch = 15,
+          .rgAttr = {10, 10, 13, 19, 10, 10, 7, 1, 1, 0, 0, 1, 1, 1, 6},
+          .grbitAttr = grbitRaceIFE | grbitRaceTT | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {18, 18, 18},
+          .rgEnvVarMax = {82, 82, 82},
+          .pctIdealGrowth = 17,
+          .pctResearch = 15,
+          .rgAttr = {10, 14, 10, 20, 10, 10, 6, 1, 1, 1, 0, 1, 1, 2, 6},
+          .grbitAttr = grbitRaceIFE | grbitRaceTT | grbitRaceMineralAlchemy | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3 |
+                      grbitRaceCheapFact,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {17, 17, 17},
+          .rgEnvVarMax = {83, 83, 83},
+          .pctIdealGrowth = 19,
+          .pctResearch = 15,
+          .rgAttr = {10, 15, 9, 25, 10, 10, 5, 1, 2, 2, 0, 2, 1, 1, 6},
+          .grbitAttr = grbitRaceIFE | grbitRaceTT | grbitRaceMineralAlchemy | grbitRaceOBRM | grbitRaceNoAdvScanner | grbitRaceLowStartingPop | grbitRaceTech3 |
+                      grbitRaceCheapFact,
+     }},
+    {{
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {20, 20, 20},
+          .rgEnvVarMax = {80, 80, 80},
+          .pctIdealGrowth = 10,
+          .pctResearch = 15,
+          .rgAttr = {16, 10, 10, 10, 10, 5, 10, 0, 1, 1, 1, 1, 0, 1, 8},
+          .grbitAttr = grbitRaceIFE | grbitRaceTT | grbitRaceISB | grbitRaceGeneralizedResearch | grbitRaceCheapEngines,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {15, 15, 15},
+          .rgEnvVarMax = {85, 85, 85},
+          .pctIdealGrowth = 14,
+          .pctResearch = 15,
+          .rgAttr = {12, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 0, 1, 8},
+          .grbitAttr = grbitRaceIFE | grbitRaceTT | grbitRaceISB | grbitRaceGeneralizedResearch,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {15, 15, 15},
+          .rgEnvVarMax = {85, 85, 85},
+          .pctIdealGrowth = 17,
+          .pctResearch = 15,
+          .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 1, 1, 8},
+          .grbitAttr =
+             grbitRaceIFE | grbitRaceTT | grbitRaceARM | grbitRaceISB | grbitRaceGeneralizedResearch | grbitRaceUltimateRecycling | grbitRaceMineralAlchemy,
+     },
+      {
+          .iPlayer = -1,
+          .det = detAll,
+          .reserved = 7,
+          .wMdPlr = 7,
+          .lSalt = -1,
+          .rgEnvVar = {50, 50, 50},
+          .rgEnvVarMin = {15, 15, 15},
+          .rgEnvVarMax = {85, 85, 85},
+          .pctIdealGrowth = 20,
+          .pctResearch = 15,
+          .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 2, 1, 1, 8},
+          .grbitAttr =
+             grbitRaceIFE | grbitRaceTT | grbitRaceARM | grbitRaceISB | grbitRaceGeneralizedResearch | grbitRaceUltimateRecycling | grbitRaceMineralAlchemy,
+     }}};
 uint8_t vrgWormholeVar[5] = {3, 3, 5, 4, 5};
 
 void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr) {
@@ -393,7 +400,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     char          grUsed[128];
     jmp_buf      *penvMemSav;
     POINT16      *ppt;
-    int16_t       raMajor;
+    RaceAttribute raMajor;
     int16_t       k;
     POINT16       pt;
     int16_t       fFound;
@@ -455,10 +462,8 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     uint16_t      t_scratch_m116_19;
     int16_t       t_call_361d;
     HS           *t_fields_1;
-    uint32_t      t_fields_2;
     uint32_t      t_fields_3;
     int16_t       t_scratch_m116_24;
-    uint16_t      t_scratch_m120;
 
     iMin = 0;
     cKill = 0;
@@ -466,7 +471,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     dGalInv = dGal + 2000;
     cPlanMax = LOWORD((int32_t)(dGal * dGal) / 5000);
     cPlanMax += cPlanMax / 4 * (game.mdDensity - 1);
-    if (game.mdDensity >= 3) {
+    if ((int16_t)game.mdDensity >= densityPacked) {
         cPlanMax += cPlanMax / 4;
     }
     cPlanMax = cPlanMax >= 999 ? 999 : cPlanMax;
@@ -656,7 +661,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     } else {
         lDistIdeal2 = (int32_t)(lDistIdeal2 * 9) / 10;
     }
-    lDistIdeal2 = (int32_t)(lDistIdeal2 * game.mdStartDist) / 3 + l;
+    lDistIdeal2 = (int32_t)(lDistIdeal2 * (int16_t)game.mdStartDist) / 3 + l;
     lDistMin2 = (int32_t)(lDistIdeal2 * 9) / 10;
     lDistMax2 = (int32_t)(lDistIdeal2 * 7) / 6;
     while (1) {
@@ -771,7 +776,7 @@ L_15bc:
         }
         rgplr[i].wFlags &= 0xfffe;
         rgplr[i].wFlags &= 0xfff7;
-        rgplr[i].grbitTrader = 0;
+        rgplr[i].grbitTrader = grbitTraderNone;
         for (j = 0; j < 6; j++) {
             rgplr[i].rgTech[j] = 0;
             rgplr[i].rgResSpent[j] = 0;
@@ -779,36 +784,36 @@ L_15bc:
         t_call_1734 = GetRaceStat(&rgplr[i], rsMajorAdv);
         if ((uint16_t)(t_call_1734 - 1) <= 8) {
             switch (t_call_1734) {
-            case 2:
+            case raAttack:
                 rgplr[i].rgTech[1] = 6;
                 rgplr[i].rgTech[2] = 1;
                 rgplr[i].rgTech[0] = 1;
                 break;
-            case 5:
+            case raMines:
                 rgplr[i].rgTech[2] = 2;
                 rgplr[i].rgTech[5] = 2;
                 break;
-            case 1:
+            case raStealth:
                 rgplr[i].rgTech[4] = 5;
                 break;
-            case 6:
+            case raMassAccel:
                 rgplr[i].rgTech[0] = 4;
                 break;
-            case 7:
+            case raStargate:
                 rgplr[i].rgTech[2] = 5;
                 rgplr[i].rgTech[3] = 5;
                 break;
-            case 3:
+            case raTerra:
                 rgplr[i].rgTech[5] = 6;
                 rgplr[i].rgTech[3] = 2;
                 rgplr[i].rgTech[0] = 1;
                 rgplr[i].rgTech[1] = 1;
                 rgplr[i].rgTech[2] = 1;
                 break;
-            case 8:
+            case raMacintosh:
                 rgplr[i].rgTech[0] = 1;
                 break;
-            case 9:
+            case raNone:
                 for (j = 0; j < 6; j++) {
                     rgplr[i].rgTech[j] = 3;
                 }
@@ -829,7 +834,7 @@ L_15bc:
             rgplr[i].rgTech[2]++;
         }
         for (j = 0; j < 4; j++) {
-            FSendPlrMsg(i, j + 127, -1, 0, 0, 0, 0, 0, 0, 0);
+            FSendPlrMsg(i, j + 127, gotoNone, 0, 0, 0, 0, 0, 0, 0);
         }
     }
     for (i = 0; i < game.cPlayer; i++) {
@@ -857,7 +862,7 @@ L_15bc:
             }
         }
         lpPlanets[iMin].iScanner = 0;
-        FSendPlrMsg(i, 169, iMin, iMin, 0, 0, 0, 0, 0, 0);
+        FSendPlrMsg(i, idmHomePlanetPeopleReadyLeaveNestExplore, iMin, iMin, 0, 0, 0, 0, 0, 0);
         if (50 < CAdvantagePoints(&rgplr[i])) {
             iT = 50;
         } else {
@@ -981,7 +986,7 @@ L_15bc:
         if (GetRaceStat(&rgplr[i], rsMajorAdv) == raMassAccel) {
             lpshdef->hul.rghs[0].iItem = 7;
             lpshdef->hul.rghs[0].cItem = 1;
-            if (game.mdSize > 0) {
+            if ((int16_t)game.mdSize > sizeTiny) {
                 lpshdef[1].fFree = 0;
                 rgplr[i].cshdefSB++;
                 lpshdef[1].cExist = 1;
@@ -990,7 +995,7 @@ L_15bc:
         } else if (GetRaceStat(&rgplr[i], rsMajorAdv) == raStargate && game.fTutorial == 0) {
             lpshdef->hul.rghs[0].iItem = 0;
             lpshdef->hul.rghs[0].cItem = 1;
-            if (game.mdSize > 0) {
+            if ((int16_t)game.mdSize > sizeTiny) {
                 lpshdef[1] = lpshdef[2];
                 lpshdef[1].ishdef = 17;
                 lpshdef[1].fFree = 0;
@@ -1024,22 +1029,22 @@ L_15bc:
         idHome = rgplr[i].idPlanetHome;
         raMajor = GetRaceStat(&rgplr[i], rsMajorAdv);
         switch (raMajor) {
-        case 6:
+        case raMassAccel:
             CreateStartupShip(i, idHome, 4, 1);
             lpPlanets[idHome].iWarpFling = 1;
             break;
-        case 2:
+        case raAttack:
             CreateStartupShip(i, idHome, 3, 1);
             if (rgplr[i].rgTech[3] < 3)
                 break;
             CreateStartupShip(i, idHome, 7, 1);
             CreateStartupShip(i, idHome, 13, 1);
             break;
-        case 9:
+        case raNone:
             CreateStartupShip(i, idHome, 3, 1);
             CreateStartupShip(i, idHome, 4, 1);
             break;
-        case 1:
+        case raStealth:
             CreateStartupShip(i, idHome, rgplr[i].rgTech[0] < 2 ? 2 : 5, 1);
             if (rgplr[i].fAi != 0)
                 break;
@@ -1049,40 +1054,40 @@ L_15bc:
             CreateStartupShip(i, idHome, 2, 1);
         }
         switch (raMajor) {
-        case 0:
+        case raCheapCol:
             ishRet = CreateStartupShip(i, idHome, 12, 1);
             for (j = 1; j < 3; j++) {
                 CreateStartupShip(i, idHome, ishRet, 0);
             }
             break;
-        case 7:
+        case raStargate:
             CreateStartupShip(i, idHome, 11, 1);
             break;
-        case 8:
+        case raMacintosh:
             CreateStartupShip(i, idHome, 10, 1);
             break;
         default:
             ishRet = CreateStartupShip(i, idHome, 9, 1);
         }
         switch (raMajor) {
-        case 5:
+        case raMines:
             CreateStartupShip(i, idHome, 16, 1);
             CreateStartupShip(i, idHome, 18, 1);
             break;
-        case 3:
+        case raTerra:
             CreateStartupShip(i, idHome, 17, 1);
             break;
-        case 7:
+        case raStargate:
             CreateStartupShip(i, idHome, 7, 1);
             CreateStartupShip(i, idHome, 8, 1);
-            if (game.mdSize > 0)
+            if ((int16_t)game.mdSize > sizeTiny)
                 goto LGive2ndPlanet;
             break;
-        case 6:
-            if (game.mdSize > 0)
+        case raMassAccel:
+            if ((int16_t)game.mdSize > sizeTiny)
                 goto LGive2ndPlanet;
         default:
-            if (raMajor == 9) {
+            if (raMajor == raNone) {
                 CreateStartupShip(i, idHome, rgplr[i].rgTech[3] < 4 ? 6 : 8, 1);
                 CreateStartupShip(i, idHome, 7, 1);
                 CreateStartupShip(i, idHome, 14, 1);
@@ -1168,9 +1173,8 @@ L_15bc:
                 cTry = 0;
                 part.hs.grhst = lphs->grhst;
                 t_fields_1 = &part.hs;
-                t_fields_2 = lphs->iItem;
                 t_fields_3 = lphs->cItem;
-                t_fields_1->iItem = t_fields_2;
+                t_fields_1->iItem = lphs->iItem;
                 t_fields_1->cItem = t_fields_3;
                 switch (part.hs.grhst) {
                 case hstEngine:
@@ -1264,8 +1268,7 @@ L_15bc:
         for (i = 0; i < iBest; i++) {
             for (j = 0; j < 2; j++) {
                 lpth = LpthNew(0, ithWormhole);
-                t_scratch_m120 = Random(3);
-                lpth->thw.iStable = t_scratch_m120;
+                lpth->thw.iStable = Random(3);
                 if (j == 1) {
                     lpthLast = LpthFromId(idLast);
                     lpth->thw.idPartner = lpthLast->idFull;
@@ -1294,17 +1297,17 @@ L_15bc:
     }
     for (i = 0; i < game.cPlayer; i++) {
         if (rgplr[i].fHacker != 0) {
-            FSendPlrMsg2(i, 279, -1, 0, 0);
+            FSendPlrMsg2(i, idmRaceDefinitionHasTamperedStatisticsHaveAltered, gotoNone, 0, 0);
             for (j = 0; j < game.cPlayer; j++) {
                 if (i != j && rgplr[i].fAi == 0) {
-                    FSendPlrMsg2(j, 386, -1, i, 0);
+                    FSendPlrMsg2(j, idmHackedRaceDiscoveredRaceStatisticsHaveAltered, gotoNone, i, 0);
                 }
             }
         }
     }
     iplrSingle = -1;
     for (i = 0; i < game.cPlayer; i++) {
-        if (rgplr[i].fAi == 0 || rgplr[i].idAi == 7) {
+        if (rgplr[i].fAi == 0 || rgplr[i].idAi == idAiMaid) {
             if (iplrSingle != -1)
                 break;
             iplrSingle = i;
@@ -1359,7 +1362,7 @@ L_15bc:
         }
         idPlayer = iplrSingle;
         CreateChildWindows();
-        SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+        SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
     } else {
         idPlayer = -1;
         imemLogCur = 0;
@@ -1371,13 +1374,10 @@ L_15bc:
 int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef) {
     int16_t ishMac;
     FLEET  *lpfl;
-    int8_t  t_46ad;
     SHDEF  *t_call_46b8;
 
     if (fAddShdef != 0) {
-        t_46ad = rgplr[iplr].cShDef;
-        rgplr[iplr].cShDef++;
-        ishMac = (int16_t)(int8_t)t_46ad;
+        ishMac = (int16_t)(int8_t)rgplr[iplr].cShDef++;
         t_call_46b8 = LpshdefT();
         fmemmove(rglpshdef[iplr] + ishMac, t_call_46b8 + ishdef, sizeof(SHDEF));
         rglpshdef[iplr][ishMac].wFlags = (rglpshdef[iplr][ishMac].wFlags & 0x83ff) | (ishMac & 0x1f) * 0x400;
@@ -1407,7 +1407,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
     char   *lpbDef;
     int16_t cb;
     char   *pchT;
-    int16_t idAi;
+    AiRace  idAi;
     int16_t lvlAi;
 
     fSuccess = 0;
@@ -1421,7 +1421,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
             TurnLog(idsGeneratingYearD);
         }
         memset(&game, 0, sizeof(GAME));
-        StreamOpen(pszFile, 32);
+        StreamOpen(pszFile, mdRead);
         cb = LOWORD(filelength(hf));
         if (cb >= 16000) {
             FileError(idmMultitudeEnemiesHaveMountedProngAttackResulting);
@@ -1501,18 +1501,18 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                 lpbStart = PszGetLine(&lpb);
                                 if (lpb >= lpbDefMac)
                                     goto LUniDefShort;
-                                if (i > 0 && (int16_t)(int8_t)*lpbStart == 35) {
+                                if (i > 0 && (int16_t)(int8_t)*lpbStart == '#') {
                                     cNum = CParseNumbers(lpbStart + 1, rgl, 2);
                                     idAi = LOWORD(rgl[0]);
                                     lvlAi = LOWORD(rgl[1]);
-                                    if (cNum < 2 || idAi < 0 || idAi > 6 || lvlAi < 0 || lvlAi > 4)
+                                    if (cNum < 2 || (int16_t)idAi < idAiRobotoid || (int16_t)idAi > idAiRandom || lvlAi < 0 || lvlAi > 4)
                                         goto L_4e5d;
                                     if (lvlAi == 0) {
                                         lvlAi = Random(4);
                                     } else {
                                         lvlAi--;
                                     }
-                                    if (idAi == 0) {
+                                    if (idAi == idAiRobotoid) {
                                         idAi = Random(6);
                                     } else {
                                         idAi--;
@@ -1537,8 +1537,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                 if (rgl[0] == 1) {
                                     if (cNum < 2 || rgl[1] < 20 || rgl[1] > 100)
                                         goto LBadDefVc;
-                                    SetVCCheck(&game, 0, 1);
-                                    SetVCVal(&game, 0, (int16_t)(LOWORD(rgl[1]) - 20) / 5);
+                                    SetVCCheck(&game, vcOwnsPercentPlanets, 1);
+                                    SetVCVal(&game, vcOwnsPercentPlanets, (int16_t)(LOWORD(rgl[1]) - 20) / 5);
                                 }
                                 lpbStart = PszGetLine(&lpb);
                                 cNum = CParseNumbers(lpbStart, rgl, 3);
@@ -1549,10 +1549,10 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                     if (rgl[0] == 1) {
                                         if (cNum < 3 || rgl[1] < 8 || rgl[1] > 26 || rgl[2] < 2 || rgl[2] > 6)
                                             goto LBadDefVc;
-                                        SetVCCheck(&game, 1, 1);
-                                        SetVCCheck(&game, 2, 1);
-                                        SetVCVal(&game, 1, LOWORD(rgl[1]) - 8);
-                                        SetVCVal(&game, 2, LOWORD(rgl[2]) - 2);
+                                        SetVCCheck(&game, vcAttainsTechLevel, 1);
+                                        SetVCCheck(&game, vcAttainsTechFields, 1);
+                                        SetVCVal(&game, vcAttainsTechLevel, LOWORD(rgl[1]) - 8);
+                                        SetVCVal(&game, vcAttainsTechFields, LOWORD(rgl[2]) - 2);
                                     }
                                     lpbStart = PszGetLine(&lpb);
                                     cNum = CParseNumbers(lpbStart, rgl, 2);
@@ -1563,8 +1563,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                         if (rgl[0] == 1) {
                                             if (cNum < 2 || rgl[1] < 1000 || rgl[1] > 20000)
                                                 goto LBadDefVc;
-                                            SetVCCheck(&game, 3, 1);
-                                            SetVCVal(&game, 3, (int16_t)(LOWORD(rgl[1]) - 1000) / 1000);
+                                            SetVCCheck(&game, vcExceedsScore, 1);
+                                            SetVCVal(&game, vcExceedsScore, (int16_t)(LOWORD(rgl[1]) - 1000) / 1000);
                                         }
                                         lpbStart = PszGetLine(&lpb);
                                         cNum = CParseNumbers(lpbStart, rgl, 2);
@@ -1575,8 +1575,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                             if (rgl[0] == 1) {
                                                 if (cNum < 2 || rgl[1] < 20 || rgl[1] > 300)
                                                     goto LBadDefVc;
-                                                SetVCCheck(&game, 4, 1);
-                                                SetVCVal(&game, 4, (int16_t)(LOWORD(rgl[1]) - 20) / 10);
+                                                SetVCCheck(&game, vcExceedsSecondPlaceBy, 1);
+                                                SetVCVal(&game, vcExceedsSecondPlaceBy, (int16_t)(LOWORD(rgl[1]) - 20) / 10);
                                             }
                                             lpbStart = PszGetLine(&lpb);
                                             cNum = CParseNumbers(lpbStart, rgl, 2);
@@ -1587,8 +1587,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                 if (rgl[0] == 1) {
                                                     if (cNum < 2 || rgl[1] < 10 || rgl[1] > 500)
                                                         goto LBadDefVc;
-                                                    SetVCCheck(&game, 5, 1);
-                                                    SetVCVal(&game, 5, (int16_t)(LOWORD(rgl[1]) - 10) / 10);
+                                                    SetVCCheck(&game, vcProductionCapacity, 1);
+                                                    SetVCVal(&game, vcProductionCapacity, (int16_t)(LOWORD(rgl[1]) - 10) / 10);
                                                 }
                                                 lpbStart = PszGetLine(&lpb);
                                                 cNum = CParseNumbers(lpbStart, rgl, 2);
@@ -1599,8 +1599,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                     if (rgl[0] == 1) {
                                                         if (cNum < 2 || rgl[1] < 10 || rgl[1] > 300)
                                                             goto LBadDefVc;
-                                                        SetVCCheck(&game, 6, 1);
-                                                        SetVCVal(&game, 6, (int16_t)(LOWORD(rgl[1]) - 10) / 10);
+                                                        SetVCCheck(&game, vcOwnsCapitalShips, 1);
+                                                        SetVCVal(&game, vcOwnsCapitalShips, (int16_t)(LOWORD(rgl[1]) - 10) / 10);
                                                     }
                                                     lpbStart = PszGetLine(&lpb);
                                                     cNum = CParseNumbers(lpbStart, rgl, 2);
@@ -1611,8 +1611,8 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                         if (rgl[0] == 1) {
                                                             if (cNum < 2 || rgl[1] < 30 || rgl[1] > 900)
                                                                 goto LBadDefVc;
-                                                            SetVCCheck(&game, 7, 1);
-                                                            SetVCVal(&game, 7, (int16_t)(LOWORD(rgl[1]) - 30) / 10);
+                                                            SetVCCheck(&game, vcHighestScoreAfterYears, 1);
+                                                            SetVCVal(&game, vcHighestScoreAfterYears, (int16_t)(LOWORD(rgl[1]) - 30) / 10);
                                                         }
                                                         lpbStart = PszGetLine(&lpb);
                                                         cNum = CParseNumbers(lpbStart, rgl, 2);
@@ -1623,13 +1623,13 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                             if (rgl[0] > 0) {
                                                                 if (cNum < 2 || rgl[1] < 30 || rgl[1] > 500)
                                                                     goto LBadDefVc;
-                                                                SetVCVal(&game, 8, LOWORD(rgl[0]));
-                                                                SetVCVal(&game, 9, (int16_t)(LOWORD(rgl[1]) - 30) / 10);
+                                                                SetVCVal(&game, vcMeetsNumCriteria, LOWORD(rgl[0]));
+                                                                SetVCVal(&game, vcMinYearsBeforeWin, (int16_t)(LOWORD(rgl[1]) - 30) / 10);
                                                             }
                                                             lpbStart = PszGetLine(&lpb);
                                                             lpb = lpbStart + (-1 + fstrlen(lpbStart));
-                                                            if (lpb - lpbStart >= 3 && (int16_t)(int8_t)*lpb == 121 && (int16_t)(int8_t)lpb[-1] == 120 &&
-                                                                (int16_t)(int8_t)lpb[-2] == 46) {
+                                                            if (lpb - lpbStart >= 3 && (int16_t)(int8_t)*lpb == 'y' && (int16_t)(int8_t)lpb[-1] == 'x' &&
+                                                                (int16_t)(int8_t)lpb[-2] == '.') {
                                                                 lpb[-2] = 0;
                                                             }
                                                             fstrcpy(szBase, lpbStart);
@@ -1751,9 +1751,9 @@ void CreateTutorWorld() {
     memset(&game, 0, sizeof(GAME));
     game.cPlayer = 2;
     game.fTutorial = 1;
-    game.mdDensity = 0;
-    game.mdSize = 0;
-    game.mdStartDist = 1;
+    game.mdDensity = densitySparse;
+    game.mdSize = sizeTiny;
+    game.mdStartDist = startDistModerate;
     game.fBBSPlay = 1;
     game.fVisScores = 1;
     game.fNoRandom = 1;
@@ -1764,10 +1764,10 @@ void CreateTutorWorld() {
     rgplr[0] = vrgplrDef[0];
     CchGetString(idsHumanoid, rgplr[0].szName);
     _wsprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
-    rgplr[1] = *LpplrComp(1, lvlAiEasy);
+    rgplr[1] = *LpplrComp(idAiTurinDrone, lvlAiEasy);
     rgplr[1].fAi = 1;
     rgplr[1].lvlAi = lvlAiEasy;
-    rgplr[1].idAi = 1;
+    rgplr[1].idAi = idAiTurinDrone;
     CchGetString(idsBerserker, rgplr[1].szName);
     Randomize(1234567890);
     for (i = 1; i <= 2; i++) {
@@ -1789,7 +1789,7 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
     int16_t i;
     int16_t c;
     char    szFile[256];
-    int16_t idAi;
+    AiRace  idAi;
     int16_t fEasy;
     char    szFileLocal[208];
     int16_t j;
@@ -1801,7 +1801,7 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
     iStepMaxSoFar = 0;
     fEasy = 0;
     vrgrcRCW = rgrcStack;
-    iPanelActive = -1;
+    iPanelActive = rwPageNone;
     fRCWReadOnly = fReadOnly;
     fIdleSav = gd.fNoIdleChecks;
     gd.fNoIdleChecks = 1;
@@ -1848,8 +1848,8 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
             }
             lvlAi = game.mdDensity;
             InitNewGamePlr(iStepMaxSoFar, lvlAi);
-            game.mdDensity = 1;
-            game.mdStartDist = lvlAi < 2 ? 1 : 2;
+            game.mdDensity = densityNormal;
+            game.mdStartDist = lvlAi < 2 ? startDistModerate : startDistFarther;
             game.fExtraFuel = 0;
             game.fSlowTech = 0;
             game.fBBSPlay = 0;
@@ -1955,7 +1955,7 @@ Finish:
                     if (lvlAi >= 4) {
                         lvlAi = Random(4);
                     }
-                    if (idAi >= 6) {
+                    if ((int16_t)idAi >= idAiRandom) {
                         idAi = Random(6);
                     }
                     rgplr[i] = *LpplrComp(idAi, lvlAi);
@@ -2058,17 +2058,17 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
     uint8_t ch;
 
     if (iStepMaxSoFar < 2 && fRCWReadOnly == 0) {
-        SetVCVal(&game, 9, game.mdSize * 2);
+        SetVCVal(&game, vcMinYearsBeforeWin, game.mdSize * 2);
         if (iStepMaxSoFar < 1) {
             switch (game.mdSize) {
-            case 0:
+            case sizeTiny:
                 if (lvlAi == lvlAiExpert && Random(3) == 0) {
                     game.cPlayer = 3;
                     break;
                 }
                 game.cPlayer = 2;
                 break;
-            case 1:
+            case sizeSmall:
                 if (lvlAi == lvlAiExpert && Random(4) == 0) {
                     game.cPlayer = 5;
                     break;
@@ -2079,7 +2079,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
                 }
                 game.cPlayer = 3;
                 break;
-            case 2:
+            case sizeMedium:
                 if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 9;
                     break;
@@ -2098,7 +2098,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
                 }
                 game.cPlayer = 7;
                 break;
-            case 3:
+            case sizeLarge:
                 if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = Random(2) + 14;
                     break;
@@ -2117,7 +2117,7 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, AiLevel lvlAi) {
                 }
                 game.cPlayer = 12;
                 break;
-            case 4:
+            case sizeHuge:
                 if (lvlAi == lvlAiExpert && Random(10) == 0) {
                     game.cPlayer = 13 - Random(3);
                 } else if ((int16_t)lvlAi >= lvlAiTough && Random(9 - lvlAi) == 0) {
@@ -2218,7 +2218,7 @@ int16_t FGetNewGameName(char *szFileSuggest) {
     }
     CchGetString(idsStarsGameFilesXy, szFilter);
     for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-        if ((int16_t)(int8_t)szFilter[i] == 124) {
+        if ((int16_t)(int8_t)szFilter[i] == '|') {
             szFilter[i] = 0;
         }
     }
@@ -2260,14 +2260,12 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
     int16_t     c;
     PAINTSTRUCT ps;
     RECT       *prcSav;
-    HWND        t_scratch_me;
-    HWND        t_scratch_me_2;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
-        GetWindowRect(GetDlgItem(hwnd, 0xc8), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_SIMPLE_NEW_GAME_EASY), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, IDC_U16_0x00CB), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_SIMPLE_NEW_GAME_EXPERT), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -2277,9 +2275,9 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         SetBkColor(hdc, crButtonFace);
         c = CchGetString(idsDifficultyLevel, szWork);
         TextOut(hdc, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 1), szWork, c);
-        GetWindowRect(GetDlgItem(hwnd, 0x3e8), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_SIMPLE_NEW_GAME_TINY), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, 0x3ec), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_SIMPLE_NEW_GAME_HUGE), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -2302,7 +2300,7 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         ExpandRc(&rcGBox, -dyArial8, 0);
         c = CchGetString(idsButtonAllowsConfigureMultiPlayerGamesCustom, szWork);
         dy = DrawText(hdc, szWork, c, &rcGBox, DT_WORDBREAK | DT_NOPREFIX);
-        SetWindowPos(GetDlgItem(hwnd, IDC_U16_0x00D3), NULL, rcGBox.left, rcGBox.top + dy + dyArial8 / 2, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        SetWindowPos(GetDlgItem(hwnd, IDC_SIMPLE_NEW_GAME_ADVANCED), NULL, rcGBox.left, rcGBox.top + dy + dyArial8 / 2, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
         rcGBox.bottom = rcGBox.top + dy + dyArial8 * 2;
         ExpandRc(&rcGBox, dyArial8, dyArial8 >> 1);
         _Draw3dFrame(hdc, &rcGBox, -2);
@@ -2316,77 +2314,16 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        if (message == WM_INITDIALOG) {
-            CheckRadioButton(hwnd, 200, 203, 201);
-            CheckRadioButton(hwnd, 1000, 1004, 1001);
-            hwndDD = GetDlgItem(hwnd, IDC_COMBOBOX);
-            SendMessage(hwndDD, CB_RESETCONTENT, 0, 0);
-            for (i = 0; i < 7; i++) {
-                SendMessage(hwndDD, CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i + 1383));
-            }
-            SendMessage(hwndDD, CB_SETCURSEL, 0, 0);
-            StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
-            return 1;
-        }
-        if (message == WM_COMMAND) {
-            switch (GET_WM_COMMAND_ID(wParam, lParam)) {
-            case IDC_FINISH:
-            case IDCANCEL:
-            case IDC_U16_0x00D3:
-                for (i = 200; i <= 203 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
-                }
-                game.mdDensity = i - 200;
-                for (i = 1000; i <= 1004 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
-                }
-                game.mdSize = i - 1000;
-                game.turn = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0, 0));
-                StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
-                return 1;
-            case 0xd4:
-                StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
-                EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
-                return 1;
-            case 0xd2:
-                hwndDD = GetDlgItem(hwnd, IDC_COMBOBOX);
-                game.turn = LOWORD(SendMessage(hwndDD, CB_GETCURSEL, 0, 0));
-                if (game.turn < 7) {
-                    vplr = vrgplrDef[game.turn];
-                    CchGetString(game.turn + 1383, vplr.szName);
-                    _wsprintf(vplr.szNames, "%ss", vplr.szName);
-                } else {
-                    vplr = *vrgplrNew;
-                }
-                prcSav = vrgrcRCW;
-                if (RaceCreationWizard(hwnd, 0, 1) != 0) {
-                    if (SendMessage(hwndDD, CB_GETCOUNT, 0, 0) > 7) {
-                        SendMessage(hwndDD, CB_DELETESTRING, 7, 0);
-                    }
-                    SendMessage(hwndDD, CB_ADDSTRING, 0, (LPARAM)vplr.szName);
-                    SendMessage(hwndDD, CB_SETCURSEL, 7, 0);
-                    *vrgplrNew = vplr;
-                }
-                vrgrcRCW = prcSav;
-                SetFocus(hwnd);
-                break;
-            case IDC_HELP:
-                WinHelp(hwnd, szHelpFile, 1, 1002);
-                return 1;
-            }
-        }
-    } else {
+    if (IS_WM_CTLCOLOR(message) != 0) {
         for (i = 200; i <= 203; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i)) {
+            if (GET_WM_CTLCOLOR_HWND(wParam, lParam) == GetDlgItem(hwnd, i)) {
                 i = -1;
                 break;
             }
         }
         if (i != -1) {
             for (i = 1000; i <= 1004; i++) {
-                t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-                if (t_scratch_me_2 == GetDlgItem(hwnd, i)) {
+                if (GET_WM_CTLCOLOR_HWND(wParam, lParam) == GetDlgItem(hwnd, i)) {
                     i = -1;
                     break;
                 }
@@ -2395,6 +2332,65 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         if (i == -1 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    if (message == WM_INITDIALOG) {
+        CheckRadioButton(hwnd, IDC_SIMPLE_NEW_GAME_EASY, IDC_SIMPLE_NEW_GAME_EXPERT, IDC_SIMPLE_NEW_GAME_STANDARD);
+        CheckRadioButton(hwnd, IDC_SIMPLE_NEW_GAME_TINY, IDC_SIMPLE_NEW_GAME_HUGE, IDC_SIMPLE_NEW_GAME_SMALL);
+        hwndDD = GetDlgItem(hwnd, IDC_COMBOBOX);
+        SendMessage(hwndDD, CB_RESETCONTENT, 0, 0);
+        for (i = 0; i < 7; i++) {
+            SendMessage(hwndDD, CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i + 1383));
+        }
+        SendMessage(hwndDD, CB_SETCURSEL, 0, 0);
+        StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
+        return 1;
+    }
+    if (message == WM_COMMAND) {
+        switch (GET_WM_COMMAND_ID(wParam, lParam)) {
+        case IDC_FINISH:
+        case IDCANCEL:
+        case IDC_SIMPLE_NEW_GAME_ADVANCED:
+            for (i = 200; i <= 203 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
+            }
+            game.mdDensity = i - 200;
+            for (i = 1000; i <= 1004 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
+            }
+            game.mdSize = i - 1000;
+            game.turn = LOWORD(SendMessage(GetDlgItem(hwnd, IDC_COMBOBOX), CB_GETCURSEL, 0, 0));
+            StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
+            EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
+            return 1;
+        case IDC_SIMPLE_NEW_GAME_TUTORIAL:
+            StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
+            EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam));
+            return 1;
+        case IDC_SIMPLE_NEW_GAME_CUSTOMIZE_RACE:
+            hwndDD = GetDlgItem(hwnd, IDC_COMBOBOX);
+            game.turn = LOWORD(SendMessage(hwndDD, CB_GETCURSEL, 0, 0));
+            if (game.turn < 7) {
+                vplr = vrgplrDef[game.turn];
+                CchGetString(game.turn + 1383, vplr.szName);
+                _wsprintf(vplr.szNames, "%ss", vplr.szName);
+            } else {
+                vplr = *vrgplrNew;
+            }
+            prcSav = vrgrcRCW;
+            if (RaceCreationWizard(hwnd, 0, 1) != 0) {
+                if (SendMessage(hwndDD, CB_GETCOUNT, 0, 0) > 7) {
+                    SendMessage(hwndDD, CB_DELETESTRING, 7, 0);
+                }
+                SendMessage(hwndDD, CB_ADDSTRING, 0, (LPARAM)vplr.szName);
+                SendMessage(hwndDD, CB_SETCURSEL, 7, 0);
+                *vrgplrNew = vplr;
+            }
+            vrgrcRCW = prcSav;
+            SetFocus(hwnd);
+            break;
+        case IDC_HELP:
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhNewGameSetupBasic);
+            return 1;
         }
     }
     return 0;
@@ -2408,14 +2404,12 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
     int16_t     c;
     PAINTSTRUCT ps;
     int16_t     iRet;
-    HWND        t_scratch_me;
-    HWND        t_scratch_me_2;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
-        GetWindowRect(GetDlgItem(hwnd, 0x3e8), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_NEW_GAME_TINY), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, 0x3ec), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_NEW_GAME_HUGE), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -2425,9 +2419,9 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         SetBkColor(hdc, crButtonFace);
         c = CchGetString(idsUniverseSize, szWork);
         TextOut(hdc, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 1), szWork, c);
-        GetWindowRect(GetDlgItem(hwnd, 0x3ed), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_NEW_GAME_SPARSE), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, 0x3f0), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_NEW_GAME_PACKED), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -2437,9 +2431,9 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         SetBkColor(hdc, crButtonFace);
         c = CchGetString(idsDensity, szWork);
         TextOut(hdc, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 1), szWork, c);
-        GetWindowRect(GetDlgItem(hwnd, 0x3f1), &rcGBox);
+        GetWindowRect(GetDlgItem(hwnd, IDC_NEW_GAME_CLOSE), &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
-        GetWindowRect(GetDlgItem(hwnd, 0x3f4), &rc);
+        GetWindowRect(GetDlgItem(hwnd, IDC_NEW_GAME_DISTANT), &rc);
         ScreenToClient(hwnd, (POINT *)&rc.right);
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
@@ -2458,34 +2452,62 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         return 1;
     }
     if (IS_WM_CTLCOLOR(message) != 0) {
-        for (i = 1000; i <= 1021; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+        for (i = 1000; i <= 1021 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
-        if (i > 1021 && HIWORD(lParam) != 6) {
-            t_scratch_me_2 = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me_2 != GetDlgItem(hwnd, IDC_U16_0x041A)) {
-                return 0;
+        if (i <= 1021 || HIWORD(lParam) == 6 || GET_WM_CTLCOLOR_HWND(wParam, lParam) == GetDlgItem(hwnd, IDC_NEW_GAME_GALAXY_CLUMPING)) {
+            SetBkColor((HDC)wParam, crButtonFace);
+            return (INT_PTR)hbrButtonFace;
+        }
+    } else if (message != WM_INITDIALOG) {
+        if (message == WM_COMMAND) {
+            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+                WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep1SpecifyingTheUniverse);
+                return 1;
+            }
+            for (iRet = 0; iRet < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[iRet]; iRet++) {
+            }
+            if (iRet < 4) {
+                if (iRet != 0) {
+                    for (i = 1000; i <= 1004 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
+                    }
+                    game.mdSize = i - 1000;
+                    for (i = 1005; i <= 1008 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
+                    }
+                    game.mdDensity = i - 1005;
+                    for (i = 1009; i <= 1012 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
+                    }
+                    game.mdStartDist = i - 1009;
+                    game.fExtraFuel = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_MAX_MINERALS);
+                    game.fSlowTech = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_SLOWER_TECH);
+                    game.fBBSPlay = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_ACCELERATED_BBS);
+                    game.fNoRandom = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_NO_RANDOM_EVENTS);
+                    game.fAisBand = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_AI_ALLIANCES);
+                    game.fVisScores = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_PUBLIC_SCORES);
+                    game.fClumping = IsDlgButtonChecked(hwnd, IDC_NEW_GAME_GALAXY_CLUMPING);
+                    i = GetWindowText(GetDlgItem(hwnd, IDC_NEW_GAME_NAME), game.szName, 32);
+                    if (i == 0) {
+                        strcpy(game.szName, szBase);
+                    }
+                }
+                StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
+                EndDialog(hwnd, iRet);
+                return 1;
             }
         }
-        SetBkColor((HDC)wParam, crButtonFace);
-        return (INT_PTR)hbrButtonFace;
-    }
-    if (message == WM_INITDIALOG) {
+    } else {
         SetNGWTitle(hwnd, 1);
-        CheckRadioButton(hwnd, 1000, 1004, game.mdSize + 1000);
-        CheckRadioButton(hwnd, 1005, 1008, game.mdDensity + 1005);
-        CheckRadioButton(hwnd, 1009, 1012, game.mdStartDist + 1009);
-        SetWindowText(GetDlgItem(hwnd, IDC_U16_0x0406), game.szName);
-        SendDlgItemMessage(hwnd, 1030, EM_LIMITTEXT, 0x1f, 0);
-        SendMessage(GetDlgItem(hwnd, 0x3f8), BM_SETCHECK, game.fExtraFuel, 0);
-        SendMessage(GetDlgItem(hwnd, 0x3f9), BM_SETCHECK, game.fSlowTech, 0);
-        SendMessage(GetDlgItem(hwnd, 0x3fa), BM_SETCHECK, game.fBBSPlay, 0);
-        SendMessage(GetDlgItem(hwnd, 0x3fb), BM_SETCHECK, game.fNoRandom, 0);
-        SendMessage(GetDlgItem(hwnd, 0x3fc), BM_SETCHECK, game.fAisBand, 0);
-        SendMessage(GetDlgItem(hwnd, 0x3fd), BM_SETCHECK, game.fVisScores, 0);
-        SendMessage(GetDlgItem(hwnd, IDC_U16_0x041A), BM_SETCHECK, game.fClumping, 0);
+        CheckRadioButton(hwnd, IDC_NEW_GAME_TINY, IDC_NEW_GAME_HUGE, game.mdSize + 1000);
+        CheckRadioButton(hwnd, IDC_NEW_GAME_SPARSE, IDC_NEW_GAME_PACKED, game.mdDensity + 1005);
+        CheckRadioButton(hwnd, IDC_NEW_GAME_CLOSE, IDC_NEW_GAME_DISTANT, game.mdStartDist + 1009);
+        SetWindowText(GetDlgItem(hwnd, IDC_NEW_GAME_NAME), game.szName);
+        SendDlgItemMessage(hwnd, IDC_NEW_GAME_NAME, EM_LIMITTEXT, 0x1f, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_MAX_MINERALS), BM_SETCHECK, game.fExtraFuel, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_SLOWER_TECH), BM_SETCHECK, game.fSlowTech, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_ACCELERATED_BBS), BM_SETCHECK, game.fBBSPlay, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_NO_RANDOM_EVENTS), BM_SETCHECK, game.fNoRandom, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_AI_ALLIANCES), BM_SETCHECK, game.fAisBand, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_PUBLIC_SCORES), BM_SETCHECK, game.fVisScores, 0);
+        SendMessage(GetDlgItem(hwnd, IDC_NEW_GAME_GALAXY_CLUMPING), BM_SETCHECK, game.fClumping, 0);
         if (fRCWReadOnly != 0) {
             for (i = 1000; i <= 1004; i++) {
                 EnableWindow(GetDlgItem(hwnd, i), 0);
@@ -2496,52 +2518,17 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             for (i = 1009; i <= 1012; i++) {
                 EnableWindow(GetDlgItem(hwnd, i), 0);
             }
-            EnableWindow(GetDlgItem(hwnd, 0x3f8), 0);
-            EnableWindow(GetDlgItem(hwnd, 0x3f9), 0);
-            EnableWindow(GetDlgItem(hwnd, 0x3fa), 0);
-            EnableWindow(GetDlgItem(hwnd, 0x3fb), 0);
-            EnableWindow(GetDlgItem(hwnd, IDC_U16_0x041A), 0);
-            EnableWindow(GetDlgItem(hwnd, 0x3fc), 0);
-            EnableWindow(GetDlgItem(hwnd, IDC_U16_0x0406), 0);
-            EnableWindow(GetDlgItem(hwnd, 0x3fd), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_MAX_MINERALS), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_SLOWER_TECH), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_ACCELERATED_BBS), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_NO_RANDOM_EVENTS), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_GALAXY_CLUMPING), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_AI_ALLIANCES), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_NAME), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_NEW_GAME_PUBLIC_SCORES), 0);
         }
         StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
         return 1;
-    }
-    if (message == WM_COMMAND) {
-        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-            WinHelp(hwnd, szHelpFile, 1, 1012);
-            return 1;
-        }
-        for (iRet = 0; iRet < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[iRet]; iRet++) {
-        }
-        if (iRet < 4) {
-            if (iRet != 0) {
-                for (i = 1000; i <= 1004 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
-                }
-                game.mdSize = i - 1000;
-                for (i = 1005; i <= 1008 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
-                }
-                game.mdDensity = i - 1005;
-                for (i = 1009; i <= 1012 && IsDlgButtonChecked(hwnd, i) == 0; i++) {
-                }
-                game.mdStartDist = i - 1009;
-                game.fExtraFuel = IsDlgButtonChecked(hwnd, 1016);
-                game.fSlowTech = IsDlgButtonChecked(hwnd, 1017);
-                game.fBBSPlay = IsDlgButtonChecked(hwnd, 1018);
-                game.fNoRandom = IsDlgButtonChecked(hwnd, 1019);
-                game.fAisBand = IsDlgButtonChecked(hwnd, 1020);
-                game.fVisScores = IsDlgButtonChecked(hwnd, 1021);
-                game.fClumping = IsDlgButtonChecked(hwnd, 1050);
-                i = GetWindowText(GetDlgItem(hwnd, IDC_U16_0x0406), game.szName, 32);
-                if (i == 0) {
-                    strcpy(game.szName, szBase);
-                }
-            }
-            StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
-            EndDialog(hwnd, iRet);
-            return 1;
-        }
     }
     return 0;
 }
@@ -2568,11 +2555,9 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT       *prcSav;
     HDC         hdc;
     PAINTSTRUCT ps;
-    HWND        t_scratch_me;
     POINT       t_pt_89ee;
     POINT       t_pt_89fd_1;
     POINT       t_pt_8b1f_1;
-    int16_t     t_9060;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -2585,243 +2570,238 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        switch (message) {
-        case WM_INITDIALOG:
-            SetNGWTitle(hwnd, 2);
-            dy = (dyArial8 + 4) * 16 + 8;
-            GetWindowRect(GetDlgItem(hwnd, rgidRaceBtn[0]), &rc);
-            dyBut = rc.bottom - rc.top;
-            GetWindowRect(hwnd, &rcT);
-            dyCur = rcT.bottom - rcT.top;
-            if (dyCur < dy + dyBut + 6) {
-                for (i = 0; i < 5; i++) {
-                    hwndBtn = GetDlgItem(hwnd, rgidRaceBtn[i]);
-                    GetWindowRect(hwndBtn, &rc);
-                    MapWindowPoints(NULL, hwnd, (POINT *)&rc, 2);
-                    OffsetRect(&rc, 0, dy - rc.top);
-                    SetWindowPos(hwndBtn, NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-                }
-                dy = rc.bottom + 6;
-                GetClientRect(hwnd, &rc);
-                if (dyCur < dy) {
-                    SetWindowPos(hwnd, NULL, 0, 0, rcT.right - rcT.left, dy + rcT.bottom - rcT.top - rc.bottom, SWP_NOMOVE | SWP_NOZORDER);
-                }
-            }
-            StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
-            return 1;
-        case WM_SETCURSOR:
-            if (fRCWReadOnly != 0)
-                break;
-            GetCursorPos(&t_pt_89ee);
-            pt = PointTo16(t_pt_89ee);
-            t_pt_89fd_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_89fd_1);
-            pt = PointTo16(t_pt_89fd_1);
-            if (pt.x < xNewGameDiamond || pt.x >= xNewGameDiamond + dyArial8 + 1 || pt.y < 6)
-                break;
-            iDiamond = (int16_t)(pt.y - 6) / (dyArial8 + 4);
-            if (iDiamond >= 16 || (int16_t)(pt.y - 6) % (dyArial8 + 4) >= dyArial8 + 1)
-                break;
-            SetCursor(hcurHand);
-            return 1;
-        case WM_LBUTTONDOWN:
-        case WM_RBUTTONDOWN:
-            if (fRCWReadOnly != 0)
-                break;
-            pt.x = LOWORD(lParam);
-            pt.y = HIWORD(lParam);
-            if (pt.x < xNewGameDiamond || pt.x >= xNewGameDiamond + dyArial8 + 1 || pt.y < 6)
-                break;
-            iDiamond = (int16_t)(pt.y - 6) / (dyArial8 + 4);
-            if (iDiamond >= 16 || (int16_t)(pt.y - 6) % (dyArial8 + 4) >= dyArial8 + 1)
-                break;
-            iCurVal = vrgplrTypeNew[iDiamond];
-            t_pt_8b1f_1 = PointFrom16(pt);
-            ClientToScreen(hwnd, &t_pt_8b1f_1);
-            pt = PointTo16(t_pt_8b1f_1);
-            rghmenuSubPopup[0] = CreatePopupMenu();
-            for (i = 0; i < 6; i++) {
-                iChecked = iCurVal == i * 4 + 1 ? 8 : 0;
-                psz = PszGetCompressedString(i + 1383);
-                AppendMenu(rghmenuSubPopup[0], iChecked, i + 15016, psz);
-            }
-            AppendMenu(rghmenuSubPopup[0], iChecked, i + 15016, PszGetCompressedString(idsRandom));
-            AppendMenu(rghmenuSubPopup[0], iChecked, i + 15017, PszGetCompressedString(idsExpansionPlayer));
-            rghmenuSubPopup[1] = CreatePopupMenu();
-            AppendMenu(rghmenuSubPopup[1], MF_BYCOMMAND, 0x3a98, PszGetCompressedString(idsNew));
-            AppendMenu(rghmenuSubPopup[1], MF_BYCOMMAND, 0x3a99, PszGetCompressedString(idsOpen));
-            for (i = 0; i < vcplrNew; i++) {
-                iChecked = iCurVal == i * 4 + 2 ? 8 : 0;
-                psz = PszPlayerName(0, 1, 1, 1, 0, vrgplrNew + i);
-                AppendMenu(rghmenuSubPopup[1], iChecked, i + 15032, psz);
-            }
-            rghmenuSubPopup[2] = CreatePopupMenu();
-            for (i = 0; i <= 6; i++) {
-                rghmenuSubPopup[i + 5] = CreatePopupMenu();
-                for (j = 0; j < 5; j++) {
-                    iChecked = iCurVal == j * 32 + i * 4 + 5 ? 8 : 0;
-                    AppendMenu(rghmenuSubPopup[i + 5], iChecked, i + 15048 + j * 8, vrgszComputerLevel[j]);
-                }
-                iChecked = (iCurVal & 0x1f) == i * 4 + 5 ? 8 : 0;
-                AppendMenu(rghmenuSubPopup[2], 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[i + 5], vrgszComputerPlayers[i]);
-            }
-            hmenuPopup = CreatePopupMenu();
-            iPopMenuSel = -1;
-            iChecked = (iCurVal & 3) == 1 ? 8 : 0;
-            AppendMenu(hmenuPopup, 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[0], PszGetCompressedString(idsPredefinedRace));
-            iChecked = (iCurVal & 3) == 2 ? 8 : 0;
-            AppendMenu(hmenuPopup, 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[1], PszGetCompressedString(idsCustomRace));
-            if ((iCurVal & 3) == 1 || (iCurVal & 3) == 2) {
-                AppendMenu(hmenuPopup, MF_BYCOMMAND, 0x3a9a, PszGetCompressedString(idsEditRace));
-            }
-            AppendMenu(hmenuPopup, MF_SEPARATOR, 0, NULL);
-            iChecked = (iCurVal & 3) == 3 ? 8 : 0;
-            AppendMenu(hmenuPopup, 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[2], PszGetCompressedString(idsComputerPlayer));
-            AppendMenu(hmenuPopup, MF_SEPARATOR, 0, NULL);
-            iChecked = (iCurVal & 3) == 0 ? 8 : 0;
-            AppendMenu(hmenuPopup, iChecked, 0x3a9b, PszGetCompressedString(idsPlayer));
-            tpm = message == WM_LBUTTONDOWN ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON;
-            TrackPopupMenu(hmenuPopup, 4 | tpm, pt.x, pt.y, 0, hwnd, NULL);
-            DestroyMenu(hmenuPopup);
-            for (i = 0; i < 6; i++) {
-                DestroyMenu(rghmenuSubPopup[i]);
-            }
-            if (PeekMessage(&msg, hwnd, 273, 273, 2) != 0 && msg.wParam >= 15000 && msg.wParam < 15100) {
-                iPopMenuSel = msg.wParam - 15000;
-            }
-            iNewVal = -1;
-            if (iPopMenuSel != -1) {
-                if (iPopMenuSel == 0) {
-                    vplr = vrgplrDef[0];
-                    CchGetString(idsHumanoid, vplr.szName);
-                    _wsprintf(vplr.szNames, "%ss", vplr.szName);
-                    prcSav = vrgrcRCW;
-                    if (RaceCreationWizard(hwnd, 0, 0) != 0) {
-                        vrgrcRCW = prcSav;
-                        goto PlaceNew;
-                    }
-                    vrgrcRCW = prcSav;
-                }
-                switch (iPopMenuSel) {
-                case 1:
-                    if (FOpenGame(hwnd, 1) <= 0)
-                        goto L_9367;
-                    goto PlaceNew;
-                case 2:
-                    if ((iCurVal & 3) == 1) {
-                        vplr = vrgplrDef[iCurVal >> 2];
-                        CchGetString((iCurVal >> 2) + 0x567, vplr.szName);
-                        _wsprintf(vplr.szNames, "%ss", vplr.szName);
-                    } else {
-                        vplr = vrgplrNew[iCurVal >> 2];
-                        strcpy(szRaceFile, vrgszFileNew + (iCurVal >> 2) * 13);
-                    }
-                    lSaltCur = vplr.lSalt;
-                    lSaltLast = 0;
-                    if (FCheckPassword() == 0)
-                        break;
-                    if (vplr.lSalt != 0) {
-                        strcpy(szRacePass, szPassLast);
-                    } else {
-                        szRacePass[0] = 0;
-                    }
-                    prcSav = vrgrcRCW;
-                    if (RaceCreationWizard(hwnd, 0, 0) != 0) {
-                        vrgrcRCW = prcSav;
-                        if ((iCurVal & 3) == 1 || strcmp(szRaceFile, vrgszFileNew + (iCurVal >> 2) * 13) != 0)
-                            goto PlaceNew;
-                        vrgplrNew[iCurVal >> 2] = vplr;
-                        strcpy(vrgszFileNew + (iCurVal >> 2) * 13, szRaceFile);
-                        iNewVal = iCurVal;
-                        iCurVal = -1;
-                    }
-                    vrgrcRCW = prcSav;
-                    goto L_9367;
-                case 3:
-                    iNewVal = 0;
-                    goto L_9367;
-                default:
-                    if (iPopMenuSel >= 16 && iPopMenuSel < 32) {
-                        iNewVal = (iPopMenuSel - 0x10) << 2 | 1;
-                        goto L_9367;
-                    }
-                    if (iPopMenuSel >= 32 && iPopMenuSel < 48) {
-                        iNewVal = (iPopMenuSel - 0x20) << 2 | 2;
-                        goto L_9367;
-                    }
-                    if (iPopMenuSel < 48)
-                        goto L_9367;
-                    iNewVal = (iPopMenuSel - 0x30) << 2 | 3;
-                    goto L_9367;
-                }
-                goto FinishClick;
-            PlaceNew:
-                if (vcplrNew < 16) {
-                    t_9060 = vcplrNew;
-                    vcplrNew++;
-                    iNewVal = t_9060;
-                } else {
-                    for (iNewVal = 15; iNewVal >= 0; iNewVal--) {
-                        for (i = 0; i < 16 && ((vrgplrTypeNew[i] & 3) != 2 || (vrgplrTypeNew[i] >> 2 & 0xf) != iNewVal); i++) {
-                        }
-                        if (i == 16)
-                            break;
-                    }
-                }
-                vrgplrNew[iNewVal] = vplr;
-                strcpy(vrgszFileNew + iNewVal * 13, szRaceFile);
-                iNewVal = iNewVal << 2 | 2;
-            }
-        L_9367:
-            if (iNewVal != -1 && iNewVal != iCurVal) {
-                vrgplrTypeNew[iDiamond] = LOBYTE(iNewVal);
-                if (iNewVal == 0) {
-                    while (1) {
-                        iDiamond++;
-                        if (iDiamond >= 16)
-                            break;
-                        vrgplrTypeNew[iDiamond] = 0;
-                    }
-                } else if (iDiamond > 0) {
-                    while (1) {
-                        iDiamond--;
-                        if (iDiamond < 0 || vrgplrTypeNew[iDiamond] != 0)
-                            break;
-                        vrgplrTypeNew[iDiamond] = LOBYTE(iNewVal);
-                    }
-                }
-                InvalidateRect(hwnd, NULL, 1);
-            }
-        FinishClick:
-            SetFocus(hwnd);
-            break;
-        case WM_COMMAND:
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 1020);
-                return 1;
-            }
-            for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
-            }
-            if (i < 4) {
-                if (i != 0 && vrgplrTypeNew[0] == 0 && fRCWReadOnly == 0) {
-                    AlertSz(PszFormatIds(idsMustHaveLeastOnePlayerGame, NULL), MB_ICONHAND);
-                } else {
-                    StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
-                    EndDialog(hwnd, i);
-                    return 1;
-                }
-            }
-        }
-    } else {
-        for (i = 401; i <= 448; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 401; i <= 448 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 448 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    switch (message) {
+    case WM_INITDIALOG:
+        SetNGWTitle(hwnd, 2);
+        dy = (dyArial8 + 4) * 16 + 8;
+        GetWindowRect(GetDlgItem(hwnd, rgidRaceBtn[0]), &rc);
+        dyBut = rc.bottom - rc.top;
+        GetWindowRect(hwnd, &rcT);
+        dyCur = rcT.bottom - rcT.top;
+        if (dyCur < dy + dyBut + 6) {
+            for (i = 0; i < 5; i++) {
+                hwndBtn = GetDlgItem(hwnd, rgidRaceBtn[i]);
+                GetWindowRect(hwndBtn, &rc);
+                MapWindowPoints(NULL, hwnd, (POINT *)&rc, 2);
+                OffsetRect(&rc, 0, dy - rc.top);
+                SetWindowPos(hwndBtn, NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+            }
+            dy = rc.bottom + 6;
+            GetClientRect(hwnd, &rc);
+            if (dyCur < dy) {
+                SetWindowPos(hwnd, NULL, 0, 0, rcT.right - rcT.left, dy + rcT.bottom - rcT.top - rc.bottom, SWP_NOMOVE | SWP_NOZORDER);
+            }
+        }
+        StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
+        return 1;
+    case WM_SETCURSOR:
+        if (fRCWReadOnly != 0)
+            break;
+        GetCursorPos(&t_pt_89ee);
+        pt = PointTo16(t_pt_89ee);
+        t_pt_89fd_1 = PointFrom16(pt);
+        ScreenToClient(hwnd, &t_pt_89fd_1);
+        pt = PointTo16(t_pt_89fd_1);
+        if (pt.x < xNewGameDiamond || pt.x >= xNewGameDiamond + dyArial8 + 1 || pt.y < 6)
+            break;
+        iDiamond = (int16_t)(pt.y - 6) / (dyArial8 + 4);
+        if (iDiamond >= 16 || (int16_t)(pt.y - 6) % (dyArial8 + 4) >= dyArial8 + 1)
+            break;
+        SetCursor(hcurHand);
+        return 1;
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+        if (fRCWReadOnly != 0)
+            break;
+        pt.x = LOWORD(lParam);
+        pt.y = HIWORD(lParam);
+        if (pt.x < xNewGameDiamond || pt.x >= xNewGameDiamond + dyArial8 + 1 || pt.y < 6)
+            break;
+        iDiamond = (int16_t)(pt.y - 6) / (dyArial8 + 4);
+        if (iDiamond >= 16 || (int16_t)(pt.y - 6) % (dyArial8 + 4) >= dyArial8 + 1)
+            break;
+        iCurVal = vrgplrTypeNew[iDiamond];
+        t_pt_8b1f_1 = PointFrom16(pt);
+        ClientToScreen(hwnd, &t_pt_8b1f_1);
+        pt = PointTo16(t_pt_8b1f_1);
+        rghmenuSubPopup[0] = CreatePopupMenu();
+        for (i = 0; i < 6; i++) {
+            iChecked = iCurVal == i * 4 + 1 ? 8 : 0;
+            psz = PszGetCompressedString(i + 1383);
+            AppendMenu(rghmenuSubPopup[0], iChecked, i + 15016, psz);
+        }
+        AppendMenu(rghmenuSubPopup[0], iChecked, i + 15016, PszGetCompressedString(idsRandom));
+        AppendMenu(rghmenuSubPopup[0], iChecked, i + 15017, PszGetCompressedString(idsExpansionPlayer));
+        rghmenuSubPopup[1] = CreatePopupMenu();
+        AppendMenu(rghmenuSubPopup[1], MF_BYCOMMAND, 0x3a98, PszGetCompressedString(idsNew));
+        AppendMenu(rghmenuSubPopup[1], MF_BYCOMMAND, 0x3a99, PszGetCompressedString(idsOpen));
+        for (i = 0; i < vcplrNew; i++) {
+            iChecked = iCurVal == i * 4 + 2 ? 8 : 0;
+            psz = PszPlayerName(0, 1, 1, 1, 0, vrgplrNew + i);
+            AppendMenu(rghmenuSubPopup[1], iChecked, i + 15032, psz);
+        }
+        rghmenuSubPopup[2] = CreatePopupMenu();
+        for (i = 0; i <= 6; i++) {
+            rghmenuSubPopup[i + 5] = CreatePopupMenu();
+            for (j = 0; j < 5; j++) {
+                iChecked = iCurVal == j * 32 + i * 4 + 5 ? 8 : 0;
+                AppendMenu(rghmenuSubPopup[i + 5], iChecked, i + 15048 + j * 8, vrgszComputerLevel[j]);
+            }
+            iChecked = (iCurVal & 0x1f) == i * 4 + 5 ? 8 : 0;
+            AppendMenu(rghmenuSubPopup[2], 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[i + 5], vrgszComputerPlayers[i]);
+        }
+        hmenuPopup = CreatePopupMenu();
+        iPopMenuSel = -1;
+        iChecked = (iCurVal & 3) == 1 ? 8 : 0;
+        AppendMenu(hmenuPopup, 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[0], PszGetCompressedString(idsPredefinedRace));
+        iChecked = (iCurVal & 3) == 2 ? 8 : 0;
+        AppendMenu(hmenuPopup, 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[1], PszGetCompressedString(idsCustomRace));
+        if ((iCurVal & 3) == 1 || (iCurVal & 3) == 2) {
+            AppendMenu(hmenuPopup, MF_BYCOMMAND, 0x3a9a, PszGetCompressedString(idsEditRace));
+        }
+        AppendMenu(hmenuPopup, MF_SEPARATOR, 0, NULL);
+        iChecked = (iCurVal & 3) == 3 ? 8 : 0;
+        AppendMenu(hmenuPopup, 0x10 | iChecked, (UINT_PTR)rghmenuSubPopup[2], PszGetCompressedString(idsComputerPlayer));
+        AppendMenu(hmenuPopup, MF_SEPARATOR, 0, NULL);
+        iChecked = (iCurVal & 3) == 0 ? 8 : 0;
+        AppendMenu(hmenuPopup, iChecked, 0x3a9b, PszGetCompressedString(idsPlayer));
+        tpm = message == WM_LBUTTONDOWN ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON;
+        TrackPopupMenu(hmenuPopup, TPM_CENTERALIGN | tpm, pt.x, pt.y, 0, hwnd, NULL);
+        DestroyMenu(hmenuPopup);
+        for (i = 0; i < 6; i++) {
+            DestroyMenu(rghmenuSubPopup[i]);
+        }
+        if (PeekMessage(&msg, hwnd, 273, 273, 2) != 0 && msg.wParam >= 15000 && msg.wParam < 15100) {
+            iPopMenuSel = msg.wParam - 15000;
+        }
+        iNewVal = -1;
+        if (iPopMenuSel != -1) {
+            if (iPopMenuSel == 0) {
+                vplr = vrgplrDef[0];
+                CchGetString(idsHumanoid, vplr.szName);
+                _wsprintf(vplr.szNames, "%ss", vplr.szName);
+                prcSav = vrgrcRCW;
+                if (RaceCreationWizard(hwnd, 0, 0) != 0) {
+                    vrgrcRCW = prcSav;
+                    goto PlaceNew;
+                }
+                vrgrcRCW = prcSav;
+            }
+            switch (iPopMenuSel) {
+            case 1:
+                if (FOpenGame(hwnd, 1) <= 0)
+                    goto L_9367;
+                goto PlaceNew;
+            case 2:
+                if ((iCurVal & 3) == 1) {
+                    vplr = vrgplrDef[iCurVal >> 2];
+                    CchGetString((iCurVal >> 2) + 0x567, vplr.szName);
+                    _wsprintf(vplr.szNames, "%ss", vplr.szName);
+                } else {
+                    vplr = vrgplrNew[iCurVal >> 2];
+                    strcpy(szRaceFile, vrgszFileNew + (iCurVal >> 2) * 13);
+                }
+                lSaltCur = vplr.lSalt;
+                lSaltLast = 0;
+                if (FCheckPassword() == 0)
+                    break;
+                if (vplr.lSalt != 0) {
+                    strcpy(szRacePass, szPassLast);
+                } else {
+                    szRacePass[0] = 0;
+                }
+                prcSav = vrgrcRCW;
+                if (RaceCreationWizard(hwnd, 0, 0) != 0) {
+                    vrgrcRCW = prcSav;
+                    if ((iCurVal & 3) == 1 || strcmp(szRaceFile, vrgszFileNew + (iCurVal >> 2) * 13) != 0)
+                        goto PlaceNew;
+                    vrgplrNew[iCurVal >> 2] = vplr;
+                    strcpy(vrgszFileNew + (iCurVal >> 2) * 13, szRaceFile);
+                    iNewVal = iCurVal;
+                    iCurVal = -1;
+                }
+                vrgrcRCW = prcSav;
+                goto L_9367;
+            case 3:
+                iNewVal = 0;
+                goto L_9367;
+            default:
+                if (iPopMenuSel >= 16 && iPopMenuSel < 32) {
+                    iNewVal = (iPopMenuSel - 0x10) << 2 | 1;
+                    goto L_9367;
+                }
+                if (iPopMenuSel >= 32 && iPopMenuSel < 48) {
+                    iNewVal = (iPopMenuSel - 0x20) << 2 | 2;
+                    goto L_9367;
+                }
+                if (iPopMenuSel < 48)
+                    goto L_9367;
+                iNewVal = (iPopMenuSel - 0x30) << 2 | 3;
+                goto L_9367;
+            }
+            goto FinishClick;
+        PlaceNew:
+            if (vcplrNew < 16) {
+                iNewVal = vcplrNew++;
+            } else {
+                for (iNewVal = 15; iNewVal >= 0; iNewVal--) {
+                    for (i = 0; i < 16 && ((vrgplrTypeNew[i] & 3) != 2 || (vrgplrTypeNew[i] >> 2 & 0xf) != iNewVal); i++) {
+                    }
+                    if (i == 16)
+                        break;
+                }
+            }
+            vrgplrNew[iNewVal] = vplr;
+            strcpy(vrgszFileNew + iNewVal * 13, szRaceFile);
+            iNewVal = iNewVal << 2 | 2;
+        }
+    L_9367:
+        if (iNewVal != -1 && iNewVal != iCurVal) {
+            vrgplrTypeNew[iDiamond] = LOBYTE(iNewVal);
+            if (iNewVal == 0) {
+                while (1) {
+                    iDiamond++;
+                    if (iDiamond >= 16)
+                        break;
+                    vrgplrTypeNew[iDiamond] = 0;
+                }
+            } else if (iDiamond > 0) {
+                while (1) {
+                    iDiamond--;
+                    if (iDiamond < 0 || vrgplrTypeNew[iDiamond] != 0)
+                        break;
+                    vrgplrTypeNew[iDiamond] = LOBYTE(iNewVal);
+                }
+            }
+            InvalidateRect(hwnd, NULL, 1);
+        }
+    FinishClick:
+        SetFocus(hwnd);
+        break;
+    case WM_COMMAND:
+        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep2SpecifyingThePlayers);
+            return 1;
+        }
+        for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
+        }
+        if (i < 4) {
+            if (i != 0 && vrgplrTypeNew[0] == 0 && fRCWReadOnly == 0) {
+                AlertSz(PszFormatIds(idsMustHaveLeastOnePlayerGame, NULL), MB_ICONHAND);
+            } else {
+                StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
+                EndDialog(hwnd, i);
+                return 1;
+            }
         }
     }
     return 0;
@@ -2915,7 +2895,6 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     HDC         hdc;
     PAINTSTRUCT ps;
     HWND        t_call_9a24;
-    HWND        t_scratch_me;
     POINT       t_pt_9b4c;
     POINT       t_pt_9b5b_1;
 
@@ -2930,61 +2909,58 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     }
-    if (IS_WM_CTLCOLOR(message) == 0) {
-        switch (message) {
-        case WM_INITDIALOG:
-            SetNGWTitle(hwnd, 3);
-            for (i = 0; i < 7; i++) {
-                t_call_9a24 = GetDlgItem(hwnd, i + 291);
-                SendMessage(t_call_9a24, BM_SETCHECK, GetVCCheck(&game, (i < 2 ? 0 : 1) + i), 0);
-                if (fRCWReadOnly != 0) {
-                    EnableWindow(GetDlgItem(hwnd, i + 291), 0);
-                }
-            }
-            StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
-            return 1;
-        case WM_SETCURSOR:
-            GetCursorPos(&t_pt_9b4c);
-            pt = PointTo16(t_pt_9b4c);
-            t_pt_9b5b_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_9b5b_1);
-            pt = PointTo16(t_pt_9b5b_1);
-            if (IrcRaceDlgHitTest(pt) < 0)
-                break;
-            SetCursor(hcurHand);
-            return 1;
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONDBLCLK:
-            pt.x = LOWORD(lParam);
-            pt.y = HIWORD(lParam);
-            return FTrackNewGameDlg3(hwnd, pt, wParam);
-        case WM_COMMAND:
-            if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
-                WinHelp(hwnd, szHelpFile, 1, 1021);
-                return 1;
-            }
-            for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
-            }
-            if (i < 4) {
-                StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
-                EndDialog(hwnd, i);
-                return 1;
-            }
-            if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_U16_0x0123 && GET_WM_COMMAND_ID(wParam, lParam) <= 0x129) {
-                i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
-                SetVCCheck(&game, GET_WM_COMMAND_ID(wParam, lParam) - 291 + ((uint16_t)(GET_WM_COMMAND_ID(wParam, lParam) - 291) < 2 ? 0 : 1), i);
-                DrawNewGame3(hwnd, NULL, 8);
-            }
-        }
-    } else {
-        for (i = 291; i <= 297; i++) {
-            t_scratch_me = GET_WM_CTLCOLOR_HWND(wParam, lParam);
-            if (t_scratch_me == GetDlgItem(hwnd, i))
-                break;
+    if (IS_WM_CTLCOLOR(message) != 0) {
+        for (i = 291; i <= 297 && GET_WM_CTLCOLOR_HWND(wParam, lParam) != GetDlgItem(hwnd, i); i++) {
         }
         if (i <= 297 || HIWORD(lParam) == 6) {
             SetBkColor((HDC)wParam, crButtonFace);
             return (INT_PTR)hbrButtonFace;
+        }
+        return 0;
+    }
+    switch (message) {
+    case WM_INITDIALOG:
+        SetNGWTitle(hwnd, 3);
+        for (i = 0; i < 7; i++) {
+            t_call_9a24 = GetDlgItem(hwnd, i + 291);
+            SendMessage(t_call_9a24, BM_SETCHECK, GetVCCheck(&game, (i < 2 ? 0 : 1) + i), 0);
+            if (fRCWReadOnly != 0) {
+                EnableWindow(GetDlgItem(hwnd, i + 291), 0);
+            }
+        }
+        StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
+        return 1;
+    case WM_SETCURSOR:
+        GetCursorPos(&t_pt_9b4c);
+        pt = PointTo16(t_pt_9b4c);
+        t_pt_9b5b_1 = PointFrom16(pt);
+        ScreenToClient(hwnd, &t_pt_9b5b_1);
+        pt = PointTo16(t_pt_9b5b_1);
+        if (IrcRaceDlgHitTest(pt) < 0)
+            break;
+        SetCursor(hcurHand);
+        return 1;
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONDBLCLK:
+        pt.x = LOWORD(lParam);
+        pt.y = HIWORD(lParam);
+        return FTrackNewGameDlg3(hwnd, pt, wParam);
+    case WM_COMMAND:
+        if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhStep3VictoryConditions);
+            return 1;
+        }
+        for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
+        }
+        if (i < 4) {
+            StickyDlgPos(hwnd, &ptStickyNewDlg, 0);
+            EndDialog(hwnd, i);
+            return 1;
+        }
+        if (GET_WM_COMMAND_ID(wParam, lParam) >= IDC_VC_OWNS_PLANETS && GET_WM_COMMAND_ID(wParam, lParam) <= IDC_VC_HIGHEST_SCORE) {
+            i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), BM_GETCHECK, 0, 0));
+            SetVCCheck(&game, GET_WM_COMMAND_ID(wParam, lParam) - 291 + ((uint16_t)(GET_WM_COMMAND_ID(wParam, lParam) - 291) < 2 ? 0 : 1), i);
+            DrawNewGame3(hwnd, NULL, 8);
         }
     }
     return 0;
@@ -3131,21 +3107,21 @@ void SetNGWTitle(HWND hwnd, int16_t iStep) {
     return;
 }
 
-PLAYER *LpplrComp(int16_t idAi, AiLevel lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
+PLAYER *LpplrComp(AiRace idAi, AiLevel lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
 
-void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
+void SetVCCheck(GAME *pgame, VictoryCondition vc, int16_t fChecked) {
     pgame->rgvc[vc] = LOBYTE((pgame->rgvc[vc] & 0x7f) | (fChecked == 0 ? 0 : 0x80));
     return;
 }
 
-int16_t GetVCCheck(GAME *pgame, int16_t vc) {
+int16_t GetVCCheck(GAME *pgame, VictoryCondition vc) {
     if ((pgame->rgvc[vc] & 0x80) != 0) {
         return 1;
     }
     return 0;
 }
 
-int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
+int16_t SetVCVal(GAME *pgame, VictoryCondition vc, int16_t val) {
     int16_t cur;
 
     if (val < 0) {
@@ -3154,8 +3130,8 @@ int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
         val = vrgvcMax[vc];
     }
     pgame->rgvc[vc] = LOBYTE((pgame->rgvc[vc] & 0x80) | (val & 0xff));
-    if (vc == 8) {
-        cur = GetVCVal(pgame, 8, 0);
+    if (vc == vcMeetsNumCriteria) {
+        cur = GetVCVal(pgame, vcMeetsNumCriteria, 0);
         if (cur != val) {
             val = cur;
             pgame->rgvc[8] = LOBYTE((pgame->rgvc[8] & 0x80) | (cur & 0xff));
@@ -3164,7 +3140,7 @@ int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
     return val;
 }
 
-int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
+int16_t GetVCVal(GAME *pgame, VictoryCondition vc, int16_t fRaw) {
     int16_t c;
     int16_t i;
     int16_t val;
@@ -3173,34 +3149,34 @@ int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
     if (fRaw != 0) {
         return val;
     }
-    if ((uint16_t)vc <= 9) {
+    if (vc <= vcMinYearsBeforeWin) {
         switch (vc) {
-        case 0:
+        case vcOwnsPercentPlanets:
             val = 5 * val + 20;
             break;
-        case 1:
+        case vcAttainsTechLevel:
             val += 8;
             break;
-        case 2:
+        case vcAttainsTechFields:
             val += 2;
             break;
-        case 3:
+        case vcExceedsScore:
             val = 1000 * val + 1000;
             break;
-        case 4:
+        case vcExceedsSecondPlaceBy:
             val = 10 * val + 20;
             break;
-        case 5:
-        case 6:
+        case vcProductionCapacity:
+        case vcOwnsCapitalShips:
             val = 10 * val + 10;
             break;
-        case 7:
+        case vcHighestScoreAfterYears:
             val = 10 * val + 30;
             break;
-        case 9:
+        case vcMinYearsBeforeWin:
             val = 10 * val + 30;
             break;
-        case 8:
+        case vcMeetsNumCriteria:
             goto L_b7b8;
         }
         return val;

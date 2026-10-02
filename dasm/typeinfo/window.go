@@ -8,6 +8,10 @@ import (
 // DialogEnumName is the enum naming dialog template resource ids.
 const DialogEnumName = "DialogId"
 
+// ControlEnumName is the enum naming WM_COMMAND ids shared by dialogs and
+// menus; a dialog's own controls are named by its dialog_controls enum.
+const ControlEnumName = "ControlId"
+
 // WindowClass is a window class whose control messages in the WM_USER range
 // are named by their own enum. Listbox, combobox and edit messages reuse the
 // same numbers, so a message value is only meaningful with its target's
@@ -50,6 +54,12 @@ type sentMessagesJSON struct {
 type windowClassJSON struct {
 	Class    string `json:"class"`
 	Messages string `json:"messages"`
+}
+
+// dialogControlsJSON names the enum of one dialog template's own controls.
+type dialogControlsJSON struct {
+	Dialog string `json:"dialog"`
+	Enum   string `json:"enum"`
 }
 
 type windowRuleJSON struct {
@@ -96,6 +106,24 @@ func (l *enumLoader) loadWindows(path string, sdb *SymbolDB) error {
 			return fmt.Errorf("window rule %+v: window class %s not configured", w, w.Class)
 		}
 		sdb.WindowRules = append(sdb.WindowRules, rule)
+	}
+	sdb.DialogControls = make(map[int]*Enum, len(cfg.DialogControls))
+	for _, dc := range cfg.DialogControls {
+		if dialogs == nil {
+			return fmt.Errorf("dialog controls %+v: enum %s not found", dc, DialogEnumName)
+		}
+		dialog, ok := enumValueByName(dialogs, dc.Dialog)
+		if !ok {
+			return fmt.Errorf("dialog controls %+v: dialog %s not found in %s", dc, dc.Dialog, DialogEnumName)
+		}
+		controls := sdb.GetEnum(dc.Enum)
+		if controls == nil {
+			return fmt.Errorf("dialog controls %+v: enum %s not found", dc, dc.Enum)
+		}
+		if _, dup := sdb.DialogControls[dialog.Value]; dup {
+			return fmt.Errorf("dialog controls %+v: dialog %s already has a control enum", dc, dc.Dialog)
+		}
+		sdb.DialogControls[dialog.Value] = controls
 	}
 	for _, sent := range cfg.SentMessages {
 		if sent.Func == "" || len(sent.Messages) == 0 {
@@ -168,6 +196,17 @@ func (sdb *SymbolDB) FunctionVarWindow(funcName, name string, param bool) *Windo
 		}
 	}
 	return nil
+}
+
+// FunctionDialog returns the dialog template of the dialog a function's HWND
+// parameter is configured to hold, such as a dialog procedure's own window.
+func (sdb *SymbolDB) FunctionDialog(funcName string) (int, bool) {
+	for _, r := range sdb.WindowRules {
+		if r.Func == funcName && r.Param != "" && r.HasDialog {
+			return r.Dialog, true
+		}
+	}
+	return 0, false
 }
 
 // messageEnums returns the enums that name messages: window messages first,

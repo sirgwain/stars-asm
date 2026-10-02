@@ -1,0 +1,560 @@
+/*
+ReportColumnPopup  (report)
+  addr: 0022:74d4  len=1569
+  sig:  void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn)
+  params:
+    POINT16          pt             [BP+0x6]
+    int16_t          icol           [BP+0xa]
+    int16_t          fRightBtn      [BP+0xc]
+  locals:
+    int16_t          iSortLast      [BP-0x73e]
+    int16_t          iHide          [BP-0x73c]
+    int16_t          iRet           [BP-0x73a]
+    int16_t          cch            [BP-0x738]
+    char *[32]       psz            [BP-0x736]
+    int16_t          cItems         [BP-0x6f6]
+    char[50]         szColTitle     [BP-0x6f4]
+    int16_t[32]      rgcol          [BP-0x6c2]
+    int16_t          fccolChange    [BP-0x682]
+    int16_t          ibit           [BP-0x680]
+    int16_t          i              [BP-0x67e]
+    int16_t          j              [BP-0x67c]
+    int16_t          cSubsort       [BP-0x67a]
+    int16_t          iBase          [BP-0x678]
+    char[50][32]     rgsz           [BP-0x676]
+    char[50]         szT            [BP-0x36]
+    HDC              hdc            [BP-0x4]
+
+  stats: blocks=0  labels=0
+*/
+block L_74d4:
+  insts 0..20  off 0x74d4..0x751d
+  succs: L_76bb
+  effects:
+    74dd  store[2] [bp-cSubsort] = 0x0
+    74e3  store[2] [bp-fccolChange] = 0x0
+    74ed  call GetDC(load([hwndReportDlg])) -> callresult(HDC)
+    74f2  store[2] [bp-hdc] = callresult(HDC)
+    7507  call DxReportColHdr(load(ds:[load([vprptCur])+0x4]), load([bp+icol]), addr([bp-szColTitle]), load([bp-hdc])) -> callresult(int16_t)
+    750f  store[2] [bp-cItems] = 0x0
+    7515  store[2] [bp-i] = 0x0
+    751b  goto L_76bb
+
+block L_751e:
+  insts 21..27  off 0x751e..0x7532
+  preds: L_76bb
+  succs: L_7536, L_753c
+  effects:
+    7531  branch load([bp-i]) != 0x0 ? L_753c : L_7536
+
+block L_7536:
+  insts 29..30  off 0x7536..0x753b
+  preds: L_751e
+  succs: L_753f
+  effects:
+    7539  goto L_753f
+
+block L_753c:
+  insts 31..31  off 0x753c..0x753e
+  preds: L_751e
+  succs: L_753f
+
+block L_753f:
+  insts 32..50  off 0x753f..0x757b
+  preds: L_7536, L_753c
+  succs: L_757f, L_759a
+  effects:
+    7540  call CchGetString(merge(Join: L_753f, (L_7536:0x46d, L_753c:0x46e)), (addr([bp-rgsz]) + loword((0x32 * load([bp-cItems]))))) -> callresult(int16_t)
+    7548  store[2] [bp-cch] = callresult(int16_t)
+    7565  call strcpy(((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))) + load([bp-cch])), addr([bp-szColTitle])) -> callresult(char *)
+    756d  store[2] [bp-cItems] = (load@756d/dst([bp-cItems]) + 0x1)
+    757a  branch load(ds:[load([vprptCur])+0x4]) != 0x0 ? L_759a : L_757f
+
+block L_757f:
+  insts 52..53  off 0x757f..0x7584
+  preds: L_753f
+  succs: L_7588, L_75b0
+  effects:
+    7583  branch load([bp+icol]) == 0xb ? L_75b0 : L_7588
+
+block L_7588:
+  insts 55..56  off 0x7588..0x758d
+  preds: L_757f
+  succs: L_7591, L_75b0
+  effects:
+    758c  branch load([bp+icol]) == 0x9 ? L_75b0 : L_7591
+
+block L_7591:
+  insts 58..59  off 0x7591..0x7596
+  preds: L_7588
+  succs: L_759a, L_75b0
+  effects:
+    7595  branch load([bp+icol]) == 0xa ? L_75b0 : L_759a
+
+block L_759a:
+  insts 61..63  off 0x759a..0x75a3
+  preds: L_753f, L_7591
+  succs: L_75a7, L_76b6
+  effects:
+    75a2  branch load(ds:[load([vprptCur])+0x4]) != 0x1 ? L_76b6 : L_75a7
+
+block L_75a7:
+  insts 65..66  off 0x75a7..0x75ac
+  preds: L_759a
+  succs: L_75b0, L_76b6
+  effects:
+    75ab  branch load([bp+icol]) != 0x7 ? L_76b6 : L_75b0
+
+block L_75b0:
+  insts 68..91  off 0x75b0..0x75fb
+  preds: L_757f, L_7588, L_7591, L_75a7
+  succs: L_7601
+  effects:
+    75d1  call strcpy((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))), (addr([bp-rgsz]) + loword(((load([bp-cItems]) + 0xffff) * 0x32)))) -> callresult(char *)
+    75eb  store[1] byte ss:[bp+loword(((load([bp-cItems]) + 0xffff) * 0x32))-0x676] = 0x0
+    75ee  store[2] [bp-cItems] = (load@75ee/dst([bp-cItems]) + 0x1)
+    75f3  store[2] [bp-j] = 0x0
+    75f9  goto L_7601
+
+block L_75fc:
+  insts 92..92  off 0x75fc..0x7600
+  preds: L_7623
+  succs: L_7601
+  effects:
+    75fc  store[2] [bp-j] = (load([bp-j]) + 0x1)
+
+block L_7601:
+  insts 93..95  off 0x7601..0x760a
+  preds: L_75b0, L_75fc
+  succs: L_760e, L_7614
+  effects:
+    7609  branch load(ds:[load([vprptCur])+0x4]) != 0x1 ? L_7614 : L_760e
+
+block L_760e:
+  insts 97..98  off 0x760e..0x7613
+  preds: L_7601
+  succs: L_7617
+  effects:
+    7611  goto L_7617
+
+block L_7614:
+  insts 99..99  off 0x7614..0x7616
+  preds: L_7601
+  succs: L_7617
+
+block L_7617:
+  insts 100..102  off 0x7617..0x761f
+  preds: L_760e, L_7614
+  succs: L_7623, L_764b
+  effects:
+    761e  branch load([bp-j]) >= (merge(Join: L_7617, (L_760e:0x1, L_7614:0x0)) + 0x3) ? L_764b : L_7623
+
+block L_7623:
+  insts 104..115  off 0x7623..0x764a
+  preds: L_7617
+  succs: L_75fc
+  effects:
+    763b  call strcpy((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))), load(ds:[(load([bp-j]) << 0x1)+0x4cc])) -> callresult(char *)
+    7643  store[2] [bp-cItems] = (load@7643/dst([bp-cItems]) + 0x1)
+    7648  goto L_75fc
+
+block L_764b:
+  insts 116..147  off 0x764b..0x76b5
+  preds: L_7617
+  succs: L_76b6
+  effects:
+    7658  store[1] byte ss:[bp+loword((0x32 * load([bp-cItems])))-0x676] = 0xff
+    7668  store[1] byte ss:[bp+loword((0x32 * load([bp-cItems])))-0x675] = 0x0
+    766c  store[2] [bp-cItems] = (load@766c/dst([bp-cItems]) + 0x1)
+    7675  call PszGetCompressedString(0x55f) -> callresult(char *)
+    768c  call strcpy((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))), callresult(char *)) -> callresult(char *)
+    7694  store[2] [bp-cItems] = (load@7694/dst([bp-cItems]) + 0x1)
+    769d  store[2] [bp-cItems] = (load@769d/dst([bp-cItems]) + 0x1)
+    76ad  store[1] byte ss:[bp+loword((load([bp-cItems]) * 0x32))-0x676] = 0x0
+    76b0  store[2] [bp-cSubsort] = 0x5
+
+block L_76b6:
+  insts 148..148  off 0x76b6..0x76ba
+  preds: L_759a, L_75a7, L_764b
+  succs: L_76bb
+  effects:
+    76b6  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_76bb:
+  insts 149..150  off 0x76bb..0x76c1
+  preds: L_74d4, L_76b6
+  succs: L_751e, L_76c5
+  effects:
+    76c0  branch load([bp-i]) < 0x2 ? L_751e : L_76c5
+
+block L_76c5:
+  insts 152..216  off 0x76c5..0x7794
+  preds: L_76bb
+  succs: L_7798, L_77a3
+  effects:
+    76d2  store[1] byte ss:[bp+loword((0x32 * load([bp-cItems])))-0x676] = 0xff
+    76e2  store[1] byte ss:[bp+loword((0x32 * load([bp-cItems])))-0x675] = 0x0
+    76e6  store[2] [bp-cItems] = (load@76e6/dst([bp-cItems]) + 0x1)
+    76fd  call CchGetString(0x46f, (addr([bp-rgsz]) + loword((0x32 * load([bp-cItems]))))) -> callresult(int16_t)
+    7705  store[2] [bp-cch] = callresult(int16_t)
+    7722  call strcpy(((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))) + load([bp-cch])), addr([bp-szColTitle])) -> callresult(char *)
+    7732  call CchGetString(0x470, addr([bp-szT])) -> callresult(int16_t)
+    773a  store[2] [bp-cch] = callresult(int16_t)
+    7750  call strcat((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))), addr([bp-szT])) -> callresult(char *)
+    775c  store[2] [bp-iHide] = load@7758/src([bp-cItems])
+    7760  store[2] [bp-iSortLast] = load@7758/src([bp-cItems])
+    7764  store[2] [bp-cItems] = (load@7764/dst([bp-cItems]) + 0x1)
+    7776  store[1] byte ss:[bp+loword((0x32 * load([bp-cItems])))-0x676] = 0xff
+    7786  store[1] byte ss:[bp+loword((0x32 * load([bp-cItems])))-0x675] = 0x0
+    778a  store[2] [bp-cItems] = (load@778a/dst([bp-cItems]) + 0x1)
+    7793  branch load([bp+icol]) != 0x0 ? L_77a3 : L_7798
+
+block L_7798:
+  insts 218..219  off 0x7798..0x77a2
+  preds: L_76c5
+  succs: L_77a3
+  effects:
+    7798  store[2] [bp-cItems] = (load([bp-cItems]) - 0x2)
+    779d  store[2] [bp-iHide] = 0xffff
+
+block L_77a3:
+  insts 220..225  off 0x77a3..0x77bc
+  preds: L_76c5, L_7798
+  succs: L_77d1
+  effects:
+    77a7  store[2] [bp-iBase] = load([bp-cItems])
+    77ab  store[2] [bp-i] = 0x0
+    77b1  store[2] [bp-ibit] = 0x1
+    77ba  goto L_77d1
+
+block L_77bd:
+  insts 226..230  off 0x77bd..0x77d0
+  preds: L_77e1, L_77f7, L_789e
+  succs: L_77d1
+  effects:
+    77c1  store[2] [bp-i] = (load([bp-i]) + 0x1)
+    77c9  store[2] [bp-ibit] = (load([bp-ibit]) << 0x1)
+
+block L_77d1:
+  insts 231..234  off 0x77d1..0x77dd
+  preds: L_77a3, L_77bd
+  succs: L_77e1, L_78a1
+  effects:
+    77dc  branch load([bp-i]) >= load(ds:[load([vprptCur])+0x6]) ? L_78a1 : L_77e1
+
+block L_77e1:
+  insts 236..242  off 0x77e1..0x77f3
+  preds: L_77d1
+  succs: L_77bd, L_77f7
+  effects:
+    77f2  branch (load([bp-ibit]) & load(ds:[load([vprptCur])])) != 0x0 ? L_77bd : L_77f7
+
+block L_77f7:
+  insts 244..245  off 0x77f7..0x77fb
+  preds: L_77e1
+  succs: L_77bd, L_77ff
+  effects:
+    77fa  branch (signhiword(load([bp-ibit])) & load(ds:[load([vprptCur])+0x2])) != 0x0 ? L_77bd : L_77ff
+
+block L_77ff:
+  insts 247..298  off 0x77ff..0x789d
+  preds: L_77f7
+  succs: L_789e
+  effects:
+    7812  call DxReportColHdr(load(ds:[load([vprptCur])+0x4]), load@7807/src([bp-i]), addr([bp-szColTitle]), load([bp-hdc])) -> callresult(int16_t)
+    782c  call CchGetString(0x471, (addr([bp-rgsz]) + loword((0x32 * load([bp-cItems]))))) -> callresult(int16_t)
+    7834  store[2] [bp-cch] = callresult(int16_t)
+    7851  call strcpy(((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))) + load([bp-cch])), addr([bp-szColTitle])) -> callresult(char *)
+    7861  call CchGetString(0x470, addr([bp-szT])) -> callresult(int16_t)
+    7869  store[2] [bp-cch] = callresult(int16_t)
+    787f  call strcat((addr([bp-rgsz]) + loword((0x32 * load([bp-cItems])))), addr([bp-szT])) -> callresult(char *)
+    7897  store[2] ss:[bp+(load([bp-cItems]) << 0x1)-0x6c2] = load@7893/src([bp-i])
+    7899  store[2] [bp-cItems] = (load@7899/dst([bp-cItems]) + 0x1)
+
+block L_789e:
+  insts 299..299  off 0x789e..0x78a0
+  preds: L_77ff
+  succs: L_77bd
+  effects:
+    789e  goto L_77bd
+
+block L_78a1:
+  insts 300..302  off 0x78a1..0x78aa
+  preds: L_77d1
+  succs: L_78ae, L_78b3
+  effects:
+    78a9  branch load([bp-cItems]) != load([bp-iBase]) ? L_78b3 : L_78ae
+
+block L_78ae:
+  insts 304..304  off 0x78ae..0x78b2
+  preds: L_78a1
+  succs: L_78b3
+  effects:
+    78ae  store[2] [bp-cItems] = (load([bp-cItems]) - 0x1)
+
+block L_78b3:
+  insts 305..309  off 0x78b3..0x78c7
+  preds: L_78a1, L_78ae
+  succs: L_7913
+  effects:
+    78ba  call ReleaseDC(load([hwndReportDlg]), load([bp-hdc])) -> callresult(int16_t)
+    78bf  store[2] [bp-i] = 0x0
+    78c5  goto L_7913
+
+block L_78c8:
+  insts 310..317  off 0x78c8..0x78dc
+  preds: L_7913
+  succs: L_78e0, L_78fe
+  effects:
+    78db  branch sext8to16(load(byte ss:[bp+loword((0x32 * load([bp-i])))-0x676])) == 0x0 ? L_78fe : L_78e0
+
+block L_78e0:
+  insts 319..328  off 0x78e0..0x78fd
+  preds: L_78c8
+  succs: L_790e
+  effects:
+    78f9  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x736] = (addr([bp-rgsz]) + loword((0x32 * load([bp-i]))))
+    78fb  goto L_790e
+
+block L_78fe:
+  insts 329..333  off 0x78fe..0x790d
+  preds: L_78c8
+  succs: L_790e
+  effects:
+    790a  store[2] ss:[bp+(load([bp-i]) << 0x1)-0x736] = 0x0
+
+block L_790e:
+  insts 334..334  off 0x790e..0x7912
+  preds: L_78e0, L_78fe
+  succs: L_7913
+  effects:
+    790e  store[2] [bp-i] = (load([bp-i]) + 0x1)
+
+block L_7913:
+  insts 335..337  off 0x7913..0x791c
+  preds: L_78b3, L_790e
+  succs: L_78c8, L_7920
+  effects:
+    791b  branch load([bp-i]) < load([bp-cItems]) ? L_78c8 : L_7920
+
+block L_7920:
+  insts 339..354  off 0x7920..0x7950
+  preds: L_7913
+  succs: L_7957, L_7aef
+  effects:
+    793e  call PopupMenu(load([hwndReportDlg]), load([bp+pt]), load([bp+pt+0x2]), load([bp-cItems]), 0x0, addr([bp-psz]), 0xffff, load([bp+fRightBtn])) -> callresult(int16_t)
+    7946  store[2] [bp-iRet] = callresult(int16_t)
+    794f  branch load([bp-iRet]) < 0x0 ? L_7aef : L_7957
+
+block L_7957:
+  insts 357..363  off 0x7957..0x796c
+  preds: L_7920
+  succs: L_7970, L_7a71
+  effects:
+    7960  store[2] [gd+0x4] = ((load([gd+0x4]) & 0xff7f) | 0x80)
+    796b  branch load([bp-iRet]) >= load([bp-iSortLast]) ? L_7a71 : L_7970
+
+block L_7970:
+  insts 365..378  off 0x7970..0x799e
+  preds: L_7957
+  succs: L_79a2, L_79bf
+  effects:
+    7977  store[2] [vicolSortPrev] = load(ds:[load([vprptCur])+0xa])
+    7981  store[2] [viSubsortPrev] = load(ds:[load([vprptCur])+0x2e])
+    798b  store[2] [vfAscendingPrev] = load(ds:[load([vprptCur])+0xc])
+    7995  store[2] ds:[load([vprptCur])+0xa] = load([bp+icol])
+    799d  branch load([bp-cSubsort]) != 0x0 ? L_79bf : L_79a2
+
+block L_79a2:
+  insts 380..381  off 0x79a2..0x79a8
+  preds: L_7970
+  succs: L_79ac, L_79b2
+  effects:
+    79a7  branch load([bp-iRet]) != 0x0 ? L_79b2 : L_79ac
+
+block L_79ac:
+  insts 383..384  off 0x79ac..0x79b1
+  preds: L_79a2
+  succs: L_79b5
+  effects:
+    79af  goto L_79b5
+
+block L_79b2:
+  insts 385..385  off 0x79b2..0x79b4
+  preds: L_79a2
+  succs: L_79b5
+
+block L_79b5:
+  insts 386..388  off 0x79b5..0x79be
+  preds: L_79ac, L_79b2
+  succs: L_7a5c
+  effects:
+    79b9  store[2] ds:[load([vprptCur])+0xc] = merge(Join: L_79b5, (L_79ac:0x1, L_79b2:0x0))
+    79bc  goto L_7a5c
+
+block L_79bf:
+  insts 389..394  off 0x79bf..0x79d3
+  preds: L_7970
+  succs: L_79d7, L_79dd
+  effects:
+    79c6  store[2] ss:[bp-0x740] = (load([bp-iRet]) + 0xfffe)
+    79d2  branch load(ds:[load([vprptCur])+0x4]) != 0x1 ? L_79dd : L_79d7
+
+block L_79d7:
+  insts 396..397  off 0x79d7..0x79dc
+  preds: L_79bf
+  succs: L_79e0
+  effects:
+    79da  goto L_79e0
+
+block L_79dd:
+  insts 398..398  off 0x79dd..0x79df
+  preds: L_79bf
+  succs: L_79e0
+
+block L_79e0:
+  insts 399..409  off 0x79e0..0x7a00
+  preds: L_79d7, L_79dd
+  succs: L_7a04, L_7a0a
+  effects:
+    79f4  store[2] ds:[load([vprptCur])+0x2e] = (words(signhiword(load(ss:[bp-0x740])), load(ss:[bp-0x740])) % ((load([bp-cSubsort]) + 0x3) + merge(Join: L_79e0, (L_79d7:0x1, L_79dd:0x0))))
+    79ff  branch load(ds:[load([vprptCur])+0x4]) != 0x1 ? L_7a0a : L_7a04
+
+block L_7a04:
+  insts 411..412  off 0x7a04..0x7a09
+  preds: L_79e0
+  succs: L_7a0d
+  effects:
+    7a07  goto L_7a0d
+
+block L_7a0a:
+  insts 413..413  off 0x7a0a..0x7a0c
+  preds: L_79e0
+  succs: L_7a0d
+
+block L_7a0d:
+  insts 414..417  off 0x7a0d..0x7a18
+  preds: L_7a04, L_7a0a
+  succs: L_7a1c, L_7a3c
+  effects:
+    7a17  branch load(ds:[load([vprptCur])+0x2e]) <= (merge(Join: L_7a0d, (L_7a04:0x1, L_7a0a:0x0)) + 0x3) ? L_7a3c : L_7a1c
+
+block L_7a1c:
+  insts 419..421  off 0x7a1c..0x7a25
+  preds: L_7a0d
+  succs: L_7a29, L_7a2f
+  effects:
+    7a24  branch load(ds:[load([vprptCur])+0x4]) != 0x1 ? L_7a2f : L_7a29
+
+block L_7a29:
+  insts 423..424  off 0x7a29..0x7a2e
+  preds: L_7a1c
+  succs: L_7a32
+  effects:
+    7a2c  goto L_7a32
+
+block L_7a2f:
+  insts 425..425  off 0x7a2f..0x7a31
+  preds: L_7a1c
+  succs: L_7a32
+
+block L_7a32:
+  insts 426..428  off 0x7a32..0x7a3b
+  preds: L_7a29, L_7a2f
+  succs: L_7a3c
+  effects:
+    7a39  store[2] ds:[load([vprptCur])+0x2e] = (merge(Join: L_7a32, (L_7a29:0x1, L_7a2f:0x0)) + 0x3)
+
+block L_7a3c:
+  insts 429..432  off 0x7a3c..0x7a48
+  preds: L_7a0d, L_7a32
+  succs: L_7a4c, L_7a52
+  effects:
+    7a47  branch load([bp-iRet]) >= (load([bp-cSubsort]) + 0x2) ? L_7a52 : L_7a4c
+
+block L_7a4c:
+  insts 434..435  off 0x7a4c..0x7a51
+  preds: L_7a3c
+  succs: L_7a55
+  effects:
+    7a4f  goto L_7a55
+
+block L_7a52:
+  insts 436..436  off 0x7a52..0x7a54
+  preds: L_7a3c
+  succs: L_7a55
+
+block L_7a55:
+  insts 437..438  off 0x7a55..0x7a5b
+  preds: L_7a4c, L_7a52
+  succs: L_7a5c
+  effects:
+    7a59  store[2] ds:[load([vprptCur])+0xc] = merge(Join: L_7a55, (L_7a4c:0x1, L_7a52:0x0))
+
+block L_7a5c:
+  insts 439..444  off 0x7a5c..0x7a70
+  preds: L_79b5, L_7a55
+  succs: L_7acb
+  effects:
+    7a66  call SortReportCache(load(ds:[load([vprptCur])+0x4]), load([bp+icol])) -> callresult(void)
+    7a6e  goto L_7acb
+
+block L_7a71:
+  insts 445..447  off 0x7a71..0x7a7a
+  preds: L_7957
+  succs: L_7a7e, L_7a9b
+  effects:
+    7a79  branch load([bp-iRet]) != load([bp-iHide]) ? L_7a9b : L_7a7e
+
+block L_7a7e:
+  insts 449..458  off 0x7a7e..0x7a9a
+  preds: L_7a71
+  succs: L_7acb
+  effects:
+    7a7e  store[2] [bp-fccolChange] = 0x1
+    7a93  store[2] ds:[load([vprptCur])] = (load(ds:[load([vprptCur])]) & ((0x1 << load([bp+icol])) ~ 0x0))
+    7a95  store[2] ds:[load([vprptCur])+0x2] = (load(ds:[load([vprptCur])+0x2]) & signhiword(((0x1 << load([bp+icol])) ~ 0x0)))
+    7a98  goto L_7acb
+
+block L_7a9b:
+  insts 459..461  off 0x7a9b..0x7aa4
+  preds: L_7a71
+  succs: L_7aa8, L_7acb
+  effects:
+    7aa3  branch load([bp-iRet]) < load([bp-iBase]) ? L_7acb : L_7aa8
+
+block L_7aa8:
+  insts 463..474  off 0x7aa8..0x7aca
+  preds: L_7a9b
+  succs: L_7acb
+  effects:
+    7aa8  store[2] [bp-fccolChange] = 0x1
+    7ac6  store[2] ds:[load([vprptCur])] = (load(ds:[load([vprptCur])]) | (0x1 << load(ss:[bp+(load([bp-iRet]) << 0x1)-0x6c2])))
+    7ac8  store[2] ds:[load([vprptCur])+0x2] = (load(ds:[load([vprptCur])+0x2]) | signhiword((0x1 << load(ss:[bp+(load([bp-iRet]) << 0x1)-0x6c2]))))
+
+block L_7acb:
+  insts 475..476  off 0x7acb..0x7ad1
+  preds: L_7a5c, L_7a7e, L_7a9b, L_7aa8
+  succs: L_7ad5, L_7ada
+  effects:
+    7ad0  branch load([bp-fccolChange]) == 0x0 ? L_7ada : L_7ad5
+
+block L_7ad5:
+  insts 478..478  off 0x7ad5..0x7ad9
+  preds: L_7acb
+  succs: L_7ada
+  effects:
+    7ad5  call SetHScrollBar() -> callresult(void)
+
+block L_7ada:
+  insts 479..486  off 0x7ada..0x7aee
+  preds: L_7acb, L_7ad5
+  succs: L_7aef
+  effects:
+    7aea  call InvalidateRect(load([hwndReportDlg]), words(0x0, 0x0), 0x1) -> callresult(void)
+
+block L_7aef:
+  insts 487..491  off 0x7aef..0x7af4
+  preds: L_7920, L_7ada
+  effects:
+    7af4  return

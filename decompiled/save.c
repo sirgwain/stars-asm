@@ -141,9 +141,6 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     PLANET   pl;
     int16_t  t_merge_5be5_0001;
     int16_t  t_merge_5be5_0002;
-    uint16_t t_scratch_m7a;
-    uint16_t t_scratch_m7a_3;
-    uint16_t t_scratch_m7a_4;
 
     fRet = 1;
     SetVisiblePlanFleet(iPlayer);
@@ -227,21 +224,18 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                 lpord[1].grTask = grTaskPatrol;
                                 lpord[1].tptl = lpord->tptl;
                                 if (lpord[1].tptl.iWarp == 0) {
-                                    t_scratch_m7a = IFindIdealWarp(lpfl, 0);
-                                    lpord[1].iWarp = t_scratch_m7a;
+                                    lpord[1].iWarp = IFindIdealWarp(lpfl, 0);
                                 } else {
                                     lpord[1].iWarp = lpord[1].tsell.iPlrX;
                                 }
                                 if (lpfl->fRepOrders != 0) {
                                     lpord[2] = *lpord;
-                                    t_scratch_m7a_3 = IFindIdealWarp(lpfl, 0);
-                                    lpord[2].iWarp = t_scratch_m7a_3;
+                                    lpord[2].iWarp = IFindIdealWarp(lpfl, 0);
                                     lpfl->cord++;
                                     lpfl->lpplord->iordMac++;
                                 }
                             } else if (lpord[1].tsell.iPlrX == 0) {
-                                t_scratch_m7a_4 = IFindIdealWarp(lpfl, 0);
-                                lpord[1].iWarp = t_scratch_m7a_4;
+                                lpord[1].iWarp = IFindIdealWarp(lpfl, 0);
                             } else {
                                 lpord[1].iWarp = lpord[1].tsell.iPlrX;
                             }
@@ -250,7 +244,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                             lpord[1].grobj = grobjFleet;
                             lpfl->cord++;
                             lpfl->lpplord->iordMac++;
-                            FSendPlrMsg(iPlayer, 255, lpfl->id | 0x8000, lpfl->id, lpflBest->id, 0, 0, 0, 0, 0);
+                            FSendPlrMsg(iPlayer, idmPatrollingHasTargetedIntercept, lpfl->id | 0x8000, lpfl->id, lpflBest->id, 0, 0, 0, 0, 0);
                         }
                     }
                     if (lpord->grTask != grTaskXfer && lpfl->cord > 1) {
@@ -261,11 +255,11 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                     (lpth->ith == ithMinefield && (1 << iPlayer & lpth->thm.grbitPlrNow) == 0) ||
                                     (lpth->ith == ithWormhole && lpth->thw.fInclude == 0)) {
                                     if (lpth != 0 && lpth->ith == ithWormhole) {
-                                        FSendPlrMsg2(lpfl->iPlayer, 248, lpfl->id | 0x8000, lpfl->id, 0);
+                                        FSendPlrMsg2(lpfl->iPlayer, idmWormholeHeadingHasVanishedOrdersHaveChanged, lpfl->id | 0x8000, lpfl->id, 0);
                                     } else if (lpth != 0 && lpth->ith == ithMysteryTrader) {
-                                        FSendPlrMsg2(lpfl->iPlayer, 272, lpfl->id | 0x8000, lpfl->id, 0);
+                                        FSendPlrMsg2(lpfl->iPlayer, idmMysteryTraderHeadingHasVanishedOrdersHave, lpfl->id | 0x8000, lpfl->id, 0);
                                     } else if (lpth != 0 && lpth->ith == ithMinefield) {
-                                        FSendPlrMsg2(lpfl->iPlayer, 273, lpfl->id | 0x8000, lpfl->id, 0);
+                                        FSendPlrMsg2(lpfl->iPlayer, idmMineFieldHeadingHasVanishedOrdersHave, lpfl->id | 0x8000, lpfl->id, 0);
                                     }
                                     lpord[iord].grobj = grobjOther;
                                     lpord[iord].id = iord;
@@ -277,14 +271,16 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                 }
                                 lpflT = LpflFromId(lpord[iord].id);
                                 if (lpflT == 0 || lpflT->fDead != 0) {
-                                    FSendPlrMsg(iPlayer, 40, lpfl->id | 0x8000, lpfl->id, lpord[iord].id, 0, 0, 0, 0, 0);
+                                    FSendPlrMsg(iPlayer, idmSWaypointAppearsHaveDestroyedHasDisappeared, lpfl->id | 0x8000, lpfl->id, lpord[iord].id, 0, 0, 0,
+                                                0, 0);
                                 } else {
                                     if (lpflT->fInclude != 0)
                                         continue;
                                     if (lpflT->idPlanet != -1 && fNoAutoTrack == 0) {
-                                        FSendPlrMsg(iPlayer, 41, lpfl->id | 0x8000, lpfl->id, lpflT->idPlanet, 0, 0, 0, 0, 0);
+                                        FSendPlrMsg(iPlayer, idmFleetTrackingAppearsHaveDuckedBehindOrders, lpfl->id | 0x8000, lpfl->id, lpflT->idPlanet, 0, 0,
+                                                    0, 0, 0);
                                     } else {
-                                        FSendPlrMsg(iPlayer, 42, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
+                                        FSendPlrMsg(iPlayer, idmFleetTrackingAppearsHaveOutrunRangeScanners, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                                     }
                                 }
                                 lpord[iord].grobj = grobjOther;
@@ -467,7 +463,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
 }
 
 int16_t FAppendFile(int16_t iPlayer) {
-    if (FMarkFile(0x2003, iPlayer, 4, 1) == 0) {
+    if (FMarkFile(8195, iPlayer, mdMarkMulti, 1) == 0) {
         return 0;
     }
     WriteBOF(iPlayer, 3, 1);
@@ -549,7 +545,7 @@ void WriteBattles(int16_t iPlayer) {
                 }
                 if (lpbtldata->idPlanet != 0xffff) {
                     lppl = LpplFromId(lpbtldata->idPlanet);
-                    MarkPlanet(lppl, iPlayer, 1);
+                    MarkPlanet(lppl, iPlayer, detMinimal);
                 }
                 if (lpbtldata->cbData < 0x400) {
                     WriteRt(rtBtlData, lpbtldata->cbData, lpbBattle);
@@ -628,7 +624,6 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     uint8_t *pbBase;
     int16_t  i;
     uint8_t *pb;
-    uint16_t t_scratch_m5c_11;
 
     memset(rgb, 0, 80);
     RawStore16(rgb, (RawLoad16(rgb) & 0xf800) | (lppl->id & 0x7ff));
@@ -707,8 +702,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
                 RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xdfff) | 0x2000);
             }
             if (rt != rtPlanetB) {
-                t_scratch_m5c_11 = lppl->fArtifact;
-                RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xefff) | (t_scratch_m5c_11 & 1) << 0xc);
+                RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xefff) | (lppl->fArtifact & 1) << 0xc);
                 if ((lppl->iPlayer != -1 && (lppl->iDeltaPop != 0 || lppl->fNoResearch != 0)) ||
                     (lppl->cMines != 0 || lppl->cFactories != 0 || lppl->cDefenses != 0 || lppl->iScanner != 31)) {
                     RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xf7ff) | 0x800);
@@ -882,7 +876,7 @@ void WriteRtString(char *lpsz) {
     return;
 }
 
-void MarkFleet(FLEET *lpfl, int16_t det) {
+void MarkFleet(FLEET *lpfl, DetType det) {
     int16_t i;
     SHDEF  *lpshdef;
 
@@ -898,7 +892,7 @@ void MarkFleet(FLEET *lpfl, int16_t det) {
             }
         }
     }
-    if (lpfl->det < (uint16_t)det) {
+    if (lpfl->det < det) {
         lpfl->det = det;
     }
     return;
@@ -927,14 +921,14 @@ void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog) {
         }
     }
     if (fLog != 0) {
-        WriteMemRt(30, pb - rgb, rgb);
+        WriteMemRt(rtBtlPlan, pb - rgb, rgb);
     } else {
         WriteRt(rtBtlPlan, pb - rgb, rgb);
     }
     return;
 }
 
-void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
+void MarkPlanet(PLANET *lppl, int16_t iPlr, DetType det) {
     SHDEF *lpshdef;
 
     if (lppl->fInclude == 0) {
@@ -949,7 +943,7 @@ void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
         rgplr[lppl->iPlayer].wMdPlr = (rgplr[lppl->iPlayer].wMdPlr & 0xfeff) | 0x100;
         rgplr[lppl->iPlayer].wMdPlr = (rgplr[lppl->iPlayer].wMdPlr & 0xfff8) | 3;
     }
-    if (det != 2 && lppl->iPlayer != -1 && lppl->fStarbase != 0) {
+    if (det != detObscure && lppl->iPlayer != -1 && lppl->fStarbase != 0) {
         lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
         if (lpshdef->fInclude == 0) {
             lpshdef->fInclude = 1;
@@ -1009,7 +1003,7 @@ int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName) {
         penvMem = penvMemSav;
         return 0;
     }
-    StreamOpen(psz, 4114);
+    StreamOpen(psz, mdCreate);
     WriteBOF(iPlayer, dt, 0);
     penvMem = penvMemSav;
     return 1;
@@ -1039,7 +1033,7 @@ void WriteBOF(int16_t iPlayer, int16_t dt, int16_t fMulti) {
     return;
 }
 
-int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f) {
+int16_t FMarkFile(DtFileType dt, int16_t iPlayer, MdMark mdMark, int16_t f) {
     StringId ids;
     RTBOF    rtbof;
     jmp_buf *penvMemSav;
@@ -1066,16 +1060,16 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f) {
         return 0;
     }
     fFileErrSilent = 1;
-    StreamOpen(szWork, 18);
+    StreamOpen(szWork, mdReadWrite);
     fFileErrSilent = fSilentSav;
     ids = idsGameFileAppearsCorruptUnableLoadFile;
     ReadRt();
     if (hdrCur.rt != rtBOF) {
         FileError(idmColonistsDroppedDestroyedSpiritedFighting);
     } else if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) < 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49)) {
-        FileError(0x4d3);
+        FileError(1235);
     } else if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84)) {
-        FileError(0x2ca);
+        FileError(714);
     } else {
         rtbof = *(RTBOF *)rgbCur;
         if (game.lid != 0) {
@@ -1084,25 +1078,25 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f) {
             } else {
                 fChange = 0;
                 switch (mdMark) {
-                case 1:
+                case mdMarkInUse:
                     if (rtbof.fInUse == f)
                         goto L_93f5;
                     rtbof.fInUse = f;
                     fChange = 1;
                     goto L_93f5;
-                case 2:
+                case mdMarkDone:
                     if (rtbof.fDone == f)
                         goto L_93f5;
                     rtbof.fDone = f;
                     fChange = 1;
                     goto L_93f5;
-                case 4:
+                case mdMarkMulti:
                     if (rtbof.fMulti == f)
                         goto L_93f5;
                     rtbof.fMulti = f;
                     fChange = 1;
                     goto L_93f5;
-                case 8:
+                case mdMarkAi:
                     do {
                         GetFileSeeds(&lSeedSav1, &lSeedSav2);
                         ReadRt();
@@ -1174,15 +1168,15 @@ void SetVisiblePlanFleet(int16_t iPlr) {
         rgplr[0].cPlanet = game.cPlanMax;
     } else {
         if (iPlr != -1) {
-            UpdateProgressGauge(-927);
+            UpdateProgressGauge(progressStep1);
         }
         SetVisPFFleets(iPlr);
         if (iPlr != -1) {
-            UpdateProgressGauge(-927);
+            UpdateProgressGauge(progressStep1);
         }
         SetVisPFPlanets(iPlr);
         if (iPlr != -1) {
-            UpdateProgressGauge(-927);
+            UpdateProgressGauge(progressStep1);
         }
         SetVisPFThings(iPlr);
         SetVisPFFinish(iPlr);
@@ -1191,18 +1185,18 @@ void SetVisiblePlanFleet(int16_t iPlr) {
 }
 
 void SetVisPFInit(int16_t iPlr) {
-    PLANET  *lpplMac;
-    uint16_t detNew;
-    PLANET  *lppl;
-    int16_t  j;
-    FLEET   *lpfl;
-    THING   *lpth;
-    int16_t  ifl;
-    int16_t  i;
-    THING   *lpthMac;
-    int16_t  raMajor;
-    uint16_t grbitPlr;
-    int16_t  iSteal;
+    PLANET       *lpplMac;
+    uint16_t      detNew;
+    PLANET       *lppl;
+    int16_t       j;
+    FLEET        *lpfl;
+    THING        *lpth;
+    int16_t       ifl;
+    int16_t       i;
+    THING        *lpthMac;
+    RaceAttribute raMajor;
+    uint16_t      grbitPlr;
+    int16_t       iSteal;
 
     raMajor = GetRaceStat(&rgplr[iPlr], rsMajorAdv);
     grbitPlr = iPlr == -1 ? 0 : 1 << iPlr;
@@ -1291,7 +1285,7 @@ void SetVisPFInit(int16_t iPlr) {
     for (; lpth < lpthMac; lpth++) {
         switch (lpth->ith) {
         case ithMineralPacket:
-            if (iPlr == -1 || raMajor == 6) {
+            if (iPlr == -1 || raMajor == raMassAccel) {
                 lpth->thp.fInclude = 1;
                 if (rgplr[lpth->iplr].fInclude != 0)
                     break;
@@ -1349,11 +1343,11 @@ void SetVisPFFleets(int16_t iPlr) {
         if (lpfl->fDead == 0) {
             if (lpfl->iPlayer != iPlr) {
                 if (lpfl->fInclude == 0 && lpfl->idPlanet != -1 && lpPlanets[lpfl->idPlanet].iPlayer == iPlr) {
-                    MarkFleet(lpfl, 3);
+                    MarkFleet(lpfl, detSome);
                 }
             } else {
                 if (lpfl->fBombed != 0 && lpfl->idPlanet != -1) {
-                    MarkPlanet(lpPlanets + lpfl->idPlanet, iPlr, 3);
+                    MarkPlanet(lpPlanets + lpfl->idPlanet, iPlr, detSome);
                 }
                 iRadius = GetCachedFleetScannerRange(lpfl, &iRadPlanet, &pctDetect, &iSteal);
                 iRadius = 0 <= iRadius ? iRadius : 0;
@@ -1366,7 +1360,7 @@ void SetVisPFFleets(int16_t iPlr) {
                         break;
                     if (lpfl2->fDead == 0) {
                         if ((iSteal & 1) != 0 && pt.x == lpfl2->pt.x && pt.y == lpfl2->pt.y && (lpfl2->fInclude == 0 || lpfl2->det < detMore)) {
-                            MarkFleet(lpfl2, 4);
+                            MarkFleet(lpfl2, detMore);
                         }
                         if (lpfl2->fInclude == 0) {
                             dx = abs(pt.x - lpfl2->pt.x);
@@ -1380,11 +1374,11 @@ void SetVisPFFleets(int16_t iPlr) {
                                             pctCloak = (int16_t)(pctCloak * pctDetect) / 100;
                                         }
                                         if (pctCloak == 0) {
-                                            MarkFleet(lpfl2, 3);
+                                            MarkFleet(lpfl2, detSome);
                                         } else if (l <= (int32_t)(lRadius2 * (int16_t)(100 - pctCloak)) / 100 * (int16_t)(100 - pctCloak) / 100 &&
                                                    (lpfl2->idPlanet == -1 ||
                                                     l <= (int32_t)(lRadPlanet2 * (int16_t)(100 - pctCloak)) / 100 * (int16_t)(100 - pctCloak) / 100)) {
-                                            MarkFleet(lpfl2, 3);
+                                            MarkFleet(lpfl2, detSome);
                                         }
                                     }
                                 }
@@ -1441,7 +1435,7 @@ void SetVisPFFleets(int16_t iPlr) {
                     }
                 }
                 if ((iSteal & 2) != 0 && lpfl->idPlanet != -1) {
-                    MarkPlanet(lpPlanets + lpfl->idPlanet, iPlr, 4);
+                    MarkPlanet(lpPlanets + lpfl->idPlanet, iPlr, detMore);
                 }
                 if (iRadPlanet > 0) {
                     iRadius = iRadPlanet;
@@ -1460,11 +1454,11 @@ void SetVisPFFleets(int16_t iPlr) {
                                         if (lppl->fStarbase != 0 && lppl->iPlayer != -1) {
                                             lVis2 = rglpshdefSB[lppl->iPlayer][lppl->isb].lVisible;
                                             if (lVis2 < 10000 && d2 > (int32_t)(lRadius2 * lVis2) / 10000) {
-                                                MarkPlanet(lppl, iPlr, 2);
+                                                MarkPlanet(lppl, iPlr, detObscure);
                                                 continue;
                                             }
                                         }
-                                        MarkPlanet(lppl, iPlr, 3);
+                                        MarkPlanet(lppl, iPlr, detSome);
                                     }
                                 }
                             }
@@ -1518,7 +1512,7 @@ void SetVisPFPlanets(int16_t iPlr) {
         }
     }
     if (iPlr != -1) {
-        UpdateProgressGauge(-927);
+        UpdateProgressGauge(progressStep1);
     }
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
@@ -1541,11 +1535,11 @@ void SetVisPFPlanets(int16_t iPlr) {
                             if ((uint32_t)(dx * dx) + (uint32_t)(dy * dy) <= lRadius2 && (lpfl2->idPlanet == -1 || l <= lRadPlanet2)) {
                                 pctCloak = PctCloakFromLpfl(lpfl2);
                                 if (pctCloak == 0) {
-                                    MarkFleet(lpfl2, 3);
+                                    MarkFleet(lpfl2, detSome);
                                 } else if (l <= (int32_t)(lRadius2 * (int16_t)(100 - pctCloak)) / 100 * (int16_t)(100 - pctCloak) / 100 &&
                                            (lpfl2->idPlanet == -1 ||
                                             l <= (int32_t)(lRadPlanet2 * (int16_t)(100 - pctCloak)) / 100 * (int16_t)(100 - pctCloak) / 100)) {
-                                    MarkFleet(lpfl2, 3);
+                                    MarkFleet(lpfl2, detSome);
                                 }
                             }
                         }
@@ -1555,7 +1549,7 @@ void SetVisPFPlanets(int16_t iPlr) {
         }
     }
     if (iPlr != -1) {
-        UpdateProgressGauge(-927);
+        UpdateProgressGauge(progressStep1);
     }
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
@@ -1619,7 +1613,7 @@ void SetVisPFPlanets(int16_t iPlr) {
         }
     }
     if (iPlr != -1) {
-        UpdateProgressGauge(-927);
+        UpdateProgressGauge(progressStep1);
     }
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
@@ -1650,14 +1644,14 @@ void SetVisPFPlanets(int16_t iPlr) {
                             if (lVis2 < 10000 && d2 > (int32_t)(lRadius2 * lVis2) / 10000)
                                 continue;
                         }
-                        MarkPlanet(lppl2, iPlr, 3);
+                        MarkPlanet(lppl2, iPlr, detSome);
                     }
                 }
             }
         }
     }
     if (iPlr != -1) {
-        UpdateProgressGauge(-927);
+        UpdateProgressGauge(progressStep1);
     }
     lppl = lpPlanets;
     lpplMac = lpPlanets + cPlanet;
@@ -1683,11 +1677,11 @@ void SetVisPFPlanets(int16_t iPlr) {
                                     if (lppl2->fStarbase != 0 && lppl2->iPlayer != -1) {
                                         lVis2 = rglpshdefSB[lppl2->iPlayer][lppl2->isb].lVisible;
                                         if (lVis2 < 10000 && d2 > (int32_t)(lRadius2 * lVis2) / 10000) {
-                                            MarkPlanet(lppl2, iPlr, 2);
+                                            MarkPlanet(lppl2, iPlr, detObscure);
                                             continue;
                                         }
                                     }
-                                    MarkPlanet(lppl2, iPlr, 3);
+                                    MarkPlanet(lppl2, iPlr, detSome);
                                 }
                             }
                         }
@@ -1743,9 +1737,9 @@ void SetVisPFThings(int16_t iPlr) {
                                 if ((uint32_t)(dx * dx) + (uint32_t)(dy * dy) <= lRadius2) {
                                     pctCloak = PctCloakFromLpfl(lpfl2);
                                     if (pctCloak == 0) {
-                                        MarkFleet(lpfl2, 3);
+                                        MarkFleet(lpfl2, detSome);
                                     } else if (l <= (int32_t)(lRadius2 * (int16_t)(100 - pctCloak)) / 100 * (int16_t)(100 - pctCloak) / 100) {
-                                        MarkFleet(lpfl2, 3);
+                                        MarkFleet(lpfl2, detSome);
                                     }
                                 }
                             }
@@ -1814,11 +1808,11 @@ void SetVisPFThings(int16_t iPlr) {
                                     if (lppl2->fStarbase != 0 && lppl2->iPlayer != -1) {
                                         lVis2 = rglpshdefSB[lppl2->iPlayer][lppl2->isb].lVisible;
                                         if (lVis2 < 10000 && d2 > (int32_t)(lRadius2 * lVis2) / 10000) {
-                                            MarkPlanet(lppl2, iPlr, 2);
+                                            MarkPlanet(lppl2, iPlr, detObscure);
                                             continue;
                                         }
                                     }
-                                    MarkPlanet(lppl2, iPlr, 3);
+                                    MarkPlanet(lppl2, iPlr, detSome);
                                 }
                             }
                         }
@@ -1846,7 +1840,7 @@ void SetVisPFThings(int16_t iPlr) {
                                 if ((uint32_t)(dx * dx) + (uint32_t)(dy * dy) <= lRadius2) {
                                     pctCloak = PctCloakFromLpfl(lpfl2);
                                     if (pctCloak == 0 || Random(100) >= pctCloak) {
-                                        MarkFleet(lpfl2, 3);
+                                        MarkFleet(lpfl2, detSome);
                                     }
                                 }
                             }

@@ -9,6 +9,6 @@ extern char    aTUTCmpr[22323];
 extern int16_t aiTUTChunkOffset[10];
 extern char    rgTUTLookupTable[76];
 
-int16_t CchTutorString(char *pchOut, int16_t idt);
+int16_t CchTutorString(char *pchOut, TutorId idt);
 
 #endif
