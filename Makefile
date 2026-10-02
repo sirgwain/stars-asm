@@ -21,6 +21,8 @@ help:
 	@echo "  compile-check    Generate MinGW diagnostics and fail on C or resource errors"
 	@echo "  compile          Print MinGW diagnostics to the terminal (FILES=decompiled/ai.c to limit)"
 	@echo "  resources        Compile decompiled/res/stars.rc into ./dist/stars_res.o"
+	@echo "  tutorial         Run the complete AutoHotkey v2 tutorial under Wine"
+	@echo "  tutorial-reject  Verify early Generate is rejected"
 	@echo "  newgame          Run the scaffold new-game smoke test under Wine (DEF=)"
 	@echo "  tidy             Run go mod tidy in both modules"
 	@echo "  fmt              Run go fmt in all modules"
@@ -133,3 +135,10 @@ checkpoints-native:
 
 checkpoints-compare:
 	python3 tests/scaffold/regression.py compare starsbox/c_drive/REGTEST starsbox/c_drive/native
+
+# STARS_TUTORIAL_SERIAL optionally overrides the runner's default serial.
+tutorial:
+	python3 tests/scaffold/tutorial/run.py --download-ahk $(TUTORIAL_ARGS)
+
+tutorial-reject:
+	python3 tests/scaffold/tutorial/run.py --download-ahk --scenario reject-generate $(TUTORIAL_ARGS)

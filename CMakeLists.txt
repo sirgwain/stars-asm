@@ -56,6 +56,21 @@ target_compile_options(stars PRIVATE
 )
 target_link_libraries(stars PRIVATE user32 gdi32 comdlg32)
 
+# Tutorial automation observes the live game without changing its commands.
+option(STARS_TEST_TUTORIAL "Expose read-only tutorial state for AutoHotkey tests" OFF)
+if(STARS_TEST_TUTORIAL)
+    target_sources(stars PRIVATE tests/scaffold/tutorial/observer.c)
+    target_link_options(stars PRIVATE "LINKER:--wrap=InitInstance,--wrap=ScannerWndProc")
+endif()
+
+# Regression trace builds log selected calls when STARS_TRACE names a file.
+# The linker routes cross-file calls to wrappers in tests/scaffold/regression_trace.c.
+option(STARS_TEST_TRACE "Log Random and other selected calls to $STARS_TRACE for regression tests" OFF)
+if(STARS_TEST_TRACE)
+    target_sources(stars PRIVATE tests/scaffold/regression_trace.c)
+    target_link_options(stars PRIVATE "LINKER:--wrap=Random,--wrap=PctPlanetCapacity")
+endif()
+
 # Recompile resources when an embedded bitmap, icon, cursor, or data file changes.
 file(GLOB_RECURSE STARS_RESOURCE_FILES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/decompiled/res/*"
