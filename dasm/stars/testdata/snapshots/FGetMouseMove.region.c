@@ -6,10 +6,10 @@ int16_t FGetMouseMove(POINT16 *ppt) {
             ppt->x = LOWORD(msg.lParam);
             ppt->y = HIWORD(msg.lParam);
             if (msg.message != WM_LBUTTONUP) {
-                return 1;
+                return TRUE;
             }
-            return 0;
+            return FALSE;
         }
     }
-    return 1;
+    return TRUE;
 }

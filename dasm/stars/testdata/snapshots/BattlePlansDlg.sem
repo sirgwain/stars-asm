@@ -24,7 +24,7 @@ L_0652:
     goto L_16d5
 
 L_0661:
-    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 1) -> callresult(void)
+    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, TRUE) -> callresult(void)
     iPlanSelDlg = 0
     branch sel.grobj != grobjFleet ? L_068d : L_0684
 
@@ -107,7 +107,7 @@ L_08b6:
     branch i == idPlayer ? L_08a7 : L_08c1
 
 L_08c1:
-    call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, NULL)) -> callresult(LRESULT)
+    call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, FALSE, TRUE, FALSE, 0, NULL)) -> callresult(LRESULT)
 
 L_08fe:
     goto L_08a7
@@ -126,7 +126,7 @@ L_0921:
 L_0946:
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEveryone)) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, 0, 0) -> callresult(LRESULT)
-    call EnableWindow(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), 0) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), FALSE) -> callresult(int16_t)
 
 L_09a8:
     i = 400
@@ -142,7 +142,7 @@ L_09dd:
 L_09e7:
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0) -> callresult(LRESULT)
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0) -> callresult(LRESULT)
-    fDirtyPlan = 0
+    fDirtyPlan = FALSE
     branch gd.fTutorial == 0 ? L_0a5c : L_0a57
 
 L_0a57:
@@ -193,7 +193,7 @@ L_0b1c:
     call LogChangeBtlplan(&btlplan) -> callresult(void)
 
 L_0b6e:
-    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0) -> callresult(void)
+    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, FALSE) -> callresult(void)
     call EndDialog(hwnd, iPlanSelDlg) -> callresult(void)
     branch sel.grobj != grobjFleet ? L_0ba9 : L_0b97
 
@@ -209,7 +209,7 @@ L_0bb8:
 
 L_0bc2:
     btlplan.fDumpCargo = loword(SendDlgItemMessage(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO, BM_GETCHECK, 0, 0))
-    fDirtyPlan = 1
+    fDirtyPlan = TRUE
     goto L_16f8
 
 L_0c05:
@@ -221,13 +221,13 @@ L_0c0f:
 L_0c19:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
     call LogChangeBtlplan(&btlplan) -> callresult(void)
-    fDirtyPlan = 0
+    fDirtyPlan = FALSE
 
 L_0c71:
-    btlplan.fDelete = 1
+    btlplan.fDelete = TRUE
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
     btlplan.iplan = iPlanSelDlg
-    branch FDeleteBattlePlan(iPlanSelDlg, 1) == 0 ? L_0dd0 : L_0cf7
+    branch FDeleteBattlePlan(iPlanSelDlg, TRUE) == 0 ? L_0dd0 : L_0cf7
 
 L_0cf7:
     call LogChangeBtlplan(&btlplan) -> callresult(void)
@@ -251,7 +251,7 @@ L_0da5:
     goto L_14a5
 
 L_0dd0:
-    btlplan.fDelete = 0
+    btlplan.fDelete = FALSE
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
     goto L_16f8
 
@@ -261,7 +261,7 @@ L_0e25:
 L_0e2f:
     i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0))
     btlplan.mdTarget1 = i
-    fDirtyPlan = 1
+    fDirtyPlan = TRUE
     goto L_16f8
 
 L_0e70:
@@ -270,7 +270,7 @@ L_0e70:
 L_0e7a:
     i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0))
     btlplan.mdTarget2 = i
-    fDirtyPlan = 1
+    fDirtyPlan = TRUE
     goto L_16f8
 
 L_0ec4:
@@ -292,7 +292,7 @@ L_0f1b:
 
 L_0f1f:
     btlplan.iplrAttack = i
-    fDirtyPlan = 1
+    fDirtyPlan = TRUE
     goto L_16f8
 
 L_0f41:
@@ -301,14 +301,14 @@ L_0f41:
 L_0f4b:
     i = loword(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0))
     btlplan.mdTactic = i
-    fDirtyPlan = 1
+    fDirtyPlan = TRUE
     goto L_16f8
 
 L_0f92:
     branch GET_WM_COMMAND_ID(wParam, lParam) != IDC_RENAME ? L_1134 : L_0f9c
 
 LRename:
-    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0) -> callresult(void)
+    call StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, FALSE) -> callresult(void)
     lpProc = MakeProcInstance(NewPlanNameDlg, hInst)
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc)
     call FreeProcInstance(lpProc) -> callresult(void)
@@ -360,7 +360,7 @@ L_1157:
 L_1161:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
     call LogChangeBtlplan(&btlplan) -> callresult(void)
-    fDirtyPlan = 0
+    fDirtyPlan = FALSE
 
 L_11b9:
     iPlanSelDlg = rgcbtlplan[idPlayer]++
@@ -421,9 +421,9 @@ L_144e:
 
 L_1452:
     call SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, i, 0) -> callresult(LRESULT)
-    fDirtyPlan = 1
+    fDirtyPlan = TRUE
     wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET
-    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), 1) -> callresult(int16_t)
+    call EnableWindow(GetDlgItem(hwnd, IDC_RENAME), TRUE) -> callresult(int16_t)
     goto L_0f9c
 
 L_149b:
@@ -439,7 +439,7 @@ L_14d5:
 L_14df:
     rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan
     call LogChangeBtlplan(&btlplan) -> callresult(void)
-    fDirtyPlan = 0
+    fDirtyPlan = FALSE
 
 L_1537:
     iPlanSelDlg = i

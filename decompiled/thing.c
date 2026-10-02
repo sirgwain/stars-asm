@@ -109,7 +109,7 @@ void DrawThingGauge(HDC hdc, RECT *prc, THING *lpth, int16_t md) {
     int32_t lMax;
     int32_t l;
 
-    fDisabled = 0;
+    fDisabled = FALSE;
     SelectObject(hdc, rghfontArial8[1]);
     cSections = 1;
     lMax = (uint32_t)(lpth->thp.wtMax * 10);
@@ -124,7 +124,7 @@ void DrawThingGauge(HDC hdc, RECT *prc, THING *lpth, int16_t md) {
     } else if (md == 4 || md == 3) {
         rghbr[0] = hbrButtonShadow;
         rgSize[0] = lMax;
-        fDisabled = 1;
+        fDisabled = TRUE;
     } else {
         rghbr[0] = rghbrMineral[md];
         rgSize[0] = lpth->thp.rgwtMin[md];
@@ -325,7 +325,7 @@ void DoThingInteractions(int16_t fPostMove) {
                             } else {
                                 lpth->tht.grbitPlr |= 1 << iplr;
                                 FRemovePlayerMessage(iplr, idmHasCompletedAssignedOrders, lpfl->id | 0x8000);
-                                lpfl->fDead = 1;
+                                lpfl->fDead = TRUE;
                                 if (lpth->tht.grbitTrader == grbitTraderNone || (lpth->tht.grbitTrader & grbitPlrTrader) != 0) {
                                     if (fMaxTech != 0) {
                                         if (Random(5) == 0) {
@@ -386,7 +386,7 @@ void DoThingInteractions(int16_t fPostMove) {
                                                 lSpent += wtNext;
                                             }
                                             rgplr[iplr].rgResSpent[iLowest] = lSpent;
-                                            UpdateResearchStatus(0);
+                                            UpdateResearchStatus(FALSE);
                                         }
                                         continue;
                                     }
@@ -440,12 +440,12 @@ void DoThingInteractions(int16_t fPostMove) {
                                             }
                                             lpflNew->pt = lpfl->pt;
                                             lpflNew->lpplord->rgord[0].pt = lpfl->pt;
-                                            lpflNew->fHereAllTurn = 1;
+                                            lpflNew->fHereAllTurn = TRUE;
                                             lpshdefDest = rglpshdef[iplr] + ish;
                                             if (lpshdefDest->fFree != 0) {
                                                 *lpshdefDest = shdef;
                                                 lpshdefDest->ishdef = ish;
-                                                lpshdefDest->fGift = 1;
+                                                lpshdefDest->fGift = TRUE;
                                                 lpshdefDest->cBuilt = 0;
                                                 lpshdefDest->cExist = 0;
                                                 rgplr[iplr].cShDef++;

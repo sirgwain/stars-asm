@@ -54,7 +54,7 @@ L_1a09:
         goto L_1a26;
 
 L_1a26:
-    return 0;
+    return FALSE;
 
 L_1a2c:
     idm = idmHasBuiltNew;
@@ -101,7 +101,7 @@ L_1b66:
     goto L_1baf;
 
 L_1b9b:
-    lppl->fStarbase = 1;
+    lppl->fStarbase = TRUE;
 
 L_1baf:
     lppl->isb = iItem;
@@ -129,7 +129,7 @@ L_1c1f:
 L_1c55:
     lpshdef->cBuilt++;
     lpshdef->cExist++;
-    return 1;
+    return TRUE;
 
 L_1c78:
     if (lppl->fStarbase == 0)
@@ -144,7 +144,7 @@ L_1c8f:
         goto L_1c98;
 
 L_1c98:
-    return 0;
+    return FALSE;
 
 L_1c9e:
     lpshdef = rglpshdef[lppl->iPlayer] + iItem;
@@ -161,7 +161,7 @@ L_1cd6:
 
 L_1cf3:
     FSendPlrMsg2(lppl->iPlayer, idmStarbaseFailedBuildNewShipTypeBecause, lppl->id, iItem + 1, 0);
-    return 0;
+    return FALSE;
 
 L_1d1d:
     if (rgplr[lppl->iPlayer].cFleet != 0x200)
@@ -274,11 +274,11 @@ L_20c5:
 L_20de:
     CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt);
     FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewSDueLack27b, lpfl->id | 0x8000, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, lpfl->id, 0, 0, 0);
-    return 1;
+    return TRUE;
 
 L_214f:
     FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewShipSTypeLost, lppl->id, lppl->id, cBuilt, lppl->iPlayer << 5 | iItem, 0, 0, 0, 0);
-    return 0;
+    return FALSE;
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id);
@@ -335,7 +335,7 @@ L_23d0:
     goto L_2f77;
 
 L_23d6:
-    return 0;
+    return FALSE;
 
 L_23dc:
     t_scratch_m16_3 = lppl->cFactories;
@@ -368,7 +368,7 @@ L_24f9:
     goto L_2fc9;
 
 L_24fc:
-    return 0;
+    return FALSE;
 
 L_2505:
     t_scratch_m16_4 = lppl->cMines;
@@ -385,7 +385,7 @@ L_255e:
     goto SendMsgFactMine;
 
 L_25bb:
-    return 0;
+    return FALSE;
 
 L_25c4:
     t_scratch_m16_5 = lppl->cDefenses;
@@ -402,7 +402,7 @@ L_2615:
     goto SendMsgFactMine;
 
 L_2672:
-    return 0;
+    return FALSE;
 
 L_2681:
     raMajor = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv);
@@ -414,7 +414,7 @@ L_2681:
 
 L_26be:
     FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecausePlanet, lppl->id, lppl->id, 0);
-    return 0;
+    return FALSE;
 
 L_26e7:
     if (lppl->idFling != 0)
@@ -424,7 +424,7 @@ L_26e7:
 
 L_26f9:
     FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecauseDidnt, lppl->id, lppl->id, 0);
-    return 0;
+    return FALSE;
 
 L_2722:
     if (iItem != iobjPacket)
@@ -725,7 +725,7 @@ L_2da8:
         goto L_2db7;
 
 L_2db7:
-    i = IBestTerraform(lppl, 1);
+    i = IBestTerraform(lppl, TRUE);
     if (i == 0)
         goto L_2da8;
     else
@@ -840,8 +840,8 @@ L_2f7f:
     }
 
 L_2fc3:
-    return 0;
+    return FALSE;
 
 L_2fc9:
-    return 1;
+    return TRUE;
 }

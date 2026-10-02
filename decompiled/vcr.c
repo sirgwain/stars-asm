@@ -9,7 +9,7 @@ void BattleVCR(int16_t iBattle) {
     lpProc = NULL;
     penvMemSav = penvMem;
     viStepVCRCur = -1;
-    gd.fVCRTimer = 0;
+    gd.fVCRTimer = FALSE;
     if (gd.mdScreenSize >= 2) {
         dxyVCRBoard = 673;
         dxyVCRSquare = 64;
@@ -266,7 +266,7 @@ int16_t SetVCRBoard(int16_t iStep) {
                     if (ptok->fRegen != 0) {
                         RegenShield(ptok);
                     }
-                    ptok->fMoved = 0;
+                    ptok->fMoved = FALSE;
                     i++;
                     ptok++;
                 }
@@ -337,8 +337,8 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
             SetWindowPos(GetDlgItem(hwnd, ibtn), NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
         }
         EnableVCRButtons();
-        StickyDlgPos(hwnd, &ptStickyVCRDlg, 1);
-        fAnimate = 1;
+        StickyDlgPos(hwnd, &ptStickyVCRDlg, TRUE);
+        fAnimate = TRUE;
         return 1;
     case WM_ERASEBKGND:
         GetClientRect(hwnd, &rc);
@@ -376,7 +376,7 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
             bkMode = SetBkMode(hdc, OPAQUE);
             crBkSav = SetBkColor(hdc, crButtonFace);
             SelectObject(hdc, rghfontArial8[1]);
-            InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, 0, 0, NULL);
+            InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, FALSE, FALSE, NULL);
             while (FTrackBtn(&btnt) != 0) {
                 if ((iDir == -1 && iCur > 0) || (iDir == 1 && iCur < 4)) {
                     iCur += iDir;
@@ -403,8 +403,8 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
             } else {
                 GlobalPD.lpshdef = rglpshdef[vrgtok[viVCRFocus].iplr] + vrgtok[viVCRFocus].ishdef;
             }
-            GlobalPD.fShowDamage = 1;
-            GlobalPD.fToken = 1;
+            GlobalPD.fShowDamage = TRUE;
+            GlobalPD.fToken = TRUE;
             GlobalPD.fHideCounts = vrgtok[viVCRFocus].iplr != idPlayer;
             Popup(hwnd, LOWORD(lParam), HIWORD(lParam));
             return 0;
@@ -468,13 +468,13 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
         case IDOK:
         case IDCANCEL:
             if (gd.fVCRTimer != 0) {
-                gd.fVCRTimer = 0;
+                gd.fVCRTimer = FALSE;
                 KillTimer(hwnd, 2668);
             }
             if (gd.fTutorial != 0) {
-                tutor.fProgress = 1;
+                tutor.fProgress = TRUE;
             }
-            StickyDlgPos(hwnd, &ptStickyVCRDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyVCRDlg, FALSE);
             EndDialog(hwnd, i);
             return 1;
         case IDC_HELP:
@@ -489,7 +489,7 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
         return 0;
     }
     KillTimer(hwnd, 2668);
-    gd.fVCRTimer = 0;
+    gd.fVCRTimer = FALSE;
     if (i == 2) {
         return 0;
     }
@@ -501,7 +501,7 @@ L_16d3:
     } else {
         dStep = 1;
     }
-    fAnimate = 0;
+    fAnimate = FALSE;
     switch (i) {
     case 0:
         iStep = -1;
@@ -667,11 +667,11 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
         rgrcBuildSpin[1] = rgrcBuildSpin[0];
         OffsetRect(&rgrcBuildSpin[1], 14, 0);
         for (i = 0; i < 2; i++) {
-            DrawBtn(hdc, &rgrcBuildSpin[i], (i == 0 ? 2 : 3) | 0x20, 0, NULL);
+            DrawBtn(hdc, &rgrcBuildSpin[i], (i == 0 ? 2 : 3) | 0x20, FALSE, NULL);
         }
         if (viStepVCRCur >= 0) {
             y += dyArial8 + 4;
-            psz = PszPlayerName(vrgtok[vlpbrVCR->itok].iplr, 1, 1, 1, 0, NULL);
+            psz = PszPlayerName(vrgtok[vlpbrVCR->itok].iplr, TRUE, TRUE, TRUE, 0, NULL);
             TextOut(hdc, x, y, szWork, strlen(psz));
             y += dyArial8;
             if (vlpbrVCR->itok == viVCRFocus) {
@@ -694,7 +694,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
             SetTextColor(hdc, crButtonText);
             fJam = 0;
             if (vlpbrVCR->ctok > 0) {
-                psz = PszPlayerName(vrgtok[vlpbrVCR->itokAttack].iplr, 0, 1, 1, 0, NULL);
+                psz = PszPlayerName(vrgtok[vlpbrVCR->itokAttack].iplr, FALSE, TRUE, TRUE, 0, NULL);
                 c = _wsprintf(szT, PszGetCompressedString(idsAttacksS), psz);
                 TextOut(hdc, x, y, szT, c);
                 y += dyArial8;
@@ -781,7 +781,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
             y += dyArial8;
             if (viVCRFocus >= 0) {
                 csh = 0;
-                psz = PszPlayerName(vrgtok[viVCRFocus].iplr, 1, 1, 1, 0, NULL);
+                psz = PszPlayerName(vrgtok[viVCRFocus].iplr, TRUE, TRUE, TRUE, 0, NULL);
                 c = strlen(psz);
                 TextOut(hdc, x, y, szWork, c);
                 y += dyArial8;
@@ -890,7 +890,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
                     y += 5 * dyArial8;
                 }
                 SetRect(&rc, x, y + 4, x + dyArial8 + 4, y + dyArial8 + 8);
-                DrawBtn(hdc, &rc, 8, 0, "?");
+                DrawBtn(hdc, &rc, 8, FALSE, "?");
             }
         }
         iStart = 0;
@@ -930,7 +930,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * y + 10, 1, dxyVCRSquare + 2, BLACKNESS);
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10 + dxyVCRSquare + 1, (dxyVCRSquare + 3) * y + 10, 1, dxyVCRSquare + 2, BLACKNESS);
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * y + 10 + dxyVCRSquare + 1, dxyVCRSquare + 2, 1, BLACKNESS);
-            DrawFleetBitmap(NULL, hdc, (dxyVCRSquare + 3) * x + 11, (dxyVCRSquare + 3) * y + 11, 0, ibmp, ctok, dxyVCRSquare < 64, ibmpRace, csh);
+            DrawFleetBitmap(NULL, hdc, (dxyVCRSquare + 3) * x + 11, (dxyVCRSquare + 3) * y + 11, FALSE, ibmp, ctok, dxyVCRSquare < 64, ibmpRace, csh);
         } else {
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * y + 10, dxyVCRSquare + 2, dxyVCRSquare + 2, BLACKNESS);
         }
@@ -1014,7 +1014,7 @@ void AnimateAttack(HDC hdc) {
     int16_t      t_merge_41df_0001;
 
     grfWeapon = 0;
-    fKill = 0;
+    fKill = FALSE;
     if (viStepVCRCur >= 0) {
         ptokSrc = vrgtok + vlpbrVCR->itok;
         x = ptokSrc->brc & 0xf;
@@ -1035,12 +1035,12 @@ void AnimateAttack(HDC hdc) {
         do {
             grfWeapon = vlpbrVCR->rgkill[iHit].grfWeapon;
             if (vlpbrVCR->rgkill[iHit].cshKill != 0) {
-                fKill = 1;
+                fKill = TRUE;
             }
             for (iFrame = iHit + 1; iFrame < vlpbrVCR->ctok && vlpbrVCR->rgkill[iFrame].itok == vlpbrVCR->rgkill[iHit].itok; iFrame++) {
                 grfWeapon |= vlpbrVCR->rgkill[iFrame].grfWeapon;
                 if (vlpbrVCR->rgkill[iFrame].cshKill != 0) {
-                    fKill = 1;
+                    fKill = TRUE;
                 }
             }
             ptokAttack = vrgtok + vlpbrVCR->rgkill[iHit].itok;
@@ -1183,7 +1183,7 @@ void AnimateAttack(HDC hdc) {
             ptDest.y = (ptokAttack->brc >> 4) * (dxyVCRSquare + 3) + 10 + dxyVCRSquare / 2 + 1;
             DrawIcon(hdc, ptDest.x - 16, ptDest.y - 16, rghiconVCR[fKill == 0 ? 0 : 2]);
         }
-        fAnimate = 0;
+        fAnimate = FALSE;
     }
     return;
 }
@@ -1209,7 +1209,7 @@ int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc) {
     fAttack = brc == vrgtok[vlpbrVCR->itokAttack].brc;
     for (i = 0; i < vlpbdVCR->ctok; i++) {
         if (vrgtok[i].brc == brc && vrgtok[i].csh > 0) {
-            if (PszPlayerName(vrgtok[i].iplr, 0, 0, 0, 0, NULL) != szWork) {
+            if (PszPlayerName(vrgtok[i].iplr, FALSE, FALSE, FALSE, 0, NULL) != szWork) {
             }
             cch = strlen(szWork);
             if (vrgtok[i].grobj == grobjPlanet) {
@@ -1244,7 +1244,7 @@ int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc) {
     if (c == 0) {
         return -1;
     }
-    iSel = PopupMenu(hwnd, x, y, c, NULL, rgsz, iChecked, 1);
+    iSel = PopupMenu(hwnd, x, y, c, NULL, rgsz, iChecked, TRUE);
     if (iSel == -1) {
         return -1;
     }

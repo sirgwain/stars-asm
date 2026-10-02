@@ -28,7 +28,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         ReleaseDC(hwnd, hdc);
         SortReportCache(vprptCur->irpt, vprptCur->icolSort);
         SetWindowPos(hwnd, NULL, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
-        StickyDlgPos(hwnd, &vprptCur->ptDlg, 1);
+        StickyDlgPos(hwnd, &vprptCur->ptDlg, TRUE);
         vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", NULL, SBS_VERT | WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
         vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", NULL, WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
         if (gd.fTutorial != 0) {
@@ -41,7 +41,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         if (vprptCur->cRowsVis >= vprptCur->cRows) {
             swp = SWP_NOZORDER | SWP_HIDEWINDOW;
             vprptCur->irowFirst = 0;
-            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, FALSE);
         } else {
             swp = SWP_NOZORDER | SWP_SHOWWINDOW;
             if (vprptCur->irowFirst + vprptCur->cRowsVis > vprptCur->cRows && vprptCur->irowFirst > 0) {
@@ -50,8 +50,8 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     vprptCur->irowFirst = 0;
                 }
             }
-            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0);
-            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, FALSE);
+            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, TRUE);
         }
         dx = GetSystemMetrics(SM_CXVSCROLL);
         SetWindowPos(vprptCur->hwndVScroll, NULL, rc.right - dx, dyArial8 + 6, dx, (dyArial8 + 4) * vprptCur->cRowsVis + 1, swp);
@@ -151,7 +151,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             rc.top = dyArial8 + 6;
             rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
             ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
-            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE);
             UpdateWindow(hwnd);
         }
         return 0;
@@ -190,7 +190,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             iNew = 0;
         }
         if (iNew != iCur) {
-            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE);
             iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
             if (iNew != iCur) {
                 i = 1;
@@ -198,7 +198,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     i++;
                 }
                 vprptCur->cFieldFirst = i;
-                InvalidateRect(hwnd, NULL, 1);
+                InvalidateRect(hwnd, NULL, TRUE);
                 UpdateWindow(hwnd);
             }
         }
@@ -207,15 +207,15 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         hdc = BeginPaint(hwnd, &ps);
         DrawReport(hwnd, hdc, &ps.rcPaint);
         EndPaint(hwnd, &ps);
-        gd.fRptSafeDraw = 0;
+        gd.fRptSafeDraw = FALSE;
         return 1;
     case WM_DESTROY:
-        StickyDlgPos(hwnd, &vprptCur->ptDlg, 0);
+        StickyDlgPos(hwnd, &vprptCur->ptDlg, FALSE);
         GetWindowRect(hwnd, &rc);
         vprptCur->ptSize.x = rc.right - rc.left;
         vprptCur->ptSize.y = rc.bottom - rc.top;
         hwndReportDlg = 0;
-        fBrowserValid = 0;
+        fBrowserValid = FALSE;
         hmenu = GetASubMenu(hwndFrame, menuReport);
         switch (vprptCur->irpt) {
         case rptFleets:

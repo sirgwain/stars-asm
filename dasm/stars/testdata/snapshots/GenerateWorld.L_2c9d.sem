@@ -1,7 +1,7 @@
 L_2c9d:
     lpshdef[1] = lpshdef[2]
     lpshdef[1].ishdef = 17
-    lpshdef[1].fFree = 0
+    lpshdef[1].fFree = FALSE
     rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 1)
     lpshdef[1].cExist = 1
     lpshdef[1].cBuilt = 1

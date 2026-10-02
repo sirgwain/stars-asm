@@ -14,7 +14,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
         viSubsortPrev = vprptCur->iSubsort;
         vfAscendingPrev = vprptCur->fAscending;
         vprptCur->icolSort = icol;
-        gd.fChgReports = 1;
+        gd.fChgReports = TRUE;
     }
     if (hwndReportDlg != 0 || vprptCur->fCached == 0) {
         switch (irpt) {
@@ -31,7 +31,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
             break;
         case rptEnemyFleets:
             vlprgidRep = vlprgidMisc;
-            vrptBattle.fCached = 0;
+            vrptBattle.fCached = FALSE;
             for (iItem = 0; (int16_t)iItem < cFleet; iItem++) {
                 lpfl = rglpfl[iItem];
                 if (rglpfl[iItem] == 0)
@@ -56,7 +56,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
             break;
         case rptBattles:
             vlprgidRep = vlprgidMisc;
-            vrptEFleet.fCached = 0;
+            vrptEFleet.fCached = FALSE;
             cRows = CBattles();
             for (i = 0; i < cRows; i++) {
                 rgidRep[i] = i;
@@ -68,7 +68,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
         vprptCur->cRows = cRows;
         qsort(rgidRep, cRows, sizeof(uint16_t), (QSORTCOMPARE)ICompReport);
         fmemcpy(vlprgidRep, rgidRep, cRows * 2);
-        vprptCur->fCached = 1;
+        vprptCur->fCached = TRUE;
     }
     return;
 }

@@ -21,7 +21,7 @@ FOpenFile  (file)
 L_4ac2:
     fSilentSav = fFileErrSilent
     ids = idsCantOpenFile
-    gd.fPartialTurn = 0
+    gd.fPartialTurn = FALSE
     fCheckMulti = (dt & 0x2000)
     fRewind = (dt & 0x1000)
     dt = (dt & 0xff)
@@ -35,10 +35,10 @@ L_4b27:
     call FileError(ids) -> callresult(void)
     call StreamClose() -> callresult(void)
     penvMem = penvMemSav
-    return 0
+    return FALSE
 
 L_4b49:
-    fFileErrSilent = 1
+    fFileErrSilent = TRUE
     call StreamOpen(szWork, md) -> callresult(void)
     fFileErrSilent = fSilentSav
     ids = idsGameFileAppearsCorruptUnableLoadFile
@@ -83,7 +83,7 @@ L_4c2a:
 LBadFile:
     call StreamClose() -> callresult(void)
     penvMem = penvMemSav
-    return 0
+    return FALSE
 
 L_4c47:
     rtbof = *((RTBOF *)rgbCur)
@@ -169,7 +169,7 @@ L_4e34:
     branch gd.fForceTurn != 0 ? L_4e58 : L_4e46
 
 L_4e46:
-    gd.fPartialTurn = 1
+    gd.fPartialTurn = TRUE
     goto L_4c36
 
 L_4e58:
@@ -199,5 +199,5 @@ L_4ee3:
     penvMem = penvMemSav
     wVersFile = rtbof.wVersion
     gd.fFileCrippled = rtbof.fCrippled
-    return 1
+    return TRUE
 

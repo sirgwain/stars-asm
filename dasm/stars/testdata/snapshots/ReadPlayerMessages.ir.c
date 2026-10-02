@@ -13,7 +13,7 @@ void ReadPlayerMessages() {
 
 L_994a:
     imemMsgT = 0;
-    fOOM = 0;
+    fOOM = FALSE;
     lpb = (uint8_t *)lpMsg + imemMsgCur;
 
 L_9970:
@@ -97,7 +97,7 @@ L_9b0c:
 
 L_9b2c:
     penvMem = penvMemSav;
-    fOOM = 1;
+    fOOM = TRUE;
     goto LOutOfMem;
 
 L_9b3a:
@@ -125,6 +125,6 @@ LOutOfMem:
 
 L_9bba:
     iMsgCur = -1;
-    iMsgCur = IMsgNext(0);
+    iMsgCur = IMsgNext(FALSE);
     return;
 }

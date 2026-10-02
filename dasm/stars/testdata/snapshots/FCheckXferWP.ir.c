@@ -9,7 +9,7 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
     int16_t     idhSav;
 
 L_7280:
-    fRet = 0;
+    fRet = FALSE;
     idhSav = tutor.idh;
     if ((id & 0x8000) == 0)
         goto L_72af;
@@ -32,7 +32,7 @@ L_72b4:
         goto L_72d8;
 
 L_72d8:
-    return 0;
+    return FALSE;
 
 L_72de:
     if (FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) != 0)
@@ -41,7 +41,7 @@ L_72de:
         goto L_7302;
 
 L_7302:
-    return 0;
+    return FALSE;
 
 L_7308:
     ord = lpfl->lpplord->rgord[iord];
@@ -107,7 +107,7 @@ L_73ec:
     goto L_73c0;
 
 L_73f5:
-    fRet = 1;
+    fRet = TRUE;
 
 LReturn:
     idh = tutor.idh;

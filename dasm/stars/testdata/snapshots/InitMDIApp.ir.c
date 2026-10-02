@@ -3,7 +3,7 @@ int16_t InitMDIApp() {
 
 L_0000:
     wc.style = 11;
-    wc.lpfnWndProc = (WNDPROC)FrameWndProc16;
+    wc.lpfnWndProc = FrameWndProc16;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
@@ -22,7 +22,7 @@ L_0070:
 
 L_0076:
     wc.style = 523;
-    wc.lpfnWndProc = (WNDPROC)MessageWndProc;
+    wc.lpfnWndProc = MessageWndProc;
     wc.hIcon = 0;
     wc.lpszMenuName = NULL;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
@@ -37,7 +37,7 @@ L_00bf:
 
 L_00c5:
     wc.style = 523;
-    wc.lpfnWndProc = (WNDPROC)ScannerWndProc;
+    wc.lpfnWndProc = ScannerWndProc;
     wc.hbrBackground = GetStockObject(BLACK_BRUSH);
     wc.lpszClassName = szScan;
     if (RegisterClass(&wc) != 0)
@@ -50,7 +50,7 @@ L_00ff:
 
 L_0105:
     wc.style = 523;
-    wc.lpfnWndProc = (WNDPROC)MineWndProc;
+    wc.lpfnWndProc = MineWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.lpszClassName = szMine;
     if (RegisterClass(&wc) != 0)
@@ -63,7 +63,7 @@ L_013f:
 
 L_0145:
     wc.style = 520;
-    wc.lpfnWndProc = (WNDPROC)TbWndProc;
+    wc.lpfnWndProc = TbWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.lpszClassName = szTb;
     if (RegisterClass(&wc) != 0)
@@ -76,7 +76,7 @@ L_017f:
 
 L_0185:
     wc.style = 0x200;
-    wc.lpfnWndProc = (WNDPROC)PlanetWndProc;
+    wc.lpfnWndProc = PlanetWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.hIcon = 0;
     wc.lpszClassName = szPlanet;
@@ -90,7 +90,7 @@ L_01c4:
 
 L_01ca:
     wc.style = 2560;
-    wc.lpfnWndProc = (WNDPROC)PopupWndProc;
+    wc.lpfnWndProc = PopupWndProc;
     wc.hbrBackground = GetStockObject(WHITE_BRUSH);
     wc.hIcon = 0;
     wc.lpszClassName = szPopup;
@@ -104,7 +104,7 @@ L_0209:
 
 L_020f:
     wc.style = 2560;
-    wc.lpfnWndProc = (WNDPROC)TooltipWndProc;
+    wc.lpfnWndProc = TooltipWndProc;
     wc.hbrBackground = GetStockObject(WHITE_BRUSH);
     wc.hIcon = 0;
     wc.lpszClassName = szTooltip;
@@ -118,7 +118,7 @@ L_024e:
 
 L_0254:
     wc.style = 0x200;
-    wc.lpfnWndProc = (WNDPROC)BrowserWndProc;
+    wc.lpfnWndProc = BrowserWndProc;
     wc.hbrBackground = GetStockObject(LTGRAY_BRUSH);
     wc.hIcon = 0;
     wc.lpszClassName = szBrowser;
@@ -132,7 +132,7 @@ L_0293:
 
 L_0299:
     wc.style = 0;
-    wc.lpfnWndProc = (WNDPROC)TitleWndProc;
+    wc.lpfnWndProc = TitleWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
@@ -151,7 +151,7 @@ L_0306:
 
 L_030c:
     wc.style = 11;
-    wc.lpfnWndProc = (WNDPROC)ReportDlg;
+    wc.lpfnWndProc = ReportDlg;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;

@@ -80,7 +80,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     for (; (w & 1) == 0; w >>= 1) {
                         c++;
                     }
-                    pchT = PszPlayerName(c, 0, 1, 1, 0, NULL);
+                    pchT = PszPlayerName(c, FALSE, TRUE, TRUE, 0, NULL);
                     goto FinishString;
                 }
                 cOut = 0;
@@ -95,7 +95,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                                 pch += CchGetString(idsAnd, pch);
                             }
                         }
-                        pchT = PszPlayerName(i, 0, 1, 1, 0, NULL);
+                        pchT = PszPlayerName(i, FALSE, TRUE, TRUE, 0, NULL);
                         strcpy(pch, pchT);
                         pch += strlen(pchT);
                         cOut++;
@@ -108,7 +108,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                 if (*pParams == idPlayer)
                     goto DoNothing;
                 CchGetString(idsOf2, szBuf);
-                pchT = PszPlayerName(*pParams, 0, 0, 0, 0, NULL);
+                pchT = PszPlayerName(*pParams, FALSE, FALSE, FALSE, 0, NULL);
                 strcat(szBuf, pchT);
                 strcat(szBuf, PszGetCompressedString(idsOrigin));
                 pchT = szBuf;
@@ -185,7 +185,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                 goto DoPlanet;
             case 'O':
                 w = (uint16_t)*pParams >> 9 & 0xf;
-                pchT = PszPlayerName(w, 0, 0, 0, 0, NULL);
+                pchT = PszPlayerName(w, FALSE, FALSE, FALSE, 0, NULL);
                 goto FinishString;
             case 'u':
                 c = _wsprintf(pch, "%u", *pParams);
@@ -217,7 +217,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     lpshdef = rglpshdef[c] + w;
                 }
                 if (c != idPlayer) {
-                    pchT = PszPlayerName(c, 0, 0, 1, 0, NULL);
+                    pchT = PszPlayerName(c, FALSE, FALSE, TRUE, 0, NULL);
                     _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass);
                 } else {
                     fstrcpy(pch, lpshdef->hul.szClass);

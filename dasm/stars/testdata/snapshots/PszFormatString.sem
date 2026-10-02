@@ -157,7 +157,7 @@ L_888e:
     goto L_887f
 
 L_889c:
-    pchT = PszPlayerName(c, 0, 1, 1, 0, NULL)
+    pchT = PszPlayerName(c, FALSE, TRUE, TRUE, 0, NULL)
     goto L_8ae9
 
 L_88c1:
@@ -190,7 +190,7 @@ L_8930:
     pch = &pch[CchGetString(idsAnd, pch)]
 
 L_8944:
-    pchT = PszPlayerName(i, 0, 1, 1, 0, NULL)
+    pchT = PszPlayerName(i, FALSE, TRUE, TRUE, 0, NULL)
     call strcpy(pch, pchT) -> callresult(char *)
     pch = &pch[strlen(pchT)]
     cOut = (cOut + 1)
@@ -201,7 +201,7 @@ L_898e:
 
 L_899f:
     call CchGetString(idsOf2, szBuf) -> callresult(int16_t)
-    pchT = PszPlayerName(*pParams, 0, 0, 0, 0, NULL)
+    pchT = PszPlayerName(*pParams, FALSE, FALSE, FALSE, 0, NULL)
     call strcat(szBuf, pchT) -> callresult(char *)
     call strcat(szBuf, PszGetCompressedString(idsOrigin)) -> callresult(char *)
     pchT = szBuf
@@ -309,7 +309,7 @@ L_8c8a:
 
 L_8c96:
     w = ((*pParams >> 9) & 0xf)
-    pchT = PszPlayerName(w, 0, 0, 0, 0, NULL)
+    pchT = PszPlayerName(w, FALSE, FALSE, FALSE, 0, NULL)
     goto L_8ae9
 
 L_8ccf:
@@ -355,7 +355,7 @@ L_8e27:
     branch c == idPlayer ? L_8e84 : L_8e32
 
 L_8e32:
-    pchT = PszPlayerName(c, 0, 0, 1, 0, NULL)
+    pchT = PszPlayerName(c, FALSE, FALSE, TRUE, 0, NULL)
     call _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass) -> callresult(int16_t)
     goto L_8ea3
 

@@ -9,7 +9,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ini.wFlags = 0;
     memset(&tutor, 0, sizeof(TUTOR));
     memset(&vtimer, 0, sizeof(TIMER));
-    vtimer.fAutoGenWhenIn = 1;
+    vtimer.fAutoGenWhenIn = TRUE;
     if (hPrevInstance == 0 && InitMDIApp() == 0) {
         AlertSz(PszFormatIds(idsUnableInitializeStars, NULL), MB_ICONHAND);
         return 0;
@@ -35,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 switch (*lpT) {
                 case 'W':
                 case 'w':
-                    ini.fWait = 1;
+                    ini.fWait = TRUE;
                     break;
                 case 'D':
                 case 'd':
@@ -43,22 +43,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                         switch (*lpT) {
                         case 'F':
                         case 'f':
-                            ini.fDumpFleets = 1;
+                            ini.fDumpFleets = TRUE;
                             break;
                         case 'P':
                         case 'p':
-                            ini.fDumpPlanets = 1;
+                            ini.fDumpPlanets = TRUE;
                             break;
                         case 'M':
                         case 'm':
-                            ini.fDumpMap = 1;
+                            ini.fDumpMap = TRUE;
                         }
                     }
                     lpT--;
                     break;
                 case 'G':
                 case 'g':
-                    ini.fGen = 1;
+                    ini.fGen = TRUE;
                     i = 0;
                     while (lpT[1] >= '0' && lpT[1] <= '9') {
                         lpT++;
@@ -76,15 +76,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                     break;
                 case 'A':
                 case 'a':
-                    ini.fNewGame = 1;
+                    ini.fNewGame = TRUE;
                     break;
                 case 'H':
                 case 'h':
-                    gd.fHotSeat = 1;
+                    gd.fHotSeat = TRUE;
                     break;
                 case 'X':
                 case 'x':
-                    gd.fExitWindows = 1;
+                    gd.fExitWindows = TRUE;
                     break;
                 case 'B':
                 case 'b':
@@ -99,22 +99,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                     lpT--;
                     if (FSetUpBatchProcessing() == 0)
                         break;
-                    ini.fBatch = 1;
-                    ini.fGen = 1;
-                    ini.fStartupFile = 1;
-                    ini.fCmdLine = 1;
+                    ini.fBatch = TRUE;
+                    ini.fGen = TRUE;
+                    ini.fStartupFile = TRUE;
+                    ini.fCmdLine = TRUE;
                     break;
                 case 'V':
                 case 'v':
-                    ini.fValidate = 1;
+                    ini.fValidate = TRUE;
                     break;
                 case 'L':
                 case 'l':
-                    ini.fLogging = 1;
+                    ini.fLogging = TRUE;
                     break;
                 case 'T':
                 case 't':
-                    ini.fTry = 1;
+                    ini.fTry = TRUE;
                     break;
                 case 'C':
                 case 'c':
@@ -142,8 +142,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 pch++;
             }
             *pch = 0;
-            ini.fStartupFile = 1;
-            ini.fCmdLine = 1;
+            ini.fStartupFile = TRUE;
+            ini.fCmdLine = TRUE;
         }
     }
     PostMessage(hwndFrame, WM_STARS_STARTUP, 0, 0);

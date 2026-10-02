@@ -187,7 +187,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         if (iOffset >= 32) {
             iOffset = 0;
         }
-        SelectPalette(hdc, vhpal, 0);
+        SelectPalette(hdc, vhpal, FALSE);
         RealizePalette(hdc);
         DibBlt(hdc, pt.x, pt.y, 32, 32, hdibRaces, (iOffset & 7) * 0x20, (3 - (iOffset >> 3)) * 0x20, 32, 32, 13369376);
         if (fRCWReadOnly == 0) {
@@ -195,7 +195,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             rgrcBuildSpin[1] = rgrcBuildSpin[0];
             OffsetRect(&rgrcBuildSpin[1], 14, 0);
             for (i = 0; i < 2; i++) {
-                DrawBtn(hdc, &rgrcBuildSpin[i], (i == 0 ? 2 : 3) | 0x20, 0, NULL);
+                DrawBtn(hdc, &rgrcBuildSpin[i], (i == 0 ? 2 : 3) | 0x20, FALSE, NULL);
             }
         }
         EndPaint(hwnd, &ps);
@@ -225,7 +225,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             GetDlgItemText(hwnd, IDC_RACE_HUMANOID, vplr.szName, 16);
             SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
         }
-        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, TRUE);
         if (game.fTutorial != 0 && idPlayer == 0 && fRCWReadOnly != 0) {
             i = 0;
         } else {
@@ -252,13 +252,13 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         if (fRCWReadOnly != 0) {
             for (i = 268; i <= 269; i++) {
-                EnableWindow(GetDlgItem(hwnd, i), 0);
+                EnableWindow(GetDlgItem(hwnd, i), FALSE);
             }
-            EnableWindow(GetDlgItem(hwnd, IDC_RACE_PLURAL_NAME), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_RACE_PLURAL_NAME), FALSE);
             for (i = 271; i <= 278; i++) {
-                EnableWindow(GetDlgItem(hwnd, i), 0);
+                EnableWindow(GetDlgItem(hwnd, i), FALSE);
             }
-            EnableWindow(hwndCB, 0);
+            EnableWindow(hwndCB, FALSE);
         }
         return 1;
     case WM_LBUTTONDOWN:
@@ -281,9 +281,9 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             iCur = 0;
         }
         hdc = GetDC(hwnd);
-        SelectPalette(hdc, vhpal, 0);
+        SelectPalette(hdc, vhpal, FALSE);
         RealizePalette(hdc);
-        InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, 0, 0, NULL);
+        InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, FALSE, FALSE, NULL);
         while (FTrackBtn(&btnt) != 0) {
             iCur = (int16_t)(iCur + 32 + iDir) % 32;
             DibBlt(hdc, rgrcBuildSpin[0].left - 2, rgrcBuildSpin[0].top - 35, 32, 32, hdibRaces, (iCur & 7) * 0x20, (3 - (iCur >> 3)) * 0x20, 32, 32, 13369376);
@@ -316,7 +316,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 vplr.lSalt = LSaltFromSz(szRacePass);
                 vplr.iPlrBmp = iPlrBmp;
             }
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, FALSE);
             EndDialog(hwnd, i);
             return 1;
         }
@@ -334,7 +334,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 CchGetString(GET_WM_COMMAND_ID(wParam, lParam) + 1112, vplr.szName);
                 SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
                 memset(vplr.szNames, 0, 32);
-                psz = PszPlayerName(0, 1, 1, 0, 0, &vplr);
+                psz = PszPlayerName(0, TRUE, TRUE, FALSE, 0, &vplr);
                 strcpy(vplr.szNames, psz);
                 SetDlgItemText(hwnd, IDC_RACE_PLURAL_NAME, vplr.szNames);
             }
@@ -354,7 +354,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             rc.top = rc.bottom - 32;
             rc.right = rc.left + 32;
             rc.bottom = rc.top + 32;
-            InvalidateRect(hwnd, &rc, 1);
+            InvalidateRect(hwnd, &rc, TRUE);
         }
     }
     return 0;
@@ -438,10 +438,10 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         ReleaseDC(hwnd, hdc);
         if (fRCWReadOnly != 0) {
             for (i = 291; i <= 293; i++) {
-                EnableWindow(GetDlgItem(hwnd, i), 0);
+                EnableWindow(GetDlgItem(hwnd, i), FALSE);
             }
         }
-        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, TRUE);
         return 1;
     case WM_SETCURSOR:
         GetCursorPos16(&pt);
@@ -463,7 +463,7 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
         }
         if (i < 4) {
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, FALSE);
             EndDialog(hwnd, i);
             return 1;
         }
@@ -506,10 +506,10 @@ void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw) {
     int16_t iStore;
     int32_t l;
 
-    fCreatedDC = 0;
+    fCreatedDC = FALSE;
     bt1 = fRCWReadOnly == 0 ? 0 : 4;
     if (hdc == 0) {
-        fCreatedDC = 1;
+        fCreatedDC = TRUE;
         hdc = GetDC(hwnd);
     }
     GetClientRect(hwnd, &rc);
@@ -553,12 +553,12 @@ void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw) {
         case 2:
             if ((iDraw & 0xfff0) == 0)
                 break;
-            DrawBtn(hdc, vrgrcRCW + i, (iMod == 0 ? 2 : 3) | bt | bt1, 0, NULL);
+            DrawBtn(hdc, vrgrcRCW + i, (iMod == 0 ? 2 : 3) | bt | bt1, FALSE, NULL);
             break;
         default:
             if ((iDraw & 0xfff0) == 0)
                 break;
-            DrawBtn(hdc, vrgrcRCW + i, 8 | bt | bt1, 0, iMod == 3 ? "<<     >>" : ">>     <<");
+            DrawBtn(hdc, vrgrcRCW + i, 8 | bt | bt1, FALSE, iMod == 3 ? "<<     >>" : ">>     <<");
             break;
         case 1:
             if ((1 << iPit & iDraw) != 0) {
@@ -581,8 +581,8 @@ void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw) {
         if (iDraw == -1) {
             cch = CchGetString(idsMaximumColonistGrowthRatePerYear, szWork);
             TextOut(hdc, vrgrcRCW->left, vrgrcRCW[15].top + 3, szWork, cch);
-            DrawBtn(hdc, vrgrcRCW + 15, 0xa0 | bt1, 0, NULL);
-            DrawBtn(hdc, vrgrcRCW + 16, 0xa1 | bt1, 0, NULL);
+            DrawBtn(hdc, vrgrcRCW + 15, 0xa0 | bt1, FALSE, NULL);
+            DrawBtn(hdc, vrgrcRCW + 16, 0xa1 | bt1, FALSE, NULL);
         } else {
             dx = LOWORD(GetTextExtent(hdc, "15%", 3));
             SelectObject(hdc, hbrButtonFace);
@@ -677,7 +677,7 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
 
     irc = IrcRaceDlgHitTest(pt);
     if (irc < 0) {
-        return 0;
+        return FALSE;
     }
     iMod = irc % 5;
     i = irc / 5;
@@ -706,7 +706,7 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
             }
         }
         ReleaseCapture();
-        return 1;
+        return TRUE;
     }
     dWidth = 0;
     dShift = 0;
@@ -738,7 +738,7 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
             psz = vrgszRCWWidth[1];
         }
     }
-    InitBtnTrack(&btnt, hwnd, NULL, vrgrcRCW + irc, bt, 80, 0, 0, psz);
+    InitBtnTrack(&btnt, hwnd, NULL, vrgrcRCW + irc, bt, 80, FALSE, FALSE, psz);
     if ((kbd & 4) != 0) {
         dWidth = 10 * dWidth;
         dShift = 10 * dShift;
@@ -780,7 +780,7 @@ int16_t FTrackRaceDlg2(HWND hwnd, POINT16 pt, int16_t kbd) {
     if (irc < 15) {
         vplr.rgEnvVar[i] = vplr.rgEnvVarMin[i] + (int16_t)(vplr.rgEnvVarMax[i] - vplr.rgEnvVarMin[i]) / 2;
     }
-    return 1;
+    return TRUE;
 }
 
 INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -807,9 +807,9 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             SetRCWTitle(hwnd, iPanelActive);
             SendMessage(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceCheapFact), 0);
             if (fRCWReadOnly != 0 || GetRaceStat(&vplr, rsMajorAdv) == raMacintosh) {
-                EnableWindow(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), 0);
+                EnableWindow(GetDlgItem(hwnd, IDC_RACE_FACTORY_GERMANIUM_DISCOUNT), FALSE);
             }
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, TRUE);
             return 1;
         case WM_SETCURSOR:
             GetCursorPos16(&pt);
@@ -831,7 +831,7 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
             }
             if (i < 4) {
-                StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+                StickyDlgPos(hwnd, &ptStickyRaceDlg, FALSE);
                 EndDialog(hwnd, i);
                 return 1;
             }
@@ -866,11 +866,11 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
     int16_t  cch;
     RECT     rc;
 
-    fCreatedDC = 0;
+    fCreatedDC = FALSE;
     bt = fRCWReadOnly == 0 ? 0 : 4;
     fMacintosh = GetRaceStat(&vplr, rsMajorAdv) == raMacintosh;
     if (hdc == 0) {
-        fCreatedDC = 1;
+        fCreatedDC = TRUE;
         hdc = GetDC(hwnd);
     }
     GetClientRect(hwnd, &rc);
@@ -927,8 +927,8 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
         vrgrcRCW[irc + 1] = vrgrcRCW[irc];
         OffsetRect((RECT *)&vrgrcRCW[irc + 1].left, 0, vrgrcRCW[irc].bottom - vrgrcRCW[irc].top - 1);
         if (iDraw == -1) {
-            DrawBtn(hdc, vrgrcRCW + irc, 0xa0 | bt, 0, NULL);
-            DrawBtn(hdc, vrgrcRCW + (irc + 1), 0xa1 | bt, 0, NULL);
+            DrawBtn(hdc, vrgrcRCW + irc, 0xa0 | bt, FALSE, NULL);
+            DrawBtn(hdc, vrgrcRCW + (irc + 1), 0xa1 | bt, FALSE, NULL);
         }
         if (iDraw == -1) {
             if (fMacintosh != 0 && ids == idsColonists) {
@@ -967,7 +967,7 @@ int16_t FTrackRaceDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
 
     irc = IrcRaceDlgHitTest(pt);
     if (irc < 0) {
-        return 0;
+        return FALSE;
     }
     iMod = irc & 1;
     i = irc >> 1;
@@ -978,7 +978,7 @@ int16_t FTrackRaceDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
         dShift = -1;
         bt = 161;
     }
-    InitBtnTrack(&btnt, hwnd, NULL, vrgrcRCW + irc, bt, 80, 0, 0, NULL);
+    InitBtnTrack(&btnt, hwnd, NULL, vrgrcRCW + irc, bt, 80, FALSE, FALSE, NULL);
     if ((kbd & 4) != 0) {
         dShift = 3 * dShift;
     }
@@ -988,7 +988,7 @@ int16_t FTrackRaceDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
             DrawRace3(hwnd, btnt.hdc, i);
         }
     }
-    return 1;
+    return TRUE;
 }
 
 int16_t GetRaceStat(PLAYER *pplr, RaceStat iStat) { return pplr->rgAttr[iStat]; }
@@ -1094,10 +1094,10 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         CheckRadioButton(hwnd, IDC_RACE_HYPER_EXPANSION, IDC_RACE_JACK_OF_ALL_TRADES, GetRaceStat(&vplr, rsMajorAdv) + 271);
         if (fRCWReadOnly != 0) {
             for (i = 271; i <= 280; i++) {
-                EnableWindow(GetDlgItem(hwnd, i), 0);
+                EnableWindow(GetDlgItem(hwnd, i), FALSE);
             }
         }
-        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, TRUE);
         return 1;
     }
     if (message == WM_COMMAND) {
@@ -1108,7 +1108,7 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
         }
         if (i < 4) {
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, FALSE);
             EndDialog(hwnd, i);
             return 1;
         }
@@ -1123,10 +1123,10 @@ INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 SetRaceStat(&vplr, rsMineProd, 10);
                 SetRaceStat(&vplr, rsMineBuild, 5);
                 SetRaceStat(&vplr, rsMineOperate, 10);
-                SetRaceGrbit(&vplr, ibitRaceCheapFact, 0);
+                SetRaceGrbit(&vplr, ibitRaceCheapFact, FALSE);
             }
             InvalidateAdvPtsRect(hwnd);
-            InvalidateRect(hwnd, &rcCargo, 0);
+            InvalidateRect(hwnd, &rcCargo, FALSE);
         }
     }
     return 0;
@@ -1182,10 +1182,10 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 SetWindowText(hwndCtl, PszGetCompressedString(i + 306));
                 SendMessage(hwndCtl, BM_SETCHECK, GetRaceGrbit(&vplr, i), 0);
                 if (fRCWReadOnly != 0) {
-                    EnableWindow(hwndCtl, 0);
+                    EnableWindow(hwndCtl, FALSE);
                 }
             }
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, TRUE);
             return 1;
         }
         if (message == WM_COMMAND) {
@@ -1196,7 +1196,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
             }
             if (i < 4) {
-                StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+                StickyDlgPos(hwnd, &ptStickyRaceDlg, FALSE);
                 EndDialog(hwnd, i);
                 return 1;
             }
@@ -1205,7 +1205,7 @@ INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 cColDrop = GET_WM_COMMAND_ID(wParam, lParam) - 291;
                 SetRaceGrbit(&vplr, cColDrop, i);
                 InvalidateAdvPtsRect(hwnd);
-                InvalidateRect(hwnd, &rcCargo, 0);
+                InvalidateRect(hwnd, &rcCargo, FALSE);
             }
         }
     } else {
@@ -1271,7 +1271,7 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         if (fRCWReadOnly != 0) {
             for (i = 271; i <= 288; i++) {
-                EnableWindow(GetDlgItem(hwnd, i), 0);
+                EnableWindow(GetDlgItem(hwnd, i), FALSE);
             }
         }
         t_merge_3c78_0001 = GetRaceStat(&vplr, rsMajorAdv) == raNone;
@@ -1279,9 +1279,9 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         SetWindowText(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), szWork);
         SendMessage(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), BM_SETCHECK, GetRaceGrbit(&vplr, ibitRaceTech3), 0);
         if (fRCWReadOnly != 0) {
-            EnableWindow(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_RACE_START_HIGHER_TECH), FALSE);
         }
-        StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
+        StickyDlgPos(hwnd, &ptStickyRaceDlg, TRUE);
         return 1;
     }
     if (message == WM_COMMAND) {
@@ -1292,7 +1292,7 @@ INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         for (i = 0; i < 4 && GET_WM_COMMAND_ID(wParam, lParam) != rgidRaceBtn[i]; i++) {
         }
         if (i < 4) {
-            StickyDlgPos(hwnd, &ptStickyRaceDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyRaceDlg, FALSE);
             EndDialog(hwnd, i);
             return 1;
         }
@@ -1318,43 +1318,43 @@ void BoundsCheckPlayer(PLAYER *pplr) {
             if (pplr->rgEnvVarMax[i] != -1 || pplr->rgEnvVar[i] != -1) {
                 pplr->rgEnvVar[i] = -1;
                 pplr->rgEnvVarMax[i] = -1;
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
             }
         } else {
             if (pplr->rgEnvVarMin[i] < 0) {
                 pplr->rgEnvVarMin[i] = 0;
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
             }
             if (pplr->rgEnvVarMin[i] > 100) {
                 pplr->rgEnvVarMin[i] = 100;
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
             }
             if (pplr->rgEnvVarMax[i] > 100) {
                 pplr->rgEnvVarMax[i] = 100;
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
             }
             if (pplr->rgEnvVarMax[i] < pplr->rgEnvVarMin[i]) {
                 pplr->rgEnvVarMax[i] = pplr->rgEnvVarMin[i];
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
             }
             if (pplr->rgEnvVar[i] != pplr->rgEnvVarMin[i] + (int16_t)(pplr->rgEnvVarMax[i] - pplr->rgEnvVarMin[i]) / 2) {
                 pplr->rgEnvVar[i] = pplr->rgEnvVarMin[i] + (int16_t)(pplr->rgEnvVarMax[i] - pplr->rgEnvVarMin[i]) / 2;
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
             }
         }
     }
     if (pplr->pctIdealGrowth > 20) {
         pplr->pctIdealGrowth = 20;
-        pplr->fHacker = 1;
+        pplr->fHacker = TRUE;
     }
     for (i = 0; i < 16; i++) {
         if (pplr->rgAttr[i] < rgRaceStatMin[i]) {
             pplr->rgAttr[i] = rgRaceStatMin[i];
-            pplr->fHacker = 1;
+            pplr->fHacker = TRUE;
         }
         if (pplr->rgAttr[i] > rgRaceStatMax[i]) {
             pplr->rgAttr[i] = rgRaceStatMax[i];
-            pplr->fHacker = 1;
+            pplr->fHacker = TRUE;
         }
     }
     return;
@@ -1383,7 +1383,7 @@ int16_t CAdvantagePoints(PLAYER *pplr) {
     if (iSpread != pplr->pctIdealGrowth) {
         iSpread = 1;
         pplr->pctIdealGrowth = 1;
-        pplr->fHacker = 1;
+        pplr->fHacker = TRUE;
     }
     pctGrowth = iSpread;
     if (iSpread <= 5) {
@@ -1611,7 +1611,7 @@ int32_t LInnateRaceHabitability(PLAYER *pplr) {
                 pplr->rgEnvVarMax[i] = -1;
                 pplr->rgEnvVarMin[i] = -1;
                 pplr->rgEnvVar[i] = -1;
-                pplr->fHacker = 1;
+                pplr->fHacker = TRUE;
                 rgplr[0] = *pplr;
             }
             if (pplr->rgEnvVar[i] < 0) {
@@ -1762,7 +1762,7 @@ void InvalidateAdvPtsRect(HWND hwnd) {
     DeleteObject(hfont);
     LocalFree(plf);
     ReleaseDC(hwnd, hdc);
-    InvalidateRect(hwnd, &rc, 1);
+    InvalidateRect(hwnd, &rc, TRUE);
     return;
 }
 
@@ -1874,16 +1874,16 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr) {
     if (GetSaveFileName(&ofn) != 0) {
         if (FCreateFile(dtRace, -1, szFile) == 0) {
             AlertSz(PszFormatIds(idsStarsUnableSaveRaceDataFilePlease, NULL), MB_ICONHAND);
-            return 0;
+            return FALSE;
         }
         WriteRtPlr(pplr, NULL);
         icksum = IRaceChecksum(pplr);
         WriteRt(rtEOF, 2, &icksum);
         StreamClose();
         strcpy(szRaceFile, &szFile[ofn.nFileOffset]);
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
 void SetRCWTitle(HWND hwnd, int16_t iStep) {
@@ -1976,7 +1976,7 @@ void CreateRandomRace(PLAYER *pplr) {
     SetRaceStat(pplr, rsMajorAdv, Random(10));
     iVal = Random(4);
     for (i = 0; i <= 13; i++) {
-        t_merge_5ef5_0001 = iVal != 0 ? Random(2) : 0;
+        t_merge_5ef5_0001 = iVal != 0 ? Random(2) : FALSE;
         SetRaceGrbit(pplr, i, t_merge_5ef5_0001);
     }
     SetRaceGrbit(pplr, ibitRaceTech3, Random(2));

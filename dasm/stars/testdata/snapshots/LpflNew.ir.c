@@ -80,7 +80,7 @@ L_3217:
 
 L_3231:
     lpfl->cord = 1;
-    lpfl->fRepOrders = 0;
+    lpfl->fRepOrders = FALSE;
     lpfl->lpplord = (PLORD *)LpplAlloc(18, 3, htOrd);
     lpfl->lpplord->iordMac = 1;
     lpfl->fdirValid = 0;
@@ -89,7 +89,7 @@ L_3231:
     lpord->id = lpfl->idPlanet;
     lpord->grobj = lpfl->idPlanet == -1 ? 4 : 1;
     lpord->iWarp = 0;
-    lpord->fValidTask = 1;
+    lpord->fValidTask = TRUE;
     lpord->grTask = grTaskNone;
     if (sel.scan.ifl == -1)
         goto L_3356;
@@ -106,7 +106,7 @@ L_3351:
     sel.scan.ifl++;
 
 L_3356:
-    gd.fFleetLinkValid = 0;
+    gd.fFleetLinkValid = FALSE;
 
 L_336b:
     return lpfl;

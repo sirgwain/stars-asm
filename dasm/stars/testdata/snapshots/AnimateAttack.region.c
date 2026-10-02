@@ -42,7 +42,7 @@ void AnimateAttack(HDC hdc) {
     int16_t      t_merge_41df_0001;
 
     grfWeapon = 0;
-    fKill = 0;
+    fKill = FALSE;
     if (viStepVCRCur >= 0) {
         ptokSrc = vrgtok + vlpbrVCR->itok;
         x = ptokSrc->brc & 0xf;
@@ -63,12 +63,12 @@ void AnimateAttack(HDC hdc) {
         do {
             grfWeapon = vlpbrVCR->rgkill[iHit].grfWeapon;
             if (vlpbrVCR->rgkill[iHit].cshKill != 0) {
-                fKill = 1;
+                fKill = TRUE;
             }
             for (iFrame = iHit + 1; iFrame < vlpbrVCR->ctok && vlpbrVCR->rgkill[iFrame].itok == vlpbrVCR->rgkill[iHit].itok; iFrame++) {
                 grfWeapon |= vlpbrVCR->rgkill[iFrame].grfWeapon;
                 if (vlpbrVCR->rgkill[iFrame].cshKill != 0) {
-                    fKill = 1;
+                    fKill = TRUE;
                 }
             }
             ptokAttack = vrgtok + vlpbrVCR->rgkill[iHit].itok;
@@ -211,7 +211,7 @@ void AnimateAttack(HDC hdc) {
             ptDest.y = (ptokAttack->brc >> 4) * (dxyVCRSquare + 3) + 10 + dxyVCRSquare / 2 + 1;
             DrawIcon(hdc, ptDest.x - 16, ptDest.y - 16, rghiconVCR[fKill == 0 ? 0 : 2]);
         }
-        fAnimate = 0;
+        fAnimate = FALSE;
     }
     return;
 }

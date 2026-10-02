@@ -86,7 +86,7 @@ L_3bae:
     branch cish != 0 ? L_3bcb : L_3bb7
 
 L_3bb7:
-    lpfl->fDead = 1
+    lpfl->fDead = TRUE
 
 L_3bcb:
     branch lpfl->det < detMore ? L_3cc0 : L_3bdd
@@ -143,14 +143,14 @@ L_3cd2:
     lpfl->wtFleet = *pb
     pb = &pb[4]
     call ReadRt() -> callresult(void)
-    return 1
+    return TRUE
 
 L_3d11:
     branch hdrCur.rt == rtFleetA ? L_3d4b : L_3d24
 
 Corrupt:
     call AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, NULL), MB_ICONHAND) -> callresult(int16_t)
-    return 0
+    return FALSE
 
 L_3d4b:
     us = *pb
@@ -206,7 +206,7 @@ L_3ef5:
 
 L_3f0b:
     *lpord = *(ORDER *)rgbCur
-    lpord->fNoAutoTrack = 0
+    lpord->fNoAutoTrack = FALSE
     goto L_3eaf
 
 L_3f33:
@@ -261,5 +261,5 @@ L_40b2:
     lpfl->lpszName = NULL
 
 L_40c1:
-    return 1
+    return TRUE
 

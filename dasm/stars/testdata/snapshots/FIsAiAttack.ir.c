@@ -26,7 +26,7 @@ L_4ab8:
         goto L_4ac1;
 
 L_4ac1:
-    return 1;
+    return TRUE;
 
 L_4ac7:
     if (ihul != ihuldefFrigate)
@@ -41,12 +41,12 @@ L_4ad0:
         goto L_4b05;
 
 L_4b05:
-    return 1;
+    return TRUE;
 
 L_4b0b:
 
 L_4b0e:
-    return 0;
+    return FALSE;
 
 L_4b11:
     if (ihul == ihuldefMetaMorph)
@@ -73,7 +73,7 @@ L_4b46:
         goto L_4b7b;
 
 L_4b7b:
-    return 1;
+    return TRUE;
 
 L_4b81:
     i++;
@@ -85,5 +85,5 @@ L_4b85:
         goto L_4b8e;
 
 L_4b8e:
-    return 0;
+    return FALSE;
 }

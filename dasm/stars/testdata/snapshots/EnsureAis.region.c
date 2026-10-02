@@ -8,7 +8,7 @@ void EnsureAis() {
     MDPLR   rgmdplr[16];
 
     fSubmitSav = gd.fSubmit;
-    fWorkDone = 0;
+    fWorkDone = FALSE;
     if (gd.fAisDone == 0) {
         fHostSav = gd.fHostMode;
         if (gd.fHostMode == 0) {
@@ -18,17 +18,17 @@ void EnsureAis() {
         for (iPlayer = 0; iPlayer < game.cPlayer; iPlayer++) {
             *(uint16_t *)&rgmdplr[iPlayer] = rgplr[iPlayer].wMdPlr;
         }
-        gd.fSubmit = 1;
+        gd.fSubmit = TRUE;
         fErrSav = fFileErrSilent;
-        fFileErrSilent = 1;
+        fFileErrSilent = TRUE;
         for (iPlayer = 0; iPlayer < game.cPlayer; iPlayer++) {
             UpdateProgressGauge(MulDiv(340, iPlayer + 1, game.cPlayer));
             if (rgmdplr[iPlayer].fAi != 0) {
-                fWorkDone = 1;
-                gd.fGeneratingTurn = 1;
-                gd.fHostMode = 1;
+                fWorkDone = TRUE;
+                gd.fGeneratingTurn = TRUE;
+                gd.fHostMode = TRUE;
                 fOpened = FOpenFile(dtLog, iPlayer, 32);
-                gd.fGeneratingTurn = 0;
+                gd.fGeneratingTurn = FALSE;
                 gd.fHostMode = fHostSav;
                 if (fOpened != 0) {
                     StreamClose();
@@ -43,7 +43,7 @@ void EnsureAis() {
             FLoadGame(szBase, "hst");
         }
         fFileErrSilent = fErrSav;
-        gd.fAisDone = 1;
+        gd.fAisDone = TRUE;
     }
     return;
 }

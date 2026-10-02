@@ -8,7 +8,7 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
     GrobjClass  grobj;
     int16_t     idhSav;
 
-    fRet = 0;
+    fRet = FALSE;
     idhSav = tutor.idh;
     if ((id & 0x8000) != 0) {
         id &= 0x7fff;
@@ -18,10 +18,10 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
     }
     lpfl = LpflFromId(ifl);
     if (lpfl == 0) {
-        return 0;
+        return FALSE;
     }
     if (FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) == 0) {
-        return 0;
+        return FALSE;
     }
     ord = lpfl->lpplord->rgord[iord];
     piaCur = ord.txp.rgia;
@@ -40,7 +40,7 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
         piaCur++;
         lpiaGoal++;
     }
-    fRet = 1;
+    fRet = TRUE;
 LReturn:
     idh = tutor.idh;
     if (fRet == 0 && FCheckSelection(grobjFleet, ifl) != 0) {

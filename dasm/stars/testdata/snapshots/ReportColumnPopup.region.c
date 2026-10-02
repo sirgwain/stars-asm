@@ -102,7 +102,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
     }
     iRet = PopupMenu(hwndReportDlg, pt.x, pt.y, cItems, NULL, psz, -1, fRightBtn);
     if (iRet >= 0) {
-        gd.fChgReports = 1;
+        gd.fChgReports = TRUE;
         if (iRet < iSortLast) {
             vicolSortPrev = vprptCur->icolSort;
             viSubsortPrev = vprptCur->iSubsort;
@@ -128,7 +128,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
         if (fccolChange != 0) {
             SetHScrollBar();
         }
-        InvalidateRect(hwndReportDlg, NULL, 1);
+        InvalidateRect(hwndReportDlg, NULL, TRUE);
     }
     return;
 }

@@ -2,8 +2,8 @@ int16_t InitInstance(int16_t nCmdShow) {
     int16_t sw;
     RECT    rc;
 
-    ini.fWait = 0;
-    ini.fStartupFile = 0;
+    ini.fWait = FALSE;
+    ini.fStartupFile = FALSE;
     ini.grobjSel = 0;
     ini.idPlayer = -1;
     ReadIniSettings();

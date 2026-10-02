@@ -37,20 +37,20 @@ int16_t FGenerateTurn() {
     int16_t  t_call_120d;
 
     idCur = idPlayer;
-    fSuccess = 0;
+    fSuccess = FALSE;
     hcurSav = SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32514)));
     DestroyCurGame();
     if (gd.fTutorial != 0) {
         Randomize(1234567890);
     }
     fErrSav = fFileErrSilent;
-    fFileErrSilent = 1;
+    fFileErrSilent = TRUE;
     UpdateProgressGauge(360);
     if (FLoadGame(szBase, "hst") == 0) {
         fFileErrSilent = fErrSav;
         SetCursor(hcurSav);
         TurnLog(idsCantFindHostFile);
-        return 0;
+        return FALSE;
     }
     TurnLog(idsGeneratingYearD);
     fFileErrSilent = fErrSav;
@@ -74,8 +74,8 @@ int16_t FGenerateTurn() {
         UpdateProgressGauge(370);
         cColDrop = 0;
         cXferFull = 0;
-        gd.fGeneratingTurn = 1;
-        gd.fRetryOpens = 1;
+        gd.fGeneratingTurn = TRUE;
+        gd.fRetryOpens = TRUE;
         imemMsgCur = 0;
         for (i = 0; i < game.cPlayer; i++) {
             mpiplr2[i] = i;
@@ -136,27 +136,27 @@ int16_t FGenerateTurn() {
                 }
             }
         }
-        fFollow = 0;
+        fFollow = FALSE;
         for (ifl = 0; ifl < cFleet; ifl++) {
             lpfl = rglpfl[ifl];
             if (rglpfl[ifl] == 0)
                 break;
-            lpfl->fNoHeal = 0;
+            lpfl->fNoHeal = FALSE;
             if (lpfl->cord == 1 && lpfl->lpplord->rgord[0].grobj == grobjFleet) {
-                fFollow = 1;
-                lpfl->fMark = 1;
+                fFollow = TRUE;
+                lpfl->fMark = TRUE;
             } else {
                 if (lpfl->lpplord->rgord[0].grobj == grobjFleet && lpfl->cord == 1) {
                     FSendPlrMsg(lpfl->iPlayer, idmHadOrdersFollowFleetWhichDidntMove, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                 }
-                lpfl->fMark = 0;
+                lpfl->fMark = FALSE;
             }
         }
         ValidateWaypoints();
         if (fFollow != 0) {
-            fFollow = 1;
+            fFollow = TRUE;
             for (i = 0; i < 8 && fFollow != 0; i++) {
-                fFollow = 0;
+                fFollow = FALSE;
                 for (ifl = 0; ifl < cFleet; ifl++) {
                     lpfl = rglpfl[ifl];
                     if (rglpfl[ifl] == 0)
@@ -170,7 +170,7 @@ int16_t FGenerateTurn() {
                             } else {
                                 if (lpflTarget->cord == 1)
                                     continue;
-                                fFollow = 1;
+                                fFollow = TRUE;
                                 if (lpfl->lpplord->iordMax <= 1) {
                                     lpfl->lpplord = (PLORD *)LpplReAlloc((PL *)lpfl->lpplord, 2);
                                 }
@@ -181,13 +181,13 @@ int16_t FGenerateTurn() {
                                 continue;
                             }
                         }
-                        lpfl->fMark = 0;
+                        lpfl->fMark = FALSE;
                     }
                 }
             }
         }
         UpdateProgressGauge(440);
-        DoOrders(0);
+        DoOrders(FALSE);
         UpdateProgressGauge(530);
         for (i = 0; i < game.cPlayer; i++) {
             for (j = 0; j < 16; j++) {
@@ -239,16 +239,16 @@ int16_t FGenerateTurn() {
             }
         }
         UnmarkMineFields();
-        MoveThings(0);
+        MoveThings(FALSE);
         UpdateProgressGauge(550);
         MoveFleets();
         lppl = lpPlanets;
         lpplMac = lpPlanets + cPlanet;
         for (; lppl < lpplMac; lppl++) {
-            lppl->fHomeworld = 0;
+            lppl->fHomeworld = FALSE;
         }
         for (i = 0; i < game.cPlayer; i++) {
-            lpPlanets[rgplr[i].idPlanetHome].fHomeworld = 1;
+            lpPlanets[rgplr[i].idPlanetHome].fHomeworld = TRUE;
         }
         UpdateProgressGauge(650);
         ThingDecay();
@@ -256,10 +256,10 @@ int16_t FGenerateTurn() {
         UpdateProgressGauge(700);
         Produce();
         UpdateProgressGauge(750);
-        MoveThings(1);
+        MoveThings(TRUE);
         UpdateProgressGauge(770);
         FuelFleets();
-        DoOrders(1);
+        DoOrders(TRUE);
         SweepForMines();
         HealShips();
         AutoTerraform();
@@ -269,7 +269,7 @@ int16_t FGenerateTurn() {
         ValidateWaypoints();
         UpdateGuesses();
         UpdateProgressGauge(852);
-        FMarkFile(dtHost, -1, mdMarkInUse, 0);
+        FMarkFile(dtHost, -1, mdMarkInUse, FALSE);
         CreateBackupDir();
         game.turn++;
         pchCur = &szBase[strlen(szBase)];
@@ -305,7 +305,7 @@ int16_t FGenerateTurn() {
             }
         }
         j = 856;
-        fDone = 0;
+        fDone = FALSE;
         memset(rgfNoXFile, 0, 16);
         i = 0;
         while (fDone == 0) {
@@ -313,7 +313,7 @@ int16_t FGenerateTurn() {
             j += 17 / (game.cPlayer + 1);
             if (i >= game.cPlayer) {
                 i = -1;
-                fDone = 1;
+                fDone = TRUE;
             }
             if (i >= 0) {
                 _wsprintf(pchCur, ".x%d", i + 1);
@@ -340,7 +340,7 @@ int16_t FGenerateTurn() {
             i++;
         }
         j = 875;
-        fDone = 0;
+        fDone = FALSE;
         game.wGen = (uint16_t)Random(8);
         i = 0;
         while (fDone == 0) {
@@ -348,14 +348,14 @@ int16_t FGenerateTurn() {
             j += 122 / (game.cPlayer + 1);
             if (i >= game.cPlayer) {
                 i = -1;
-                fDone = 1;
+                fDone = TRUE;
             }
             FWriteDataFile(szBase, i, i != -1 && rgfNoXFile[i] != 0);
             i++;
         }
         UpdateProgressGauge(998);
         imemLogCur = 0;
-        fSuccess = 1;
+        fSuccess = TRUE;
     }
 FreeStuffUp:
     UpdateProgressGauge(1000);
@@ -367,8 +367,8 @@ FreeStuffUp:
     lpcd = NULL;
     FreeLp(lpxf, htMisc);
     lpxf = NULL;
-    gd.fGeneratingTurn = 0;
-    gd.fRetryOpens = 0;
+    gd.fGeneratingTurn = FALSE;
+    gd.fRetryOpens = FALSE;
     idPlayer = -1;
     if (fSuccess != 0 && ini.fGen != 0) {
         vretExitValue = 1;
@@ -401,7 +401,7 @@ void DoOrders(int16_t fPostMovement) {
     }
     SatisfyOrders(fPostMovement == 0 ? 1 : 3);
     DropColonists();
-    UpdateResearchStatus(0);
+    UpdateResearchStatus(FALSE);
     SatisfyOrders(fPostMovement == 0 ? 2 : 4);
     if (fPostMovement == 0) {
         TransferToOthers();
@@ -459,7 +459,7 @@ void MoveThings(int16_t fPostProd) {
     double    r;
     int16_t   t_scratch_m36;
 
-    fAnythingMoved = 0;
+    fAnythingMoved = FALSE;
     lpth = lpThings;
     lpthMac = lpThings + cThing;
     for (; lpth < lpthMac; lpth++) {
@@ -511,8 +511,8 @@ void MoveThings(int16_t fPostProd) {
                 continue;
             if (lpth->thp.rgwtMin[0] == 0 && lpth->thp.rgwtMin[1] == 0 && lpth->thp.rgwtMin[2] == 0)
                 goto LFreeThePacket;
-            lpth->thp.fMoved = 1;
-            fAnythingMoved = 1;
+            lpth->thp.fMoved = TRUE;
+            fAnythingMoved = TRUE;
             dRange = lpth->thp.iWarp + 4;
             dRange *= dRange;
             if (fPostProd != 0) {
@@ -635,7 +635,7 @@ void MoveThings(int16_t fPostProd) {
                             }
                             if (cTerraTemp > 0) {
                                 idPlayer = iplr;
-                                if (FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, 1) == 0) {
+                                if (FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, TRUE) == 0) {
                                     idPlayer = -1;
                                 } else {
                                     idPlayer = -1;
@@ -749,7 +749,7 @@ void MoveThings(int16_t fPostProd) {
             dRange = lpth->tht.iWarp;
             dRange *= dRange;
             ptDst = lpth->tht.ptDest;
-            fAnythingMoved = 1;
+            fAnythingMoved = TRUE;
             if (idm == idmMysteryTraderHasDecidedMakeAnotherPass)
                 continue;
             goto MoveTh;
@@ -870,17 +870,17 @@ void MoveFleets() {
     cPass = 0;
     if (cFleet > 0) {
         do {
-            fDone = 1;
+            fDone = TRUE;
             for (ifl = 0; ifl < cFleet; ifl++) {
                 lpfl = rglpfl[ifl];
                 if (rglpfl[ifl] == 0)
                     break;
                 if (cPass == 0) {
                     lpfl->dirLong = 0;
-                    lpfl->fHereAllTurn = 1;
+                    lpfl->fHereAllTurn = TRUE;
                 }
                 if (lpfl->fDead == 0 && (cPass <= 0 || lpfl->fDone == 0)) {
-                    lpfl->fDone = 1;
+                    lpfl->fDone = TRUE;
                     lpord = lpfl->lpplord->rgord;
                     if (lpord->grTask != grTaskXfer && lpord->grTask != grTaskLayMines && lpfl->cord > 1 && lpord[1].iWarp != 0) {
                         if (rgplr[lpfl->iPlayer].fCheater != 0) {
@@ -896,8 +896,8 @@ void MoveFleets() {
                             FSendPlrMsg2(lpfl->iPlayer, idmUnableEngageEnginesDueBalkyEquipmentEngineers, lpfl->id | 0x8000, lpfl->id, 0);
                         } else {
                             if (lpord[1].iWarp >= 11) {
-                                fJumpgate = 0;
-                                gd.fRadiatingEngine = 0;
+                                fJumpgate = FALSE;
+                                gd.fRadiatingEngine = FALSE;
                                 ptMsg = lpord->pt;
                                 ptBeg = lpord->pt;
                                 if (lpord->grobj == grobjPlanet) {
@@ -950,7 +950,7 @@ void MoveFleets() {
                                     continue;
                                 }
                                 if (isbsSrc == -1) {
-                                    fJumpgate = 1;
+                                    fJumpgate = TRUE;
                                     isbsSrc = isbsDst;
                                 }
                                 if (fJumpgate == 0 && GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) != raStargate) {
@@ -997,7 +997,7 @@ void MoveFleets() {
                                 dTravel = (int32_t)DGetDistance(ptBeg.x, ptBeg.y, ptEnd.x, ptEnd.y);
                                 if (FStargateJump(lpfl, isbsSrc, isbsDst, LOWORD(dTravel)) == 0)
                                     continue;
-                                lpfl->fHereAllTurn = 0;
+                                lpfl->fHereAllTurn = FALSE;
                                 NoAutoTrackFleet(lpfl);
                             } else {
                                 ptBeg = lpfl->pt;
@@ -1005,10 +1005,10 @@ void MoveFleets() {
                                     lpord[1].pt = lpfl->lpflNext->pt;
                                 }
                                 ptEnd = lpord[1].pt;
-                                dRange = EstFuelUse(lpfl, 0, -1, -1, 1);
-                                wtFuel2Dest = EstFuelUse(lpfl, 0, -1, -1, 0);
+                                dRange = EstFuelUse(lpfl, 0, -1, -1, TRUE);
+                                wtFuel2Dest = EstFuelUse(lpfl, 0, -1, -1, FALSE);
                                 fGotEnufFuel = wtFuel2Dest <= lpfl->rgwtMin[4];
-                                fRanOutOfFuel = 0;
+                                fRanOutOfFuel = FALSE;
                                 if (fGotEnufFuel != 0) {
                                     dRange =
                                         dRange <= (int32_t)(uint32_t)(lpord[1].iWarp * lpord[1].iWarp) ? (uint32_t)(lpord[1].iWarp * lpord[1].iWarp) : dRange;
@@ -1024,7 +1024,7 @@ void MoveFleets() {
                                     }
                                     if (lpord[1].iWarp == 10) {
                                         flSrc = *lpfl;
-                                        fDead = 1;
+                                        fDead = TRUE;
                                         cKillTot = 0;
                                         memset(&flDead, 0, sizeof(FLEET));
                                         for (ish = 0; ish < 16; ish++) {
@@ -1051,18 +1051,18 @@ void MoveFleets() {
                                                     break;
                                                 }
                                                 if (flSrc.rgcsh[ish] > 0) {
-                                                    fDead = 0;
+                                                    fDead = FALSE;
                                                 }
                                             }
                                         }
                                         if (fDead != 0) {
-                                            lpfl->fDead = 1;
+                                            lpfl->fDead = TRUE;
                                             FSendPlrMsg2(lpfl->iPlayer, idmDestroyedMassiveReactorAccidentDueUnsafeOperatin, lpfl->id | 0x8000, lpfl->id, 0);
                                             continue;
                                         }
                                         if (cKillTot > 0) {
                                             flDead.iPlayer = flSrc.iPlayer;
-                                            flDead.fDead = 1;
+                                            flDead.fDead = TRUE;
                                             flDead.det = detAll;
                                             FleetTransferCargoBalance(&flSrc, &flDead);
                                             *lpfl = flSrc;
@@ -1077,8 +1077,8 @@ void MoveFleets() {
                                     if (lpord[1].grobj == grobjFleet) {
                                         lpfl->lpflNext = LpflFromId(lpord[1].id);
                                         if (lpfl->lpflNext != 0) {
-                                            fDone = 0;
-                                            lpfl->fDone = 0;
+                                            fDone = FALSE;
+                                            lpfl->fDone = FALSE;
                                             lpfl->lPower = (uint32_t)LOWORD(dTravel);
                                             lpfl->lFuelUsed = 0;
                                             continue;
@@ -1109,7 +1109,7 @@ void MoveFleets() {
                                         lpfl->rgwtMin[4] += lpfl->lFuelUsed;
                                         dTravel += lpfl->dMoveUsed;
                                     }
-                                    wtFuelUsed = EstFuelUse(lpfl, 0, -1, dTravel, 0);
+                                    wtFuelUsed = EstFuelUse(lpfl, 0, -1, dTravel, FALSE);
                                     if (cPass > 0) {
                                         lpfl->lFuelUsed = wtFuelUsed;
                                         dTravel -= lpfl->dMoveUsed;
@@ -1121,18 +1121,18 @@ void MoveFleets() {
                                     i = 0;
                                     do {
                                         i++;
-                                    } while (EstFuelUse(lpfl, 0, i, -1, 0) == 0 && i < 10);
+                                    } while (EstFuelUse(lpfl, 0, i, -1, FALSE) == 0 && i < 10);
                                     if (i > 1) {
                                         lpfl->lpplord->rgord[1].iWarp = i - 1;
                                         FSendPlrMsg2(lpfl->iPlayer, idmHasRunFuelFleetsSpeedHasDecreased, lpfl->id | 0x8000, lpfl->id, i - 1);
                                     } else {
                                         FSendPlrMsg2(lpfl->iPlayer, idmHasRunFuel, lpfl->id | 0x8000, lpfl->id, 0);
                                     }
-                                    fRanOutOfFuel = 1;
+                                    fRanOutOfFuel = TRUE;
                                 }
                                 if (dRange == 0)
                                     continue;
-                                lpfl->fHereAllTurn = 0;
+                                lpfl->fHereAllTurn = FALSE;
                                 dx = ptEnd.x - ptBeg.x;
                                 dy = ptEnd.y - ptBeg.y;
                                 if (dx != 0 || dy != 0) {
@@ -1178,8 +1178,8 @@ void MoveFleets() {
                                     lpfl->dMoveLeft -= LOWORD(dTravel);
                                     if (lpfl->dMoveLeft <= 0 || fRanOutOfFuel != 0)
                                         goto L_4b2d;
-                                    fDone = 0;
-                                    lpfl->fDone = 0;
+                                    fDone = FALSE;
+                                    lpfl->fDone = FALSE;
                                     goto L_4b2d;
                                 }
                             }
@@ -1190,7 +1190,7 @@ void MoveFleets() {
                                 lpfl->idPlanet = -1;
                             }
                             if (cPass > 0) {
-                                lpfl->lpflNext->fDone = 1;
+                                lpfl->lpflNext->fDone = TRUE;
                             }
                         L_4b2d:
                             if (gd.fRadiatingEngine != 0 && lpfl->rgwtMin[3] > 0 && cPass <= 1 &&
@@ -1226,7 +1226,7 @@ void MoveFleets() {
                             lpord->id = lpfl->idPlanet;
                             lpord->grobj = lpfl->idPlanet == -1 ? 4 : 1;
                             if (fGotEnufFuel != 0) {
-                                wtFuel2Dest = EstFuelUse(lpfl, 0, -1, -1, 0);
+                                wtFuel2Dest = EstFuelUse(lpfl, 0, -1, -1, FALSE);
                                 if (wtFuel2Dest > lpfl->rgwtMin[4]) {
                                     if (LGetFleetStat(lpfl, 1) > wtFuel2Dest) {
                                         lpfl->rgwtMin[4] = wtFuel2Dest;
@@ -1309,7 +1309,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         for (iWarp = 3; iWarp < 10 && iWarp * iWarp < dTravel - 1; iWarp++) {
         }
         if (iWarp <= fMineExpert + 3 || (ptSrc.x == ptDst.x && ptSrc.y == ptDst.y)) {
-            return 1;
+            return TRUE;
         }
         for (i = 0; i < 3; i++) {
             rgcField[i] = 0;
@@ -1362,17 +1362,17 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         }
         cFields = rgcField[0] + rgcField[1] + rgcField[2];
         if (cFields == 0) {
-            return 1;
+            return TRUE;
         }
     }
-    fHasRamScoop = 0;
+    fHasRamScoop = FALSE;
     csh = 0;
     for (i = 0; i < 16; i++) {
         if (lpfl->rgcsh[i] > 0) {
             csh += lpfl->rgcsh[i];
             j = rglpshdef[iPlayer][i].hul.rghs[0].iItem;
             if (LpengineFromId(j)->rgcFuelUsed[4] == 0) {
-                fHasRamScoop = 1;
+                fHasRamScoop = TRUE;
             }
         }
     }
@@ -1401,7 +1401,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
             }
             rgi[iType]++;
         }
-        return 1;
+        return TRUE;
     L_57e6:
         dEnd = dStart + i;
     }
@@ -1416,7 +1416,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         flSrc = *lpfl;
         memset(&flDead, 0, sizeof(FLEET));
         flDead.iPlayer = flSrc.iPlayer;
-        flDead.fDead = 1;
+        flDead.fDead = TRUE;
         flDead.det = detAll;
         for (i = 0; i < 16; i++) {
             if (lpfl->rgcsh[i] > 0 &&
@@ -1451,14 +1451,14 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
             }
         }
         if (lpthHit != 0 && dmgTot == 0) {
-            return 0;
+            return FALSE;
         }
         if (cshDead != csh) {
             FleetTransferCargoBalance(&flSrc, &flDead);
         }
         *lpfl = flSrc;
         if (cshDead == csh) {
-            lpfl->fDead = 1;
+            lpfl->fDead = TRUE;
         }
     }
     if (lpthHit == 0) {
@@ -1570,6 +1570,6 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         }
         *pdTravel = dEnd;
     }
-    lpfl->fNoHeal = 1;
-    return 0;
+    lpfl->fNoHeal = TRUE;
+    return FALSE;
 }

@@ -213,7 +213,7 @@ PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht) {
     lppl = LpAlloc(cbItem * cAlloc + 4, ht);
     lppl->iMax = cAlloc;
     lppl->iMac = 0;
-    lppl->fMark = 0;
+    lppl->fMark = FALSE;
     lppl->cbItem = cbItem;
     lppl->ht = ht;
     return lppl;

@@ -6,21 +6,21 @@ int16_t FIsAiAttack(FLEET *lpfl) {
         if (lpfl->rgcsh[i] > 0) {
             ihul = rgshdef[i].hul.ihuldef;
             if ((int16_t)ihul > ihuldefFrigate && (int16_t)ihul <= ihuldefDreadnought) {
-                return 1;
+                return TRUE;
             }
             switch (ihul) {
             case ihuldefFrigate:
                 if (rglpshdef[idPlayer][i].lPower > 0) {
-                    return 1;
+                    return TRUE;
                 }
-                return 0;
+                return FALSE;
             case ihuldefMetaMorph:
             case ihuldefNubian:
                 if (WtMaxShdefStat(&rgshdef[i], 2) < 500 && rglpshdef[idPlayer][i].lPower > 0) {
-                    return 1;
+                    return TRUE;
                 }
             }
         }
     }
-    return 0;
+    return FALSE;
 }

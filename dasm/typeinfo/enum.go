@@ -11,6 +11,10 @@ type Enum struct {
 	// member of their own print as character literals.
 	CharCodes bool
 
+	// Truth reports a FALSE/TRUE family. Constants compared with its uses
+	// stay numeric, so truth tests read f != 0 rather than f != FALSE.
+	Truth bool
+
 	// Typedef is the integer type the enum name is declared as in the
 	// generated enums.h, sized to the original 16-bit int. It is nil for
 	// Win16 constant families, whose name is never declared and whose values
@@ -21,6 +25,16 @@ type Enum struct {
 	// whose storage differs in width from Typedef, such as a 1-byte field,
 	// declares Storage instead of the enum name.
 	Storage Type
+
+	// Decl is the C type a Win16 constant family declares scalar globals,
+	// params, locals and returns as, such as int16_t or BOOL for TRUE/FALSE.
+	// Fields, array elements and pointees keep their original type. Nil
+	// keeps every use's original type.
+	Decl Type
+
+	// declName is the win16defines.json name of Decl, resolved once the type
+	// overrides have registered SDK typedefs such as BOOL.
+	declName string
 
 	valuesByName map[string]EnumValue
 }
@@ -78,6 +92,16 @@ func (e *Enum) String() string {
 	return e.Name
 }
 
+// DeclaredType returns the type C declares typ as: a use of a Win16
+// constant family, whose name is never declared, is its storage type. Any
+// other type is returned unchanged.
+func DeclaredType(typ Type) Type {
+	if e, ok := typ.(*Enum); ok && e.Typedef == nil && e.Storage != nil {
+		return e.Storage
+	}
+	return typ
+}
+
 func (e *Enum) GetValue(name string) EnumValue {
 	// lazy load enums
 	if len(e.valuesByName) == 0 {
@@ -118,6 +142,15 @@ type EnumUseRule struct {
 
 	// Which enum to use
 	EnumName string
+
+	// Prefix matches every global, param, local, call result or struct field
+	// whose name starts with this Hungarian prefix, followed by an uppercase
+	// letter, a digit or nothing, and whose type is a two-byte integer, or for
+	// a field a one-byte integer or one-bit bitfield. Exclude names the
+	// exceptions: "Func.name" for params and locals, "Func" for call results,
+	// "struct.field" for fields and "name" for globals.
+	Prefix  string
+	Exclude []string
 
 	// Call-site constraints (UseParam / UseCallResult). A param rule with
 	// constraints types the argument per call instead of the parameter.

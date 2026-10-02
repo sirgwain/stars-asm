@@ -136,7 +136,7 @@ L_15ad:
 
 L_15bf:
     pszTitle = rgsz[i + 1];
-    fChecked = rgids == 0 ? 0 : LOWORD(rgids[i + 1]);
+    fChecked = rgids == 0 ? FALSE : LOWORD(rgids[i + 1]);
     hmenuSub = CreatePopupMenu();
     i += 2;
     goto L_1738;

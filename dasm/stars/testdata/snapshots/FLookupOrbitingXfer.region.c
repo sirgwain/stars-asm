@@ -5,7 +5,7 @@ int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t i
     THING  *lpthMac;
 
     if (cFleet <= 0) {
-        return 0;
+        return FALSE;
     }
     if (cFleet != 0) {
         for (i = 0; i < cFleet; i++) {
@@ -18,7 +18,7 @@ int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t i
                     pxf->grobj = grobjFleet;
                     pxf->id = lpfl->id;
                 }
-                return 1;
+                return TRUE;
             }
         }
     }
@@ -31,8 +31,8 @@ int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t i
                 pxf->grobj = grobjThing;
                 pxf->id = lpth->idFull;
             }
-            return 1;
+            return TRUE;
         }
     }
-    return 0;
+    return FALSE;
 }

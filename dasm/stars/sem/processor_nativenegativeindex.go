@@ -144,8 +144,9 @@ type aliasPart struct {
 // the alias root) covering the alias bytes [start, start+width).
 func (p *nativeNegativeIndexProcessor) aliasParts(expr Expr, typ typeinfo.Type, off, start, width int) []aliasPart {
 	switch t := typ.(type) {
-	case *typeinfo.Primitive:
-		if t.TypeKind != typeinfo.KInt || off < start || off+t.Size > start+width {
+	case *typeinfo.Primitive, *typeinfo.Enum:
+		// an enum is stored as an integer of its width
+		if t.Kind() != typeinfo.KInt || off < start || off+t.Bytes() > start+width {
 			panic(fmt.Sprintf("native-negative-index: %s: alias partially covers %s", p.ctx.fs.Name, FormatExpr(expr)))
 		}
 		return []aliasPart{{value: expr, shift: off - start}}

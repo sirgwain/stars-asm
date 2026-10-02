@@ -50,7 +50,7 @@ Top:
     pchEnd = &pchStart[cLen]
     call ChopTrailingSpaces(pch, &pchEnd) -> callresult(void)
     dx = loword(GetTextExtent(hdc, pch, (pchEnd - pch)))
-    fItFit = 1
+    fItFit = TRUE
 
 L_2694:
     branch dx <= dxRemain ? L_26e3 : L_269f
@@ -62,7 +62,7 @@ L_26aa:
     branch dx <= 0 ? L_26e3 : L_26b3
 
 L_26b3:
-    fItFit = 0
+    fItFit = FALSE
     call ChopLastWord(pch, &pchEnd) -> callresult(void)
     dx = loword(GetTextExtent(hdc, pch, (pchEnd - pch)))
     goto L_2694

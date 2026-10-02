@@ -18,13 +18,13 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
     for (i = 0; i < crgbtnXfer && ((rgbtnXfer[i].bt & 4) != 0 || PtInRect(&rgbtnXfer[i].rc, PointFrom16(pt)) == 0); i++) {
     }
     if (i == crgbtnXfer) {
-        return 0;
+        return FALSE;
     }
     iBtn = i >> 1;
     btn = rgbtnXfer[i];
     iVal = btn.iVal & 0x7f;
     if (btn.fVisible != 0) {
-        InitBtnTrack(&btnt, hwnd, NULL, &btn.rc, btn.bt, 80, 0, 0, NULL);
+        InitBtnTrack(&btnt, hwnd, NULL, &btn.rc, btn.bt, 80, FALSE, FALSE, NULL);
         if ((fkb & 8) != 0) {
             dChg = (uint32_t)((fkb & 4) == 0 ? 100 : 1000);
         } else if ((fkb & 4) != 0) {
@@ -81,5 +81,5 @@ int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
 FinishUp:
     UpdateXferBtns();
     DrawXferDlg(hwnd, NULL, &rc, SupplyButtonsOnly);
-    return 1;
+    return TRUE;
 }

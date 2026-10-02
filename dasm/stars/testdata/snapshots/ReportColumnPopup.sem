@@ -177,7 +177,7 @@ L_7920:
     branch iRet < 0 ? L_7aef : L_7957
 
 L_7957:
-    gd.fChgReports = 1
+    gd.fChgReports = TRUE
     branch iRet >= iSortLast ? L_7a71 : L_7970
 
 L_7970:
@@ -242,7 +242,7 @@ L_7ad5:
     call SetHScrollBar() -> callresult(void)
 
 L_7ada:
-    call InvalidateRect(hwndReportDlg, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndReportDlg, NULL, TRUE) -> callresult(void)
 
 L_7aef:
     return

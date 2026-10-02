@@ -41,7 +41,7 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     } else {
         cOut = 32;
         if (cch > 32) {
-            return 0;
+            return FALSE;
         }
         fmemmove(szTemp, lpb, cch);
         FDecompressUserString(szTemp, cch, shdef.hul.szClass, &cOut);
@@ -85,5 +85,5 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
         }
         lphul->wtEmpty = LOWORD(wt);
     }
-    return 1;
+    return TRUE;
 }

@@ -47,7 +47,7 @@ L_5a91:
         goto L_5a9c;
 
 L_5a9c:
-    return 0;
+    return FALSE;
 
 L_5aa2:
     iBtn = i >> 1;
@@ -166,7 +166,7 @@ L_5d26:
     goto FinishUp;
 
 L_5d2e:
-    InitBtnTrack(&btnt, hwnd, NULL, &btn.rc, btn.bt, 80, 0, 0, NULL);
+    InitBtnTrack(&btnt, hwnd, NULL, &btn.rc, btn.bt, 80, FALSE, FALSE, NULL);
     if ((fkb & 8) == 0)
         goto L_5d88;
     else
@@ -265,5 +265,5 @@ L_5f6d:
 FinishUp:
     UpdateXferBtns();
     DrawXferDlg(hwnd, NULL, &rc, SupplyButtonsOnly);
-    return 1;
+    return TRUE;
 }

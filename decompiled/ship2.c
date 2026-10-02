@@ -96,7 +96,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             hwndRad = GetDlgItem(hwnd, i);
             SetWindowText(hwndRad, psz);
         }
-        StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 1);
+        StickyDlgPos(hwnd, &ptStickyZipOrderDlg, TRUE);
         if (gd.fTutorial != 0) {
             AdvanceTutor();
         }
@@ -107,13 +107,13 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             GET_WM_COMMAND_ID(wParam, lParam) <= IDC_ZIP_PROD_PRESET_4) {
             iResTechNow = GET_WM_COMMAND_ID(wParam, lParam) - 1073;
             EnableZipBtns(hwnd, iResTechNow);
-            InvalidateRect(hwnd, NULL, 1);
+            InvalidateRect(hwnd, NULL, TRUE);
         } else {
             switch (GET_WM_COMMAND_ID(wParam, lParam)) {
             case IDOK:
             case IDCANCEL:
                 hwndZipOrderDlg = 0;
-                StickyDlgPos(hwnd, &ptStickyZipOrderDlg, 0);
+                StickyDlgPos(hwnd, &ptStickyZipOrderDlg, FALSE);
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 if (gd.fTutorial != 0) {
                     AdvanceTutor();
@@ -145,22 +145,22 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                     *pszT = 0;
                     SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), &szWork[64]);
                     if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_IMPORT) {
-                        vrgZip[iResTechNow].fValid = 1;
+                        vrgZip[iResTechNow].fValid = TRUE;
                         vrgZip[iResTechNow].txp = sel.fl.lpplord->rgord[sel.iwpAct].txp;
-                        InvalidateRect(hwnd, NULL, 1);
+                        InvalidateRect(hwnd, NULL, TRUE);
                     }
                     EnableZipBtns(hwnd, iResTechNow);
                 }
                 FreeProcInstance(lpProc);
                 SetFocus(hwnd);
-                gd.fChgZipOrd = 1;
+                gd.fChgZipOrd = TRUE;
                 break;
             case IDC_DELETE:
-                vrgZip[iResTechNow].fValid = 0;
+                vrgZip[iResTechNow].fValid = FALSE;
                 _wsprintf(szWork, PszGetCompressedString(idsUnusedD), iResTechNow + 1);
                 SetWindowText(GetDlgItem(hwnd, iResTechNow + 1073), szWork);
-                InvalidateRect(hwnd, NULL, 1);
-                gd.fChgZipOrd = 1;
+                InvalidateRect(hwnd, NULL, TRUE);
+                gd.fChgZipOrd = TRUE;
                 break;
             case IDC_HELP:
                 WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhCustomZipOrdersDialog);
@@ -196,7 +196,7 @@ INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
                 SetWindowPos(hwnd, NULL, ptStickyRenameDlg.x + 70, ptStickyRenameDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
                 SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0xc, 0);
                 SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-                StickyDlgPos(hwnd, &ptStickyRenameDlg, 1);
+                StickyDlgPos(hwnd, &ptStickyRenameDlg, TRUE);
                 return 1;
             }
             if (message == WM_COMMAND) {
@@ -206,7 +206,7 @@ INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
                     if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK) {
                         GetDlgItemText(hwnd, IDC_EDIT1, szWork, 14);
                     }
-                    StickyDlgPos(hwnd, &ptStickyRenameDlg, 0);
+                    StickyDlgPos(hwnd, &ptStickyRenameDlg, FALSE);
                     EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                     return 1;
                 case IDC_HELP:
@@ -240,7 +240,7 @@ INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             SetWindowPos(hwnd, NULL, ptStickyRenameDlg.x + 70, ptStickyRenameDlg.y + 70, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
             SendDlgItemMessage(hwnd, IDC_EDIT1, EM_LIMITTEXT, 0x1f, 0);
             SetWindowText(GetDlgItem(hwnd, IDC_EDIT1), szWork);
-            StickyDlgPos(hwnd, &ptStickyRenameDlg, 1);
+            StickyDlgPos(hwnd, &ptStickyRenameDlg, TRUE);
             return 1;
         }
         if (message == WM_COMMAND) {
@@ -251,19 +251,19 @@ INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     GetDlgItemText(hwnd, IDC_EDIT1, szWork, 32);
                     FStringFitsScreen(szWork, 160);
                 }
-                StickyDlgPos(hwnd, &ptStickyRenameDlg, 0);
+                StickyDlgPos(hwnd, &ptStickyRenameDlg, FALSE);
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_EDIT1:
                 if (GET_WM_COMMAND_CMD(wParam, lParam) == 0x400 && fInEditUpdate == 0) {
-                    fInEditUpdate = 1;
+                    fInEditUpdate = TRUE;
                     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
                     lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_GETSEL, 0, 0);
                     if (FStringFitsScreen(szWork, 160) == 0) {
                         SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork);
                         SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_SETSEL, LOWORD(lSel), (int16_t)HIWORD(lSel));
                     }
-                    fInEditUpdate = 0;
+                    fInEditUpdate = FALSE;
                     break;
                 }
             default:
@@ -322,15 +322,15 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
             switch (t_call_0e31) {
             case -1:
                 FSendPlrMsg(flSrc.iPlayer, idmAttemptedUseStargateReachCouldBecauseDestination, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
-                return 0;
+                return FALSE;
             case -2:
                 FSendPlrMsg(flSrc.iPlayer, idmAttemptedUseStargateReachCouldBecauseShips, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
-                return 0;
+                return FALSE;
             case 0:
                 cshdef--;
                 break;
             case 1:
-                flSrc.fNoHeal = 1;
+                flSrc.fNoHeal = TRUE;
             }
         }
     }
@@ -422,17 +422,17 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
                     FSendPlrMsg(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id, LOWORD(cshKill), 0, 0, 0);
                 }
                 flDead.iPlayer = flSrc.iPlayer;
-                flDead.fDead = 1;
+                flDead.fDead = TRUE;
                 flDead.det = detAll;
                 FleetTransferCargoBalance(&flSrc, &flDead);
             }
             *lpfl = flSrc;
-            return 1;
+            return TRUE;
         }
     }
-    lpfl->fDead = 1;
+    lpfl->fDead = TRUE;
     FSendPlrMsg(flSrc.iPlayer, idmHeedlessDangerAttemptedUseStargateReachFleet, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
-    return 0;
+    return FALSE;
 }
 
 int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg) {
@@ -499,7 +499,7 @@ void KillUsedWaypoints() {
                 break;
             if (lpfl->cord > 1) {
                 if (lpfl->fMark != 0) {
-                    DeleteWpFar(lpfl, 1, 0);
+                    DeleteWpFar(lpfl, 1, FALSE);
                     FSendPlrMsg(lpfl->iPlayer, idmHasExecutedOrdersFollowFleetAwaitsFurther, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                 } else {
                     for (j = 1; j < lpfl->cord; j++) {
@@ -533,7 +533,7 @@ void KillUsedWaypoints() {
                         if (lpfl->lpplord->rgord[1].grTask != grTaskPatrol || lpfl->lpplord->rgord[1].grobj != grobjFleet) {
                             fRep = lpfl->fRepOrders;
                         } else {
-                            fRep = 0;
+                            fRep = FALSE;
                         }
                         DeleteWpFar(lpfl, 1, fRep);
                         if (lpfl->cord == 1) {
@@ -582,7 +582,7 @@ void NoAutoTrackFleet(FLEET *lpflTarget) {
             i = 1;
             while (i < lpfl->cord) {
                 if (lpord->grobj == grobjFleet && lpord->id == idTarget) {
-                    lpord->fNoAutoTrack = 1;
+                    lpord->fNoAutoTrack = TRUE;
                     lpord->pt = lpflTarget->pt;
                 }
                 i++;
@@ -616,8 +616,8 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
     lpord->id = lppl->idRoute - 1;
     lpplRoute = LpplFromId(lppl->idRoute - 1);
     lpord->pt = rgptPlan[lppl->idRoute - 1];
-    lpord->fValidTask = 1;
-    iWarp = IFindIdealWarp(lpfl, 0);
+    lpord->fValidTask = TRUE;
+    iWarp = IFindIdealWarp(lpfl, FALSE);
     dTravel = (int32_t)((long double)DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y) + 0.999);
     if (lppl->iPlayer == lpplRoute->iPlayer && lppl->fStarbase != 0 && lpplRoute->fStarbase != 0) {
         isbsDst = IStargateFromLppl(lpplRoute);
@@ -642,7 +642,7 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
             }
         }
         if (iWarp < 9 && LphuldefFromId(rglpshdefSB[lpfl->iPlayer][lpplRoute->isb].hul.ihuldef)->hul.wtCargoMax != 0) {
-            for (iWarp = 9; iWarp > 0 && EstFuelUse(lpfl, 0, iWarp, -1, 1) < dTravel; iWarp--) {
+            for (iWarp = 9; iWarp > 0 && EstFuelUse(lpfl, 0, iWarp, -1, TRUE) < dTravel; iWarp--) {
             }
             lpord->iWarp = iWarp;
         }
@@ -656,7 +656,7 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
                 break;
             }
         }
-        for (; iWarp != 0 && EstFuelUse(lpfl, 0, iWarp, dTravel, 0) > lpfl->rgwtMin[4]; iWarp--) {
+        for (; iWarp != 0 && EstFuelUse(lpfl, 0, iWarp, dTravel, FALSE) > lpfl->rgwtMin[4]; iWarp--) {
         }
     }
     lpord->iWarp = iWarp;
@@ -671,11 +671,11 @@ int16_t FColonizer(FLEET *lpfl) {
         if (lpfl->rgcsh[i] != 0) {
             l = 1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef;
             if ((l & 0xc000) != 0) {
-                return 1;
+                return TRUE;
             }
         }
     }
-    return 0;
+    return FALSE;
 }
 
 int16_t FScout(FLEET *lpfl) {
@@ -686,11 +686,11 @@ int16_t FScout(FLEET *lpfl) {
         if (lpfl->rgcsh[i] != 0) {
             l = 1 << rglpshdef[lpfl->iPlayer][i].hul.ihuldef;
             if ((l & 0x70) != 0) {
-                return 1;
+                return TRUE;
             }
         }
     }
-    return 0;
+    return FALSE;
 }
 
 void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
@@ -700,7 +700,7 @@ void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
     FLEET  *lpflT;
     int16_t fFoundFleet;
 
-    fFoundFleet = 0;
+    fFoundFleet = FALSE;
     lpord = lpfl->lpplord->rgord;
     if ((lppl->iPlayer == -1 || (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raMacintosh && lppl->iPlayer == lpfl->iPlayer)) &&
         CMineFromLpfl(lpfl) != 0) {
@@ -715,7 +715,7 @@ void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
                     if (lpflT->pt.x == lpfl->pt.x && lpflT->pt.y == lpfl->pt.y) {
                         cMine = CMineFromLpfl(lpflT);
                         if (cMine > 0 && cMine < 4000) {
-                            fFoundFleet = 1;
+                            fFoundFleet = TRUE;
                             break;
                         }
                     }
@@ -940,7 +940,7 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
     cPts = 0;
     dwtFleet = 0.0;
     dcPts = 0.0;
-    fUseFloat = 0;
+    fUseFloat = FALSE;
     for (i = 0; i < 16; i++) {
         if (lpfl->rgcsh[i] > 0) {
             lphul = &rglpshdef[lpfl->iPlayer][i].hul;
@@ -961,7 +961,7 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
                 if (fUseFloat == 0 && (cPtsCur > 4000 || wtFleetCur > 500000 || cPts > 100000000 || wtFleet > 50000000)) {
                     dcPts = (double)cPts;
                     dwtFleet = (double)wtFleet;
-                    fUseFloat = 1;
+                    fUseFloat = TRUE;
                 }
                 if (fUseFloat != 0) {
                     dcPts = (double)(dcPts + (long double)cPtsCur * wtFleetCur);
@@ -1102,7 +1102,7 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     }
     if (IS_WM_CTLCOLOR(msg) == 0) {
         if (msg == WM_INITDIALOG) {
-            StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, 1);
+            StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, TRUE);
             for (i = 0; i < vcflMerge; i++) {
                 psz = PszGetFleetName(rglpfl[vrgiflMerge[i]]->id);
                 strcpy(szT, psz);
@@ -1131,7 +1131,7 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDOK && gd.fTutorial != 0 && FOKMergeDialog() == 0) {
                     return 1;
                 }
-                StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, 0);
+                StickyDlgPos(hwnd, &ptStickyMergeFleetsDlg, FALSE);
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_HELP:

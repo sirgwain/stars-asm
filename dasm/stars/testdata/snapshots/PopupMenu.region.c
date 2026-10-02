@@ -52,7 +52,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
             }
         } else if (rgsz[i] == 0) {
             pszTitle = rgsz[i + 1];
-            fChecked = rgids == 0 ? 0 : LOWORD(rgids[i + 1]);
+            fChecked = rgids == 0 ? FALSE : LOWORD(rgids[i + 1]);
             hmenuSub = CreatePopupMenu();
             for (i += 2; i < cString && rgsz[i] != 0; i++) {
                 if (rgids == 0) {

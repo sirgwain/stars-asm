@@ -148,7 +148,7 @@ func TestDASM_BitfieldUpdateSnapshots(t *testing.T) {
 		from uint32
 		want string
 	}{
-		{name: "DoCyberFreighter", from: 0x3916, want: "ord.fValidTask = 1"},
+		{name: "DoCyberFreighter", from: 0x3916, want: "ord.fValidTask = TRUE"},
 		{name: "GenerateWorld", from: 0x2c9d, want: "rgplr[i].cshdefSB = (rgplr[i].cshdefSB + 1)"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

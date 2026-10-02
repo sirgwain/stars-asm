@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"unicode"
 
 	"github.com/sirgwain/stars-asm/dasm/nb09"
 )
@@ -239,6 +240,11 @@ func Load(inputDir string, db *nb09.NB09DB) (*SymbolDB, error) {
 
 	// load overrides.json and apply them to the symboldb
 	if err := loader.applyOverrides(inputDir); err != nil {
+		return nil, err
+	}
+
+	// resolve Win16 family declaration types once SDK typedefs are registered
+	if err := loader.resolveEnumDecls(); err != nil {
 		return nil, err
 	}
 
@@ -1022,10 +1028,17 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 	// rules naming a param, local, or field that no longer exists are
 	// collected so a rename reports every stale rule at once
 	var unmatched []error
+	var prefixRules []*EnumUseRule
 	for _, rule := range l.sdb.EnumRules {
 		typ := l.sdb.GetEnum(rule.EnumName)
 		if typ == nil {
 			return fmt.Errorf("unable to load enum %s", rule.EnumName)
+		}
+
+		// naming-convention rules fill in after every exact rule
+		if rule.Prefix != "" {
+			prefixRules = append(prefixRules, rule)
+			continue
 		}
 
 		if rule.Kind == UseGlobal {
@@ -1038,7 +1051,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 				annotated.Elem = EnumWithStorageSize(typ, array.Elem)
 				g.Type = &annotated
 			} else {
-				g.Type = EnumWithStorageSize(typ, g.Type)
+				g.Type = enumForScalar(typ, g.Type)
 			}
 			continue
 		}
@@ -1050,7 +1063,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 			}
 
 			if rule.Kind == UseCallResult && len(rule.WhenArgs) == 0 {
-				f.Ret = EnumWithStorageSize(typ, f.Ret)
+				f.Ret = enumForScalar(typ, f.Ret)
 				continue
 			}
 
@@ -1066,7 +1079,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 					if p.Name != rule.ParamName {
 						continue
 					}
-					p.Type = EnumWithStorageSize(typ, p.Type)
+					p.Type = enumForScalar(typ, p.Type)
 					found = true
 					break
 				}
@@ -1083,7 +1096,7 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 					if v.Name != rule.Name {
 						continue
 					}
-					v.Type = EnumWithStorageSize(typ, v.Type)
+					v.Type = enumForScalar(typ, v.Type)
 					found = true
 					break
 				}
@@ -1118,7 +1131,160 @@ func (l *symboldbLoader) applyEnumOverrides() error {
 		}
 	}
 
+	for _, rule := range prefixRules {
+		if err := l.applyEnumPrefixRule(rule); err != nil {
+			unmatched = append(unmatched, err)
+		}
+	}
+
 	return errors.Join(unmatched...)
+}
+
+// resolveEnumDecls resolves the declaration type each Win16 constant family
+// names in win16defines.json. It runs after the type overrides, so a family
+// can declare its uses as an SDK typedef such as BOOL.
+func (l *symboldbLoader) resolveEnumDecls() error {
+	o := newOverrideDB(l.sdb, l.typeResolver)
+	for _, e := range l.sdb.Enums {
+		if e.declName == "" {
+			continue
+		}
+		decl, err := o.resolveNamedType("", e.declName)
+		if err != nil {
+			return fmt.Errorf("win16 family %s decl: %w", e.Name, err)
+		}
+		prim, ok := decl.(*Primitive)
+		if !ok || prim.TypeKind != KInt {
+			return fmt.Errorf("win16 family %s decl %s is not an integer type", e.Name, e.declName)
+		}
+		e.Decl = decl
+	}
+	return nil
+}
+
+// applyEnumPrefixRule annotates every global, param, local, call result or
+// struct field whose name follows the rule's Hungarian prefix, other than the
+// rule's exclusions. Globals, params, locals and call results must be
+// two-byte integers; fields may be one- or two-byte integers or one-bit
+// bitfields, and keep their storage. Items an exact rule already annotated
+// keep that enum. An exclusion naming nothing the prefix matches is an
+// error, so a rename can't silently drop an exception.
+func (l *symboldbLoader) applyEnumPrefixRule(rule *EnumUseRule) error {
+	if rule.Name != "" || rule.FuncName != "" || rule.ParamName != "" || rule.StructName != "" || rule.FieldName != "" || len(rule.WhenArgs) != 0 {
+		return fmt.Errorf("enum %s prefix rule %q: name, func, param, struct, field and when don't apply", rule.EnumName, rule.Prefix)
+	}
+	typ := l.sdb.GetEnum(rule.EnumName)
+	excluded := make(map[string]bool, len(rule.Exclude))
+	for _, name := range rule.Exclude {
+		excluded[name] = false
+	}
+
+	// matches reports whether the item at key carries the prefix and is not
+	// excluded, recording each exclusion it meets
+	matches := func(key, name string) bool {
+		if !hasHungarianPrefix(name, rule.Prefix) {
+			return false
+		}
+		if _, ok := excluded[key]; ok {
+			excluded[key] = true
+			return false
+		}
+		return true
+	}
+	// isInt reports whether t is a plain integer of one of the widths
+	isInt := func(t Type, widths ...int) bool {
+		prim, ok := t.(*Primitive)
+		return ok && prim.TypeKind == KInt && slices.Contains(widths, prim.Bytes())
+	}
+	// annotate types a scalar two-byte integer at key
+	annotate := func(key, name string, t *Type) {
+		if matches(key, name) && isInt(*t, 2) {
+			*t = enumForScalar(typ, *t)
+		}
+	}
+
+	switch rule.Kind {
+	case UseGlobal:
+		for _, g := range l.sdb.Globals {
+			annotate(g.Name, g.Name, &g.Type)
+		}
+	case UseCallResult:
+		for _, f := range l.sdb.Functions {
+			annotate(f.Name, f.Name, &f.Ret)
+		}
+	case UseParam:
+		for _, f := range l.sdb.Functions {
+			for i := range f.Params {
+				p := &f.Params[i]
+				annotate(f.Name+"."+p.Name, p.Name, &p.Type)
+			}
+		}
+	case UseLocal:
+		for _, f := range l.sdb.Functions {
+			for i := range f.Vars {
+				v := &f.Vars[i]
+				annotate(f.Name+"."+v.Name, v.Name, &v.Type)
+			}
+		}
+	case UseField:
+		for _, s := range l.sdb.Structs {
+			changed := false
+			for i := range s.Fields {
+				field := &s.Fields[i]
+				if !matches(s.Name+"."+field.Name, field.Name) {
+					continue
+				}
+				// a signed one-bit field holds 0 and -1
+				if field.Bitfield != nil && (field.Bitfield.BitWidth != 1 || field.Bitfield.Signed()) || field.Bitfield == nil && !isInt(field.Type, 1, 2) {
+					continue
+				}
+				if _, ok := field.Type.(*Enum); ok {
+					continue
+				}
+				field.Type = EnumWithStorageSize(typ, field.Type)
+				changed = true
+			}
+			if changed {
+				s.FinalizeLayout()
+			}
+		}
+	default:
+		return fmt.Errorf("enum %s prefix rule %q: only globals, params, locals, call results and fields match by prefix", rule.EnumName, rule.Prefix)
+	}
+
+	var stale []error
+	for _, name := range rule.Exclude {
+		if !excluded[name] {
+			stale = append(stale, fmt.Errorf("enum %s prefix rule %q: exclusion %s matches nothing", rule.EnumName, rule.Prefix, name))
+		}
+	}
+	return errors.Join(stale...)
+}
+
+// hasHungarianPrefix reports whether name starts with the Hungarian prefix
+// followed by an uppercase letter, a digit or nothing: fDirty, f2 and f
+// carry prefix f, while fleet and fkb do not.
+func hasHungarianPrefix(name, prefix string) bool {
+	rest, ok := strings.CutPrefix(name, prefix)
+	if !ok {
+		return false
+	}
+	return rest == "" || unicode.IsUpper(rune(rest[0])) || unicode.IsDigit(rune(rest[0]))
+}
+
+// enumForScalar returns the enum annotating a scalar global, param, local
+// or return of the original integer type. A family with a Decl as wide as
+// the original declares the use as Decl; anything else keeps its original
+// type as EnumWithStorageSize does.
+func enumForScalar(enum *Enum, original Type) *Enum {
+	prim, ok := original.(*Primitive)
+	if enum.Decl == nil || !ok || prim.TypeKind != KInt || prim.Bytes() != enum.Decl.Bytes() {
+		return EnumWithStorageSize(enum, original)
+	}
+	next := *enum
+	next.Size = enum.Decl.Bytes()
+	next.Storage = enum.Decl
+	return &next
 }
 
 // EnumWithStorageSize returns the enum annotating an item of the original

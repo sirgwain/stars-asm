@@ -36,7 +36,7 @@ L_0345:
 
 L_0369:
     cDefenses = lppl->cDefenses;
-    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0);
+    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, FALSE);
     if (cMax < cDefenses)
         goto L_03b5;
     else

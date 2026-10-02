@@ -22,7 +22,7 @@ FCheckXferWP  (tutor)
     LReturn: L_73fa
 */
 L_7280:
-    fRet = 0
+    fRet = FALSE
     idhSav = tutor.idh
     branch (id & 0x8000) == 0 ? L_72af : L_72a2
 
@@ -40,13 +40,13 @@ L_72b4:
 
 
 L_72d8:
-    return 0
+    return FALSE
 
 L_72de:
     branch FCheckFleetWP(ifl, iord, grobj, id, grTaskXfer, iWarp) != 0 ? L_7308 : L_7302
 
 L_7302:
-    return 0
+    return FALSE
 
 L_7308:
     ord = lpfl->lpplord->rgord[iord]
@@ -94,7 +94,7 @@ L_73ec:
     goto L_73c0
 
 L_73f5:
-    fRet = 1
+    fRet = TRUE
 
 LReturn:
     idh = tutor.idh

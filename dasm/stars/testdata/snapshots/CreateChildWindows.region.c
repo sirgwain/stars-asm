@@ -11,7 +11,7 @@ void CreateChildWindows() {
         strncpy(szGame, psz, 8);
         strlwr(szGame);
         _wsprintf(&szGame[strlen(szGame)], ".m%d", idPlayer + 1);
-        _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, 0, 1, 0, 0, NULL), szGame);
+        _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, FALSE, TRUE, FALSE, 0, NULL), szGame);
     } else {
         CchGetString(idsStarsSHostMode, szWork);
         _wsprintf(szData, szWork, game.szName);
@@ -21,7 +21,7 @@ void CreateChildWindows() {
         if (hwndScanner == 0) {
             hwndScanner = CreateWindow(szScan, NULL, WS_CHILD | WS_VISIBLE, -200, -200, 10, 10, hwndFrame, NULL, hInst, NULL);
         } else {
-            InvalidateRect(hwndScanner, NULL, 1);
+            InvalidateRect(hwndScanner, NULL, TRUE);
             yScanTop = 1000;
             xScanTop = 1000;
             SetScanScrollBars(hwndScanner);
@@ -29,17 +29,17 @@ void CreateChildWindows() {
         if (hwndMine == 0) {
             hwndMine = CreateWindow(szMine, NULL, WS_CHILD | WS_VISIBLE, -500, -500, pt.x, pt.y, hwndFrame, NULL, hInst, NULL);
         } else {
-            InvalidateRect(hwndMine, NULL, 1);
+            InvalidateRect(hwndMine, NULL, TRUE);
         }
         if (hwndPlanet == 0) {
             hwndPlanet = CreateWindow(szPlanet, NULL, WS_CHILD | WS_VISIBLE, -500, -500, 10, 10, hwndFrame, NULL, hInst, NULL);
         } else {
-            InvalidateRect(hwndPlanet, NULL, 1);
+            InvalidateRect(hwndPlanet, NULL, TRUE);
         }
         if (hwndTb == 0) {
             hwndTb = CreateWindow(szTb, NULL, WS_CHILD | WS_VISIBLE, -500, -500, 10, 10, hwndFrame, NULL, hInst, NULL);
         } else {
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
         }
         if (hwndMessage != 0) {
             DestroyWindow(hwndMessage);

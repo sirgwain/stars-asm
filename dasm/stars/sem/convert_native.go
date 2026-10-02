@@ -449,7 +449,7 @@ func addressOfPrintsArray(addr *AddressOf, array *typeinfo.Array) bool {
 // needs a cast to convert to the pointer type want: its pointee differs and
 // neither side is void * or an unprototyped function. Integer pointees of
 // one size that differ only in signedness convert with a warning, so they
-// need no cast.
+// need no cast. A Win16 constant family pointee is its declared storage.
 func needsPointerCast(have, want typeinfo.Type) bool {
 	wantPtr, ok := want.(*typeinfo.Pointer)
 	if !ok {
@@ -475,11 +475,11 @@ func needsPointerCast(have, want typeinfo.Type) bool {
 	if haveIsFn && wantIsFn && (len(haveFn.Params) == 0 || len(wantFn.Params) == 0) {
 		return false
 	}
-	haveInt, ok := haveElem.(*typeinfo.Primitive)
+	haveInt, ok := typeinfo.DeclaredType(haveElem).(*typeinfo.Primitive)
 	if !ok {
 		return true
 	}
-	wantInt, ok := wantPtr.Elem.(*typeinfo.Primitive)
+	wantInt, ok := typeinfo.DeclaredType(wantPtr.Elem).(*typeinfo.Primitive)
 	return !ok || haveInt.TypeKind != typeinfo.KInt || wantInt.TypeKind != typeinfo.KInt || haveInt.Size != wantInt.Size
 }
 

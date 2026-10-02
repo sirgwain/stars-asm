@@ -12,7 +12,7 @@ void ReadPlayerMessages() {
     uint16_t u;
 
     imemMsgT = 0;
-    fOOM = 0;
+    fOOM = FALSE;
     lpb = (uint8_t *)lpMsg + imemMsgCur;
     while (hdrCur.rt == rtMsg) {
         if (hdrCur.cb != 0 && (uint16_t)(imemMsgCur + imemMsgT) < (uint16_t)(0xffc8 - hdrCur.cb)) {
@@ -41,12 +41,12 @@ void ReadPlayerMessages() {
     penvMem = &env;
     if (setjmp(env) != 0) {
         penvMem = penvMemSav;
-        fOOM = 1;
+        fOOM = TRUE;
     } else {
     L_9b3a:
         if (hdrCur.rt != rtPlrMsg) {
             iMsgCur = -1;
-            iMsgCur = IMsgNext(0);
+            iMsgCur = IMsgNext(FALSE);
             return;
         }
         if (fOOM == 0) {

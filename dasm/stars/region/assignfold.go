@@ -255,8 +255,12 @@ func stmtExpr(s ir.Stmt) *ir.Expr {
 
 // fitsInt reports whether every value e can take is a constant, or a 0 or
 // 1 test, that fits the integer type typ, and typ promotes to or is int, so
-// reading e where the temp was read gives the same value and C type.
+// reading e where the temp was read gives the same value and C type. A
+// FALSE/TRUE truth family is the integer type it is declared with.
 func fitsInt(e ir.Expr, typ typeinfo.Type) bool {
+	if enumType, ok := typ.(*typeinfo.Enum); ok && enumType.Truth && enumType.Storage != nil {
+		typ = enumType.Storage
+	}
 	p, ok := typ.(*typeinfo.Primitive)
 	if !ok || p.TypeKind != typeinfo.KInt || p.Native != typeinfo.NativeInt || p.Size > 4 || (p.Size == 4 && !p.Signed) {
 		return false

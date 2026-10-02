@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ini.wFlags = 0;
     memset(&tutor, 0, sizeof(TUTOR));
     memset(&vtimer, 0, sizeof(TIMER));
-    vtimer.fAutoGenWhenIn = 1;
+    vtimer.fAutoGenWhenIn = TRUE;
     if (hPrevInstance == 0 && InitMDIApp() == 0) {
         AlertSz(PszFormatIds(idsUnableInitializeStars, NULL), MB_ICONHAND);
         return 0;
@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 switch (*lpT) {
                 case 'W':
                 case 'w':
-                    ini.fWait = 1;
+                    ini.fWait = TRUE;
                     break;
                 case 'D':
                 case 'd':
@@ -45,22 +45,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                         switch (*lpT) {
                         case 'F':
                         case 'f':
-                            ini.fDumpFleets = 1;
+                            ini.fDumpFleets = TRUE;
                             break;
                         case 'P':
                         case 'p':
-                            ini.fDumpPlanets = 1;
+                            ini.fDumpPlanets = TRUE;
                             break;
                         case 'M':
                         case 'm':
-                            ini.fDumpMap = 1;
+                            ini.fDumpMap = TRUE;
                         }
                     }
                     lpT--;
                     break;
                 case 'G':
                 case 'g':
-                    ini.fGen = 1;
+                    ini.fGen = TRUE;
                     i = 0;
                     while (lpT[1] >= '0' && lpT[1] <= '9') {
                         lpT++;
@@ -78,15 +78,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                     break;
                 case 'A':
                 case 'a':
-                    ini.fNewGame = 1;
+                    ini.fNewGame = TRUE;
                     break;
                 case 'H':
                 case 'h':
-                    gd.fHotSeat = 1;
+                    gd.fHotSeat = TRUE;
                     break;
                 case 'X':
                 case 'x':
-                    gd.fExitWindows = 1;
+                    gd.fExitWindows = TRUE;
                     break;
                 case 'B':
                 case 'b':
@@ -101,22 +101,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                     lpT--;
                     if (FSetUpBatchProcessing() == 0)
                         break;
-                    ini.fBatch = 1;
-                    ini.fGen = 1;
-                    ini.fStartupFile = 1;
-                    ini.fCmdLine = 1;
+                    ini.fBatch = TRUE;
+                    ini.fGen = TRUE;
+                    ini.fStartupFile = TRUE;
+                    ini.fCmdLine = TRUE;
                     break;
                 case 'V':
                 case 'v':
-                    ini.fValidate = 1;
+                    ini.fValidate = TRUE;
                     break;
                 case 'L':
                 case 'l':
-                    ini.fLogging = 1;
+                    ini.fLogging = TRUE;
                     break;
                 case 'T':
                 case 't':
-                    ini.fTry = 1;
+                    ini.fTry = TRUE;
                     break;
                 case 'C':
                 case 'c':
@@ -144,8 +144,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 pch++;
             }
             *pch = 0;
-            ini.fStartupFile = 1;
-            ini.fCmdLine = 1;
+            ini.fStartupFile = TRUE;
+            ini.fCmdLine = TRUE;
         }
     }
     PostMessage(hwndFrame, WM_STARS_STARTUP, 0, 0);
@@ -173,7 +173,7 @@ int16_t FSetUpBatchProcessing() {
     int16_t fSuccess;
     int16_t cb;
 
-    fSuccess = 0;
+    fSuccess = FALSE;
     penvMem = &env;
     if (setjmp(env) == 0) {
         StreamOpen(szBase, mdRead);
@@ -189,7 +189,7 @@ int16_t FSetUpBatchProcessing() {
         }
         lpchBatch++;
         pch[-1] = 0;
-        fSuccess = 1;
+        fSuccess = TRUE;
     }
     penvMem = 0;
     StreamClose();
@@ -278,7 +278,7 @@ int16_t FGetSystemColors() {
     t_scratch_m6 = GetDeviceCaps(hdc, BITSPIXEL);
     vcScreenColors = t_scratch_m6 * GetDeviceCaps(hdc, PLANES);
     ReleaseDC(NULL, hdc);
-    return 1;
+    return TRUE;
 }
 
 void FreeStuff() {
@@ -556,10 +556,10 @@ int16_t FHandleChar(HWND hwnd, uint16_t ch, int32_t lParam) {
         hwndF = GetFocus();
         if (hwndMessage == 0 || hwndF != hwndMsgEdit) {
             SendMessage(hwndScanner, WM_CHAR, ch, lParam);
-            return 1;
+            return TRUE;
         }
     }
-    return 0;
+    return FALSE;
 }
 
 int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
@@ -575,15 +575,15 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     if (iMsg == WM_KEYDOWN) {
         if (iKey == VK_ESCAPE && hwndBrowser != 0 && GetActiveWindow() == hwndBrowser) {
             DestroyWindow(hwndBrowser);
-            return 1;
+            return TRUE;
         }
         if (iKey == VK_ESCAPE && hwndPopup != 0) {
             SendMessage(hwndPopup, WM_LBUTTONUP, 0, 0);
-            return 1;
+            return TRUE;
         }
         if (iKey == VK_ESCAPE && hwndReportDlg != 0) {
             DestroyWindow(hwndReportDlg);
-            return 1;
+            return TRUE;
         }
     } else if (iMsg == WM_KEYUP && hwndTb != 0 && (iKey == VK_ESCAPE || iKey == VK_RETURN)) {
         hwndF = GetParent(GetFocus());
@@ -599,14 +599,14 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
         }
     }
     if (iMsg != WM_KEYDOWN) {
-        return 0;
+        return FALSE;
     }
     switch (iKey) {
     default:
         if (iKey < '0' || iKey > '9') {
             switch (iKey) {
             default:
-                return 0;
+                return FALSE;
             case VK_OEM_COMMA:
             case VK_OEM_PERIOD:
             case VK_OEM_4:
@@ -623,30 +623,30 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
         hwndF = GetFocus();
         if (hwndMessage != 0) {
             if (hwndTb != 0 && (hwndTb == hwndF || GetParent(hwndF) == hwndTb || GetParent(GetParent(hwndF)) == hwndTb)) {
-                return 0;
+                return FALSE;
             }
             for (i = 0; i < 3; i++) {
                 if (hwndF == rghwndOrderDD[i]) {
-                    return 0;
+                    return FALSE;
                 }
             }
             if (hwndF == hwndFleetCompLB || hwndF == hwndPlanetProdLB || hwndF == hwndMsgEdit || hwndF == hwndMsgDrop || hwndF == hwndOrderED ||
                 hwndF == hwndMsgScroll || hwndF == hwndFleetCompLB || hwndF == hwndShipDD) {
-                return 0;
+                return FALSE;
             }
             if (hwndBrowser == 0 || hwndF != GetDlgItem(hwndBrowser, IDC_BROWSER_COMPONENT_CATEGORY))
                 goto L_1939;
-            return 0;
+            return FALSE;
         }
     L_1939:
         if (iKey >= '0' && iKey <= '9') {
             if (iKey >= '1' && iKey <= '6') {
                 md = iKey - 49;
                 if (md != (grbitScan & grbitScanViewMask)) {
-                    ExecuteButton(iKey - 49, 1);
-                    InvalidateRect(hwndTb, NULL, 0);
+                    ExecuteButton(iKey - 49, TRUE);
+                    InvalidateRect(hwndTb, NULL, FALSE);
                 }
-                return 1;
+                return TRUE;
             }
             switch (iKey) {
             case '7':
@@ -666,12 +666,12 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
                 }
             }
             ExecuteButton(itb, FIsButtonDown(itb) == 0);
-            InvalidateRect(hwndTb, NULL, 0);
-            return 1;
+            InvalidateRect(hwndTb, NULL, FALSE);
+            return TRUE;
         }
         switch (iKey) {
         default:
-            return 0;
+            return FALSE;
         case VK_BACK:
         case VK_DELETE:
             if (sel.grobj != grobjFleet)
@@ -684,7 +684,7 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
         case VK_UP:
         case VK_DOWN:
             if (hwndF == hwndShipLB) {
-                return 0;
+                return FALSE;
             }
             SendMessage(hwndMessage, WM_KEYDOWN, iKey, dw);
             break;
@@ -704,14 +704,14 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
                     DrawPlanShip(NULL, tileFleetOrders | tileFleetComp | tileMinimized);
                 }
             }
-            return 1;
+            return TRUE;
         case VK_OEM_4:
         case VK_OEM_6:
             pt.x = 0;
             pt.y = 0;
             ExecuteReportClick(pt, rptEnemyFleets, 0, iKey == VK_OEM_4 ? -2 : -1);
-            return 1;
+            return TRUE;
         }
-        return 1;
+        return TRUE;
     }
 }

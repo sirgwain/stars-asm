@@ -19,7 +19,7 @@ int16_t ShipBuilder(POINT16 ptDlgSize) {
     if (gd.mdScreenSize > 0) {
         ptslotGlob.y += 3 * dyArial8;
     }
-    fStarbaseMode = 0;
+    fStarbaseMode = FALSE;
     lpshdefBuild = NthValidShdef(0);
     lpProcSlot = MakeProcInstance(SlotDlg, hInst);
     fSuccess = DialogBox(hInst, MAKEINTRESOURCE(IDD_SLOT), hwndFrame, lpProcSlot);
@@ -78,17 +78,17 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit) {
         id = MessageBox(GetFocus(), szWork, PszGetCompressedString(fEdit + 742), MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL);
         SetFocus(hwnd);
         if (id == 7) {
-            return 0;
+            return FALSE;
         }
         if (lpshdef->cExist > 0) {
             DestroyAllIshdef(lpshdef->ishdef, idPlayer);
-            InvalidateRect(hwndScanner, NULL, 1);
-            InvalidateRect(hwndMessage, NULL, 1);
+            InvalidateRect(hwndScanner, NULL, TRUE);
+            InvalidateRect(hwndMessage, NULL, TRUE);
         } else {
             RemoveIshdefFromAllQueues(lpshdef->ishdef, fEdit);
         }
     }
-    return 1;
+    return TRUE;
 }
 
 INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -168,13 +168,13 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     }
     switch (message) {
     case WM_INITDIALOG:
-        fHullCopy = 0;
+        fHullCopy = FALSE;
         hwndSlotDlg = hwnd;
         GetWindowRect(hwnd, &rcWindow);
         GetClientRect(hwnd, &rc);
         SetWindowPos(hwnd, NULL, 0, 0, ptslotGlob.x + rcWindow.right - rcWindow.left - rc.right, ptslotGlob.y + rcWindow.bottom - rcWindow.top - rc.bottom,
                      SWP_NOMOVE | SWP_NOZORDER);
-        StickyDlgPos(hwnd, &ptStickySlotDlg, 1);
+        StickyDlgPos(hwnd, &ptStickySlotDlg, TRUE);
         UpdateSlotGlobals();
         hwndItem = GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST);
         SetWindowPos(hwndItem, NULL, ptslotGlob.x - 256, 32, 240, 266, SWP_NOZORDER);
@@ -230,7 +230,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     case WM_LBUTTONDOWN:
     case WM_LBUTTONDBLCLK:
     case WM_RBUTTONDOWN:
-        return FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, 0, message == WM_RBUTTONDOWN);
+        return FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, FALSE, message == WM_RBUTTONDOWN);
     case WM_COMMAND:
         if (GET_WM_COMMAND_CMD(wParam, lParam) == 0 && GET_WM_COMMAND_ID(wParam, lParam) >= IDC_DESIGNER_SHIPS &&
             GET_WM_COMMAND_ID(wParam, lParam) <= IDC_DESIGNER_STARBASES) {
@@ -238,9 +238,9 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             wParam = mdBuild + 2066;
             GetClientRect(hwnd, &rc);
             rc.left = rc.right >> 1 >= rc.right - 352 ? rc.right - 352 : rc.right >> 1;
-            InvalidateRect(hwnd, &rc, 1);
+            InvalidateRect(hwnd, &rc, TRUE);
             lpshdefBuild = NULL;
-            fHullCopy = 0;
+            fHullCopy = FALSE;
             lSel = fStarbaseMode == 0 ? (uint32_t)rggrbitParts[0] : (uint32_t)rggrbitPartsSB[0];
             FillBuildPartsLB(GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST), LOWORD(lSel));
             hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
@@ -250,7 +250,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             if (GET_WM_COMMAND_CMD(wParam, lParam) != 0 || GET_WM_COMMAND_ID(wParam, lParam) < IDC_DESIGNER_EXISTING ||
                 GET_WM_COMMAND_ID(wParam, lParam) > IDC_DESIGNER_COMPONENTS) {
                 if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_EDITNAME && GET_WM_COMMAND_CMD(wParam, lParam) == 0x400 && fInEditUpdate == 0) {
-                    fInEditUpdate = 1;
+                    fInEditUpdate = TRUE;
                     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 250);
                     lSel = SendMessage(GET_WM_COMMAND_HWND(wParam, lParam), EM_GETSEL, 0, 0);
                     if (FStringFitsScreen(szWork, 160) == 0) {
@@ -259,7 +259,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     }
                     lstrcpy(lpshdefBuild->hul.szClass, szWork);
                     DrawBuildSelHull(hwnd, NULL, 256, NULL);
-                    fInEditUpdate = 0;
+                    fInEditUpdate = FALSE;
                     if (gd.fTutorial == 0)
                         break;
                     AdvanceTutor();
@@ -281,7 +281,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     if (GET_WM_COMMAND_CMD(wParam, lParam) != 0) {
                         return 0;
                     }
-                    fProgress = 0;
+                    fProgress = FALSE;
                     cshQueued = 0;
                     if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbDelete) == 0) {
                         return 0;
@@ -291,10 +291,10 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     lpshdef = NthValidShdef(LOWORD(lSel));
                     if (lSel < 0 || lpshdef == 0 ||
                         ((fStarbaseMode != 0 && lSel == 0 && GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMacintosh) ||
-                         FCheckQueuedShip(hwnd, lpshdef, 0) == 0)) {
+                         FCheckQueuedShip(hwnd, lpshdef, FALSE) == 0)) {
                         return 0;
                     }
-                    lpshdef->fFree = 1;
+                    lpshdef->fFree = TRUE;
                     lpshdef->cBuilt = 0;
                     lpshdef->cExist = 0;
                     if (fStarbaseMode != 0) {
@@ -306,16 +306,16 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     FillBuildDD(hwndItem, mdBuild);
                     lpshdefBuild = NthValidShdef(0);
                     if ((fStarbaseMode != 0 && GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMacintosh) || lpshdefBuild == 0) {
-                        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 0);
-                        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), 0);
+                        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), FALSE);
+                        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), FALSE);
                         if (lpshdefBuild == 0) {
-                            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_IMPORT), 0);
+                            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_IMPORT), FALSE);
                         }
                     }
                     UpdateSlotGlobals();
                     GetClientRect(hwnd, &rc);
                     rc.left = rc.right >> 1 >= rc.right - 352 ? rc.right - 352 : rc.right >> 1;
-                    InvalidateRect(hwnd, &rc, 1);
+                    InvalidateRect(hwnd, &rc, TRUE);
                     if (fHullCopy != 0)
                         goto LRestart;
                     return 0;
@@ -377,7 +377,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         if (mdBuild == mdBuildShdef && lpshdef->fGift == 0) {
                             MakeNewName(lpshdef->hul.szClass);
                         } else {
-                            lpshdef->fGift = 0;
+                            lpshdef->fGift = FALSE;
                             for (j = 0; j < lpshdef->hul.chs; j++) {
                                 if (lpshdef->hul.rghs[j].cItem > 0) {
                                     part.hs = lpshdef->hul.rghs[j];
@@ -421,10 +421,10 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     LogChangeShDef(lpshdef);
                     FillBuildDD(hwndItem, mdBuild);
                     SendMessage(hwndItem, CB_SETCURSEL, i, 0);
-                    EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), 1);
+                    EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), TRUE);
                     lpshdefBuild = lpshdef;
                     UpdateSlotGlobals();
-                    fHullCopy = 1;
+                    fHullCopy = TRUE;
                     break;
                 case IDC_EDIT:
                     if ((gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbEdit) == 0) ||
@@ -434,7 +434,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
                     lSel = SendMessage(hwndItem, CB_GETCURSEL, 0, 0);
                     lpshdef = NthValidShdef(LOWORD(lSel));
-                    if (lSel < 0 || lpshdef == 0 || (fStarbaseMode == 0 && FCheckQueuedShip(hwnd, lpshdef, 1) == 0)) {
+                    if (lSel < 0 || lpshdef == 0 || (fStarbaseMode == 0 && FCheckQueuedShip(hwnd, lpshdef, TRUE) == 0)) {
                         return 0;
                     }
                     break;
@@ -442,7 +442,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 case IDCANCEL:
                     if (mdBuild != mdBuildEdit) {
                         SetBuildSelection(-2);
-                        StickyDlgPos(hwnd, &ptStickySlotDlg, 0);
+                        StickyDlgPos(hwnd, &ptStickySlotDlg, FALSE);
                         hwndSlotDlg = 0;
                         EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                         if (gd.fTutorial != 0) {
@@ -462,7 +462,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         GetWindowText(GetDlgItem(hwnd, IDC_EDITNAME), shdefBuild.hul.szClass, 32);
                         shdefBuild.cBuilt = 0;
                         shdefBuild.cExist = 0;
-                        shdefBuild.fFree = 0;
+                        shdefBuild.fFree = FALSE;
                         UpdateShdefCost(&shdefBuild);
                         if (fStarbaseMode != 0) {
                             ishdefBuild -= 16;
@@ -486,7 +486,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     } else if (gd.fTutorial != 0 && FTutorialEnabledShipBuilder(tutsbCancelEdit) == 0) {
                         return 0;
                     }
-                    InvalidateRect(hwnd, NULL, 1);
+                    InvalidateRect(hwnd, NULL, TRUE);
                     ShowMainControls(hwnd, SW_SHOW);
                     ShowWindow(GetDlgItem(hwnd, IDC_EDITNAME), SW_HIDE);
                     hwndItem = GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST);
@@ -499,7 +499,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                         }
                         if (GET_WM_COMMAND_ID(wParam, lParam) == IDCANCEL) {
                             if (fStarbaseMode != 0) {
-                                shdefBuild.fFree = 1;
+                                shdefBuild.fFree = TRUE;
                                 rglpshdefSB[idPlayer][ishdefBuild - 16] = shdefBuild;
                                 rgplr[idPlayer].cshdefSB += 15;
                                 LogChangeShDef(&shdefBuild);
@@ -520,7 +520,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 }
                 if (lpshdefBuild == 0)
                     break;
-                InvalidateRect(hwnd, NULL, 1);
+                InvalidateRect(hwnd, NULL, TRUE);
                 mdBuild = mdBuildEdit;
                 ishdefBuild = lpshdefBuild->ishdef;
                 shdefBuild = *lpshdefBuild;
@@ -542,7 +542,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             lSel = 0;
         LRestart:
             lpshdefBuild = NULL;
-            fHullCopy = 0;
+            fHullCopy = FALSE;
             mdBuild = GET_WM_COMMAND_ID(wParam, lParam) - 2066;
             hwndItem = GetDlgItem(hwnd, IDC_COMBOBOX);
             UpdateSlotGlobals();
@@ -553,11 +553,11 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             GetClientRect(hwnd, &rc);
             left = rc.left;
             rc.left = rc.right >> 1 >= rc.right - 352 ? rc.right - 352 : rc.right >> 1;
-            InvalidateRect(hwnd, &rc, 1);
+            InvalidateRect(hwnd, &rc, TRUE);
             rc.right = rc.left;
             rc.left = left;
             rc.top = yBuildInfoSum;
-            InvalidateRect(hwnd, &rc, 1);
+            InvalidateRect(hwnd, &rc, TRUE);
             hwndItem = GetDlgItem(hwnd, IDC_DESIGNER_COMPONENT_LIST);
             ShowWindow(hwndItem, mdBuild == mdBuildComp ? SW_SHOW : SW_HIDE);
             if (GET_WM_COMMAND_ID(wParam, lParam) == IDC_DESIGNER_COMPONENTS) {
@@ -587,7 +587,7 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 if (mdBuild == mdBuildShdef) {
                     fProtoSB = fStarbaseMode != 0 && GetRaceStat(&rgplr[idPlayer], rsMajorAdv) == raMacintosh;
                     lpshdefBuild = NthValidShdef(LOWORD(lSel));
-                    CshQueued(lpshdefBuild->ishdef, &fProgress, 0);
+                    CshQueued(lpshdefBuild->ishdef, &fProgress, FALSE);
                     t_call_1152 = GetDlgItem(hwndSlotDlg, IDC_EDIT);
                     EnableWindow(t_call_1152, lpshdefBuild->cExist == 0 && fProgress == 0 && (fProtoSB == 0 || lSel > 0));
                     if (fProtoSB != 0) {
@@ -628,14 +628,14 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             UpdateSlotGlobals();
             GetClientRect(hwnd, &rc);
             rc.left = rc.right >> 1 >= rc.right - 352 ? rc.right - 352 : rc.right >> 1;
-            InvalidateRect(hwnd, &rc, 1);
+            InvalidateRect(hwnd, &rc, TRUE);
         }
         SetBuildSelection(-2);
         DrawBuildSelHull(hwnd, NULL, -1, NULL);
         if (lpshdefBuild == 0) {
-            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 0);
-            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), 0);
-            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_IMPORT), 0);
+            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), FALSE);
+            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), FALSE);
+            EnableWindow(GetDlgItem(hwndSlotDlg, IDC_IMPORT), FALSE);
         }
         if (gd.fTutorial != 0) {
             AdvanceTutor();
@@ -666,12 +666,12 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
     HBRUSH   hbrSav;
     COLORREF crBkSav;
 
-    fCreatedDC = 0;
+    fCreatedDC = FALSE;
     if (mdBuild != mdBuildComp && lpshdefBuild != 0) {
         lphuldef = LphuldefFromId(lpshdefBuild->hul.ihuldef);
         cSlot = lphuldef->hul.chs;
         if (hdc == 0) {
-            fCreatedDC = 1;
+            fCreatedDC = TRUE;
             hdc = GetDC(hwnd);
         }
         if (hwndSlotDlg == 0) {
@@ -681,7 +681,7 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
             xLeft = ptslotGlob.x - 338;
             yTop = 6;
         }
-        DrawFleetBitmap(NULL, hdc, xLeft, yTop, 1, lpshdefBuild->hul.ibmp, 0, 0, -1, 0);
+        DrawFleetBitmap(NULL, hdc, xLeft, yTop, TRUE, lpshdefBuild->hul.ibmp, 0, FALSE, -1, 0);
         hdcMem = CreateCompatibleDC(hdc);
         hbmpSav = SelectObject(hdcMem, hbmpScanner);
         iInventSel = 0;
@@ -695,7 +695,7 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
             rgrcBuildSpin[1] = rgrcBuildSpin[0];
             OffsetRect(&rgrcBuildSpin[1], 14, 0);
             for (i = 0; i < 2; i++) {
-                DrawBtn(hdc, &rgrcBuildSpin[i], (i == 0 ? 2 : 3) | 0x20, 0, NULL);
+                DrawBtn(hdc, &rgrcBuildSpin[i], (i == 0 ? 2 : 3) | 0x20, FALSE, NULL);
             }
         }
         SelectObject(hdc, rghfontArial8[1]);
@@ -790,7 +790,7 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
         }
         if ((hwndPopup == 0 || GlobalPD.fHideCounts == 0) && mdBuild == mdBuildShdef) {
             SetRect(&rc, ptPlaque.x, ptPlaque.y, ptPlaque.x + 60, ptPlaque.y + 30);
-            SelectPalette(hdc, vhpal, 0);
+            SelectPalette(hdc, vhpal, FALSE);
             RealizePalette(hdc);
             DibBlt(hdc, ptPlaque.x, ptPlaque.y, 60, 30, hdibPlaque, 0, 0, 60, 30, 13369376);
             c = _wsprintf(szWork, PszGetCompressedString(idsLdLd), lpshdefBuild->cExist, lpshdefBuild->cBuilt);
@@ -850,9 +850,9 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     int16_t dyStart;
     int16_t dxStart;
 
-    fFirst = 1;
+    fFirst = TRUE;
     if (lpshdefBuild == 0) {
-        return 0;
+        return FALSE;
     }
     pt.x = x;
     pt.y = y;
@@ -872,25 +872,25 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
         iBase -= iCur;
         xLeft = ptslotGlob.x - 336;
         yTop = 8;
-        InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, 0, 0, NULL);
+        InitBtnTrack(&btnt, hwnd, NULL, prc, bt, 80, FALSE, FALSE, NULL);
         while (FTrackBtn(&btnt) != 0) {
             iCur = iCur + 4 + iDir & 3;
-            DrawFleetBitmap(NULL, btnt.hdc, xLeft, yTop, 0, iBase + iCur, 0, 0, -1, 0);
+            DrawFleetBitmap(NULL, btnt.hdc, xLeft, yTop, FALSE, iBase + iCur, 0, FALSE, -1, 0);
         }
         lpshdefBuild->hul.ibmp = iBase + iCur;
-        return 1;
+        return TRUE;
     }
     if (fListBox == 0) {
         GetClientRect(hwnd, &rc);
         for (iSrc = 0; iSrc < cSlot && PtInRect(&vrgrcSlot[iSrc], PointFrom16(pt)) == 0; iSrc++) {
         }
         if (iSrc == cSlot) {
-            return 0;
+            return FALSE;
         }
         hs = lpshdefBuild->hul.rghs[iSrc];
         if (hs.cItem <= 0) {
             SetBuildSelection(iSrc);
-            return 0;
+            return FALSE;
         }
         part.hs = hs;
         FLookupPart(&part);
@@ -899,7 +899,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     } else {
         iSel = LOWORD(SendMessage(hwnd, LB_GETCURSEL, 0, 0));
         if (iSel == -1) {
-            return 0;
+            return FALSE;
         }
         SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)szWork);
         ibmp = szWork[2] - 'A' + (szWork[3] - 'A') * 26;
@@ -926,7 +926,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
             GlobalPD.psz = szPopupBuffer;
             CchGetString(idsSettlersDelightEngineMayMountedDesignsBased, szPopupBuffer);
             Popup(hwnd, x, y);
-            return 1;
+            return TRUE;
         }
         if (hs.grhst == hstSpecialM && hs.iItem == ispecialMOrbitalConstructionModule && lpshdefBuild->hul.ihuldef != ihuldefColonyShip) {
             GlobalPD.grPopup = grPopupString;
@@ -934,7 +934,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
             GlobalPD.psz = szPopupBuffer;
             CchGetString(idsOrbitalConstructionModuleMayMountedDesignsBased, szPopupBuffer);
             Popup(hwnd, x, y);
-            return 1;
+            return TRUE;
         }
         if (hs.grhst == hstSpecialE && hs.iItem == ispecialETransportCloaking && LphuldefFromId(lpshdefBuild->hul.ihuldef)->imdAttack != hullAttackNone) {
             GlobalPD.grPopup = grPopupString;
@@ -942,7 +942,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
             GlobalPD.psz = szPopupBuffer;
             CchGetString(idsTransportCloakingModuleMayPlacedHullCould, szPopupBuffer);
             Popup(hwnd, x, y);
-            return 1;
+            return TRUE;
         }
     }
     SetBuildSelection(iSrc);
@@ -950,21 +950,21 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
         GlobalPD.part = part;
         GlobalPD.grPopup = grPopupComponent;
         Popup(hwnd, x, y);
-        return 1;
+        return TRUE;
     }
     if (mdBuild != mdBuildEdit) {
-        return 0;
+        return FALSE;
     }
     ptTileSize.y = 64;
     ptTileSize.x = 64;
     ibmpX = ibmp & 7;
     ibmpY = ibmp >> 3 & 3;
     hdc = GetDC(hwnd);
-    SelectPalette(hdc, vhpal, 0);
+    SelectPalette(hdc, vhpal, FALSE);
     RealizePalette(hdc);
     hdcMem = CreateCompatibleDC(hdc);
     hdcMemFull = CreateCompatibleDC(hdc);
-    SelectPalette(hdcMemFull, vhpal, 0);
+    SelectPalette(hdcMemFull, vhpal, FALSE);
     RealizePalette(hdcMemFull);
     hbmpOld = CreateCompatibleBitmap(hdc, ptTileSize.x, ptTileSize.y);
     hbmpSav = SelectObject(hdcMem, hbmpOld);
@@ -976,8 +976,8 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     while (FGetMouseMove(&pt) != 0) {
         if (pt.x != ptOld.x || pt.y != ptOld.y) {
             if (fFirst != 0) {
-                fUseMem = 0;
-                fFirst = 0;
+                fUseMem = FALSE;
+                fFirst = FALSE;
             } else {
                 SelectObject(hdcMem, hbmpOld);
                 ptDNew.x = pt.x - ptOld.x;
@@ -1021,7 +1021,7 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
                 BitBlt(hdc, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, hdcMemFull, ptTileSize.x + ptDNew.x - dxStart,
                        ptTileSize.y + ptDNew.y - dyStart, SRCCOPY);
             }
-            i = IDropPart(pt, hs, iSrc, 1);
+            i = IDropPart(pt, hs, iSrc, TRUE);
             if (i < 0 || i == 2) {
                 SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32512)));
             } else if (i == 1 && iSrc >= 0) {
@@ -1042,9 +1042,9 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     DeleteObject(hbmpScreen);
     DeleteDC(hdcMem);
     DeleteDC(hdcMemFull);
-    i = IDropPart(pt, hs, iSrc, 0);
+    i = IDropPart(pt, hs, iSrc, FALSE);
     ReleaseDC(hwnd, hdc);
-    return 1;
+    return TRUE;
 }
 
 void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -1070,9 +1070,9 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     HULDEF  *t_call_3c58;
     int16_t  t_top_3f19;
 
-    fCreatedDC = 0;
+    fCreatedDC = FALSE;
     if (hdc == 0) {
-        fCreatedDC = 1;
+        fCreatedDC = TRUE;
         hdc = GetDC(hwnd);
     }
     GetClientRect(hwndSlotDlg, &rc);
@@ -1145,7 +1145,7 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
                 }
                 x = rc.left;
                 t_top_3f19 = rc.top;
-                WrapTextOut(hdc, &x, &t_top_3f19, szWork, 0, rc.left, rc.right - rc.left, NULL, 0, 1);
+                WrapTextOut(hdc, &x, &t_top_3f19, szWork, 0, rc.left, rc.right - rc.left, NULL, FALSE, TRUE);
                 rc.top = t_top_3f19;
                 rc.top += dyArial8;
                 goto Restore;
@@ -1281,10 +1281,10 @@ void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc) {
     char    *t_merge_478e_0001;
     LPCSTR   t_merge_4c09_0001;
 
-    fCreatedDC = 0;
+    fCreatedDC = FALSE;
     if (mdBuild != mdBuildComp) {
         if (hdc == 0) {
-            fCreatedDC = 1;
+            fCreatedDC = TRUE;
             hdc = GetDC(hwnd);
         }
         if (prc == 0) {
@@ -1417,7 +1417,7 @@ void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc) {
                 if (fStarbaseMode != 0 || lpshdefBuild->hul.rghs[0].cItem == 0) {
                     j = 0;
                 } else {
-                    j = SpdOfShip(NULL, 0, NULL, 0, lpshdefBuild) + 1;
+                    j = SpdOfShip(NULL, 0, NULL, FALSE, lpshdefBuild) + 1;
                 }
                 cch = _wsprintf(szWork, PszGetCompressedString(idsDS), i, &rgszSpeed[j * 3]);
                 RightTextOut(hdc, rc.right - 8, rc.top, szWork, cch, dxMaxMineralQuan);
@@ -1568,7 +1568,7 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
                 GetClientRect(hwndSlotDlg, &rc);
                 DrawSlotDlg(hwndSlotDlg, NULL, &rc, iSrc);
                 rc.top = yBuildInfoSum;
-                InvalidateRect(hwndSlotDlg, &rc, 1);
+                InvalidateRect(hwndSlotDlg, &rc, TRUE);
                 DrawBuildSelComp(hwndSlotDlg, NULL, -1);
                 DrawBuildSelHull(hwndSlotDlg, NULL, -1, NULL);
                 if (gd.fTutorial != 0) {
@@ -1607,7 +1607,7 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
         SetBuildSelection(i);
         GetClientRect(hwndSlotDlg, &rc);
         rc.top = yBuildInfoSum;
-        InvalidateRect(hwndSlotDlg, &rc, 1);
+        InvalidateRect(hwndSlotDlg, &rc, TRUE);
         if (gd.fTutorial != 0) {
             AdvanceTutor();
         }
@@ -1626,7 +1626,7 @@ void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
     FillRect(lpdis->hDC, &lpdis->rcItem, GetStockObject((lpdis->itemState & ODS_FOCUS) == 0 ? WHITE_BRUSH : BLACK_BRUSH));
     InflateRect(&rc, -2, -1);
     SendMessage(lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM)szWork);
-    SelectPalette(lpdis->hDC, vhpal, 0);
+    SelectPalette(lpdis->hDC, vhpal, FALSE);
     RealizePalette(lpdis->hDC);
     ibmp = szWork[2] - 'A' + (szWork[3] - 'A') * 26;
     DibBlt(lpdis->hDC, rc.left, rc.top, 64, 64, rghdibInventory[ibmp >> 5], (ibmp & 7) * 0x40, (3 - (ibmp >> 3) & 3) * 0x40, 64, 64, 13369376);
@@ -1700,8 +1700,8 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
 
     SendMessage(hwndDD, CB_RESETCONTENT, 0, 0);
     if (md != mdBuildShdef) {
-        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 0);
-        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), 0);
+        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), FALSE);
+        EnableWindow(GetDlgItem(hwndSlotDlg, IDC_EDIT), FALSE);
     }
     if (fStarbaseMode != 0) {
         ishdefMac = 10;
@@ -1717,24 +1717,24 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
     case mdBuildHuldef:
     case mdBuildEnemyShdef:
         if (i < ishdefMac) {
-            fAdded = 1;
+            fAdded = TRUE;
             break;
         }
     default:
-        fAdded = 0;
+        fAdded = FALSE;
     }
     EnableWindow(GetDlgItem(hwndSlotDlg, IDC_IMPORT), fAdded);
     switch (md) {
     case mdBuildShdef:
     default:
-        fAdded = 0;
+        fAdded = FALSE;
         for (i = 0; i < ishdefMac; i++) {
             if (lpshdef[i].fFree == 0) {
                 if (fAdded == 0) {
-                    CshQueued((fStarbaseMode == 0 ? 0 : 16) + i, &fProgress, 0);
+                    CshQueued((fStarbaseMode == 0 ? 0 : 16) + i, &fProgress, FALSE);
                     t_call_6005 = GetDlgItem(hwndSlotDlg, IDC_EDIT);
                     EnableWindow(t_call_6005, lpshdef[i].cExist == 0 && fProgress == 0);
-                    EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), 1);
+                    EnableWindow(GetDlgItem(hwndSlotDlg, IDC_DELETE), TRUE);
                     fAdded = (lpshdef[i].cExist != 0) + 1;
                 }
                 SendMessage(hwndDD, CB_ADDSTRING, 0, (LPARAM)lpshdef[i].hul.szClass);
@@ -1748,7 +1748,7 @@ void FillBuildDD(HWND hwndDD, MdBuild md) {
                 if (lpshdef != 0) {
                     for (j = 0; j < ishdefMac; j++) {
                         if (lpshdef[j].fFree == 0) {
-                            if (PszPlayerName(i, 1, 0, 0, 0, NULL) != szWork) {
+                            if (PszPlayerName(i, TRUE, FALSE, FALSE, 0, NULL) != szWork) {
                             }
                             _wsprintf(&szWork[strlen(szWork)], " %s", lpshdef[j].hul.szClass);
                             SendMessage(hwndDD, CB_ADDSTRING, 0, (LPARAM)szWork);
@@ -1913,7 +1913,7 @@ LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 Popup(hwnd, LOWORD(lParam), HIWORD(lParam));
                 return 0;
             }
-            FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, 1, 0);
+            FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, TRUE, FALSE);
             return 0;
         }
     default:

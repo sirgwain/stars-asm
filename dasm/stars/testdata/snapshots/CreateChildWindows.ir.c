@@ -40,7 +40,7 @@ L_03e7:
     strncpy(szGame, psz, 8);
     strlwr(szGame);
     _wsprintf(&szGame[strlen(szGame)], ".m%d", idPlayer + 1);
-    _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, 0, 1, 0, 0, NULL), szGame);
+    _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, FALSE, TRUE, FALSE, 0, NULL), szGame);
     goto L_04ad;
 
 L_0480:
@@ -65,7 +65,7 @@ L_04d4:
     goto L_0547;
 
 L_051a:
-    InvalidateRect(hwndScanner, NULL, 1);
+    InvalidateRect(hwndScanner, NULL, TRUE);
     yScanTop = 1000;
     xScanTop = 1000;
     SetScanScrollBars(hwndScanner);
@@ -81,7 +81,7 @@ L_0551:
     goto L_05aa;
 
 L_0595:
-    InvalidateRect(hwndMine, NULL, 1);
+    InvalidateRect(hwndMine, NULL, TRUE);
 
 L_05aa:
     if (hwndPlanet != 0)
@@ -94,7 +94,7 @@ L_05b4:
     goto L_060f;
 
 L_05fa:
-    InvalidateRect(hwndPlanet, NULL, 1);
+    InvalidateRect(hwndPlanet, NULL, TRUE);
 
 L_060f:
     if (hwndTb != 0)
@@ -107,7 +107,7 @@ L_0619:
     goto L_0674;
 
 L_065f:
-    InvalidateRect(hwndTb, NULL, 1);
+    InvalidateRect(hwndTb, NULL, TRUE);
 
 L_0674:
     if (hwndMessage == 0)

@@ -35,7 +35,7 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
         lpfl->pt = rgptPlan[idPl];
     }
     lpfl->cord = 1;
-    lpfl->fRepOrders = 0;
+    lpfl->fRepOrders = FALSE;
     lpfl->lpplord = (PLORD *)LpplAlloc(18, 3, htOrd);
     lpfl->lpplord->iordMac = 1;
     lpfl->fdirValid = 0;
@@ -44,11 +44,11 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     lpord->id = lpfl->idPlanet;
     lpord->grobj = lpfl->idPlanet == -1 ? 4 : 1;
     lpord->iWarp = 0;
-    lpord->fValidTask = 1;
+    lpord->fValidTask = TRUE;
     lpord->grTask = grTaskNone;
     if (sel.scan.ifl != -1 && i <= sel.scan.ifl) {
         sel.scan.ifl++;
     }
-    gd.fFleetLinkValid = 0;
+    gd.fFleetLinkValid = FALSE;
     return lpfl;
 }

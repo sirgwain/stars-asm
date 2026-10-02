@@ -13,7 +13,7 @@ void DoBattles(int16_t fPostMovement) {
         lpfl = rglpfl[ifl];
         if (rglpfl[ifl] == 0)
             break;
-        lpfl->fBombed = 0;
+        lpfl->fBombed = FALSE;
         if (lpfl->fDone == 0 && lpfl->fDead == 0 && lpfl->lpflNext != 0) {
             cplr = CplrBattle(lpfl, rggrfAttack, &grfPlayer, &grfSpectator);
             if (cplr != -1 && cplr != 0 && FDoCoolBattle(lpfl, cplr, rggrfAttack, grfPlayer, grfSpectator) != 0) {

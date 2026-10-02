@@ -46,7 +46,7 @@ ExecuteButton  (tb)
     LInvalE: L_14ea
 */
 L_0db6:
-    gd.fChgScanner = 1
+    gd.fChgScanner = TRUE
     goto L_160f
 
 L_0dd4:
@@ -159,7 +159,7 @@ L_0fba:
 L_0fc3:
     call GetCursorPos16(&pt) -> callresult(void)
     call ScreenToClient16(hwndTb, &pt) -> callresult(void)
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE)
     branch iSel == -1 ? L_167a : L_1013
 
 L_1013:
@@ -193,7 +193,7 @@ L_1059:
     grbitScan = (grbitScan & 0xffbf)
 
 L_105e:
-    call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndTb, NULL, TRUE) -> callresult(void)
     goto L_1644
 
 L_1076:
@@ -242,7 +242,7 @@ L_11a8:
 L_11ab:
     call GetCursorPos16(&pt) -> callresult(void)
     call ScreenToClient16(hwndTb, &pt) -> callresult(void)
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE)
     branch iSel == -1 ? L_167a : L_11fe
 
 L_11fe:
@@ -301,7 +301,7 @@ L_12b7:
 
 LInvalS:
     grbitScan = (grbitScan | grbitScanDesignFilter)
-    call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndTb, NULL, TRUE) -> callresult(void)
 
 L_12e6:
     branch (grbitScan & grbitScanDesignFilter) == 0 ? L_167a : L_12f1
@@ -347,7 +347,7 @@ L_140e:
 L_1417:
     call GetCursorPos16(&pt) -> callresult(void)
     call ScreenToClient16(hwndTb, &pt) -> callresult(void)
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE)
     branch iSel == -1 ? L_167a : L_1467
 
 L_1467:
@@ -389,7 +389,7 @@ L_14d6:
 
 LInvalE:
     grbitScan = (grbitScan | grbitScanEnemyFilter)
-    call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndTb, NULL, TRUE) -> callresult(void)
 
 L_1505:
     branch (grbitScan & grbitScanEnemyFilter) == 0 ? L_167a : L_1510
@@ -417,7 +417,7 @@ L_159d:
 L_15a6:
     call GetCursorPos16(&pt) -> callresult(void)
     call ScreenToClient16(hwndTb, &pt) -> callresult(void)
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE)
     branch iSel == -1 ? L_167a : L_15f6
 
 L_15f6:
@@ -434,7 +434,7 @@ L_1644:
     branch itb == tbAddWaypoints ? L_1662 : L_164d
 
 L_164d:
-    call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndScanner, NULL, TRUE) -> callresult(void)
 
 L_1662:
     branch gd.fTutorial == 0 ? L_167a : L_1675

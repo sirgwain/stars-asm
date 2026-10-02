@@ -350,15 +350,15 @@ void DoMacintiAiTurn(PROD *rgprod) {
     iPlanet = rgplr[idPlayer].idPlanetHome;
     iroCur = IroEnsureAi((uint8_t *)vrgAiMacintiResOrder, 8, NULL, 15);
     if (game.turn < 40 || (rgshdef[7].fFree == 0 && rgshdef[7].hul.ihuldef == ihuldefColonyShip)) {
-        fUsingTempColonizer = 1;
+        fUsingTempColonizer = TRUE;
         if (FLookupPartX(&part, 1, 15) == 1 && rgshdef[7].cExist == 0) {
             shdef = rgshdef[7];
-            shdef.fFree = 1;
+            shdef.fFree = TRUE;
             FChangeAiShdef(&shdef, 7);
-            fUsingTempColonizer = 0;
+            fUsingTempColonizer = FALSE;
         }
     } else {
-        fUsingTempColonizer = 0;
+        fUsingTempColonizer = FALSE;
     }
     ishLastBattle = 7 - fUsingTempColonizer;
     if (fUsingTempColonizer != 0) {
@@ -411,7 +411,7 @@ void DoMacintiAiTurn(PROD *rgprod) {
         }
         if (rgshdef[i].cExist == 0) {
             shdef = rgshdef[i];
-            shdef.fFree = 1;
+            shdef.fFree = TRUE;
             FChangeAiShdef(&shdef, i);
         } else {
             rgRecycleShdef[14] = 3;
@@ -539,13 +539,13 @@ L_03c3:
             ChangeMainObjSel(grobjPlanet, lppl->id);
             if (lppl->lpplprod == 0 || lppl->lpplprod->iprodMac < 24) {
                 InitProduction(rgprod);
-                fWrite = 0;
+                fWrite = FALSE;
                 i = 0;
                 for (lpprod = lpplProdGlob->rgprod; i < lpplProdGlob->iprodMac && (lpprod->grobj != grobjFleet || lpprod->iItem >= iobjPacketGerm); lpprod++) {
                     i++;
                 }
                 if (i < lpplProdGlob->iprodMac) {
-                    FinishProduction(0);
+                    FinishProduction(FALSE);
                 } else {
                     cRes = CResourcesAtPlanet(lppl, idPlayer);
                     if (game.turn > 120 && IWarpMAFromLppl(lppl, &j) >= 10 && lppl->rgwtMin[3] > 10000 && Random(4) == 0) {
@@ -583,7 +583,7 @@ L_03c3:
                                 }
                                 l = (int32_t)(l / 100);
                                 AddItemToQueue(i + 14, LOWORD(l), grobjPlanet, addItemEnd);
-                                FinishProduction(1);
+                                FinishProduction(TRUE);
                                 sel.pl.iWarpFling = 7;
                                 sel.pl.idFling = lpplBest->id + 1;
                                 FLookupPlanet(-1, &sel.pl);
@@ -595,7 +595,7 @@ L_03c3:
                     if (iLatestCargo != -1 && cFlCargo < 64 && cFlCargo < rgplr[idPlayer].cPlanet / 4 && Random(3) == 0) {
                         cFlCargo++;
                         AddItemToQueue(iLatestCargo, 1, grobjFleet, addItemEnd);
-                        fWrite = 1;
+                        fWrite = TRUE;
                     }
                     if (((fShouldColonize != 0 && (cColFleet <= 40 || (game.turn <= 120 && cColFleet <= 100))) || Random(100) < 8) &&
                         (cColFleet < 50 || game.turn <= 120)) {
@@ -606,7 +606,7 @@ L_03c3:
                         if (FShouldPlanetBuildColonizer(lppl) != 0) {
                             cColFleet++;
                             AddItemToQueue(iLatestColony, 1, grobjFleet, addItemEnd);
-                            fWrite = 1;
+                            fWrite = TRUE;
                             if (game.turn < 5)
                                 goto FinishProd;
                             l = (uint32_t)(lppl->rgwtMin[3] * PctTrueMaxGrowth(idPlayer));
@@ -640,7 +640,7 @@ L_03c3:
                             if ((cMine < cFr && cFr > 150) || (cFlMiners < 30 && Random(10) != 0)) {
                                 cFlMiners++;
                                 AddItemToQueue(iLatestMiner, 1, grobjFleet, addItemEnd);
-                                fWrite = 1;
+                                fWrite = TRUE;
                             }
                         }
                     }
@@ -662,7 +662,7 @@ L_03c3:
                         if ((cFr < 10 || (cFr < 17 && Random(10) == 0)) && Random(cFr * 2 + 1) == 0) {
                             cFlMineLayers += 3;
                             AddItemToQueue(0, 4, grobjFleet, addItemEnd);
-                            fWrite = 1;
+                            fWrite = TRUE;
                         }
                     }
                     for (i = 0; i <= 2 && lppl->rgwtMin[i] >= 5000; i++) {
@@ -687,7 +687,7 @@ L_03c3:
                         }
                         cFlArmadas += 2;
                         AddItemToQueue(iLatestBomber, fTonsOfMinerals == 0 ? 4 : 12, grobjFleet, addItemEnd);
-                        fWrite = 1;
+                        fWrite = TRUE;
                         goto FinishProd;
                     }
                 L_15e8:
@@ -709,7 +709,7 @@ L_03c3:
                                     cGenesis--;
                                     AddItemToQueue(iobjGenesis, 1, grobjPlanet, addItemEnd);
                                     AddItemToQueue(mdIdleTerraform, 75, grobjPlanet, addItemEnd);
-                                    fWrite = 1;
+                                    fWrite = TRUE;
                                 }
                             }
                         }
@@ -723,7 +723,7 @@ L_03c3:
                         }
                         cFlArmadas++;
                         AddItemToQueue(iLatest, fTonsOfMinerals == 0 ? 2 : 10, grobjFleet, addItemEnd);
-                        fWrite = 1;
+                        fWrite = TRUE;
                         if (fTonsOfMinerals != 0)
                             goto FinishProd;
                     }
@@ -746,7 +746,7 @@ L_03c3:
                                 break;
                         }
                         if (i > 0) {
-                            fWrite = 1;
+                            fWrite = TRUE;
                             AddItemToQueue(iLatestDestroyer, i, grobjFleet, addItemEnd);
                             cFlDestroyers++;
                         }
@@ -783,22 +783,22 @@ L_03c3:
                 if (lpfl->cord > 1) {
                     if (lpfl->lpplord->rgord[0].grTask == grTaskNone)
                         continue;
-                    ClearAiCurrentTask(lpfl, 1);
+                    ClearAiCurrentTask(lpfl, TRUE);
                     continue;
                 }
                 if ((cFlMineLayersBase > 55 || (cFlMineLayersBase > 40 && Random(3) != 0)) && FFindBuddyAndJoinUp(lpfl, 0, 0, 72, 108) != 0)
                     continue;
                 if (lpfl->rgcsh[0] >= 7 && Random(5) == 0) {
-                    idPlanDst = IdRandomPlanetNearby(lpfl->pt, 105, 1);
+                    idPlanDst = IdRandomPlanetNearby(lpfl->pt, 105, TRUE);
                     if (idPlanDst != -1 && idPlanDst != lpfl->idPlanet) {
-                        ClearAiCurrentTask(lpfl, 1);
+                        ClearAiCurrentTask(lpfl, TRUE);
                         ord.id = idPlanDst;
                         ord.grobj = grobjPlanet;
                         ord.pt = rgptPlan[idPlanDst];
                         ord.grTask = grTaskLayMines;
-                        ord.fValidTask = 1;
+                        ord.fValidTask = TRUE;
                         ord.iWarp = 4;
-                        FMoveAiFleet(lpfl, &ord, 0);
+                        FMoveAiFleet(lpfl, &ord, FALSE);
                         goto L_2154;
                     }
                 }
@@ -865,7 +865,7 @@ L_03c3:
                         sel.fl.cord = 1;
                         sel.fl.lpplord->iordMac = 1;
                         FLookupFleet(-1, &sel.fl);
-                        ClearAiCurrentTask(lpfl, 0);
+                        ClearAiCurrentTask(lpfl, FALSE);
                     }
                 }
             }
@@ -878,7 +878,7 @@ L_03c3:
                     sel.fl.cord = 1;
                     sel.fl.lpplord->iordMac = 1;
                     FLookupFleet(-1, &sel.fl);
-                    FMoveToNearestStarbase(lpfl, 0);
+                    FMoveToNearestStarbase(lpfl, FALSE);
                     continue;
                 }
                 if (lpfl->rgcsh[1] == 0 && (fUsingTempColonizer == 0 || lpfl->rgcsh[7] == 0))
@@ -890,7 +890,7 @@ L_03c3:
                             continue;
                         if (lpplDrop != 0 && lpplDrop->iPlayer == -1) {
                             if (lpfl->rgwtMin[3] == 0) {
-                                FMoveToNearestStarbase(lpfl, 1);
+                                FMoveToNearestStarbase(lpfl, TRUE);
                                 continue;
                             }
                             ChangeMainObjSel(grobjFleet, lpfl->id);
@@ -966,7 +966,7 @@ L_03c3:
                         continue;
                     }
                 }
-                if ((lpfl->cord > 1 && lpfl->idPlanet == -1 && lpfl->lpplord->rgord[1].grobj == grobjPlanet) || FMoveToNearestStarbase(lpfl, 0) != 0)
+                if ((lpfl->cord > 1 && lpfl->idPlanet == -1 && lpfl->lpplord->rgord[1].grobj == grobjPlanet) || FMoveToNearestStarbase(lpfl, FALSE) != 0)
                     continue;
             }
             for (i = 2; i <= 9; i++) {
@@ -1035,7 +1035,7 @@ void EnsureMacintiShdefs() {
     }
     if (game.turn < 20 && rgshdef[2].fFree == 0 && rgshdef[2].cExist == 0) {
         shdef = rgshdef[2];
-        shdef.fFree = 1;
+        shdef.fFree = TRUE;
         FChangeAiShdef(&shdef, 2);
     }
     for (ish = 2; ish <= 4; ish++) {
@@ -1049,7 +1049,7 @@ void EnsureMacintiShdefs() {
     }
     if (FLookupPartX(&part, 1, 15) == 1 && rgshdef[1].fFree == 0 && rgshdef[1].cExist == 0 && rgshdef[1].hul.rghs[0].iItem != 15) {
         shdef = rgshdef[1];
-        shdef.fFree = 1;
+        shdef.fFree = TRUE;
         FChangeAiShdef(&shdef, 1);
         FCreateAiShdef(1, ihuldefColonyShip, (uint8_t *)&vrgMacAip[vrgMacIshAip[20]]);
     }
@@ -1075,7 +1075,7 @@ void EnsureMacintiShdefs() {
     if (rgshdef[0].hul.ihuldef != ihuldefFrigate && rgplr[idPlayer].lvlAi > lvlAiStandard && rgshdef[0].cExist == 0 && rgplr[idPlayer].rgTech[5] >= 4 &&
         rgplr[idPlayer].rgTech[4] >= 5 && rgplr[idPlayer].rgTech[3] >= 6 && rgplr[idPlayer].rgTech[2] >= 6 && rgplr[idPlayer].rgTech[0] >= 6) {
         shdef = rgshdef[0];
-        shdef.fFree = 1;
+        shdef.fFree = TRUE;
         FChangeAiShdef(&shdef, 0);
         FCreateAiShdef(0, ihuldefFrigate, (uint8_t *)&vrgMacAip[vrgMacIshAip[10]]);
     }
@@ -1110,15 +1110,15 @@ int16_t FRetargetMiner(FLEET *lpfl) {
         }
     }
     if (lpplBest == 0 || (int16_t)(6 * cConcCur) / 5 >= cConcBest) {
-        return 0;
+        return FALSE;
     }
     ord.id = lpplBest->id;
     ord.grobj = grobjPlanet;
     ord.pt = rgptPlan[lpplBest->id];
     ord.grTask = grTaskNone;
-    ord.fValidTask = 1;
+    ord.fValidTask = TRUE;
     ord.iWarp = 6;
-    return FMoveAiFleet(lpfl, &ord, 0);
+    return FMoveAiFleet(lpfl, &ord, FALSE);
 }
 
 int16_t IdTargetMacFreighter(FLEET *lpfl) {
@@ -1271,12 +1271,12 @@ LMoveToLpplBest:
     ord.pt = rgptPlan[lpplBest->id];
     ord.id = lpplBest->id;
     ord.grTask = grTaskXfer;
-    ord.fValidTask = 1;
+    ord.fValidTask = TRUE;
     ord.iWarp = 4;
     for (i = 0; i <= 3; i++) {
         ord.txp.rgia[i].iAction = iActionUnloadAll;
     }
-    if (FMoveAiFleet(lpfl, &ord, 0) == 0) {
+    if (FMoveAiFleet(lpfl, &ord, FALSE) == 0) {
         return -1;
     }
     return lpplBest->id;
@@ -1306,7 +1306,7 @@ void TargetMacArmada(FLEET *lpfl) {
     }
     FPotentMacWarFleet(lpfl, &cshWar);
     cshBomb = lpfl->rgcsh[8] + lpfl->rgcsh[9];
-    lpfl->fMark = 1;
+    lpfl->fMark = TRUE;
     ChangeMainObjSel(grobjFleet, lpfl->id);
     if (lpfl->idPlanet == -1) {
         MoveToNearestPlanetOrEnemy(lpfl, 450);
@@ -1319,7 +1319,7 @@ void TargetMacArmada(FLEET *lpfl) {
                 return;
             }
         } else if (cshWar < vrgAiArmadaPotency[1] || cshBomb < vrgAiArmadaPotency[3]) {
-            ClearAiCurrentTask(lpfl, 0);
+            ClearAiCurrentTask(lpfl, FALSE);
             if (rgplr[idPlayer].lvlAi <= lvlAiStandard || ((cshWar <= vrgAiArmadaPotency[0] * 2 || Random(10) >= 5) &&
                                                            (cshWar <= vrgAiArmadaPotency[0] * 4 || Random(10) >= 7) && (cshWar <= 120 || Random(10) >= 7))) {
                 lpplTarget = LpplFindClosestEnum(lppl, FEnumOurStarbase);
@@ -1352,9 +1352,9 @@ void TargetMacArmada(FLEET *lpfl) {
             ord.pt = lpflTarget->pt;
         }
         ord.grTask = grTaskNone;
-        ord.fValidTask = 1;
+        ord.fValidTask = TRUE;
         ord.iWarp = 4;
-        if (FMoveAiFleet(lpfl, &ord, 0) == 0) {
+        if (FMoveAiFleet(lpfl, &ord, FALSE) == 0) {
         }
     }
     return;
@@ -1378,11 +1378,11 @@ int16_t FPotentMacWarFleet(FLEET *lpfl, int16_t *pcEquiv) {
             }
         }
         if (cEquiv <= vrgAiArmadaPotency[0]) {
-            return 0;
+            return FALSE;
         }
     }
     if (pcEquiv != 0) {
         *pcEquiv = cEquiv;
     }
-    return 1;
+    return TRUE;
 }

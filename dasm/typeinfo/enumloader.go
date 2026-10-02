@@ -253,6 +253,9 @@ type useRuleJSON struct {
 	Struct string `json:"struct"`
 	Field  string `json:"field"`
 
+	Prefix  string   `json:"prefix"`
+	Exclude []string `json:"exclude"`
+
 	Enum string              `json:"enum"`
 	When []argConstraintJSON `json:"when"`
 }
@@ -304,6 +307,8 @@ func parseUseRuleJSON(u useRuleJSON) *EnumUseRule {
 		StructName: u.Struct,
 		FieldName:  u.Field,
 		EnumName:   u.Enum,
+		Prefix:     u.Prefix,
+		Exclude:    u.Exclude,
 	}
 	switch strings.ToLower(u.Kind) {
 	case "param":

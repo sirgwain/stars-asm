@@ -20,7 +20,7 @@ L_6180:
         goto L_61be;
 
 L_61be:
-    return 1;
+    return TRUE;
 
 L_61c4:
     ishdef++;
@@ -32,5 +32,5 @@ L_61c8:
         goto L_61d1;
 
 L_61d1:
-    return 0;
+    return FALSE;
 }

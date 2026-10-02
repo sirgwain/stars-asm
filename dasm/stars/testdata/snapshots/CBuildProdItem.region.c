@@ -25,7 +25,7 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     cAlchemy = 0;
     pctInitial = lpprod->pct;
     prod = *lpprod;
-    GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 1);
+    GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, TRUE);
     cBuilt = 0;
     fAutoBuild = prod.grobj == grobjPlanet && prod.iItem < mdIdleFactory;
     if (fAutoBuild != 0) {
@@ -34,17 +34,17 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
         case iobjMine:
             iobjOther = mdIdleMine;
             t_scratch_m56 = lppl->cMines;
-            cMax = CMaxOperableMines(lppl, lppl->iPlayer, 1) - t_scratch_m56;
+            cMax = CMaxOperableMines(lppl, lppl->iPlayer, TRUE) - t_scratch_m56;
             break;
         case iobjFactory:
             iobjOther = mdIdleFactory;
             t_scratch_m56_2 = lppl->cFactories;
-            cMax = CMaxOperableFactories(lppl, lppl->iPlayer, 1) - t_scratch_m56_2;
+            cMax = CMaxOperableFactories(lppl, lppl->iPlayer, TRUE) - t_scratch_m56_2;
             break;
         case iobjDefense:
             iobjOther = mdIdleDefense;
             t_scratch_m56_3 = lppl->cDefenses;
-            cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - t_scratch_m56_3;
+            cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, TRUE) - t_scratch_m56_3;
             break;
         case iobjAlchemy:
             iobjOther = mdIdleAlchemy;
@@ -53,7 +53,7 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
         case iobjMaxTerraform:
             iobjOther = mdIdleTerraform;
             cMax = IpctCanTerraformLppl(lppl);
-            if (cMax <= 0 || prod.iItem != iobjMinTerraform || ChgPopFromPlanet(lppl, 0) < 0 || PctPlanetDesirability(lppl, lppl->iPlayer) <= 0)
+            if (cMax <= 0 || prod.iItem != iobjMinTerraform || ChgPopFromPlanet(lppl, FALSE) < 0 || PctPlanetDesirability(lppl, lppl->iPlayer) <= 0)
                 break;
             cMax = 0;
             break;
@@ -77,8 +77,8 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
         for (i = 0; i < 4 && rgCost[i] - rgCostPaid[i] <= rgRes[i]; i++) {
         }
         if (i < 4) {
-            fMineralBlocked = 0;
-            fResourceBlocked = 0;
+            fMineralBlocked = FALSE;
+            fResourceBlocked = FALSE;
             pct = 100;
             for (i = 0; i < 4; i++) {
                 if (rgCost[i] > 0) {
@@ -93,9 +93,9 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
                         lMinNeeded = rgCost[i] - rgCostPaid[i] - rgRes[i];
                         pct = pctT;
                         if (i == 3) {
-                            fResourceBlocked = 1;
+                            fResourceBlocked = TRUE;
                         } else {
-                            fMineralBlocked = 1;
+                            fMineralBlocked = TRUE;
                         }
                     }
                 }

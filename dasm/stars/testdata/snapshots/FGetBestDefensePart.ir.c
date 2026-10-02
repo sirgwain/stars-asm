@@ -4,7 +4,7 @@ int16_t FGetBestDefensePart(PART *ppart) {
     PART    part;
 
 L_21f6:
-    fRet = 1;
+    fRet = TRUE;
     part.hs.grhst = hstPlanetary;
     part.hs.iItem = iplanetarySDI;
     i = 0;
@@ -37,7 +37,7 @@ L_227c:
     goto L_2288;
 
 L_2283:
-    fRet = 0;
+    fRet = FALSE;
 
 L_2288:
     part.hs.iItem = i + 9;

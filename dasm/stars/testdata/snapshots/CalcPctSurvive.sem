@@ -36,7 +36,7 @@ L_0345:
 
 L_0369:
     cDefenses = lppl->cDefenses
-    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0)
+    cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, FALSE)
     branch sext16to32(cMax) < cDefenses ? L_03b5 : L_03bf
 
 

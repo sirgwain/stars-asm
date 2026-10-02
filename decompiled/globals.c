@@ -318,7 +318,7 @@ RPT          vrptBattle = {
              .irpt = rptBattles,
              .cFields = 15,
              .cFieldFirst = 1,
-             .fAscending = 1,
+             .fAscending = TRUE,
              .ptDlg = {.x = -1, .y = -1},
              .ptSize = {.x = 600, .y = 400},
 };
@@ -327,7 +327,7 @@ RPT vrptEFleet = {
     .irpt = rptEnemyFleets,
     .cFields = 12,
     .cFieldFirst = 1,
-    .fAscending = 1,
+    .fAscending = TRUE,
     .ptDlg = {.x = -1, .y = -1},
     .ptSize = {.x = 600, .y = 400},
 };
@@ -336,7 +336,7 @@ RPT vrptFleet = {
     .irpt = rptFleets,
     .cFields = 12,
     .cFieldFirst = 1,
-    .fAscending = 1,
+    .fAscending = TRUE,
     .ptDlg = {.x = -1, .y = -1},
     .ptSize = {.x = 600, .y = 400},
 };
@@ -344,7 +344,7 @@ RPT vrptPlanet = {
     .grbitVisible = 65535,
     .cFields = 15,
     .cFieldFirst = 1,
-    .fAscending = 1,
+    .fAscending = TRUE,
     .ptDlg = {.x = -1, .y = -1},
     .ptSize = {.x = 600, .y = 400},
 };
@@ -365,8 +365,8 @@ TILE           rgtilePlanet[6] = {{
                                       .dyFull = 85,
                                       .grbit = tileBitmap,
                                       .pfn = DrawPlanShipBitmap,
-                                      .fPopped = 1,
-                                      .fMinTitle = 1,
+                                      .fPopped = TRUE,
+                                      .fMinTitle = TRUE,
                                       .idh = idhPlanetTile,
                         },
                                   {
@@ -375,7 +375,7 @@ TILE           rgtilePlanet[6] = {{
                                       .grbit = tileMineralsOrCargo,
                                       .pfn = DrawPlanetMinSum,
                                       .id = 1,
-                                      .fPopped = 1,
+                                      .fPopped = TRUE,
                                       .idh = idhMineralsOnHandTile,
                         },
                                   {
@@ -384,7 +384,7 @@ TILE           rgtilePlanet[6] = {{
                                       .grbit = tilePlanetStats,
                                       .pfn = DrawPlanetStats,
                                       .id = 4,
-                                      .fPopped = 1,
+                                      .fPopped = TRUE,
                                       .idh = idhStatusTile,
                         },
                                   {
@@ -394,8 +394,8 @@ TILE           rgtilePlanet[6] = {{
                                       .pfn = DrawPlanetShipList,
                                       .iCol = 1,
                                       .id = 5,
-                                      .fPopped = 1,
-                                      .fNullPtr = 1,
+                                      .fPopped = TRUE,
+                                      .fNullPtr = TRUE,
                                       .idh = idhFleetsInOrbitTile,
                         },
                                   {
@@ -405,7 +405,7 @@ TILE           rgtilePlanet[6] = {{
                                       .pfn = DrawPlanetProduction,
                                       .iCol = 1,
                                       .id = 6,
-                                      .fPopped = 1,
+                                      .fPopped = TRUE,
                                       .idh = idhProductionTile,
                         },
                                   {
@@ -415,9 +415,9 @@ TILE           rgtilePlanet[6] = {{
                                       .pfn = DrawPlanetStarbase,
                                       .iCol = 1,
                                       .id = 7,
-                                      .fPopped = 1,
-                                      .fNullPtr = 1,
-                                      .fMinTitle = 1,
+                                      .fPopped = TRUE,
+                                      .fNullPtr = TRUE,
+                                      .fMinTitle = TRUE,
                                       .idh = idhStarbaseTile,
                         }};
 TILE           rgtileShip[7] = {{
@@ -425,8 +425,8 @@ TILE           rgtileShip[7] = {{
                                     .dyFull = 85,
                                     .grbit = tileBitmap,
                                     .pfn = DrawPlanShipBitmap,
-                                    .fPopped = 1,
-                                    .fMinTitle = 1,
+                                    .fPopped = TRUE,
+                                    .fMinTitle = TRUE,
                                     .idh = idhFleetTile,
                       },
                                 {
@@ -435,8 +435,8 @@ TILE           rgtileShip[7] = {{
                                     .grbit = tileProductionOrOrbit,
                                     .pfn = DrawShipPlanet,
                                     .id = 5,
-                                    .fPopped = 1,
-                                    .fMinTitle = 1,
+                                    .fPopped = TRUE,
+                                    .fMinTitle = TRUE,
                                     .idh = idhLocationTile,
                       },
                                 {
@@ -445,7 +445,7 @@ TILE           rgtileShip[7] = {{
                                     .grbit = tileFleetOrders,
                                     .pfn = DrawShipOrders,
                                     .id = 3,
-                                    .fPopped = 1,
+                                    .fPopped = TRUE,
                                     .idh = idhFleetWaypointsTile,
                       },
                                 {
@@ -454,7 +454,7 @@ TILE           rgtileShip[7] = {{
                                     .grbit = tileStarbaseOrWaypoint,
                                     .pfn = DrawShipWayPtOrders,
                                     .id = 4,
-                                    .fPopped = 1,
+                                    .fPopped = TRUE,
                                     .idh = idhWaypointTaskTile,
                       },
                                 {
@@ -464,7 +464,7 @@ TILE           rgtileShip[7] = {{
                                     .pfn = DrawShipCargo,
                                     .iCol = 1,
                                     .id = 1,
-                                    .fPopped = 1,
+                                    .fPopped = TRUE,
                                     .idh = idhFuelAndCargoTile,
                       },
                                 {
@@ -474,7 +474,7 @@ TILE           rgtileShip[7] = {{
                                     .pfn = DrawFleetComp,
                                     .iCol = 1,
                                     .id = 9,
-                                    .fPopped = 1,
+                                    .fPopped = TRUE,
                                     .idh = idhFleetCompositionTile,
                       },
                                 {
@@ -484,7 +484,7 @@ TILE           rgtileShip[7] = {{
                                     .pfn = DrawPlanetShipList,
                                     .iCol = 1,
                                     .id = 8,
-                                    .fPopped = 1,
+                                    .fPopped = TRUE,
                                     .idh = idhOtherFleetsHereTile,
                       }};
 TIMER          vtimer = {0};
@@ -625,29 +625,29 @@ int16_t        dyShipLB = 0;
 int16_t        dySysFont = 0;
 int16_t        dyTitleBar = 0;
 int16_t        dyWinFrame = 0;
-int16_t        fAi = 0;
-int16_t        fAnimate = 0;
-int16_t        fBrowserValid = 0;
-int16_t        fDirtyPlan = 0;
-int16_t        fDlgUp = 0;
-int16_t        fFileErrSilent = 0;
-int16_t        fFreeingTitle = 0;
-int16_t        fHullCopy = 0;
-int16_t        fInEditUpdate = 0;
-int16_t        fInScoreDialog = 0;
-int16_t        fInScrollSet = 0;
-int16_t        fLogOff = 0;
-int16_t        fLogOut = 1;
-int16_t        fMarkedPlanets = 0;
-int16_t        fOrdersVis = 0;
-int16_t        fProcessingTimer = 0;
-int16_t        fRCWReadOnly = 0;
-int16_t        fStarbaseDamaged = 0;
-int16_t        fStarbaseDied = 0;
-int16_t        fStarbaseMode = 0;
-int16_t        fValidLx = 0;
-int16_t        fValidLxf = 0;
-int16_t        fViewFilteredMsg = 0;
+int16_t        fAi = FALSE;
+int16_t        fAnimate = FALSE;
+int16_t        fBrowserValid = FALSE;
+int16_t        fDirtyPlan = FALSE;
+int16_t        fDlgUp = FALSE;
+int16_t        fFileErrSilent = FALSE;
+int16_t        fFreeingTitle = FALSE;
+int16_t        fHullCopy = FALSE;
+int16_t        fInEditUpdate = FALSE;
+int16_t        fInScoreDialog = FALSE;
+int16_t        fInScrollSet = FALSE;
+int16_t        fLogOff = FALSE;
+int16_t        fLogOut = TRUE;
+int16_t        fMarkedPlanets = FALSE;
+int16_t        fOrdersVis = FALSE;
+int16_t        fProcessingTimer = FALSE;
+int16_t        fRCWReadOnly = FALSE;
+int16_t        fStarbaseDamaged = FALSE;
+int16_t        fStarbaseDied = FALSE;
+int16_t        fStarbaseMode = FALSE;
+int16_t        fValidLx = FALSE;
+int16_t        fValidLxf = FALSE;
+int16_t        fViewFilteredMsg = FALSE;
 int16_t        hf = -1;
 int16_t        iAbout1st = 0;
 int16_t        iAboutPartial = 0;

@@ -66,7 +66,7 @@ L_0097:
     call ReleaseDC(hwnd, hdc) -> callresult(int16_t)
     call SortReportCache(vprptCur->irpt, vprptCur->icolSort) -> callresult(void)
     call SetWindowPos(hwnd, NULL, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE|SWP_NOZORDER|SWP_NOREDRAW) -> callresult(int16_t)
-    call StickyDlgPos(hwnd, &vprptCur->ptDlg, 1) -> callresult(void)
+    call StickyDlgPos(hwnd, &vprptCur->ptDlg, TRUE) -> callresult(void)
     vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", NULL, SBS_VERT|WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL)
     vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", NULL, WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL)
     branch gd.fTutorial == 0 ? L_019b : L_0196
@@ -86,7 +86,7 @@ L_019b:
 L_01f3:
     swp = SWP_NOZORDER|SWP_HIDEWINDOW
     vprptCur->irowFirst = 0
-    call SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0) -> callresult(int16_t)
+    call SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, FALSE) -> callresult(int16_t)
     goto L_02b5
 
 L_021c:
@@ -104,8 +104,8 @@ L_026a:
     vprptCur->irowFirst = 0
 
 L_0273:
-    call SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0) -> callresult(int16_t)
-    call SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, (vprptCur->cRows - vprptCur->cRowsVis), 1) -> callresult(void)
+    call SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, FALSE) -> callresult(int16_t)
+    call SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, (vprptCur->cRows - vprptCur->cRowsVis), TRUE) -> callresult(void)
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL)
@@ -271,7 +271,7 @@ L_05d7:
     rc.top = (dyArial8 + 6)
     rc.bottom = (((dyArial8 + 4) * vprptCur->cRowsVis) + rc.top)
     call ScrollWindow(hwnd, 0, ((dyArial8 + 4) * (iCur - iNew)), &rc, &rc) -> callresult(void)
-    call SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1) -> callresult(int16_t)
+    call SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE) -> callresult(int16_t)
     call UpdateWindow(hwnd) -> callresult(void)
 
 L_0673:
@@ -332,7 +332,7 @@ L_072c:
     branch iNew == iCur ? L_080f : L_0737
 
 L_0737:
-    call SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1) -> callresult(int16_t)
+    call SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE) -> callresult(int16_t)
     iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL)
     branch iNew == iCur ? L_080f : L_0788
 
@@ -357,7 +357,7 @@ L_07d4:
 
 L_07e9:
     vprptCur->cFieldFirst = i
-    call InvalidateRect(hwnd, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwnd, NULL, TRUE) -> callresult(void)
     call UpdateWindow(hwnd) -> callresult(void)
 
 L_080f:
@@ -367,16 +367,16 @@ L_0818:
     hdc = BeginPaint(hwnd, &ps)
     call DrawReport(hwnd, hdc, &ps.rcPaint) -> callresult(void)
     call EndPaint(hwnd, &ps) -> callresult(void)
-    gd.fRptSafeDraw = 0
+    gd.fRptSafeDraw = FALSE
     return 1
 
 L_0860:
-    call StickyDlgPos(hwnd, &vprptCur->ptDlg, 0) -> callresult(void)
+    call StickyDlgPos(hwnd, &vprptCur->ptDlg, FALSE) -> callresult(void)
     call GetWindowRect(hwnd, &rc) -> callresult(void)
     vprptCur->ptSize.x = (rc.right - rc.left)
     vprptCur->ptSize.y = (rc.bottom - rc.top)
     hwndReportDlg = 0
-    fBrowserValid = 0
+    fBrowserValid = FALSE
     hmenu = GetASubMenu(hwndFrame, menuReport)
     goto L_08f1
 

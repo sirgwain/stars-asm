@@ -193,3 +193,77 @@ func TestGetSourceForAddrPrefersMostSpecificRange(t *testing.T) {
 		t.Fatalf("fallback Source = %q, want module", got.Source)
 	}
 }
+
+func TestApplyEnumPrefixRuleFollowsHungarianNames(t *testing.T) {
+	int16Type := &Primitive{TypeKind: KInt, Name: "int16_t", Size: 2, Signed: true}
+	uint16Type := &Primitive{TypeKind: KInt, Name: "uint16_t", Size: 2}
+	boolEnum := &Enum{
+		Name:    "Bool",
+		Truth:   true,
+		Values:  []EnumValue{{Name: "FALSE", Value: 0}, {Name: "TRUE", Value: 1}},
+		Storage: uint16Type,
+		Decl:    int16Type,
+	}
+	fn := &Function{
+		Name: "FCheckFleet",
+		Ret:  int16Type,
+		Vars: []FunctionVar{
+			{Name: "fDirty", Type: uint16Type},
+			{Name: "f", Type: int16Type},
+			{Name: "fleet", Type: int16Type},
+			{Name: "fkb", Type: int16Type},
+			{Name: "fRet", Type: int16Type},
+			{Name: "pfMulti", Type: &Pointer{Elem: int16Type}},
+		},
+	}
+	order := &Struct{
+		Name:  "_order",
+		SKind: StructKindStruct,
+		Fields: []StructField{
+			{Name: "fValid", Type: uint16Type, Offset: 0, Size: 2, Bitfield: &Bitfield{BaseType: uint16Type, StorageSize: 2, BitWidth: 1}},
+			{Name: "fScore", Type: uint16Type, Offset: 0, Size: 2, Bitfield: &Bitfield{BaseType: uint16Type, StorageSize: 2, BitOffset: 1, BitWidth: 2}},
+		},
+	}
+	order.FinalizeLayout()
+	loader := symboldbLoader{sdb: &SymbolDB{
+		Functions:   []*Function{fn},
+		Structs:     []*Struct{order},
+		enumsByName: map[string]*Enum{"bool": boolEnum},
+	}}
+
+	rules := []*EnumUseRule{
+		{Kind: UseLocal, Prefix: "f", EnumName: "Bool", Exclude: []string{"FCheckFleet.fRet"}},
+		{Kind: UseCallResult, Prefix: "F", EnumName: "Bool"},
+		{Kind: UseField, Prefix: "f", EnumName: "Bool"},
+	}
+	for _, rule := range rules {
+		if err := loader.applyEnumPrefixRule(rule); err != nil {
+			t.Fatalf("applyEnumPrefixRule(%s) error = %v", rule.Prefix, err)
+		}
+	}
+
+	for _, v := range fn.Vars {
+		_, annotated := v.Type.(*Enum)
+		want := v.Name == "fDirty" || v.Name == "f"
+		if annotated != want {
+			t.Errorf("local %s annotated = %v, want %v", v.Name, annotated, want)
+		}
+	}
+	if got, want := fn.Vars[0].Type.String(), "int16_t"; got != want {
+		t.Errorf("fDirty declared as %s, want the family decl %s", got, want)
+	}
+	if _, ok := fn.Ret.(*Enum); !ok {
+		t.Errorf("FCheckFleet return = %s, want Bool", fn.Ret)
+	}
+	if _, ok := order.Fields[0].Type.(*Enum); !ok {
+		t.Errorf("one-bit fValid = %s, want Bool", order.Fields[0].Type)
+	}
+	if _, ok := order.Fields[1].Type.(*Enum); ok {
+		t.Errorf("two-bit fScore annotated as Bool")
+	}
+
+	stale := &EnumUseRule{Kind: UseLocal, Prefix: "f", EnumName: "Bool", Exclude: []string{"FCheckFleet.fGone"}}
+	if err := loader.applyEnumPrefixRule(stale); err == nil {
+		t.Error("stale exclusion FCheckFleet.fGone was accepted")
+	}
+}

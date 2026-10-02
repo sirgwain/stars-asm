@@ -19,7 +19,7 @@ L_24fa:
     branch cFleet > 0 ? L_2513 : L_250d
 
 L_250d:
-    return 0
+    return FALSE
 
 L_2513:
     branch cFleet == 0 ? L_2606 : L_251d
@@ -66,7 +66,7 @@ L_25c5:
     pxf->id = lpfl->id
 
 L_25fd:
-    return 1
+    return TRUE
 
 L_2606:
     lpth = lpThings
@@ -94,7 +94,7 @@ L_2682:
     pxf->id = lpth->idFull
 
 L_26ba:
-    return 1
+    return TRUE
 
 L_26c0:
     lpth = &lpth[1]
@@ -103,5 +103,5 @@ L_26c4:
     branch lpth < lpthMac ? L_2631 : L_26d2
 
 L_26d2:
-    return 0
+    return FALSE
 

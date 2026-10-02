@@ -25,7 +25,7 @@ L_4ab8:
     branch (int16_t)ihul > ihuldefDreadnought ? L_4ac7 : L_4ac1
 
 L_4ac1:
-    return 1
+    return TRUE
 
 L_4ac7:
     branch ihul != ihuldefFrigate ? L_4b11 : L_4ad0
@@ -36,12 +36,12 @@ L_4ad0:
 
 
 L_4b05:
-    return 1
+    return TRUE
 
 L_4b0b:
 
 L_4b0e:
-    return 0
+    return FALSE
 
 L_4b11:
     branch ihul == ihuldefMetaMorph ? L_4b23 : L_4b1a
@@ -58,7 +58,7 @@ L_4b46:
 
 
 L_4b7b:
-    return 1
+    return TRUE
 
 L_4b81:
     i = (i + 1)
@@ -67,5 +67,5 @@ L_4b85:
     branch i < 16 ? L_4a83 : L_4b8e
 
 L_4b8e:
-    return 0
+    return FALSE
 

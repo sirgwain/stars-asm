@@ -36,7 +36,7 @@ Top:
     pchEnd = pchStart + cLen;
     ChopTrailingSpaces(pch, &pchEnd);
     dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch));
-    fItFit = 1;
+    fItFit = TRUE;
 
 L_2694:
     if (dx <= dxRemain)
@@ -57,7 +57,7 @@ L_26aa:
         goto L_26b3;
 
 L_26b3:
-    fItFit = 0;
+    fItFit = FALSE;
     ChopLastWord(pch, &pchEnd);
     dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch));
     goto L_2694;

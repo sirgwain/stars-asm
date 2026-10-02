@@ -125,7 +125,7 @@ L_3d86:
         goto L_3d90;
 
 L_3d90:
-    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, 1);
+    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, TRUE);
     if (c == -1)
         goto L_47d5;
     else
@@ -141,9 +141,9 @@ L_3dd1:
     GlobalPD.grPopup = grPopupShdef;
     GlobalPD.lpshdef = rglpshdef[lpfl->iPlayer] + rgid[c];
     GlobalPD.fHideCounts = idPlayer != lpfl->iPlayer;
-    GlobalPD.fShowDamage = 0;
-    GlobalPD.fToken = 0;
-    GlobalPD.fSummary = 1;
+    GlobalPD.fShowDamage = FALSE;
+    GlobalPD.fToken = FALSE;
+    GlobalPD.fSummary = TRUE;
     goto L_3e84;
 
 L_3e38:
@@ -161,9 +161,9 @@ L_3e99:
     lppl = LpplFromId(sel.scan.idpl);
     GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
     GlobalPD.fHideCounts = idPlayer != lppl->iPlayer;
-    GlobalPD.fShowDamage = 1;
-    GlobalPD.fToken = 0;
-    GlobalPD.fSummary = 1;
+    GlobalPD.fShowDamage = TRUE;
+    GlobalPD.fToken = FALSE;
+    GlobalPD.fSummary = TRUE;
     Popup(hwndMine, x, y);
     goto L_47d5;
 
@@ -197,7 +197,7 @@ L_3f8b:
         goto L_3f99;
 
 L_3f99:
-    if (FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) == 0)
+    if (FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, TRUE) == 0)
         goto NoTerra;
     else
         goto L_3fc0;
@@ -294,7 +294,7 @@ L_4129:
     scan.ith = i;
     scan.grobj = grobjThing;
     idNew = lpThings[i].idFull;
-    fOurs = 0;
+    fOurs = FALSE;
     goto ChangeIt;
 
 L_4154:
@@ -390,7 +390,7 @@ CheckPlanet:
         goto L_42cd;
 
 L_42cd:
-    fOurs = 0;
+    fOurs = FALSE;
     goto ChangeIt;
 
 L_42d5:
@@ -518,7 +518,7 @@ L_44d6:
         goto L_44df;
 
 L_44df:
-    i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, 1);
+    i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, TRUE);
     if (i == -1)
         goto L_47d5;
     else
@@ -532,14 +532,14 @@ L_4511:
 
 L_4525:
     cMinGrafMax = rgi[i];
-    InvalidateRect(hwndMine, NULL, 1);
+    InvalidateRect(hwndMine, NULL, TRUE);
     if ((grbitScan & grbitScanViewMask) != 1)
         goto L_47d5;
     else
         goto L_4557;
 
 L_4557:
-    InvalidateRect(hwndScanner, NULL, 1);
+    InvalidateRect(hwndScanner, NULL, TRUE);
 
 L_456c:
     goto L_47d5;
@@ -578,7 +578,7 @@ L_45cb:
 L_4608:
     lVal = 0;
     GlobalPD.rgi[2] = pl.rgwtMin[ht - 1];
-    EstMineralsMined(&pl, rglQuan, -1, 0);
+    EstMineralsMined(&pl, rglQuan, -1, FALSE);
     GlobalPD.rgi[4] = rglQuan[ht - 1];
     if (pl.iPlayer != -1)
         goto L_478e;
@@ -637,7 +637,7 @@ L_4705:
         goto L_4730;
 
 L_4730:
-    EstMineralsMined(&pl, rglT, cMines, 0);
+    EstMineralsMined(&pl, rglT, cMines, FALSE);
     lVal += rglT[ht - 1];
 
 L_4767:

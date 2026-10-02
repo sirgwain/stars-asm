@@ -499,6 +499,12 @@ static inline HFILE AccessResource(HINSTANCE instance, HRSRC resource) {
 
 // Win16 constants. windows.h provides most of them; the rest, such as
 // Win16-only messages and application WM_USER messages, are defined here.
+#ifndef FALSE
+#define FALSE 0x0000
+#endif
+#ifndef TRUE
+#define TRUE 0x0001
+#endif
 #ifndef BN_CLICKED
 #define BN_CLICKED 0x0000
 #endif

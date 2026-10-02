@@ -41,7 +41,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
         break;
     case grPopupPlayer:
         SelectObject(hdc, rghfontArial8[1]);
-        psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL);
+        psz = PszPlayerName(GlobalPD.iPlayer, TRUE, TRUE, TRUE, 0, NULL);
         dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
         dx2 = LOWORD(GetTextExtent(hdc, "Player #16", 10)) + 8;
         if (dx2 > dx) {
@@ -92,26 +92,26 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
         dx += dxName <= dxCoord ? dxCoord : dxName;
         break;
     case grPopupPlanetEnv:
-        ptT = PtDisplayPlanetStateInfo(hdc, 0);
+        ptT = PtDisplayPlanetStateInfo(hdc, FALSE);
         goto SetDxDy;
     case grPopupShipOrders:
-        ptT = PtDisplayZipOrdInfo(hdc, 0, 0);
+        ptT = PtDisplayZipOrdInfo(hdc, 0, FALSE);
         goto SetDxDy;
     case grPopupPlanet:
-        ptT = PtDisplayPlanetPopInfo(hdc, 0);
+        ptT = PtDisplayPlanetPopInfo(hdc, FALSE);
         goto SetDxDy;
     case grPopupResources:
-        ptT = PtDisplayResourceInfo(hdc, 200, 0);
+        ptT = PtDisplayResourceInfo(hdc, 200, FALSE);
         goto SetDxDy;
     case grPopupPlanetIndustry:
-        ptT = PtDisplayFactoryMineInfo(hdc, 200, 0);
+        ptT = PtDisplayFactoryMineInfo(hdc, 200, FALSE);
         goto SetDxDy;
     case grPopupComponent:
         dx = (dyArial8 <= 14 ? 0 : 40) + 344;
         dy = dyArial10 + 72 + 12 * dyArial8 + 6;
         break;
     case grPopupString:
-        ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0);
+        ptT = PtDisplayString(hdc, GlobalPD.dxOut, FALSE);
         goto SetDxDy;
     case grPopupShdef:
     case grPopupShdefSB:

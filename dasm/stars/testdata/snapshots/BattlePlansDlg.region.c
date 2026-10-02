@@ -21,7 +21,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         return 0;
     }
     if (message == WM_INITDIALOG) {
-        StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 1);
+        StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, TRUE);
         iPlanSelDlg = 0;
         if (sel.grobj == grobjFleet) {
             iPlanSelDlg = sel.fl.iplan;
@@ -47,7 +47,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             }
             for (i = 0; i < game.cPlayer; i++) {
                 if (i != idPlayer) {
-                    SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, 0, 1, 0, 0, NULL));
+                    SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszPlayerName(i, FALSE, TRUE, FALSE, 0, NULL));
                 }
             }
             i = btlplan.iplrAttack;
@@ -58,14 +58,14 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         } else {
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEveryone));
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, 0, 0);
-            EnableWindow(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), 0);
+            EnableWindow(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), FALSE);
         }
         for (i = 400; i <= 407; i++) {
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(i));
         }
         SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SECONDARY_TARGET), CB_SETCURSEL, btlplan.mdTarget2, 0);
         SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO), BM_SETCHECK, btlplan.fDumpCargo, 0);
-        fDirtyPlan = 0;
+        fDirtyPlan = FALSE;
         if (gd.fTutorial != 0) {
             AdvanceTutor();
         }
@@ -79,7 +79,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
                 LogChangeBtlplan(&btlplan);
             }
-            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, FALSE);
             EndDialog(hwnd, iPlanSelDlg);
             if (sel.grobj == grobjFleet) {
                 FillBattleDD(sel.fl.iplan + 1);
@@ -88,18 +88,18 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             return 1;
         case IDC_BATTLE_PLAN_DUMP_CARGO:
             btlplan.fDumpCargo = LOWORD(SendDlgItemMessage(hwnd, IDC_BATTLE_PLAN_DUMP_CARGO, BM_GETCHECK, 0, 0));
-            fDirtyPlan = 1;
+            fDirtyPlan = TRUE;
             break;
         case IDC_DELETE:
             if (fDirtyPlan != 0) {
                 rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
                 LogChangeBtlplan(&btlplan);
-                fDirtyPlan = 0;
+                fDirtyPlan = FALSE;
             }
-            btlplan.fDelete = 1;
+            btlplan.fDelete = TRUE;
             rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
             btlplan.iplan = iPlanSelDlg;
-            if (FDeleteBattlePlan(iPlanSelDlg, 1) != 0) {
+            if (FDeleteBattlePlan(iPlanSelDlg, TRUE) != 0) {
                 LogChangeBtlplan(&btlplan);
                 SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg - 1, 0);
                 SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_RESETCONTENT, 0, 0);
@@ -109,18 +109,18 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_SELECT), CB_SETCURSEL, iPlanSelDlg - 1, 0);
                 goto LSelectName;
             }
-            btlplan.fDelete = 0;
+            btlplan.fDelete = FALSE;
             rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
             break;
         case IDC_BATTLE_PLAN_PRIMARY_TARGET:
             i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
             btlplan.mdTarget1 = i;
-            fDirtyPlan = 1;
+            fDirtyPlan = TRUE;
             break;
         case IDC_BATTLE_PLAN_SECONDARY_TARGET:
             i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
             btlplan.mdTarget2 = i;
-            fDirtyPlan = 1;
+            fDirtyPlan = TRUE;
             break;
         case IDC_BATTLE_PLAN_ATTACK_WHO:
             i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
@@ -130,16 +130,16 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 i++;
             }
             btlplan.iplrAttack = i;
-            fDirtyPlan = 1;
+            fDirtyPlan = TRUE;
             break;
         case IDC_BATTLE_PLAN_TACTIC:
             i = LOWORD(SendMessage(GetDlgItem(hwnd, GET_WM_COMMAND_ID(wParam, lParam)), 1031, 0, 0));
             btlplan.mdTactic = i;
-            fDirtyPlan = 1;
+            fDirtyPlan = TRUE;
             break;
         case IDC_RENAME:
         LRename:
-            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyBattlePlansDlg, FALSE);
             lpProc = MakeProcInstance(NewPlanNameDlg, hInst);
             fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc);
             FreeProcInstance(lpProc);
@@ -162,7 +162,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             if (fDirtyPlan != 0) {
                 rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
                 LogChangeBtlplan(&btlplan);
-                fDirtyPlan = 0;
+                fDirtyPlan = FALSE;
             }
             iPlanSelDlg = rgcbtlplan[idPlayer]++;
             cLen = strlen(btlplan.szName);
@@ -191,9 +191,9 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 i--;
             }
             SendMessage(GetDlgItem(hwnd, IDC_BATTLE_PLAN_ATTACK_WHO), CB_SETCURSEL, i, 0);
-            fDirtyPlan = 1;
+            fDirtyPlan = TRUE;
             wParam = IDC_BATTLE_PLAN_PRIMARY_TARGET;
-            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), 1);
+            EnableWindow(GetDlgItem(hwnd, IDC_RENAME), TRUE);
             goto LRename;
         case IDC_BATTLE_PLAN_SELECT:
         LSelectName:
@@ -203,7 +203,7 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             if (fDirtyPlan != 0) {
                 rglpbtlplan[idPlayer][iPlanSelDlg] = btlplan;
                 LogChangeBtlplan(&btlplan);
-                fDirtyPlan = 0;
+                fDirtyPlan = FALSE;
             }
             iPlanSelDlg = i;
             btlplan = rglpbtlplan[idPlayer][iPlanSelDlg];

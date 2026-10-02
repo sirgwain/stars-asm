@@ -32,7 +32,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         ReleaseDC(hwnd, hdc);
         SortReportCache(vprptCur->irpt, vprptCur->icolSort);
         SetWindowPos(hwnd, NULL, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
-        StickyDlgPos(hwnd, &vprptCur->ptDlg, 1);
+        StickyDlgPos(hwnd, &vprptCur->ptDlg, TRUE);
         vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", NULL, SBS_VERT | WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
         vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", NULL, WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
         if (gd.fTutorial != 0) {
@@ -45,7 +45,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         if (vprptCur->cRowsVis >= vprptCur->cRows) {
             swp = SWP_NOZORDER | SWP_HIDEWINDOW;
             vprptCur->irowFirst = 0;
-            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, FALSE);
         } else {
             swp = SWP_NOZORDER | SWP_SHOWWINDOW;
             if (vprptCur->irowFirst + vprptCur->cRowsVis > vprptCur->cRows && vprptCur->irowFirst > 0) {
@@ -54,8 +54,8 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     vprptCur->irowFirst = 0;
                 }
             }
-            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0);
-            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
+            SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, FALSE);
+            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, TRUE);
         }
         dx = GetSystemMetrics(SM_CXVSCROLL);
         SetWindowPos(vprptCur->hwndVScroll, NULL, rc.right - dx, dyArial8 + 6, dx, (dyArial8 + 4) * vprptCur->cRowsVis + 1, swp);
@@ -155,7 +155,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             rc.top = dyArial8 + 6;
             rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
             ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
-            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+            SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE);
             UpdateWindow(hwnd);
         }
         return 0;
@@ -194,7 +194,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             iNew = 0;
         }
         if (iNew != iCur) {
-            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+            SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE);
             iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
             if (iNew != iCur) {
                 i = 1;
@@ -202,7 +202,7 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     i++;
                 }
                 vprptCur->cFieldFirst = i;
-                InvalidateRect(hwnd, NULL, 1);
+                InvalidateRect(hwnd, NULL, TRUE);
                 UpdateWindow(hwnd);
             }
         }
@@ -211,15 +211,15 @@ LRESULT CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         hdc = BeginPaint(hwnd, &ps);
         DrawReport(hwnd, hdc, &ps.rcPaint);
         EndPaint(hwnd, &ps);
-        gd.fRptSafeDraw = 0;
+        gd.fRptSafeDraw = FALSE;
         return 1;
     case WM_DESTROY:
-        StickyDlgPos(hwnd, &vprptCur->ptDlg, 0);
+        StickyDlgPos(hwnd, &vprptCur->ptDlg, FALSE);
         GetWindowRect(hwnd, &rc);
         vprptCur->ptSize.x = rc.right - rc.left;
         vprptCur->ptSize.y = rc.bottom - rc.top;
         hwndReportDlg = 0;
-        fBrowserValid = 0;
+        fBrowserValid = FALSE;
         hmenu = GetASubMenu(hwndFrame, menuReport);
         switch (vprptCur->irpt) {
         case rptFleets:
@@ -288,15 +288,15 @@ void SetHScrollBar() {
     if (ccolHidden == 0) {
         swp = SWP_NOZORDER | SWP_HIDEWINDOW;
         vprptCur->cFieldFirst = 1;
-        SetScrollPos(vprptCur->hwndHScroll, SB_CTL, 0, 0);
+        SetScrollPos(vprptCur->hwndHScroll, SB_CTL, 0, FALSE);
     } else {
         swp = SWP_NOZORDER | SWP_SHOWWINDOW;
         if (ccolSkipped > ccolHidden) {
             ccolSkipped = 0;
             vprptCur->cFieldFirst = 1;
         }
-        SetScrollPos(vprptCur->hwndHScroll, SB_CTL, ccolSkipped, 0);
-        SetScrollRange(vprptCur->hwndHScroll, SB_CTL, 0, ccolHidden, 1);
+        SetScrollPos(vprptCur->hwndHScroll, SB_CTL, ccolSkipped, FALSE);
+        SetScrollRange(vprptCur->hwndHScroll, SB_CTL, 0, ccolHidden, TRUE);
         vprptCur->cColScroll = ccolHidden;
     }
     dy = GetSystemMetrics(SM_CYHSCROLL);
@@ -395,8 +395,8 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
     switch (message) {
     case WM_INITDIALOG:
         InitScoreDlg(hwnd, gd.fScoreVictory);
-        fInScoreDialog = 1;
-        StickyDlgPos(hwnd, &ptStickyScoreXDlg, 1);
+        fInScoreDialog = TRUE;
+        StickyDlgPos(hwnd, &ptStickyScoreXDlg, TRUE);
         hwndScoreXDlg = hwnd;
         if (gd.fTutorial != 0) {
             AdvanceTutor();
@@ -443,20 +443,20 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             rgid[c] = (uint32_t)(gd.iCurGraph == i);
             rgszScan[c++] = &szWork[i * 40];
         }
-        iSel = PopupMenu(hwnd, LOWORD(lParam), HIWORD(lParam), c, rgid, rgszScan, -2, 0);
+        iSel = PopupMenu(hwnd, LOWORD(lParam), HIWORD(lParam), c, rgid, rgszScan, -2, FALSE);
         if (iSel == -1) {
             return 0;
         }
         gd.iCurGraph = iSel;
-        gd.fChgReports = 1;
-        InvalidateRect(hwnd, NULL, 1);
+        gd.fChgReports = TRUE;
+        InvalidateRect(hwnd, NULL, TRUE);
         return 0;
     case WM_COMMAND:
         switch (GET_WM_COMMAND_ID(wParam, lParam)) {
         case IDCANCEL:
-            StickyDlgPos(hwnd, &ptStickyScoreXDlg, 0);
+            StickyDlgPos(hwnd, &ptStickyScoreXDlg, FALSE);
             EndDialog(hwnd, i);
-            fInScoreDialog = 0;
+            fInScoreDialog = FALSE;
             hwndScoreXDlg = 0;
             if (gd.fTutorial != 0) {
                 AdvanceTutor();
@@ -467,7 +467,7 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             return 1;
         case IDC_SCORE_SWITCH:
             gd.fScoreVictory = (uint32_t)(gd.fScoreVictory + 1) % 3;
-            InvalidateRect(hwnd, NULL, 1);
+            InvalidateRect(hwnd, NULL, TRUE);
             InitScoreDlg(hwnd, gd.fScoreVictory);
             if (gd.fTutorial != 0) {
                 AdvanceTutor();
@@ -553,7 +553,7 @@ void DrawVCReport(HDC hdc) {
     SelectObject(hdc, rghfontArial8[4]);
     xLeft = vdxScoreX;
     for (i = 0; i < game.cPlayer; i++) {
-        psz = PszPlayerName(i, 1, 1, 1, 0, NULL);
+        psz = PszPlayerName(i, TRUE, TRUE, TRUE, 0, NULL);
         cch = strlen(psz);
         l = GetTextExtent(hdc, psz, cch);
         dxDig = LOWORD((int32_t)((long double)(uint32_t)LOWORD(l) / 1.4142));
@@ -641,7 +641,7 @@ void DrawVCReport(HDC hdc) {
                     ids++;
                     break;
                 }
-                vcVal = GetVCVal(&game, cCur, 0);
+                vcVal = GetVCVal(&game, cCur, FALSE);
                 if (i == 0) {
                     idsT = idsPlanets3;
                     vcVal = LOWORD((int32_t)(vcVal * game.cPlanMax) / 100);
@@ -700,7 +700,7 @@ void DrawScoreReport(HDC hdc) {
     SelectObject(hdc, rghfontArial8[4]);
     xLeft = (int16_t)(5 * dxDig - (int16_t)(3 * dyArial8) / 2) / 2 + vdxScoreX;
     for (i = 0; i < game.cPlayer; i++) {
-        psz = PszPlayerName(i, 1, 1, 1, 0, NULL);
+        psz = PszPlayerName(i, TRUE, TRUE, TRUE, 0, NULL);
         cch = strlen(psz);
         l = GetTextExtent(hdc, psz, cch);
         dx45 = LOWORD((int32_t)((long double)(uint32_t)LOWORD(l) / 1.4142));
@@ -923,7 +923,7 @@ void DrawHistoryReport(HDC hdc) {
         yCur = rcChart.top + 6;
         for (i = 0; i < game.cPlayer; i++) {
             if (rgsxPlr[i] != 0) {
-                psz = PszPlayerName(i, 1, 1, 0, 0, NULL);
+                psz = PszPlayerName(i, TRUE, TRUE, FALSE, 0, NULL);
                 SetTextColor(hdc, i == idPlayer ? 0xffffff : rgcrPlrHistory[i]);
                 TextOut(hdc, xCur, yCur, psz, strlen(psz));
                 yCur += dyArial8;
@@ -1209,7 +1209,7 @@ void DrawReportItem(HDC hdc, RECT *prc, ReportType irpt, int16_t irow, int16_t i
             break;
         case colPlanetDefense:
             i = lppl->cDefenses;
-            j = CMaxOperableDefenses(lppl, idPlayer, 0);
+            j = CMaxOperableDefenses(lppl, idPlayer, FALSE);
             if (i > 0) {
                 CalcPctSurvive(lppl, &pct, NULL);
                 pct = (float)((long double)1.0 - pct);
@@ -1224,11 +1224,11 @@ void DrawReportItem(HDC hdc, RECT *prc, ReportType irpt, int16_t irow, int16_t i
             goto DrawPlusDef;
         case colPlanetFactories:
             i = lppl->cFactories;
-            j = CMaxOperableFactories(lppl, idPlayer, 0);
+            j = CMaxOperableFactories(lppl, idPlayer, FALSE);
             goto DrawMineFact;
         case colPlanetMines:
             i = lppl->cMines;
-            j = CMaxOperableMines(lppl, idPlayer, 0);
+            j = CMaxOperableMines(lppl, idPlayer, FALSE);
             goto DrawMineFact;
         case colPlanetValue:
             cch = CchGetString(idsN100, szT);
@@ -1253,7 +1253,7 @@ void DrawReportItem(HDC hdc, RECT *prc, ReportType irpt, int16_t irow, int16_t i
             xCur = dx * 4 + prc->left;
             if (icol == colPlanetMiningRate) {
                 xCur -= dx;
-                EstMineralsMined(lppl, rgl, -1, 0);
+                EstMineralsMined(lppl, rgl, -1, FALSE);
             }
             for (i = 0; i < 3; i++) {
                 if (icol == colPlanetMinerals) {
@@ -1282,7 +1282,7 @@ void DrawReportItem(HDC hdc, RECT *prc, ReportType irpt, int16_t irow, int16_t i
             sel.pl = *lppl;
             FillPlanetProdLB(NULL, NULL, lppl);
             sel.pl = pl;
-            DrawProductionItem(hdc, prc, szWork, 0, 0, 2);
+            DrawProductionItem(hdc, prc, szWork, 0, FALSE, 2);
             break;
         case colPlanetResources:
             cch = CchGetString(idsN1000, szT);
@@ -1361,7 +1361,7 @@ void DrawReportItem(HDC hdc, RECT *prc, ReportType irpt, int16_t irow, int16_t i
             }
             break;
         case colFleetFuel:
-            fEnough = lpfl->cord <= 1 || lpfl->rgwtMin[4] >= EstFuelUse(lpfl, 0, lpfl->lpplord->rgord[1].iWarp, -1, 0);
+            fEnough = lpfl->cord <= 1 || lpfl->rgwtMin[4] >= EstFuelUse(lpfl, 0, lpfl->lpplord->rgord[1].iWarp, -1, FALSE);
             DrawMineralItem(hdc, dx * 4 + prc->left, prc->top, -fEnough, lpfl->rgwtMin[4]);
             break;
         case colFleetComposition:
@@ -1651,22 +1651,22 @@ int16_t FDestIsWP0(FLEET *lpfl) {
             case grTaskXfer:
                 for (i = 0; i < 5; i++) {
                     if (ord.txp.rgia[i].iAction == iActionWaitPercent) {
-                        return 1;
+                        return TRUE;
                     }
                 }
-                return 0;
+                return FALSE;
             case grTaskColonize:
                 if (ord.grobj != grobjPlanet)
                     break;
             case grTaskMerge:
             case grTaskScrap:
             case grTaskLayMines:
-                return 1;
+                return TRUE;
             }
         }
-        return 0;
+        return FALSE;
     }
-    return 1;
+    return TRUE;
 }
 
 char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears) {
@@ -1700,8 +1700,8 @@ char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears) {
         }
     L_5290:
         ord = lpfl->lpplord->rgord[1];
-        CchGetETA(hdc, lpfl, szWork, 1, 1);
-        if (hdc != 0 && EstFuelUse(lpfl, 0, ord.iWarp, -1, 0) > lpfl->rgwtMin[4]) {
+        CchGetETA(hdc, lpfl, szWork, 1, TRUE);
+        if (hdc != 0 && EstFuelUse(lpfl, 0, ord.iWarp, -1, FALSE) > lpfl->rgwtMin[4]) {
             SetTextColor(hdc, 0xff);
         }
         if (pcYears != 0) {
@@ -1806,7 +1806,7 @@ LShowTask:
             }
             opOrd = ord.txp.rgia[icr].iAction;
             *picr = icr;
-            fPercent = 0;
+            fPercent = FALSE;
             switch (opOrd) {
             case iActionLoadDunnage:
                 if (icr == 4) {
@@ -1817,7 +1817,7 @@ LShowTask:
                 return PszGetCompressedString(ids);
             case iActionFillPercent:
             case iActionWaitPercent:
-                fPercent = 1;
+                fPercent = TRUE;
             case iActionUnloadExact:
             case iActionSetAmount:
             case iActionSetWaypoint:
@@ -1872,7 +1872,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
         viSubsortPrev = vprptCur->iSubsort;
         vfAscendingPrev = vprptCur->fAscending;
         vprptCur->icolSort = icol;
-        gd.fChgReports = 1;
+        gd.fChgReports = TRUE;
     }
     if (hwndReportDlg != 0 || vprptCur->fCached == 0) {
         switch (irpt) {
@@ -1889,7 +1889,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
             break;
         case rptEnemyFleets:
             vlprgidRep = vlprgidMisc;
-            vrptBattle.fCached = 0;
+            vrptBattle.fCached = FALSE;
             for (iItem = 0; (int16_t)iItem < cFleet; iItem++) {
                 lpfl = rglpfl[iItem];
                 if (rglpfl[iItem] == 0)
@@ -1914,7 +1914,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
             break;
         case rptBattles:
             vlprgidRep = vlprgidMisc;
-            vrptEFleet.fCached = 0;
+            vrptEFleet.fCached = FALSE;
             cRows = CBattles();
             for (i = 0; i < cRows; i++) {
                 rgidRep[i] = i;
@@ -1926,7 +1926,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
         vprptCur->cRows = cRows;
         qsort(rgidRep, cRows, sizeof(uint16_t), (QSORTCOMPARE)ICompReport);
         fmemcpy(vlprgidRep, rgidRep, cRows * 2);
-        vprptCur->fCached = 1;
+        vprptCur->fCached = TRUE;
     }
     return;
 }
@@ -1968,7 +1968,7 @@ int ICompReport(uint16_t *pid1, uint16_t *pid2) {
     irpt = vprptCur->irpt;
     icolSort = vprptCur->icolSort;
     fAscending = vprptCur->fAscending;
-    fTier2 = 0;
+    fTier2 = FALSE;
     while (1) {
         switch (irpt) {
         case rptPlanets:
@@ -2102,12 +2102,12 @@ int ICompReport(uint16_t *pid1, uint16_t *pid2) {
                     iLast = iSubsort;
                     iFirst = iSubsort;
                 }
-                EstMineralsMined(lppl1, rgl, -1, 0);
+                EstMineralsMined(lppl1, rgl, -1, FALSE);
                 l1 = 0;
                 for (i = iFirst; i <= iLast; i++) {
                     l1 += rgl[i];
                 }
-                EstMineralsMined(lppl2, rgl, -1, 0);
+                EstMineralsMined(lppl2, rgl, -1, FALSE);
                 l2 = 0;
                 for (i = iFirst; i <= iLast; i++) {
                     l2 += rgl[i];
@@ -2488,7 +2488,7 @@ int ICompReport(uint16_t *pid1, uint16_t *pid2) {
         icolSort = vicolSortPrev;
         iSubsort = viSubsortPrev;
         fAscending = vfAscendingPrev;
-        fTier2 = 1;
+        fTier2 = TRUE;
     }
     return iRet;
 }
@@ -2597,7 +2597,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
     }
     iRet = PopupMenu(hwndReportDlg, pt.x, pt.y, cItems, NULL, psz, -1, fRightBtn);
     if (iRet >= 0) {
-        gd.fChgReports = 1;
+        gd.fChgReports = TRUE;
         if (iRet < iSortLast) {
             vicolSortPrev = vprptCur->icolSort;
             viSubsortPrev = vprptCur->iSubsort;
@@ -2623,7 +2623,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
         if (fccolChange != 0) {
             SetHScrollBar();
         }
-        InvalidateRect(hwndReportDlg, NULL, 1);
+        InvalidateRect(hwndReportDlg, NULL, TRUE);
     }
     return;
 }
@@ -2635,8 +2635,8 @@ void InvalidateReport(ReportType irpt, int16_t fReload) {
     uint16_t *lprgidSav;
     RECT      rc;
 
-    fClearRpt = 0;
-    fResetRpt = 0;
+    fClearRpt = FALSE;
+    fResetRpt = FALSE;
     if (gd.fGeneratingTurn == 0 && fAi == 0) {
         if (hwndReportDlg != 0 && irpt == vprptCur->irpt) {
             GetClientRect(hwndReportDlg, &rc);
@@ -2645,7 +2645,7 @@ void InvalidateReport(ReportType irpt, int16_t fReload) {
                 rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
             }
             InvalidateRect(hwndReportDlg, &rc, fReload == 2);
-            gd.fRptSafeDraw = 1;
+            gd.fRptSafeDraw = TRUE;
         } else if (vprptCur == 0) {
             fClearRpt = fReload;
             if (irpt == rptPlanets) {
@@ -2656,14 +2656,14 @@ void InvalidateReport(ReportType irpt, int16_t fReload) {
         } else if (fReload != 0 && vprptCur->irpt != irpt) {
             lprgidSav = vlprgidRep;
             prptSav = vprptCur;
-            fResetRpt = 1;
+            fResetRpt = TRUE;
             if (irpt == rptPlanets) {
                 vprptCur = &vrptPlanet;
             } else {
                 vprptCur = &vrptFleet;
             }
         }
-        vprptCur->fCached = 0;
+        vprptCur->fCached = FALSE;
         if (fReload != 0) {
             SortReportCache(vprptCur->irpt, vprptCur->icolSort);
         }
@@ -2673,8 +2673,8 @@ void InvalidateReport(ReportType irpt, int16_t fReload) {
             vprptCur = prptSav;
             vlprgidRep = lprgidSav;
         } else if (fReload != 0 && hwndReportDlg != 0 && irpt == vprptCur->irpt) {
-            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 0);
-            InvalidateRect(hwndReportDlg, NULL, 1);
+            SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, FALSE);
+            InvalidateRect(hwndReportDlg, NULL, TRUE);
         }
     }
     return;
@@ -2759,7 +2759,7 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
             GlobalPD.rgi[0] = i;
             GlobalPD.rgi[2] = sel.pl.rgwtMin[i];
             GlobalPD.rgi[3] = (uint32_t)sel.pl.rgMinConc[i];
-            EstMineralsMined(&sel.pl, rglQuan, -1, 0);
+            EstMineralsMined(&sel.pl, rglQuan, -1, FALSE);
             GlobalPD.rgi[4] = rglQuan[i];
             GlobalPD.rgi[1] = sel.pl.fHomeworld;
             Popup(hwndReportDlg, pt.x, pt.y);
@@ -2767,7 +2767,7 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
         case colPlanetProduction:
             if (hwndProdDlg != 0)
                 break;
-            ChangeProduction(0);
+            ChangeProduction(FALSE);
             break;
         case colPlanetMines:
         case colPlanetFactories:
@@ -2777,11 +2777,11 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
             if (GlobalPD.fFactory != 0) {
                 GlobalPD.cMax = CMaxFactories(&sel.pl, idPlayer);
                 GlobalPD.cCur = sel.pl.cFactories;
-                GlobalPD.cOperate = CMaxOperableFactories(&sel.pl, idPlayer, 0);
+                GlobalPD.cOperate = CMaxOperableFactories(&sel.pl, idPlayer, FALSE);
             } else {
                 GlobalPD.cMax = CMaxMines(&sel.pl, idPlayer);
                 GlobalPD.cCur = sel.pl.cMines;
-                GlobalPD.cOperate = CMaxOperableMines(&sel.pl, idPlayer, 0);
+                GlobalPD.cOperate = CMaxOperableMines(&sel.pl, idPlayer, FALSE);
             }
             Popup(hwndReportDlg, pt.x, pt.y);
         }
@@ -2789,10 +2789,10 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
     LShowStarbase:
         GlobalPD.grPopup = grPopupShdef;
         GlobalPD.lpshdef = rglpshdefSB[idPlayer] + sel.pl.isb;
-        GlobalPD.fHideCounts = 0;
-        GlobalPD.fShowDamage = 1;
-        GlobalPD.fToken = 0;
-        GlobalPD.fSummary = 0;
+        GlobalPD.fHideCounts = FALSE;
+        GlobalPD.fShowDamage = TRUE;
+        GlobalPD.fToken = FALSE;
+        GlobalPD.fSummary = FALSE;
         Popup(hwndReportDlg, pt.x, pt.y);
         break;
     case rptFleets:
@@ -2824,7 +2824,7 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
             break;
         case colFleetComposition:
             GlobalPD.grPopup = grPopupFleet;
-            GlobalPD.fRedDamage = 1;
+            GlobalPD.fRedDamage = TRUE;
             GlobalPD.grbit = 0xff;
             GlobalPD.lpfl = lpfl;
             Popup(hwndReportDlg, pt.x, pt.y);
@@ -2838,7 +2838,7 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
             scan.pt = lpbd->pt;
             scan.grobj = grobjPlanet | grobjFleet | grobjOther | grobjThing | mdExact;
             ChangeScanSel(&scan, 0);
-            CtrPointScan(scan.pt, 1);
+            CtrPointScan(scan.pt, TRUE);
             InvalidateReport(rptPlanets, 0);
             if (lpbd->pt.x == sel.scan.pt.x && lpbd->pt.y == sel.scan.pt.y)
                 break;
@@ -2869,7 +2869,7 @@ void ExecuteReportClick(POINT16 pt, ReportType irpt, int16_t icol, int16_t irow)
                 FFindNearestObject(lpfl->pt, grobjFleet, &scan);
                 scan.ifl = vlprgidMisc[irow];
                 ChangeScanSel(&scan, 2);
-                FEnsurePointOnScreen(lpfl->pt, 1);
+                FEnsurePointOnScreen(lpfl->pt, TRUE);
                 irowEFleetCur = irow;
                 InvalidateReport(rptEnemyFleets, 0);
             }
@@ -2890,10 +2890,10 @@ void DumpUniverse() {
     int16_t  cch;
 
     fSilentSav = fFileErrSilent;
-    fSuccess = 1;
-    fOpen = 0;
+    fSuccess = TRUE;
+    fOpen = FALSE;
     if (game.lid == 0 || idPlayer == -1) {
-        fSuccess = 0;
+        fSuccess = FALSE;
     } else {
         penvMemSav = penvMem;
         penvMem = &env;
@@ -2902,13 +2902,13 @@ void DumpUniverse() {
                 StreamClose();
             }
             fFileErrSilent = fSilentSav;
-            fSuccess = 0;
+            fSuccess = FALSE;
             penvMem = penvMemSav;
         } else {
-            fFileErrSilent = 1;
+            fFileErrSilent = TRUE;
             _wsprintf(szWork, "%s.map", szBase);
             StreamOpen(szWork, mdCreate);
-            fOpen = 1;
+            fOpen = TRUE;
             RgToStream("#\tX\tY\tName\r\n", 12);
             for (i = 0; i < game.cPlanMax; i++) {
                 cch = _wsprintf(szWork, "%d\t%d\t%d\t%s\r\n", i + 1, rgptPlan[i].x, rgptPlan[i].y, PszGetCompressedPlanet(rgidPlan[i]));
@@ -2950,10 +2950,10 @@ void DumpPlanets() {
     PART     part;
 
     fSilentSav = fFileErrSilent;
-    fSuccess = 1;
-    fOpen = 0;
+    fSuccess = TRUE;
+    fOpen = FALSE;
     if (game.lid == 0 || idPlayer == -1) {
-        fSuccess = 0;
+        fSuccess = FALSE;
     } else {
         penvMemSav = penvMem;
         penvMem = &env;
@@ -2962,17 +2962,17 @@ void DumpPlanets() {
                 StreamClose();
             }
             fFileErrSilent = fSilentSav;
-            fSuccess = 0;
+            fSuccess = FALSE;
             penvMem = penvMemSav;
         } else {
-            fFileErrSilent = 1;
+            fFileErrSilent = TRUE;
             if (gd.fPerPlayerDumps != 0) {
                 _wsprintf(szFile, "%s.p%d", szBase, idPlayer + 1);
             } else {
                 _wsprintf(szFile, "%s.pla", szBase);
             }
             StreamOpen(szFile, mdCreate);
-            fOpen = 1;
+            fOpen = TRUE;
             j = gd.fPerPlayerDumps + 2;
             for (i = 0; i < j; i++) {
                 cch = CchGetString(i + 1244, szForm);
@@ -2995,7 +2995,7 @@ void DumpPlanets() {
                 if (lppl->iPlayer == -1) {
                     RgToStream(szForm, 1);
                 } else {
-                    strcpy(&szForm[1], PszPlayerName(lppl->iPlayer, 1, 0, 0, 0, NULL));
+                    strcpy(&szForm[1], PszPlayerName(lppl->iPlayer, TRUE, FALSE, FALSE, 0, NULL));
                     RgToStream(szForm, strlen(szForm));
                 }
                 if (lppl->iPlayer == -1 || lppl->fStarbase == 0) {
@@ -3053,7 +3053,7 @@ void DumpPlanets() {
                 szForm[1] = 0;
                 for (i = 0; i < 3; i++) {
                     if (lppl->det >= detMore) {
-                        EstMineralsMined(lppl, rgl, -1, 0);
+                        EstMineralsMined(lppl, rgl, -1, FALSE);
                         strcpy(&szForm[1], PszFromLong(rgl[i], NULL));
                     }
                     RgToStream(szForm, strlen(szForm));
@@ -3175,11 +3175,11 @@ void DumpFleets() {
     int32_t  l;
 
     fSilentSav = fFileErrSilent;
-    fSuccess = 1;
-    fOpen = 0;
+    fSuccess = TRUE;
+    fOpen = FALSE;
     iplr = idPlayer;
     if (game.lid == 0 || idPlayer == -1) {
-        fSuccess = 0;
+        fSuccess = FALSE;
     } else {
         penvMemSav = penvMem;
         penvMem = &env;
@@ -3188,17 +3188,17 @@ void DumpFleets() {
                 StreamClose();
             }
             fFileErrSilent = fSilentSav;
-            fSuccess = 0;
+            fSuccess = FALSE;
             penvMem = penvMemSav;
         } else {
-            fFileErrSilent = 1;
+            fFileErrSilent = TRUE;
             if (gd.fPerPlayerDumps != 0) {
                 _wsprintf(szFile, "%s.f%d", szBase, idPlayer + 1);
             } else {
                 _wsprintf(szFile, "%s.fle", szBase);
             }
             StreamOpen(szFile, mdCreate);
-            fOpen = 1;
+            fOpen = TRUE;
             j = gd.fPerPlayerDumps + 2;
             for (i = 0; i < j; i++) {
                 cch = CchGetString(i + 1247, szForm);
@@ -3364,7 +3364,7 @@ INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                 szWork[1] = 0;
                 SetWindowText(hwndEdit, szWork);
             }
-            StickyDlgPos(hwnd, &ptStickyPrintMapDlg, 1);
+            StickyDlgPos(hwnd, &ptStickyPrintMapDlg, TRUE);
             return 1;
         }
         if (msg == WM_COMMAND) {
@@ -3383,7 +3383,7 @@ INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                         vrgcPrintMapPage[i] = szWork[0] - '0';
                     }
                 }
-                StickyDlgPos(hwnd, &ptStickyPrintMapDlg, 0);
+                StickyDlgPos(hwnd, &ptStickyPrintMapDlg, FALSE);
                 EndDialog(hwnd, GET_WM_COMMAND_ID(wParam, lParam) == IDOK);
                 return 1;
             case IDC_HELP:

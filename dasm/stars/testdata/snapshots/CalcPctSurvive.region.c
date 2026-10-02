@@ -13,7 +13,7 @@ void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart) {
         idPlayer = lppl->iPlayer;
         if (FGetBestDefensePart(&part) != 0) {
             cDefenses = lppl->cDefenses;
-            cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 0);
+            cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, FALSE);
             if (cMax < cDefenses) {
                 cDefenses = cMax;
             }

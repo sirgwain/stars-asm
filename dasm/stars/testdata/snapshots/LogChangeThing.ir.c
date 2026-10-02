@@ -4,7 +4,7 @@ void LogChangeThing(THING *lpth, THING *pthNew) {
     LOGXFER lxNew;
 
 L_9908:
-    fChg = 0;
+    fChg = FALSE;
     if (gd.fGeneratingTurn != 0)
         goto L_99f0;
     else
@@ -25,7 +25,7 @@ L_9952:
         goto L_99a1;
 
 L_999c:
-    fChg = 1;
+    fChg = TRUE;
 
 L_99a1:
     i++;
@@ -50,12 +50,12 @@ L_99b7:
 
 L_99c1:
     LogMakeValidXfer(&lx, &lxNew);
-    fValidLx = 0;
+    fValidLx = FALSE;
     goto L_99f0;
 
 L_99da:
     lx = lxNew;
-    fValidLx = 1;
+    fValidLx = TRUE;
 
 L_99f0:
     return;

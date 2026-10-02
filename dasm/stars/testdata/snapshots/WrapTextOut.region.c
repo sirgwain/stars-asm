@@ -22,9 +22,9 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
         pchEnd = pchStart + cLen;
         ChopTrailingSpaces(pch, &pchEnd);
         dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch));
-        fItFit = 1;
+        fItFit = TRUE;
         for (; dx > dxRemain && pch < pchEnd && dx > 0; dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch))) {
-            fItFit = 0;
+            fItFit = FALSE;
             ChopLastWord(pch, &pchEnd);
         }
         if (fItFit != 0) {

@@ -24,14 +24,14 @@ void SetVisPFPlanets(int16_t iPlr) {
     int32_t  lVis2;
 
     grbitPlr = iPlr == -1 ? 0 : 1 << iPlr;
-    fStargateView = 0;
+    fStargateView = FALSE;
     if (GetRaceStat(&rgplr[iPlr], rsMajorAdv) == raStargate) {
         for (i = 0; i < 10; i++) {
             rgStargateRange[i] = 0;
             if (rglpshdefSB[iPlr][i].fFree == 0) {
                 rgStargateRange[i] = StargateRangeFromLppl(NULL, iPlr, i);
                 if (rgStargateRange[i] > 0) {
-                    fStargateView = 1;
+                    fStargateView = TRUE;
                 }
             }
         }
@@ -104,16 +104,16 @@ void SetVisPFPlanets(int16_t iPlr) {
                                     if ((uint32_t)(dx * dx) + (uint32_t)(dy * dy) <= lRadius2) {
                                         switch (lpth->ith) {
                                         case ithMineralPacket:
-                                            lpth->thp.fInclude = 1;
+                                            lpth->thp.fInclude = TRUE;
                                             goto LThIncPlr2;
                                         case ithMysteryTrader:
-                                            lpth->tht.fInclude = 1;
+                                            lpth->tht.fInclude = TRUE;
                                             break;
                                         case ithWormhole:
                                             if ((lpth->thw.grbitPlr & grbitPlr) == 0 && l > (int32_t)(lRadius2 >> 4) && l > lRadPlanet2)
                                                 break;
                                             lpth->thw.grbitPlr |= grbitPlr;
-                                            lpth->thw.fInclude = 1;
+                                            lpth->thw.fInclude = TRUE;
                                             break;
                                         default:
                                             if ((lpth->thm.grbitPlr & grbitPlr) != 0 || l <= lRadPlanet2 || l <= (int32_t)(lRadius2 >> 4)) {

@@ -3,7 +3,7 @@ int16_t FGetBestDefensePart(PART *ppart) {
     int16_t i;
     PART    part;
 
-    fRet = 1;
+    fRet = TRUE;
     part.hs.grhst = hstPlanetary;
     part.hs.iItem = iplanetarySDI;
     i = 0;
@@ -14,7 +14,7 @@ int16_t FGetBestDefensePart(PART *ppart) {
     if (i > 0) {
         i--;
     } else {
-        fRet = 0;
+        fRet = FALSE;
     }
     part.hs.iItem = i + 9;
     FLookupPart(&part);

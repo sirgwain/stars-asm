@@ -51,7 +51,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         SetMsgTitle(hwnd);
         SendMessage(hwndMsgDrop, CB_ADDSTRING, 0, (LPARAM)PszGetCompressedString(idsEverybody));
         for (i = 0; i < game.cPlayer; i++) {
-            psz = PszPlayerName(i, 1, 1, 1, 0, NULL);
+            psz = PszPlayerName(i, TRUE, TRUE, TRUE, 0, NULL);
             SendMessage(hwndMsgDrop, CB_ADDSTRING, 0, (LPARAM)psz);
         }
         SendMessage(hwndMsgDrop, CB_SETCURSEL, 0, 0);
@@ -106,10 +106,11 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 }
                 if (CchGetString(idsSCC, szT) >= 32) {
                 }
-                cch = _wsprintf(lpb2k, szT, PszPlayerName(lpmsgplr->iPlrFrom, 1, 1, 1, 0, NULL), 13, 10);
+                cch = _wsprintf(lpb2k, szT, PszPlayerName(lpmsgplr->iPlrFrom, TRUE, TRUE, TRUE, 0, NULL), 13, 10);
                 if (CchGetString(idsSCC2, szT) >= 32) {
                 }
-                t_merge_66fb_0001 = lpmsgplr->iPlrTo == 0 ? PszGetCompressedString(idsEverybody) : PszPlayerName(lpmsgplr->iPlrTo - 1, 1, 1, 1, 0, NULL);
+                t_merge_66fb_0001 =
+                    lpmsgplr->iPlrTo == 0 ? PszGetCompressedString(idsEverybody) : PszPlayerName(lpmsgplr->iPlrTo - 1, TRUE, TRUE, TRUE, 0, NULL);
                 cch += _wsprintf(lpb2k + cch, szT, t_merge_66fb_0001, 13, 10);
                 if (lpmsgplr->cLen >= 0) {
                     i = 1000;
@@ -258,7 +259,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         iMsgCur = i;
     L_626c:
-        InvalidateRect(hwndMessage, NULL, 1);
+        InvalidateRect(hwndMessage, NULL, TRUE);
         SetMsgTitle(hwnd);
         break;
     CheckBox:
@@ -267,11 +268,11 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         idm = IdmGetMessageN(iMsgCur);
         fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) != 0;
         SetFilteringGroups(idm, fSet == 0);
-        DirtyGame(1);
+        DirtyGame(TRUE);
         if (gd.fTutorial != 0) {
             AdvanceTutor();
         }
-        InvalidateRect(hwndMessage, NULL, 1);
+        InvalidateRect(hwndMessage, NULL, TRUE);
         SetMsgTitle(hwnd);
         break;
     GotoMsg:
@@ -286,13 +287,13 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                     if (idm != 62 && idm != 63 && (idm < 175 || idm > 180))
                         break;
                     if (gd.fGotoVCR == 0) {
-                        gd.fGotoVCR = 1;
+                        gd.fGotoVCR = TRUE;
                         SetMsgTitle(hwnd);
                         break;
                     }
                     if (sel.grobj != grobjPlanet || sel.id != idMsgObj)
                         break;
-                    ChangeProduction(0);
+                    ChangeProduction(FALSE);
                     break;
                 case mdMsgObjFleet:
                     SelectAdjFleet(0, idMsgObj);
@@ -306,7 +307,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                     scan.pt = lpth->pt;
                     scan.grobj = grobjThing;
                     ChangeScanSel(&scan, 0);
-                    CtrPointScan(scan.pt, 1);
+                    CtrPointScan(scan.pt, TRUE);
                     break;
                 case mdMsgObjBattle:
                     SelectOursAtObject(&vptMsg);
@@ -314,7 +315,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                         BattleVCR(idMsgObj);
                         break;
                     }
-                    gd.fGotoVCR = 1;
+                    gd.fGotoVCR = TRUE;
                     SetMsgTitle(hwnd);
                     break;
                 case mdMsgObjResearch:
@@ -355,16 +356,16 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                     vpartBrowser.hs.iItem = idMsgObj & 0xff;
                     FLookupPart(&vpartBrowser);
                     if (hwndBrowser != 0) {
-                        InvalidateRect(hwndBrowserChild, NULL, 1);
+                        InvalidateRect(hwndBrowserChild, NULL, TRUE);
                     } else {
-                        fBrowserValid = 1;
+                        fBrowserValid = TRUE;
                         PostMessage(hwndFrame, WM_COMMAND, IDM_VIEW_BROWSER_TOGGLE2, 0);
                     }
                 }
             }
             if (gd.fTutorial == 0)
                 break;
-            tutor.fChange = 1;
+            tutor.fChange = TRUE;
             AdvanceTutor();
             break;
         }
@@ -392,7 +393,7 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             viInRe = 0;
         }
         gd.fSendMsgMode = gd.fSendMsgMode == 0;
-        InvalidateRect(hwndMessage, NULL, 1);
+        InvalidateRect(hwndMessage, NULL, TRUE);
         SetMsgTitle(hwnd);
         SetFocus(hwndMsgEdit);
         break;
@@ -403,9 +404,9 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
         if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
             iMsgCur = -1;
-            i = IMsgNext(0);
+            i = IMsgNext(FALSE);
         } else {
-            i = IMsgPrev(0);
+            i = IMsgPrev(FALSE);
         }
         if (i != -1) {
             iMsgCur = i;
@@ -421,20 +422,20 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         } else {
             if ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0) {
                 iMsgCur = cMsg + vcmsgplrIn;
-                i = IMsgPrev(0);
+                i = IMsgPrev(FALSE);
             } else {
-                i = IMsgNext(0);
+                i = IMsgNext(FALSE);
             }
             if (i == -1)
                 break;
             iMsgCur = i;
         }
     SetupNewMsg:
-        gd.fGotoVCR = 0;
+        gd.fGotoVCR = FALSE;
         SetMsgTitle(hwnd);
-        InvalidateRect(hwnd, &rcMsgText, 1);
+        InvalidateRect(hwnd, &rcMsgText, TRUE);
         if (gd.fTutorial != 0) {
-            tutor.fChange = 1;
+            tutor.fChange = TRUE;
             AdvanceTutor();
         }
     }

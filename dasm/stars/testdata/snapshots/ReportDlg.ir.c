@@ -44,7 +44,7 @@ L_0097:
     ReleaseDC(hwnd, hdc);
     SortReportCache(vprptCur->irpt, vprptCur->icolSort);
     SetWindowPos(hwnd, NULL, 0, 0, vprptCur->ptSize.x, vprptCur->ptSize.y, SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW);
-    StickyDlgPos(hwnd, &vprptCur->ptDlg, 1);
+    StickyDlgPos(hwnd, &vprptCur->ptDlg, TRUE);
     vprptCur->hwndVScroll = CreateWindow("SCROLLBAR", NULL, SBS_VERT | WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
     vprptCur->hwndHScroll = CreateWindow("SCROLLBAR", NULL, WS_CHILD, 0, 0, 50, 50, hwnd, NULL, hInst, NULL);
     if (gd.fTutorial == 0)
@@ -67,7 +67,7 @@ L_019b:
 L_01f3:
     swp = SWP_NOZORDER | SWP_HIDEWINDOW;
     vprptCur->irowFirst = 0;
-    SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, 0);
+    SetScrollPos(vprptCur->hwndVScroll, SB_CTL, 0, FALSE);
     goto L_02b5;
 
 L_021c:
@@ -94,8 +94,8 @@ L_026a:
     vprptCur->irowFirst = 0;
 
 L_0273:
-    SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, 0);
-    SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, 1);
+    SetScrollPos(vprptCur->hwndVScroll, SB_CTL, vprptCur->irowFirst, FALSE);
+    SetScrollRange(vprptCur->hwndVScroll, SB_CTL, 0, vprptCur->cRows - vprptCur->cRowsVis, TRUE);
 
 L_02b5:
     dx = GetSystemMetrics(SM_CXVSCROLL);
@@ -325,7 +325,7 @@ L_05d7:
     rc.top = dyArial8 + 6;
     rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
     ScrollWindow(hwnd, 0, (dyArial8 + 4) * (iCur - iNew), &rc, &rc);
-    SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+    SetScrollPos(GET_WM_VSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE);
     UpdateWindow(hwnd);
 
 L_0673:
@@ -415,7 +415,7 @@ L_072c:
         goto L_0737;
 
 L_0737:
-    SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, 1);
+    SetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL, iNew, TRUE);
     iNew = GetScrollPos(GET_WM_HSCROLL_HWND(wParam, lParam), SB_CTL);
     if (iNew == iCur)
         goto L_080f;
@@ -451,7 +451,7 @@ L_07d4:
 
 L_07e9:
     vprptCur->cFieldFirst = i;
-    InvalidateRect(hwnd, NULL, 1);
+    InvalidateRect(hwnd, NULL, TRUE);
     UpdateWindow(hwnd);
 
 L_080f:
@@ -461,16 +461,16 @@ L_0818:
     hdc = BeginPaint(hwnd, &ps);
     DrawReport(hwnd, hdc, &ps.rcPaint);
     EndPaint(hwnd, &ps);
-    gd.fRptSafeDraw = 0;
+    gd.fRptSafeDraw = FALSE;
     return 1;
 
 L_0860:
-    StickyDlgPos(hwnd, &vprptCur->ptDlg, 0);
+    StickyDlgPos(hwnd, &vprptCur->ptDlg, FALSE);
     GetWindowRect(hwnd, &rc);
     vprptCur->ptSize.x = rc.right - rc.left;
     vprptCur->ptSize.y = rc.bottom - rc.top;
     hwndReportDlg = 0;
-    fBrowserValid = 0;
+    fBrowserValid = FALSE;
     hmenu = GetASubMenu(hwndFrame, menuReport);
     goto L_08f1;
 

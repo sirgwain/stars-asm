@@ -57,15 +57,16 @@ func simplifyBoolean(expr Expr) (Expr, bool) {
 	return nil, false
 }
 
-// isBooleanConst reports whether expr is the plain integer constant value,
-// not a named enum member that only happens to equal it.
+// isBooleanConst reports whether expr is the integer constant value, plain or
+// a FALSE/TRUE truth member, not a named enum member that only happens to
+// equal it.
 func isBooleanConst(expr Expr, value uint64) bool {
 	c, ok := expr.(*Const)
 	if !ok || c.U64 != value {
 		return false
 	}
-	_, enum := c.TypeInfo.(*typeinfo.Enum)
-	return !enum
+	enumType, enum := c.TypeInfo.(*typeinfo.Enum)
+	return !enum || enumType.Truth
 }
 
 // invertCompare returns the comparison that holds when cmp does not. A

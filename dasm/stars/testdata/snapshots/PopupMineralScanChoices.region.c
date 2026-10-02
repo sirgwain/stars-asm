@@ -47,7 +47,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
         if (sel.scan.pt.x == lpth->pt.x && sel.scan.pt.y == lpth->pt.y) {
             if (fSep == 0) {
                 rgid[c++] = -1;
-                fSep = 1;
+                fSep = TRUE;
             }
             if (sel.scan.grobj == grobjThing && (int16_t)((uint8_t *)lpth - (uint8_t *)lpThings) / 18 == sel.scan.ith) {
                 iChecked = c;
@@ -55,7 +55,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;
         }
     }
-    i = PopupMenu(hwnd, x, y, c, rgid, NULL, iChecked, 1);
+    i = PopupMenu(hwnd, x, y, c, rgid, NULL, iChecked, TRUE);
     if (i >= 0) {
         scan = sel.scan;
         if ((rgid[i] & 0x80000000) != 0) {
@@ -77,7 +77,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             }
             scan.ith = (int16_t)((uint8_t *)lpth - (uint8_t *)lpThings) / 18;
             idNew = lpth->idFull;
-            fOurs = 0;
+            fOurs = FALSE;
         } else {
             scan.grobj = grobjPlanet;
             idNew = sel.scan.idpl;

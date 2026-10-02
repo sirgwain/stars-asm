@@ -20,10 +20,13 @@ type win16DefinesJSON struct {
 
 // win16FamilyJSON is one named family of Win16 constants. Kind "flags"
 // renders combined values as A|B, choosing members greedily in listed order.
+// Kind "truth" names FALSE/TRUE values but leaves comparisons numeric.
 // Include appends the members of families listed earlier, after Members.
+// Decl names the C type scalar uses of the family are declared as.
 type win16FamilyJSON struct {
 	Name    string   `json:"name"`
 	Kind    string   `json:"kind"`
+	Decl    string   `json:"decl"`
 	Members []string `json:"members"`
 	Include []string `json:"include"`
 }
@@ -59,11 +62,13 @@ func (l *enumLoader) loadWin16Defines(inputDir string) ([]*Enum, error) {
 	enums := make([]*Enum, 0, len(cfg.Families))
 	byName := make(map[string]*Enum, len(cfg.Families))
 	for _, family := range cfg.Families {
-		e := &Enum{Name: family.Name, EnumKind: EnumExact}
+		e := &Enum{Name: family.Name, EnumKind: EnumExact, declName: family.Decl}
 		switch family.Kind {
 		case "":
 		case "flags":
 			e.EnumKind = EnumFlags
+		case "truth":
+			e.Truth = true
 		default:
 			return nil, fmt.Errorf("win16 family %s: unknown kind %q", family.Name, family.Kind)
 		}

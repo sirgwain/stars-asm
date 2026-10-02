@@ -43,7 +43,7 @@ int16_t FReadFleet(FLEET *lpfl) {
         pb = (uint8_t *)pus;
     }
     if (cish == 0) {
-        lpfl->fDead = 1;
+        lpfl->fDead = TRUE;
     }
     if (lpfl->det >= detMore) {
         us = RawLoad16(pb);
@@ -75,7 +75,7 @@ int16_t FReadFleet(FLEET *lpfl) {
         lpfl->wtFleet = RawLoad32(pb);
         pb += 4;
         ReadRt();
-        return 1;
+        return TRUE;
     }
     if (hdrCur.rt == rtFleetA) {
         us = RawLoad16(pb);
@@ -104,7 +104,7 @@ int16_t FReadFleet(FLEET *lpfl) {
             if (hdrCur.rt != rtOrderA && hdrCur.rt != rtOrderB)
                 goto Corrupt;
             *lpord = *(ORDER *)rgbCur;
-            lpord->fNoAutoTrack = 0;
+            lpord->fNoAutoTrack = FALSE;
             lpord++;
         }
         lpfl->lpplord->iordMac = lpfl->cord;
@@ -134,9 +134,9 @@ int16_t FReadFleet(FLEET *lpfl) {
         } else {
             lpfl->lpszName = NULL;
         }
-        return 1;
+        return TRUE;
     }
 Corrupt:
     AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, NULL), MB_ICONHAND);
-    return 0;
+    return FALSE;
 }

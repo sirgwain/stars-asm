@@ -166,7 +166,7 @@ L_888e:
     goto L_887f;
 
 L_889c:
-    pchT = PszPlayerName(c, 0, 1, 1, 0, NULL);
+    pchT = PszPlayerName(c, FALSE, TRUE, TRUE, 0, NULL);
     goto FinishString;
 
 L_88c1:
@@ -211,7 +211,7 @@ L_8930:
     pch += CchGetString(idsAnd, pch);
 
 L_8944:
-    pchT = PszPlayerName(i, 0, 1, 1, 0, NULL);
+    pchT = PszPlayerName(i, FALSE, TRUE, TRUE, 0, NULL);
     strcpy(pch, pchT);
     pch += strlen(pchT);
     cOut++;
@@ -225,7 +225,7 @@ L_898e:
 
 L_899f:
     CchGetString(idsOf2, szBuf);
-    pchT = PszPlayerName(*pParams, 0, 0, 0, 0, NULL);
+    pchT = PszPlayerName(*pParams, FALSE, FALSE, FALSE, 0, NULL);
     strcat(szBuf, pchT);
     strcat(szBuf, PszGetCompressedString(idsOrigin));
     pchT = szBuf;
@@ -348,7 +348,7 @@ L_8c8a:
 
 L_8c96:
     w = (uint16_t)*pParams >> 9 & 0xf;
-    pchT = PszPlayerName(w, 0, 0, 0, 0, NULL);
+    pchT = PszPlayerName(w, FALSE, FALSE, FALSE, 0, NULL);
     goto FinishString;
 
 L_8ccf:
@@ -406,7 +406,7 @@ L_8e27:
         goto L_8e32;
 
 L_8e32:
-    pchT = PszPlayerName(c, 0, 0, 1, 0, NULL);
+    pchT = PszPlayerName(c, FALSE, FALSE, TRUE, 0, NULL);
     _wsprintf(pch, "%s %s", pchT, lpshdef->hul.szClass);
     goto L_8ea3;
 

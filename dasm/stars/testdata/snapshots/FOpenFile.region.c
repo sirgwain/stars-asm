@@ -9,7 +9,7 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
 
     fSilentSav = fFileErrSilent;
     ids = idsCantOpenFile;
-    gd.fPartialTurn = 0;
+    gd.fPartialTurn = FALSE;
     fCheckMulti = dt & 0x2000;
     fRewind = dt & 0x1000;
     dt &= 0xff;
@@ -21,9 +21,9 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
         FileError(ids);
         StreamClose();
         penvMem = penvMemSav;
-        return 0;
+        return FALSE;
     }
-    fFileErrSilent = 1;
+    fFileErrSilent = TRUE;
     StreamOpen(szWork, md);
     fFileErrSilent = fSilentSav;
     ids = idsGameFileAppearsCorruptUnableLoadFile;
@@ -66,7 +66,7 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
                                 goto LBadFile;
                         } else {
                             if (rtbof.fDone == 0 && gd.fGeneratingTurn != 0 && gd.fForceTurn == 0) {
-                                gd.fPartialTurn = 1;
+                                gd.fPartialTurn = TRUE;
                                 goto LBadFile;
                             }
                             if (dt == dtLog && game.fTutorial == 0 && rtbof.wGen != game.wGen) {
@@ -86,11 +86,11 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
             penvMem = penvMemSav;
             wVersFile = rtbof.wVersion;
             gd.fFileCrippled = rtbof.fCrippled;
-            return 1;
+            return TRUE;
         }
     }
 LBadFile:
     StreamClose();
     penvMem = penvMemSav;
-    return 0;
+    return FALSE;
 }

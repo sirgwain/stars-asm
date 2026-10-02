@@ -6,7 +6,7 @@ int16_t FCreateStuff() {
     int16_t dx;
 
 L_0014:
-    fFailed = 0;
+    fFailed = FALSE;
     dx = GetSystemMetrics(SM_CXSCREEN);
     dy = GetSystemMetrics(SM_CYSCREEN);
     if (dx < 800)
@@ -60,8 +60,8 @@ L_00a3:
     gd.mdScreenSize = 3;
 
 L_00af:
-    gd.fNoIdleChecks = 0;
-    gd.fAisDone = 0;
+    gd.fNoIdleChecks = FALSE;
+    gd.fAisDone = FALSE;
     vplr = vrgplrDef[0];
     hrgnHuge = CreateRectRgn(-10, -10, 2000, 2000);
     hrgnScratch = CreateRectRgn(0, 0, 10, 10);
@@ -172,7 +172,7 @@ L_06ad:
         goto L_06b7;
 
 L_06b7:
-    fFailed = 1;
+    fFailed = TRUE;
 
 L_06bc:
     i = 0;
@@ -186,7 +186,7 @@ L_06c4:
         goto L_06eb;
 
 L_06eb:
-    fFailed = 1;
+    fFailed = TRUE;
 
 L_06f0:
     rghdibShipsT[i] = HdibLoadBigResource(i + 557);
@@ -196,7 +196,7 @@ L_06f0:
         goto L_0717;
 
 L_0717:
-    fFailed = 1;
+    fFailed = TRUE;
 
 L_071c:
     i++;
@@ -219,7 +219,7 @@ L_0731:
         goto L_0758;
 
 L_0758:
-    fFailed = 1;
+    fFailed = TRUE;
 
 L_075d:
     i++;
@@ -343,8 +343,8 @@ L_0a75:
 
 L_0a7f:
     AlertSz(PszFormatIds(idsUnableLoadBitmaps, NULL), MB_ICONHAND);
-    return 0;
+    return FALSE;
 
 L_0aa6:
-    return 1;
+    return TRUE;
 }

@@ -30,20 +30,20 @@ int16_t FGenerateTurn() {
     int16_t  t_call_120d;
 
     idCur = idPlayer;
-    fSuccess = 0;
+    fSuccess = FALSE;
     hcurSav = SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32514)));
     DestroyCurGame();
     if (gd.fTutorial != 0) {
         Randomize(1234567890);
     }
     fErrSav = fFileErrSilent;
-    fFileErrSilent = 1;
+    fFileErrSilent = TRUE;
     UpdateProgressGauge(360);
     if (FLoadGame(szBase, "hst") == 0) {
         fFileErrSilent = fErrSav;
         SetCursor(hcurSav);
         TurnLog(idsCantFindHostFile);
-        return 0;
+        return FALSE;
     }
     TurnLog(idsGeneratingYearD);
     fFileErrSilent = fErrSav;
@@ -67,8 +67,8 @@ int16_t FGenerateTurn() {
         UpdateProgressGauge(370);
         cColDrop = 0;
         cXferFull = 0;
-        gd.fGeneratingTurn = 1;
-        gd.fRetryOpens = 1;
+        gd.fGeneratingTurn = TRUE;
+        gd.fRetryOpens = TRUE;
         imemMsgCur = 0;
         for (i = 0; i < game.cPlayer; i++) {
             mpiplr2[i] = i;
@@ -129,27 +129,27 @@ int16_t FGenerateTurn() {
                 }
             }
         }
-        fFollow = 0;
+        fFollow = FALSE;
         for (ifl = 0; ifl < cFleet; ifl++) {
             lpfl = rglpfl[ifl];
             if (rglpfl[ifl] == 0)
                 break;
-            lpfl->fNoHeal = 0;
+            lpfl->fNoHeal = FALSE;
             if (lpfl->cord == 1 && lpfl->lpplord->rgord[0].grobj == grobjFleet) {
-                fFollow = 1;
-                lpfl->fMark = 1;
+                fFollow = TRUE;
+                lpfl->fMark = TRUE;
             } else {
                 if (lpfl->lpplord->rgord[0].grobj == grobjFleet && lpfl->cord == 1) {
                     FSendPlrMsg(lpfl->iPlayer, idmHadOrdersFollowFleetWhichDidntMove, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                 }
-                lpfl->fMark = 0;
+                lpfl->fMark = FALSE;
             }
         }
         ValidateWaypoints();
         if (fFollow != 0) {
-            fFollow = 1;
+            fFollow = TRUE;
             for (i = 0; i < 8 && fFollow != 0; i++) {
-                fFollow = 0;
+                fFollow = FALSE;
                 for (ifl = 0; ifl < cFleet; ifl++) {
                     lpfl = rglpfl[ifl];
                     if (rglpfl[ifl] == 0)
@@ -163,7 +163,7 @@ int16_t FGenerateTurn() {
                             } else {
                                 if (lpflTarget->cord == 1)
                                     continue;
-                                fFollow = 1;
+                                fFollow = TRUE;
                                 if (lpfl->lpplord->iordMax <= 1) {
                                     lpfl->lpplord = (PLORD *)LpplReAlloc((PL *)lpfl->lpplord, 2);
                                 }
@@ -174,13 +174,13 @@ int16_t FGenerateTurn() {
                                 continue;
                             }
                         }
-                        lpfl->fMark = 0;
+                        lpfl->fMark = FALSE;
                     }
                 }
             }
         }
         UpdateProgressGauge(440);
-        DoOrders(0);
+        DoOrders(FALSE);
         UpdateProgressGauge(530);
         for (i = 0; i < game.cPlayer; i++) {
             for (j = 0; j < 16; j++) {
@@ -232,16 +232,16 @@ int16_t FGenerateTurn() {
             }
         }
         UnmarkMineFields();
-        MoveThings(0);
+        MoveThings(FALSE);
         UpdateProgressGauge(550);
         MoveFleets();
         lppl = lpPlanets;
         lpplMac = lpPlanets + cPlanet;
         for (; lppl < lpplMac; lppl++) {
-            lppl->fHomeworld = 0;
+            lppl->fHomeworld = FALSE;
         }
         for (i = 0; i < game.cPlayer; i++) {
-            lpPlanets[rgplr[i].idPlanetHome].fHomeworld = 1;
+            lpPlanets[rgplr[i].idPlanetHome].fHomeworld = TRUE;
         }
         UpdateProgressGauge(650);
         ThingDecay();
@@ -249,10 +249,10 @@ int16_t FGenerateTurn() {
         UpdateProgressGauge(700);
         Produce();
         UpdateProgressGauge(750);
-        MoveThings(1);
+        MoveThings(TRUE);
         UpdateProgressGauge(770);
         FuelFleets();
-        DoOrders(1);
+        DoOrders(TRUE);
         SweepForMines();
         HealShips();
         AutoTerraform();
@@ -262,7 +262,7 @@ int16_t FGenerateTurn() {
         ValidateWaypoints();
         UpdateGuesses();
         UpdateProgressGauge(852);
-        FMarkFile(dtHost, -1, mdMarkInUse, 0);
+        FMarkFile(dtHost, -1, mdMarkInUse, FALSE);
         CreateBackupDir();
         game.turn++;
         pchCur = &szBase[strlen(szBase)];
@@ -298,7 +298,7 @@ int16_t FGenerateTurn() {
             }
         }
         j = 856;
-        fDone = 0;
+        fDone = FALSE;
         memset(rgfNoXFile, 0, 16);
         i = 0;
         while (fDone == 0) {
@@ -306,7 +306,7 @@ int16_t FGenerateTurn() {
             j += 17 / (game.cPlayer + 1);
             if (i >= game.cPlayer) {
                 i = -1;
-                fDone = 1;
+                fDone = TRUE;
             }
             if (i >= 0) {
                 _wsprintf(pchCur, ".x%d", i + 1);
@@ -333,7 +333,7 @@ int16_t FGenerateTurn() {
             i++;
         }
         j = 875;
-        fDone = 0;
+        fDone = FALSE;
         game.wGen = (uint16_t)Random(8);
         i = 0;
         while (fDone == 0) {
@@ -341,14 +341,14 @@ int16_t FGenerateTurn() {
             j += 122 / (game.cPlayer + 1);
             if (i >= game.cPlayer) {
                 i = -1;
-                fDone = 1;
+                fDone = TRUE;
             }
             FWriteDataFile(szBase, i, i != -1 && rgfNoXFile[i] != 0);
             i++;
         }
         UpdateProgressGauge(998);
         imemLogCur = 0;
-        fSuccess = 1;
+        fSuccess = TRUE;
     }
 FreeStuffUp:
     UpdateProgressGauge(1000);
@@ -360,8 +360,8 @@ FreeStuffUp:
     lpcd = NULL;
     FreeLp(lpxf, htMisc);
     lpxf = NULL;
-    gd.fGeneratingTurn = 0;
-    gd.fRetryOpens = 0;
+    gd.fGeneratingTurn = FALSE;
+    gd.fRetryOpens = FALSE;
     idPlayer = -1;
     if (fSuccess != 0 && ini.fGen != 0) {
         vretExitValue = 1;

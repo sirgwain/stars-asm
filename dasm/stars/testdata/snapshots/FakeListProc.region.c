@@ -28,7 +28,7 @@ LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 Popup(hwnd, LOWORD(lParam), HIWORD(lParam));
                 return 0;
             }
-            FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, 1, 0);
+            FTrackSlot(hwnd, LOWORD(lParam), HIWORD(lParam), wParam, TRUE, FALSE);
             return 0;
         }
     default:

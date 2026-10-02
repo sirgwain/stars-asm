@@ -205,7 +205,7 @@ L_7920:
         goto L_7957;
 
 L_7957:
-    gd.fChgReports = 1;
+    gd.fChgReports = TRUE;
     if (iRet >= iSortLast)
         goto L_7a71;
     else
@@ -273,7 +273,7 @@ L_7ad5:
     SetHScrollBar();
 
 L_7ada:
-    InvalidateRect(hwndReportDlg, NULL, 1);
+    InvalidateRect(hwndReportDlg, NULL, TRUE);
 
 L_7aef:
     return;

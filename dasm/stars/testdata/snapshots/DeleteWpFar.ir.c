@@ -32,7 +32,7 @@ L_9eb6:
         goto L_9ebf;
 
 L_9ebf:
-    fRecycle = 0;
+    fRecycle = FALSE;
     goto L_9ef2;
 
 L_9ec7:

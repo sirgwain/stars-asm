@@ -39,7 +39,7 @@ L_0c92:
     cAlchemy = 0
     pctInitial = lpprod->pct
     prod = *lpprod
-    call GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 1) -> callresult(void)
+    call GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, TRUE) -> callresult(void)
     cBuilt = 0
     branch prod.grobj != grobjPlanet ? L_0d49 : L_0d1a
 
@@ -66,19 +66,19 @@ L_0d58:
 L_0d74:
     iobjOther = mdIdleMine
     t_scratch_m56 = lppl->cMines
-    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, 1) - t_scratch_m56)
+    cMax = (CMaxOperableMines(lppl, lppl->iPlayer, TRUE) - t_scratch_m56)
     goto L_0f9f
 
 L_0dbe:
     iobjOther = mdIdleFactory
     t_scratch_m56_2 = lppl->cFactories
-    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, 1) - t_scratch_m56_2)
+    cMax = (CMaxOperableFactories(lppl, lppl->iPlayer, TRUE) - t_scratch_m56_2)
     goto L_0f9f
 
 L_0e08:
     iobjOther = mdIdleDefense
     t_scratch_m56_3 = lppl->cDefenses
-    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - t_scratch_m56_3)
+    cMax = (CMaxOperableDefenses(lppl, lppl->iPlayer, TRUE) - t_scratch_m56_3)
     goto L_0f9f
 
 L_0e4a:
@@ -95,7 +95,7 @@ L_0e7b:
 
 
 L_0e9f:
-    branch ChgPopFromPlanet(lppl, 0) < 0 ? L_0f9f : L_0ec6
+    branch ChgPopFromPlanet(lppl, FALSE) < 0 ? L_0f9f : L_0ec6
 
 
 
@@ -202,8 +202,8 @@ L_110a:
     branch i >= 4 ? L_165c : L_1113
 
 L_1113:
-    fMineralBlocked = 0
-    fResourceBlocked = 0
+    fMineralBlocked = FALSE
+    fResourceBlocked = FALSE
     pct = 100
     i = 0
     goto L_12ea
@@ -245,11 +245,11 @@ L_128b:
     branch i != 3 ? L_12e1 : L_12d9
 
 L_12d9:
-    fResourceBlocked = 1
+    fResourceBlocked = TRUE
     goto L_12e6
 
 L_12e1:
-    fMineralBlocked = 1
+    fMineralBlocked = TRUE
 
 L_12e6:
     i = (i + 1)

@@ -11,7 +11,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     int16_t  ish;
 
 L_0db6:
-    gd.fChgScanner = 1;
+    gd.fChgScanner = TRUE;
     goto L_160f;
 
 L_0dd4:
@@ -133,7 +133,7 @@ L_0fba:
 L_0fc3:
     GetCursorPos16(&pt);
     ScreenToClient16(hwndTb, &pt);
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
     if (iSel == -1)
         goto L_167a;
     else
@@ -179,7 +179,7 @@ L_1059:
     grbitScan &= 0xffbf;
 
 L_105e:
-    InvalidateRect(hwndTb, NULL, 1);
+    InvalidateRect(hwndTb, NULL, TRUE);
     goto L_1644;
 
 L_1076:
@@ -234,7 +234,7 @@ L_11a8:
 L_11ab:
     GetCursorPos16(&pt);
     ScreenToClient16(hwndTb, &pt);
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
     if (iSel == -1)
         goto L_167a;
     else
@@ -326,7 +326,7 @@ L_12b7:
 
 LInvalS:
     grbitScan |= grbitScanDesignFilter;
-    InvalidateRect(hwndTb, NULL, 1);
+    InvalidateRect(hwndTb, NULL, TRUE);
 
 L_12e6:
     if ((grbitScan & grbitScanDesignFilter) == 0)
@@ -378,7 +378,7 @@ L_140e:
 L_1417:
     GetCursorPos16(&pt);
     ScreenToClient16(hwndTb, &pt);
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
     if (iSel == -1)
         goto L_167a;
     else
@@ -444,7 +444,7 @@ L_14d6:
 
 LInvalE:
     grbitScan |= grbitScanEnemyFilter;
-    InvalidateRect(hwndTb, NULL, 1);
+    InvalidateRect(hwndTb, NULL, TRUE);
 
 L_1505:
     if ((grbitScan & grbitScanEnemyFilter) == 0)
@@ -475,7 +475,7 @@ L_159d:
 L_15a6:
     GetCursorPos16(&pt);
     ScreenToClient16(hwndTb, &pt);
-    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+    iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
     if (iSel == -1)
         goto L_167a;
     else
@@ -538,7 +538,7 @@ L_1644:
         goto L_164d;
 
 L_164d:
-    InvalidateRect(hwndScanner, NULL, 1);
+    InvalidateRect(hwndScanner, NULL, TRUE);
 
 L_1662:
     if (gd.fTutorial == 0)

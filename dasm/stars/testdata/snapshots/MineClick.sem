@@ -130,7 +130,7 @@ L_3d86:
     branch c <= 1 ? L_3dcb : L_3d90
 
 L_3d90:
-    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, 1)
+    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, TRUE)
     branch c == -1 ? L_47d5 : L_3dc2
 
 L_3dc2:
@@ -143,9 +143,9 @@ L_3dd1:
     GlobalPD.grPopup = grPopupShdef
     GlobalPD.lpshdef = &rglpshdef[lpfl->iPlayer][rgid[c]]
     GlobalPD.fHideCounts = idPlayer != lpfl->iPlayer
-    GlobalPD.fShowDamage = 0
-    GlobalPD.fToken = 0
-    GlobalPD.fSummary = 1
+    GlobalPD.fShowDamage = FALSE
+    GlobalPD.fToken = FALSE
+    GlobalPD.fSummary = TRUE
     goto L_3e84
 
 
@@ -169,9 +169,9 @@ L_3e99:
     lppl = LpplFromId(sel.scan.idpl)
     GlobalPD.lpshdef = &rglpshdefSB[lppl->iPlayer][lppl->isb]
     GlobalPD.fHideCounts = idPlayer != lppl->iPlayer
-    GlobalPD.fShowDamage = 1
-    GlobalPD.fToken = 0
-    GlobalPD.fSummary = 1
+    GlobalPD.fShowDamage = TRUE
+    GlobalPD.fToken = FALSE
+    GlobalPD.fSummary = TRUE
     call Popup(hwndMine, x, y) -> callresult(void)
     goto L_47d5
 
@@ -202,7 +202,7 @@ L_3f8b:
     branch pl.det < detSome ? L_4010 : L_3f99
 
 L_3f99:
-    branch FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) == 0 ? L_4010 : L_3fc0
+    branch FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, TRUE) == 0 ? L_4010 : L_3fc0
 
 L_3fc0:
     GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar]
@@ -269,7 +269,7 @@ L_4129:
     scan.ith = i
     scan.grobj = grobjThing
     idNew = lpThings[i].idFull
-    fOurs = 0
+    fOurs = FALSE
     goto L_43d9
 
 L_4154:
@@ -340,7 +340,7 @@ CheckPlanet:
 
 
 L_42cd:
-    fOurs = 0
+    fOurs = FALSE
     goto L_43d9
 
 L_42d5:
@@ -442,7 +442,7 @@ L_44d6:
     branch i < 9 ? L_4476 : L_44df
 
 L_44df:
-    i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, 1)
+    i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, TRUE)
     branch i == -1 ? L_47d5 : L_4511
 
 L_4511:
@@ -450,11 +450,11 @@ L_4511:
 
 L_4525:
     cMinGrafMax = rgi[i]
-    call InvalidateRect(hwndMine, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndMine, NULL, TRUE) -> callresult(void)
     branch (grbitScan & grbitScanViewMask) != 1 ? L_47d5 : L_4557
 
 L_4557:
-    call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndScanner, NULL, TRUE) -> callresult(void)
 
 L_456c:
     goto L_47d5
@@ -484,7 +484,7 @@ L_45cb:
 L_4608:
     lVal = 0
     GlobalPD.rgi[2] = pl.rgwtMin[(ht - 1)]
-    call EstMineralsMined(&pl, rglQuan, -1, 0) -> callresult(void)
+    call EstMineralsMined(&pl, rglQuan, -1, FALSE) -> callresult(void)
     GlobalPD.rgi[4] = rglQuan[(ht - 1)]
     branch pl.iPlayer != -1 ? L_478e : L_4670
 
@@ -522,7 +522,7 @@ L_4705:
 
 
 L_4730:
-    call EstMineralsMined(&pl, rglT, cMines, 0) -> callresult(void)
+    call EstMineralsMined(&pl, rglT, cMines, FALSE) -> callresult(void)
     lVal = (lVal + rglT[(ht - 1)])
 
 L_4767:

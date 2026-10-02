@@ -88,7 +88,7 @@ L_1912:
     etaFirst = 600;
 
 L_1917:
-    GetProductionCosts(lppl, &prod, rgCost, idPlayer, 1);
+    GetProductionCosts(lppl, &prod, rgCost, idPlayer, TRUE);
     cRes = CResourcesAtPlanet(&sel.pl, idPlayer);
     if (sel.pl.fNoResearch != 0)
         goto L_19aa;
@@ -106,7 +106,7 @@ L_19aa:
 
 L_19d6:
     t_scratch_m136 = (uint32_t)sel.pl.cMines;
-    cMaxBuild = CMaxOperableMines(&sel.pl, idPlayer, 1) - t_scratch_m136;
+    cMaxBuild = CMaxOperableMines(&sel.pl, idPlayer, TRUE) - t_scratch_m136;
     if (cMaxBuild < 0)
         goto L_1a34;
     else
@@ -138,7 +138,7 @@ L_1aaa:
 
 L_1ace:
     AddItemToQueue(mdIdleMine, LOWORD(cBuild), grobjPlanet, addItemFront);
-    FinishProduction(1);
+    FinishProduction(TRUE);
     PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterMines, NULL);
     if (etaBetterMines != -1)
         goto L_1b29;
@@ -156,7 +156,7 @@ L_1b29:
 L_1b74:
     etaBetterMines = 700;
     AddItemToQueue(iobjAlchemy, 1, grobjPlanet, addItemFront);
-    FinishProduction(1);
+    FinishProduction(TRUE);
 
 L_1b9e:
     PszProductionETA(&sel.pl, sel.pl.lpplprod, iobjFactory, &etaBetterAlchemy, NULL);

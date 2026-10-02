@@ -61,7 +61,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                     }
                 }
                 if (c > 1) {
-                    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, 1);
+                    c = PopupMenu(hwndMine, x, y, c, NULL, rgpsz, -1, TRUE);
                     if (c == -1)
                         break;
                 } else {
@@ -70,9 +70,9 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 GlobalPD.grPopup = grPopupShdef;
                 GlobalPD.lpshdef = rglpshdef[lpfl->iPlayer] + rgid[c];
                 GlobalPD.fHideCounts = idPlayer != lpfl->iPlayer;
-                GlobalPD.fShowDamage = 0;
-                GlobalPD.fToken = 0;
-                GlobalPD.fSummary = 1;
+                GlobalPD.fShowDamage = FALSE;
+                GlobalPD.fToken = FALSE;
+                GlobalPD.fSummary = TRUE;
             } else {
                 GlobalPD.grPopup = grPopupFleet;
                 GlobalPD.lpfl = rglpfl[sel.scan.ifl];
@@ -86,9 +86,9 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             lppl = LpplFromId(sel.scan.idpl);
             GlobalPD.lpshdef = rglpshdefSB[lppl->iPlayer] + lppl->isb;
             GlobalPD.fHideCounts = idPlayer != lppl->iPlayer;
-            GlobalPD.fShowDamage = 1;
-            GlobalPD.fToken = 0;
-            GlobalPD.fSummary = 1;
+            GlobalPD.fShowDamage = TRUE;
+            GlobalPD.fToken = FALSE;
+            GlobalPD.fSummary = TRUE;
             Popup(hwndMine, x, y);
             break;
         case htMinePlanet:
@@ -108,7 +108,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             } else {
                 GlobalPD.iPlanVal = -1;
             }
-            if (pl.det >= detSome && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, 1) != 0) {
+            if (pl.det >= detSome && FCanTerraformLppl(&pl, rgMin, rgMax, rgCost, TRUE) != 0) {
                 GlobalPD.iPlanMin = rgMin[GlobalPD.iPlanetVar];
                 GlobalPD.iPlanMax = rgMax[GlobalPD.iPlanetVar];
                 if (GlobalPD.iPlanMin == -1) {
@@ -191,14 +191,14 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
             scan.ith = i;
             scan.grobj = grobjThing;
             idNew = lpThings[i].idFull;
-            fOurs = 0;
+            fOurs = FALSE;
             goto ChangeIt;
         CheckPlanet:
             scan.grobj = grobjPlanet;
             idNew = scan.idpl;
             lppl = LpplFromId(idNew);
             if (lppl == 0) {
-                fOurs = 0;
+                fOurs = FALSE;
             } else {
                 fOurs = lppl->iPlayer == idPlayer;
             }
@@ -231,14 +231,14 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                     iChecked = i;
                 }
             }
-            i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, 1);
+            i = PopupMenu(hwndMine, x, y, 9, NULL, psz, iChecked, TRUE);
             if (i == -1 || rgi[i] == cMinGrafMax)
                 break;
             cMinGrafMax = rgi[i];
-            InvalidateRect(hwndMine, NULL, 1);
+            InvalidateRect(hwndMine, NULL, TRUE);
             if ((grbitScan & grbitScanViewMask) != 1)
                 break;
-            InvalidateRect(hwndScanner, NULL, 1);
+            InvalidateRect(hwndScanner, NULL, TRUE);
             break;
         case htMineMineralConc1:
         case htMineMineralConc2:
@@ -255,7 +255,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                 if (pl.det > detSome) {
                     lVal = 0;
                     GlobalPD.rgi[2] = pl.rgwtMin[ht - 1];
-                    EstMineralsMined(&pl, rglQuan, -1, 0);
+                    EstMineralsMined(&pl, rglQuan, -1, FALSE);
                     GlobalPD.rgi[4] = rglQuan[ht - 1];
                     if (pl.iPlayer == -1) {
                         for (ifl = 0; ifl < cFleet; ifl++) {
@@ -265,7 +265,7 @@ void MineClick(int16_t x, int16_t y, int16_t msg, int16_t sks) {
                             if (lpfl->idPlanet == pl.id && lpfl->iPlayer == idPlayer && lpfl->fDead == 0 && lpfl->lpplord->rgord[0].grTask == grTaskMine) {
                                 cMines = CMineFromLpfl(lpfl);
                                 if (cMines > 0) {
-                                    EstMineralsMined(&pl, rglT, cMines, 0);
+                                    EstMineralsMined(&pl, rglT, cMines, FALSE);
                                     lVal += rglT[ht - 1];
                                 }
                             }

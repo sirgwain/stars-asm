@@ -20,7 +20,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
 L_50d0:
     lRange4 = (double)0;
     lPlanRange4 = (double)0;
-    fHasScanner = 0;
+    fHasScanner = FALSE;
     iSteal = 0;
     cDetectors = 0;
     if (iplr == -1)
@@ -35,11 +35,11 @@ L_5119:
         goto L_5139;
 
 L_5139:
-    fBuiltIn = 1;
+    fBuiltIn = TRUE;
     goto L_5142;
 
 L_513f:
-    fBuiltIn = 0;
+    fBuiltIn = FALSE;
 
 L_5142:
     lBIR4 = -1.0;
@@ -134,7 +134,7 @@ L_52cd:
         goto L_52d9;
 
 L_52d9:
-    fHasScanner = 1;
+    fHasScanner = TRUE;
     iScanner = lphs->iItem;
     t_call_52ec = LpscannerFromId(lphs->iItem);
     dRangeT = t_call_52ec->dRange;

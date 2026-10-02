@@ -9,7 +9,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     int16_t  rgArgs[2];
 
     if ((uint16_t)(imemMsgCur + 20) > 0xffc8) {
-        return 0;
+        return FALSE;
     }
     pb = rgb;
     pmsghdr = (MSGHDR *)pb;
@@ -46,6 +46,6 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     imemMsgCur += cSize;
     cMsg++;
     iMsgCur = -1;
-    iMsgCur = IMsgNext(0);
-    return 1;
+    iMsgCur = IMsgNext(FALSE);
+    return TRUE;
 }

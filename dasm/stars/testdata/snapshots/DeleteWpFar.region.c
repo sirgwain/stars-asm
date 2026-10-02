@@ -5,7 +5,7 @@ void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {
         if (iDel == 86 || lpfl->cord == 2 ||
             (lpfl->lpplord->rgord[lpfl->cord - 1].pt.x == lpfl->lpplord->rgord[iDel].pt.x &&
              lpfl->lpplord->rgord[lpfl->cord - 1].pt.y == lpfl->lpplord->rgord[iDel].pt.y)) {
-            fRecycle = 0;
+            fRecycle = FALSE;
         } else {
             ord = lpfl->lpplord->rgord[iDel];
         }

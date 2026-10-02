@@ -133,7 +133,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 rc.right = rc.left + dx;
                 rc.bottom = rc.top + 28;
                 hdc = GetDC(hwnd);
-                SelectPalette(hdc, vhpal, 0);
+                SelectPalette(hdc, vhpal, FALSE);
                 RealizePalette(hdc);
                 SetCapture(hwnd);
                 fCur = -1;
@@ -191,7 +191,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             PostMessage(hwnd, 1524, 0, 0);
             break;
         case 1524:
-            TerminateToolbarFocus(0);
+            TerminateToolbarFocus(FALSE);
             break;
         default:
             return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -205,7 +205,7 @@ void DrawToolbar(HDC hdc, RECT *prc) {
     int16_t       i;
     ToolbarButton ibtn;
 
-    SelectPalette(hdc, vhpal, 0);
+    SelectPalette(hdc, vhpal, FALSE);
     RealizePalette(hdc);
     pt.x = 4;
     pt.y = 4;
@@ -312,7 +312,7 @@ int16_t DxOfBtn(ToolbarButton itb) {
 
 int16_t FIsButtonDown(ToolbarButton itb) {
     if ((uint16_t)itb > tbShipCounts) {
-        return 0;
+        return FALSE;
     }
     switch (itb) {
     case tbNormalView:
@@ -322,58 +322,58 @@ int16_t FIsButtonDown(ToolbarButton itb) {
     case tbPopulationView:
     case tbNoPlayerInfoView:
         if ((grbitScan & grbitScanViewMask) == itb) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbAddWaypoints:
         if ((grbitScan & grbitScanAddWaypoints) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbScannerCoverage:
         if ((grbitScan & grbitScanCoverage) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbMineFields:
         if ((grbitScan & grbitScanMineFields) != 0 && grbitScanMines == 15) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbFleetPaths:
         if ((grbitScan & grbitScanFleetPaths) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbIdleFleets:
         if ((grbitScan & grbitScanIdleFleets) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbPlanetNames:
         if ((grbitScan & grbitScanPlanetNames) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbShipCounts:
         if ((grbitScan & grbitScanShipCounts) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbShipDesignFilter:
         if ((grbitScan & grbitScanDesignFilter) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbEnemyClassFilter:
         if ((grbitScan & grbitScanEnemyFilter) != 0) {
-            return 1;
+            return TRUE;
         }
-        return 0;
+        return FALSE;
     case tbShipDesignFilterMenu:
     case tbEnemyClassFilterMenu:
     case tbZoomMenu:
-        return 0;
+        return FALSE;
     }
 }
 
@@ -389,7 +389,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     uint16_t grbitSh;
     int16_t  ish;
 
-    gd.fChgScanner = 1;
+    gd.fChgScanner = TRUE;
     if ((uint16_t)itb <= tbShipCounts) {
         switch (itb) {
         case tbNormalView:
@@ -452,7 +452,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel == -1)
                 break;
             if (iSel >= 3) {
@@ -468,7 +468,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             } else {
                 grbitScan &= 0xffbf;
             }
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
             goto L_1644;
         case tbShipDesignFilterMenu:
             c = 0;
@@ -493,7 +493,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel == -1)
                 break;
             if (iSel < 4) {
@@ -520,7 +520,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                     goto L_12e6;
             }
             grbitScan |= grbitScanDesignFilter;
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
         L_12e6:
             if ((grbitScan & grbitScanDesignFilter) == 0)
                 break;
@@ -544,7 +544,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel == -1)
                 break;
             if (iSel < 4) {
@@ -564,7 +564,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                     goto L_1505;
             }
             grbitScan |= grbitScanEnemyFilter;
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
         L_1505:
             if ((grbitScan & grbitScanEnemyFilter) == 0)
                 break;
@@ -578,7 +578,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel != -1) {
                 CommandHandler(hwndFrame, iSel + 3901);
             }
@@ -592,7 +592,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
         }
     L_1644:
         if (itb != tbAddWaypoints) {
-            InvalidateRect(hwndScanner, NULL, 1);
+            InvalidateRect(hwndScanner, NULL, TRUE);
         }
         if (gd.fTutorial != 0) {
             AdvanceTutor();
@@ -605,7 +605,7 @@ void TerminateToolbarFocus(int16_t fCancel) {
     int16_t pct;
     char   *psz;
 
-    gd.fChgScanner = 1;
+    gd.fChgScanner = TRUE;
     if (fCancel == 0) {
         GetWindowText(hwndTBRadar, szWork, 20);
         psz = szWork;
@@ -630,10 +630,10 @@ void TerminateToolbarFocus(int16_t fCancel) {
     if (pct != vpctRadarView) {
         vpctRadarView = pct;
         if ((grbitScan & grbitScanCoverage) == 0) {
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
         }
         grbitScan |= grbitScanCoverage;
-        InvalidateRect(hwndScanner, NULL, 1);
+        InvalidateRect(hwndScanner, NULL, TRUE);
     }
     SetFocus(hwndFrame);
     return;
@@ -667,7 +667,7 @@ void ShowTooltip(StringId ids, RECT *prc) {
         if (hwndTooltip == 0) {
             CreateWindow(szTooltip, NULL, WS_POPUP, 100, 100, dxTip + 6, dyArial8 + 6, hwndTb, NULL, hInst, NULL);
         } else {
-            InvalidateRect(hwndTooltip, NULL, 1);
+            InvalidateRect(hwndTooltip, NULL, TRUE);
         }
         SetWindowPos(hwndTooltip, (HWND)-1, 0, 0, dxTip + 6, dyArial8 + 6, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
         t_scratch_m10 = vtickTooltipLast + 400;

@@ -6,9 +6,9 @@ int16_t FFleetMightHaveTeeth(FLEET *lpfl) {
         if (lpfl->rgcsh[ishdef] != 0) {
             lphul = &rglpshdef[lpfl->iplr][ishdef].hul;
             if (FHullHasTeeth(lphul) != 0) {
-                return 1;
+                return TRUE;
             }
         }
     }
-    return 0;
+    return FALSE;
 }

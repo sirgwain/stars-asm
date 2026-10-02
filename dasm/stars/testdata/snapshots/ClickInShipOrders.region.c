@@ -62,7 +62,7 @@ HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRig
                 rgszZip[cMax++] = sz255;
             }
             rgszZip[cMax++] = PszGetCompressedString(idsCustomize);
-            i = PopupMenu(hwndPlanet, pt.x, pt.y, cMax, NULL, rgszZip, -1, 1);
+            i = PopupMenu(hwndPlanet, pt.x, pt.y, cMax, NULL, rgszZip, -1, TRUE);
             if (i == cMax - 1) {
                 memcpy(rgzo, vrgZip, 96);
                 lpProc = MakeProcInstance(ZipOrderDlg, hInst);
@@ -168,14 +168,14 @@ HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRig
                         if (c >= 100)
                             break;
                         rgid[c++] = -1;
-                        fSep = 1;
+                        fSep = TRUE;
                     }
                     if (c >= 100)
                         break;
                     rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;
                 }
             }
-            i = PopupMenu(hwndPlanet, pt.x, pt.y, c, rgid, NULL, iChecked, 1);
+            i = PopupMenu(hwndPlanet, pt.x, pt.y, c, rgid, NULL, iChecked, TRUE);
             if (i >= 0) {
                 if (i == 0 && rgid[0] == 268435456) {
                     lpord->grobj = grobjOther;
@@ -304,9 +304,9 @@ L_8b82:
     ptOld.x = -1;
     lTempMax = lMax < lTempMax ? lMax : lTempMax;
     lTempMin = 0 <= lTempMin ? lTempMin : 0;
-    fFirst = 1;
+    fFirst = TRUE;
     while (fFirst != 0 || FGetMouseMove(&pt) != 0) {
-        fFirst = 0;
+        fFirst = FALSE;
         if (pt.x != ptOld.x || pt.y != ptOld.y) {
             ptOld = pt;
             lNew = (int32_t)((int32_t)(((int16_t)(pt.x - rgrcRef[irc].left) + xRnd) * lMax) / dx);
@@ -356,7 +356,7 @@ L_8b82:
             goto FixMinWin;
         if ((grbit & 2) == 0 || sel.fl.id != rglpfl[sel.scan.ifl]->id)
             break;
-        InvalidateRect(hwndMine, NULL, 1);
+        InvalidateRect(hwndMine, NULL, TRUE);
         break;
     case 1:
         FLookupFleet(-1, &xf.fl);

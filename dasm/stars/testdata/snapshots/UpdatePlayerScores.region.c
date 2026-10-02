@@ -23,7 +23,7 @@ void UpdatePlayerScores() {
     iScoreMax = 0;
     lScore2nd = 0;
     lScoreTot = 0;
-    gd.fGameOverMan = 0;
+    gd.fGameOverMan = FALSE;
     memset(rgcCond, 0, 16);
     for (i = 0; i < game.cPlayer; i++) {
         rglScore[i] = CalcPlayerScore(i, &score);
@@ -40,20 +40,20 @@ void UpdatePlayerScores() {
                 }
             }
         }
-        if (score.cPlanet >= MulDiv(cPlanet, GetVCVal(&game, vcOwnsPercentPlanets, 0), 100)) {
+        if (score.cPlanet >= MulDiv(cPlanet, GetVCVal(&game, vcOwnsPercentPlanets, FALSE), 100)) {
             vlprgScoreX[i].grbitVC |= 1;
             if (GetVCCheck(&game, vcOwnsPercentPlanets) != 0) {
                 rgcCond[i]++;
             }
         }
         t_scratch_m88_2 = (int32_t)((uint32_t)(score.rgcsh[2] & 0x1fff) << (score.rgcsh[2] >> 0xd << 1));
-        if ((int32_t)t_scratch_m88_2 >= GetVCVal(&game, vcOwnsCapitalShips, 0)) {
+        if ((int32_t)t_scratch_m88_2 >= GetVCVal(&game, vcOwnsCapitalShips, FALSE)) {
             vlprgScoreX[i].grbitVC |= 0x20;
             if (GetVCCheck(&game, vcOwnsCapitalShips) != 0) {
                 rgcCond[i]++;
             }
         }
-        if (rglScore[i] >= GetVCVal(&game, vcExceedsScore, 0)) {
+        if (rglScore[i] >= GetVCVal(&game, vcExceedsScore, FALSE)) {
             vlprgScoreX[i].grbitVC |= 4;
             if (GetVCCheck(&game, vcExceedsScore) != 0) {
                 rgcCond[i]++;
@@ -62,18 +62,18 @@ void UpdatePlayerScores() {
         c = 0;
         for (j = 0; j < 6; j++) {
             t_scratch_m86_8 = rgplr[i].rgTech[j];
-            if (t_scratch_m86_8 >= GetVCVal(&game, vcAttainsTechLevel, 0)) {
+            if (t_scratch_m86_8 >= GetVCVal(&game, vcAttainsTechLevel, FALSE)) {
                 c++;
             }
         }
-        if (c >= GetVCVal(&game, vcAttainsTechFields, 0)) {
+        if (c >= GetVCVal(&game, vcAttainsTechFields, FALSE)) {
             vlprgScoreX[i].grbitVC |= 2;
             if (GetVCCheck(&game, vcAttainsTechLevel) != 0) {
                 rgcCond[i]++;
             }
         }
         t_scratch_m88_6 = (int32_t)(score.cResources / 1000);
-        if ((int32_t)t_scratch_m88_6 >= GetVCVal(&game, vcProductionCapacity, 0)) {
+        if ((int32_t)t_scratch_m88_6 >= GetVCVal(&game, vcProductionCapacity, FALSE)) {
             vlprgScoreX[i].grbitVC |= 0x10;
             if (GetVCCheck(&game, vcProductionCapacity) != 0) {
                 rgcCond[i]++;
@@ -107,14 +107,14 @@ void UpdatePlayerScores() {
         for (i = 0; i < game.cPlayer; i++) {
             vlprgScoreX[i].turn = rgplr[i].wScore;
         }
-        if ((int16_t)game.turn >= GetVCVal(&game, vcHighestScoreAfterYears, 0) && cFirst == 1) {
+        if ((int16_t)game.turn >= GetVCVal(&game, vcHighestScoreAfterYears, FALSE) && cFirst == 1) {
             vlprgScoreX[iScoreMax].grbitVC |= 0x40;
             if (GetVCCheck(&game, vcHighestScoreAfterYears) != 0) {
                 rgcCond[iScoreMax]++;
             }
         }
         if (cDead + 1 >= game.cPlayer) {
-            gd.fGameOverMan = 1;
+            gd.fGameOverMan = TRUE;
             if (rgplr[iScoreMax].fDead == 0) {
                 FSendPrependedPlrMsg(iScoreMax, idmTracesEveryOtherRivalHaveEliminatedGalaxy, gotoScore, 0, 0, 0, 0, 0, 0, 0);
             }
@@ -124,15 +124,15 @@ void UpdatePlayerScores() {
                 }
             }
         } else {
-            if (lScoreMax >= (int32_t)(lScore2nd * (int16_t)(GetVCVal(&game, vcExceedsSecondPlaceBy, 0) + 100)) / 100) {
+            if (lScoreMax >= (int32_t)(lScore2nd * (int16_t)(GetVCVal(&game, vcExceedsSecondPlaceBy, FALSE) + 100)) / 100) {
                 vlprgScoreX[iScoreMax].grbitVC |= 8;
                 if (GetVCCheck(&game, vcExceedsSecondPlaceBy) != 0) {
                     rgcCond[iScoreMax]++;
                 }
             }
-            if (game.turn >= (uint16_t)GetVCVal(&game, vcMinYearsBeforeWin, 0)) {
+            if (game.turn >= (uint16_t)GetVCVal(&game, vcMinYearsBeforeWin, FALSE)) {
                 wWinners = 0;
-                j = GetVCVal(&game, vcMeetsNumCriteria, 0);
+                j = GetVCVal(&game, vcMeetsNumCriteria, FALSE);
                 if (j >= 1) {
                     for (i = game.cPlayer - 1; i >= 0; i--) {
                         wWinners *= 2;
@@ -142,7 +142,7 @@ void UpdatePlayerScores() {
                         }
                     }
                     if (wWinners != 0) {
-                        gd.fGameOverMan = 1;
+                        gd.fGameOverMan = TRUE;
                     }
                 }
                 if (gd.fGameOverMan != 0) {

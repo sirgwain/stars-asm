@@ -10,7 +10,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     uint16_t grbitSh;
     int16_t  ish;
 
-    gd.fChgScanner = 1;
+    gd.fChgScanner = TRUE;
     if ((uint16_t)itb <= tbShipCounts) {
         switch (itb) {
         case tbNormalView:
@@ -73,7 +73,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel == -1)
                 break;
             if (iSel >= 3) {
@@ -89,7 +89,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             } else {
                 grbitScan &= 0xffbf;
             }
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
             goto L_1644;
         case tbShipDesignFilterMenu:
             c = 0;
@@ -114,7 +114,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel == -1)
                 break;
             if (iSel < 4) {
@@ -141,7 +141,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                     goto L_12e6;
             }
             grbitScan |= grbitScanDesignFilter;
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
         L_12e6:
             if ((grbitScan & grbitScanDesignFilter) == 0)
                 break;
@@ -165,7 +165,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel == -1)
                 break;
             if (iSel < 4) {
@@ -185,7 +185,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                     goto L_1505;
             }
             grbitScan |= grbitScanEnemyFilter;
-            InvalidateRect(hwndTb, NULL, 1);
+            InvalidateRect(hwndTb, NULL, TRUE);
         L_1505:
             if ((grbitScan & grbitScanEnemyFilter) == 0)
                 break;
@@ -199,7 +199,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
             }
             GetCursorPos16(&pt);
             ScreenToClient16(hwndTb, &pt);
-            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
+            iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, FALSE);
             if (iSel != -1) {
                 CommandHandler(hwndFrame, iSel + 3901);
             }
@@ -213,7 +213,7 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
         }
     L_1644:
         if (itb != tbAddWaypoints) {
-            InvalidateRect(hwndScanner, NULL, 1);
+            InvalidateRect(hwndScanner, NULL, TRUE);
         }
         if (gd.fTutorial != 0) {
             AdvanceTutor();

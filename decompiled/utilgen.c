@@ -429,7 +429,7 @@ char *PszGetCompressedPlanet(int16_t id) {
     fHigh = (iNibble & 1) == 0;
     pszOut = szLastGet;
     iBuild = 0;
-    fCap = 1;
+    fCap = TRUE;
     while (iLen-- != 0) {
         if (fHigh != 0) {
             i = *pch >> 4;
@@ -444,9 +444,9 @@ char *PszGetCompressedPlanet(int16_t id) {
                 *pszOut -= ' ';
             }
             if (*pszOut == ' ' || *pszOut == '-') {
-                fCap = 1;
+                fCap = TRUE;
             } else {
-                fCap = 0;
+                fCap = FALSE;
             }
             pszOut++;
             iBuild = 0;
@@ -485,7 +485,7 @@ void StarsCopyFile(char *szSrc, char *szDst) {
 
     fFileErrSav = fFileErrSilent;
     hfDst = -1;
-    fFileErrSilent = 1;
+    fFileErrSilent = TRUE;
     penvSav = penvMem;
     penvMem = &env;
     if (setjmp(env) == 0) {
@@ -671,9 +671,9 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
         pchEnd = pchStart + cLen;
         ChopTrailingSpaces(pch, &pchEnd);
         dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch));
-        fItFit = 1;
+        fItFit = TRUE;
         for (; dx > dxRemain && pch < pchEnd && dx > 0; dx = LOWORD(GetTextExtent(hdc, pch, pchEnd - pch))) {
-            fItFit = 0;
+            fItFit = FALSE;
             ChopLastWord(pch, &pchEnd);
         }
         if (fItFit != 0) {
@@ -1012,10 +1012,10 @@ void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16
     pbtnt->rc = *prc;
     pbtnt->btf = btf;
     pbtnt->dTimer = dTimer;
-    pbtnt->fFirst = 1;
+    pbtnt->fFirst = TRUE;
     pbtnt->fInitDown = fInitDown;
     pbtnt->fNoEndRedraw = fNoEndRedraw;
-    pbtnt->fDown = 1;
+    pbtnt->fDown = TRUE;
     pbtnt->szText = szText;
     return;
 }
@@ -1031,8 +1031,8 @@ int16_t FTrackBtn(BTNT *pbtnt) {
         DrawBtn(pbtnt->hdc, &pbtnt->rc, pbtnt->btf, pbtnt->fDown ^ pbtnt->fInitDown, pbtnt->szText);
         t_scratch_m10 = (int16_t)(3 * pbtnt->dTimer);
         pbtnt->lTicks = GetCurrentTime() + t_scratch_m10;
-        pbtnt->fFirst = 0;
-        return 1;
+        pbtnt->fFirst = FALSE;
+        return TRUE;
     }
     pt.x = pbtnt->rc.left;
     pt.y = pbtnt->rc.top;
@@ -1045,19 +1045,19 @@ int16_t FTrackBtn(BTNT *pbtnt) {
         ticksNew = GetCurrentTime();
         if (ticksNew >= pbtnt->lTicks && pbtnt->fDown != 0) {
             pbtnt->lTicks = pbtnt->dTimer + ticksNew;
-            return 1;
+            return TRUE;
         }
     }
     if (pbtnt->fDown != 0 && pbtnt->fNoEndRedraw == 0) {
-        pbtnt->fDown = 0;
+        pbtnt->fDown = FALSE;
         DrawBtn(pbtnt->hdc, &pbtnt->rc, pbtnt->btf, pbtnt->fDown ^ pbtnt->fInitDown, pbtnt->szText);
-        pbtnt->fDown = 1;
+        pbtnt->fDown = TRUE;
     }
     ReleaseCapture();
     if (pbtnt->fCreatedDC != 0) {
         ReleaseDC(pbtnt->hwnd, pbtnt->hdc);
     }
-    return 0;
+    return FALSE;
 }
 
 void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
@@ -1208,7 +1208,7 @@ void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
                 rgptDraw[ipt].x--;
                 rgptDraw[ipt].y--;
             }
-            fDisabled = 0;
+            fDisabled = FALSE;
             hbrCur = hbrButtonShadow;
             SelectObject(hdc, hbrButtonShadow);
         }
@@ -1243,12 +1243,12 @@ int16_t FGetMouseMove(POINT16 *ppt) {
             ppt->x = LOWORD(msg.lParam);
             ppt->y = HIWORD(msg.lParam);
             if (msg.message != WM_LBUTTONUP) {
-                return 1;
+                return TRUE;
             }
-            return 0;
+            return FALSE;
         }
     }
-    return 1;
+    return TRUE;
 }
 
 int16_t FGetRMouseMove(POINT16 *ppt) {
@@ -1259,12 +1259,12 @@ int16_t FGetRMouseMove(POINT16 *ppt) {
             ppt->x = LOWORD(msg.lParam);
             ppt->y = HIWORD(msg.lParam);
             if (msg.message != WM_RBUTTONUP) {
-                return 1;
+                return TRUE;
             }
-            return 0;
+            return FALSE;
         }
     }
-    return 1;
+    return TRUE;
 }
 
 void DrawFuzzyBorder(HDC hdc, RECT *prc) {
@@ -1295,12 +1295,12 @@ int16_t FStringFitsScreen(char *lpsz, int16_t dxMax) {
     int16_t fFit;
     HFONT   hfontSav;
 
-    fFit = 1;
+    fFit = TRUE;
     hdc = GetDC(hwndFrame);
     c = fstrlen(lpsz);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
     while (c > 0 && LOWORD(GetTextExtent(hdc, lpsz, c)) > (uint16_t)dxMax) {
-        fFit = 0;
+        fFit = FALSE;
         c--;
         lpsz[c] = 0;
     }
@@ -1362,7 +1362,7 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
     char   *pchOut;
     int16_t cNyb;
 
-    fHalf = 0;
+    fHalf = FALSE;
     pchOut = szWork;
     for (; *szIn != 0; szIn++) {
         iNyb = NybbleFromCh(*szIn);
@@ -1376,13 +1376,13 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
         while (cNyb-- != 0) {
             if (fHalf == 0) {
                 *pchOut = (iNyb & 0xf) * 0x10;
-                fHalf = 1;
+                fHalf = TRUE;
             } else {
                 *pchOut |= iNyb & 0xf;
                 pchOut++;
-                fHalf = 0;
+                fHalf = FALSE;
                 if (pchOut - szWork >= 0x400) {
-                    return 0;
+                    return FALSE;
                 }
             }
             iNyb >>= 4;
@@ -1393,11 +1393,11 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
         pchOut++;
     }
     if (pchOut - szWork > *pcOut) {
-        return 0;
+        return FALSE;
     }
     *pcOut = pchOut - szWork;
     fmemcpy(szOut, szWork, *pcOut);
-    return 1;
+    return TRUE;
 }
 
 int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut) {
@@ -1406,7 +1406,7 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
     int16_t iNyb;
     char   *pchOut;
 
-    fHalf = 0;
+    fHalf = FALSE;
     pchOut = szWork;
     while (cIn > 0) {
         if (fHalf != 0) {
@@ -1442,12 +1442,12 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
         *pchOut = ChFromNybble(iNyb);
         pchOut++;
         if (pchOut - szWork > *pcOut) {
-            return 0;
+            return FALSE;
         }
     }
     *pchOut = 0;
     fstrcpy(szOut, szWork);
-    return 1;
+    return TRUE;
 }
 
 int16_t NybbleFromCh(uint8_t ch) {
@@ -1648,11 +1648,11 @@ HGLOBAL DibFromBitmap(HBITMAP hbm, uint32_t biStyle, uint16_t biBits, HPALETTE h
     bi.biClrImportant = 0;
     dwLen = (uint32_t)PaletteSize(&bi) + bi.biSize;
     hdc = GetDC(NULL);
-    hpal = SelectPalette(hdc, hpal, 0);
+    hpal = SelectPalette(hdc, hpal, FALSE);
     RealizePalette(hdc);
     hdib = GlobalAlloc(66, dwLen);
     if (hdib == 0) {
-        SelectPalette(hdc, hpal, 0);
+        SelectPalette(hdc, hpal, FALSE);
         ReleaseDC(NULL, hdc);
         return NULL;
     }
@@ -1676,19 +1676,19 @@ HGLOBAL DibFromBitmap(HBITMAP hbm, uint32_t biStyle, uint16_t biBits, HPALETTE h
         if (GetDIBits(hdc, hbm, 0, LOWORD(bi.biHeight), (uint8_t *)t_scratch_m4a + PaletteSize(lpbi), (BITMAPINFO *)lpbi, 0) == 0) {
             GlobalUnlock(hdib);
             hdib = 0;
-            SelectPalette(hdc, hpal, 0);
+            SelectPalette(hdc, hpal, FALSE);
             ReleaseDC(NULL, hdc);
             return NULL;
         }
         bi = *lpbi;
         GlobalUnlock(hdib);
-        SelectPalette(hdc, hpal, 0);
+        SelectPalette(hdc, hpal, FALSE);
         ReleaseDC(NULL, hdc);
         return hdib;
     }
     GlobalFree(hdib);
     hdib = 0;
-    SelectPalette(hdc, hpal, 0);
+    SelectPalette(hdc, hpal, FALSE);
     ReleaseDC(NULL, hdc);
     return hdib;
 }
@@ -1774,7 +1774,7 @@ int16_t FIntersectCircleLine(POINT16 ptL1, POINT16 ptL2, POINT16 ptC, int32_t r2
     dyI = yI - ptC.y;
     r2I = (uint32_t)(dxI * dxI) + (uint32_t)(dyI * dyI);
     if (r2 <= r2I) {
-        return 0;
+        return FALSE;
     }
     dxT = xI - ptL1.x;
     dyT = yI - ptL1.y;
@@ -1782,7 +1782,7 @@ int16_t FIntersectCircleLine(POINT16 ptL1, POINT16 ptL2, POINT16 ptC, int32_t r2
     dCtr = LOWORD((int32_t)sqrt((double)lT));
     lT = r2 - r2I;
     if (lT <= 0) {
-        return 0;
+        return FALSE;
     }
     dOff = LOWORD((int32_t)sqrt((double)lT));
     if (ptL1.x < ptL2.x) {
@@ -1803,9 +1803,9 @@ int16_t FIntersectCircleLine(POINT16 ptL1, POINT16 ptL2, POINT16 ptC, int32_t r2
     *pdStart = 0 <= dCtr - dOff ? dCtr - dOff : 0;
     *pdEnd = dMax >= dCtr + dOff ? dCtr + dOff : dMax;
     if (*pdEnd <= 0 || *pdStart >= dMax) {
-        return 0;
+        return FALSE;
     }
-    return 1;
+    return TRUE;
 }
 
 void IntToRoman(int16_t i, char *pszOut) {
@@ -1841,16 +1841,16 @@ int16_t FCheckPassword() {
     int32_t lSaltDef;
 
     if (lSaltCur == 0 || lSaltLast == lSaltCur || fAi != 0) {
-        return 1;
+        return TRUE;
     }
     if (vszDefPass[0] != 0) {
         lSaltDef = LSaltFromSz(vszDefPass);
         if (lSaltDef == lSaltCur) {
-            return 1;
+            return TRUE;
         }
     }
     if (ini.fValidate != 0) {
-        return 0;
+        return FALSE;
     }
     lpProc = MakeProcInstance(PasswordDlg, hInst);
     fRet = DialogBox(hInst, MAKEINTRESOURCE(IDD_PASSWORD), hwndTitle == 0 ? hwndFrame : hwndTitle, lpProc);
@@ -1972,7 +1972,7 @@ INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                         WriteMemRt(rtChgPassword, 4, &lSalt);
                     } else {
                         lSaltCur = lSalt;
-                        if (FWriteDataFile(szBase, idPlayer, 0) != 0) {
+                        if (FWriteDataFile(szBase, idPlayer, FALSE) != 0) {
                             lSaltLast = lSalt;
                         } else {
                             AlertSz(PszFormatIds(idsUnableCreateHostFile, NULL), MB_ICONHAND);
@@ -2101,7 +2101,7 @@ void UpdateProgressGauge(ProgressStep pctX10) {
             pctX10 = vpctProgressGauge;
         }
         vpctProgressGauge = pctX10;
-        DrawProgressGauge(NULL, 0, iNum);
+        DrawProgressGauge(NULL, FALSE, iNum);
     }
     return;
 }
@@ -2141,7 +2141,7 @@ INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         return 1;
     }
     hdc = BeginPaint(hwnd, &ps);
-    DrawProgressGauge(hdc, 1, 0);
+    DrawProgressGauge(hdc, TRUE, 0);
     EndPaint(hwnd, &ps);
     return 1;
 }
@@ -2241,18 +2241,18 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
 
     iRead = 0;
     lNum = 0;
-    fValid = 0;
+    fValid = FALSE;
     for (; iRead < cMax && *psz != 0; psz++) {
         if (*psz != ' ' && (*psz < '0' || *psz > '9')) {
             return -1;
         }
         if (*psz != ' ') {
-            fValid = 1;
+            fValid = TRUE;
             lNum = (uint32_t)(lNum * 10) + (int16_t)(*psz - '0');
         } else if (fValid != 0) {
             pl[iRead++] = lNum;
             lNum = 0;
-            fValid = 0;
+            fValid = FALSE;
         }
     }
     if (fValid != 0) {

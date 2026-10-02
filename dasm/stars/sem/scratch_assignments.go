@@ -62,8 +62,9 @@ func inlineScratchAssignments(f *Func, a *scratchAnalysis) bool {
 				continue
 			}
 			// Preserve the scratch store's conversion before assigning to a
-			// destination whose declared type or width may differ.
-			if !typeinfo.Equals(value.ExprType(), temp.TypeInfo) {
+			// destination whose declared type or width may differ. A Win16
+			// constant family converts as the storage it is declared with.
+			if !typeinfo.Equals(typeinfo.DeclaredType(value.ExprType()), typeinfo.DeclaredType(temp.TypeInfo)) {
 				value = &Cast{Value: value, To: temp.TypeInfo.String(), TypeInfo: temp.TypeInfo}
 			}
 			next := *use

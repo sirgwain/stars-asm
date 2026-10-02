@@ -10,7 +10,7 @@ L_4152:
         goto L_4176;
 
 L_4176:
-    return 1;
+    return TRUE;
 
 L_417c:
     goto L_41c3;
@@ -24,12 +24,12 @@ L_4185:
         goto L_41b4;
 
 L_41b4:
-    return 1;
+    return TRUE;
 
 L_41ba:
 
 L_41bd:
-    return 0;
+    return FALSE;
 
 L_41c3:
     if (msg.message == WM_MOUSEMOVE)

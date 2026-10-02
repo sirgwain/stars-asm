@@ -34,7 +34,7 @@ L_03e7:
     call strncpy(szGame, psz, 8) -> callresult(char *)
     call strlwr(szGame) -> callresult(char *)
     call _wsprintf(&szGame[strlen(szGame)], ".m%d", (idPlayer + 1)) -> callresult(int16_t)
-    call _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, 0, 1, 0, 0, NULL), szGame) -> callresult(int16_t)
+    call _wsprintf(szData, "Stars! -- %s -- %s -- %s", game.szName, PszPlayerName(idPlayer, FALSE, TRUE, FALSE, 0, NULL), szGame) -> callresult(int16_t)
     goto L_04ad
 
 L_0480:
@@ -53,7 +53,7 @@ L_04d4:
     goto L_0547
 
 L_051a:
-    call InvalidateRect(hwndScanner, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndScanner, NULL, TRUE) -> callresult(void)
     yScanTop = 1000
     xScanTop = 1000
     call SetScanScrollBars(hwndScanner) -> callresult(void)
@@ -66,7 +66,7 @@ L_0551:
     goto L_05aa
 
 L_0595:
-    call InvalidateRect(hwndMine, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndMine, NULL, TRUE) -> callresult(void)
 
 L_05aa:
     branch hwndPlanet != 0 ? L_05fa : L_05b4
@@ -76,7 +76,7 @@ L_05b4:
     goto L_060f
 
 L_05fa:
-    call InvalidateRect(hwndPlanet, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndPlanet, NULL, TRUE) -> callresult(void)
 
 L_060f:
     branch hwndTb != 0 ? L_065f : L_0619
@@ -86,7 +86,7 @@ L_0619:
     goto L_0674
 
 L_065f:
-    call InvalidateRect(hwndTb, NULL, 1) -> callresult(void)
+    call InvalidateRect(hwndTb, NULL, TRUE) -> callresult(void)
 
 L_0674:
     branch hwndMessage == 0 ? L_0687 : L_067e

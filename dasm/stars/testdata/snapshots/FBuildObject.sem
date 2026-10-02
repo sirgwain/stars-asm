@@ -55,7 +55,7 @@ L_1a09:
     branch FCanBuildShdef(lpshdef, lppl->iPlayer) != 0 ? L_1a2c : L_1a26
 
 L_1a26:
-    return 0
+    return FALSE
 
 L_1a2c:
     idm = idmHasBuiltNew
@@ -88,7 +88,7 @@ L_1b66:
     goto L_1baf
 
 L_1b9b:
-    lppl->fStarbase = 1
+    lppl->fStarbase = TRUE
 
 L_1baf:
     lppl->isb = iItem
@@ -110,7 +110,7 @@ L_1c1f:
 L_1c55:
     lpshdef->cBuilt = (lpshdef->cBuilt + 1)
     lpshdef->cExist = (lpshdef->cExist + 1)
-    return 1
+    return TRUE
 
 L_1c78:
     branch lppl->fStarbase == 0 ? L_1c98 : L_1c8f
@@ -119,7 +119,7 @@ L_1c8f:
     branch iItem < 16 ? L_1c9e : L_1c98
 
 L_1c98:
-    return 0
+    return FALSE
 
 L_1c9e:
     lpshdef = &rglpshdef[lppl->iPlayer][iItem]
@@ -130,7 +130,7 @@ L_1cd6:
 
 L_1cf3:
     call FSendPlrMsg2(lppl->iPlayer, idmStarbaseFailedBuildNewShipTypeBecause, lppl->id, (iItem + 1), 0) -> callresult(int16_t)
-    return 0
+    return FALSE
 
 L_1d1d:
     branch rgplr[lppl->iPlayer].cFleet != 0x200 ? L_219c : L_1d3a
@@ -205,11 +205,11 @@ L_20c5:
 L_20de:
     call CreateShip(lppl->iPlayer, lpfl, iItem, cBuilt) -> callresult(void)
     call FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewSDueLack27b, (lpfl->id | 0x8000), lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), lpfl->id, 0, 0, 0) -> callresult(int16_t)
-    return 1
+    return TRUE
 
 L_214f:
     call FSendPlrMsg(lppl->iPlayer, idmStarbaseBuiltNewShipSTypeLost, lppl->id, lppl->id, cBuilt, ((lppl->iPlayer << 5) | iItem), 0, 0, 0, 0) -> callresult(int16_t)
-    return 0
+    return FALSE
 
 L_219c:
     lpfl = LpflNew(lppl->iPlayer, lppl->id)
@@ -260,7 +260,7 @@ L_23d0:
     goto L_2f77
 
 L_23d6:
-    return 0
+    return FALSE
 
 L_23dc:
     t_scratch_m16_3 = lppl->cFactories
@@ -290,7 +290,7 @@ L_24f9:
     goto L_2fc9
 
 L_24fc:
-    return 0
+    return FALSE
 
 L_2505:
     t_scratch_m16_4 = lppl->cMines
@@ -307,7 +307,7 @@ L_255e:
     goto L_248b
 
 L_25bb:
-    return 0
+    return FALSE
 
 L_25c4:
     t_scratch_m16_5 = lppl->cDefenses
@@ -324,7 +324,7 @@ L_2615:
     goto L_248b
 
 L_2672:
-    return 0
+    return FALSE
 
 L_2681:
     raMajor = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv)
@@ -333,14 +333,14 @@ L_2681:
 
 L_26be:
     call FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecausePlanet, lppl->id, lppl->id, 0) -> callresult(int16_t)
-    return 0
+    return FALSE
 
 L_26e7:
     branch lppl->idFling != 0 ? L_2722 : L_26f9
 
 L_26f9:
     call FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecauseDidnt, lppl->id, lppl->id, 0) -> callresult(int16_t)
-    return 0
+    return FALSE
 
 L_2722:
     branch iItem != iobjPacket ? L_2730 : L_272b
@@ -564,7 +564,7 @@ L_2da8:
     branch cBuilt-- == 0 ? L_2fc9 : L_2db7
 
 L_2db7:
-    i = IBestTerraform(lppl, 1)
+    i = IBestTerraform(lppl, TRUE)
     branch i == 0 ? L_2da8 : L_2dd5
 
 L_2dd5:
@@ -619,8 +619,8 @@ L_2f7f:
     tablejump (iItem * 2) [0x0: L_2505, 0x2: L_23dc, 0x4: L_25c4, 0x6: L_2fc9, 0x8: L_2da8, 0xa: L_2da8, 0xc: L_2681, 0xe: L_23dc, 0x10: L_2505, 0x12: L_25c4, 0x14: L_2fc9, 0x16: L_2fc9, 0x18: L_2da8, 0x1a: L_2c05, 0x1c: L_2681, 0x1e: L_2681, 0x20: L_2681, 0x22: L_2681, 0x24: L_2ee9, 0x26: L_2ee9, 0x28: L_2ee9, 0x2a: L_2ee9, 0x2c: L_2ee9, 0x2e: L_2ee9, 0x30: L_2ee9, 0x32: L_2ee9, 0x34: L_2ee9, 0x36: L_2ec1]
 
 L_2fc3:
-    return 0
+    return FALSE
 
 L_2fc9:
-    return 1
+    return TRUE
 

@@ -50,7 +50,7 @@ L_0d1f:
 
 L_0d22:
     SelectObject(hdc, rghfontArial8[1]);
-    psz = PszPlayerName(GlobalPD.iPlayer, 1, 1, 1, 0, NULL);
+    psz = PszPlayerName(GlobalPD.iPlayer, TRUE, TRUE, TRUE, 0, NULL);
     dx = LOWORD(GetTextExtent(hdc, psz, strlen(psz))) + 8;
     dx2 = LOWORD(GetTextExtent(hdc, "Player #16", 10)) + 8;
     if (dx2 <= dx)
@@ -161,23 +161,23 @@ L_0fd7:
     goto L_1225;
 
 L_1092:
-    ptT = PtDisplayPlanetStateInfo(hdc, 0);
+    ptT = PtDisplayPlanetStateInfo(hdc, FALSE);
     goto SetDxDy;
 
 L_10aa:
-    ptT = PtDisplayZipOrdInfo(hdc, 0, 0);
+    ptT = PtDisplayZipOrdInfo(hdc, 0, FALSE);
     goto SetDxDy;
 
 L_10c6:
-    ptT = PtDisplayPlanetPopInfo(hdc, 0);
+    ptT = PtDisplayPlanetPopInfo(hdc, FALSE);
     goto SetDxDy;
 
 L_10de:
-    ptT = PtDisplayResourceInfo(hdc, 200, 0);
+    ptT = PtDisplayResourceInfo(hdc, 200, FALSE);
     goto SetDxDy;
 
 L_10fa:
-    ptT = PtDisplayFactoryMineInfo(hdc, 200, 0);
+    ptT = PtDisplayFactoryMineInfo(hdc, 200, FALSE);
 
 SetDxDy:
     dx = ptT.x + 2;
@@ -190,7 +190,7 @@ L_1128:
     goto L_1225;
 
 L_115a:
-    ptT = PtDisplayString(hdc, GlobalPD.dxOut, 0);
+    ptT = PtDisplayString(hdc, GlobalPD.dxOut, FALSE);
     goto SetDxDy;
 
 L_1176:

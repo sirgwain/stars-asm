@@ -28,7 +28,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     int32_t  l;
     PLANET   pl;
 
-    fRet = 1;
+    fRet = TRUE;
     SetVisiblePlanFleet(iPlayer);
     if (gd.fGeneratingTurn != 0 && iPlayer != -1) {
         for (i = 0; i < cFleet; i++) {
@@ -39,7 +39,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                 for (j = 0; j < 16 && lpfl->rgcsh[j] == 0; j++) {
                 }
                 if (j == 16) {
-                    lpfl->fDead = 1;
+                    lpfl->fDead = TRUE;
                 } else {
                     lpord = lpfl->lpplord->rgord;
                     if (lpord->grobj == grobjFleet) {
@@ -59,7 +59,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                     if (lpord->grTask == grTaskPatrol && (lpfl->cord <= 1 || lpord[1].grobj != grobjFleet)) {
                         lpflBest = NULL;
                         lBest = 100000000;
-                        fFoundIdeal = 0;
+                        fFoundIdeal = FALSE;
                         if (lpfl->idPlanet == -1 && lpfl->cord >= 2 && lpfl->fRepOrders != 0) {
                             pt = lpord[1].pt;
                         } else {
@@ -76,17 +76,17 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                 dy = (int16_t)(lpflTarget->pt.y - pt.y);
                                 l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
                                 if (((fFoundIdeal == 0 && lpflTarget->fMark == 0) || (l < lBest && (fFoundIdeal == 0 || lpflTarget->fMark == 0))) &&
-                                    (FMatchTarget(lpflTarget, mdTarget, 0) != 0 && FAttackPlayer(lpfl, lpflTarget->iPlayer) != 0)) {
+                                    (FMatchTarget(lpflTarget, mdTarget, FALSE) != 0 && FAttackPlayer(lpfl, lpflTarget->iPlayer) != 0)) {
                                     lpflBest = lpflTarget;
                                     lBest = l;
                                     if (lpflTarget->fMark == 0) {
-                                        fFoundIdeal = 1;
+                                        fFoundIdeal = TRUE;
                                     }
                                 }
                             }
                         }
                         if (fFoundIdeal != 0 && gd.fTutorial == 0) {
-                            lpflBest->fMark = 1;
+                            lpflBest->fMark = TRUE;
                         }
                         j = 50 * lpord->tptl.iDist + 50;
                         if (j == 550) {
@@ -102,22 +102,22 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                             }
                             if (lpfl->cord == 1) {
                                 fmemset(lpord + 1, 0, sizeof(ORDER));
-                                lpord[1].fValidTask = 1;
+                                lpord[1].fValidTask = TRUE;
                                 lpord[1].grTask = grTaskPatrol;
                                 lpord[1].tptl = lpord->tptl;
                                 if (lpord[1].tptl.iWarp == 0) {
-                                    lpord[1].iWarp = IFindIdealWarp(lpfl, 0);
+                                    lpord[1].iWarp = IFindIdealWarp(lpfl, FALSE);
                                 } else {
                                     lpord[1].iWarp = lpord[1].tsell.iPlrX;
                                 }
                                 if (lpfl->fRepOrders != 0) {
                                     lpord[2] = *lpord;
-                                    lpord[2].iWarp = IFindIdealWarp(lpfl, 0);
+                                    lpord[2].iWarp = IFindIdealWarp(lpfl, FALSE);
                                     lpfl->cord++;
                                     lpfl->lpplord->iordMac++;
                                 }
                             } else if (lpord[1].tsell.iPlrX == 0) {
-                                lpord[1].iWarp = IFindIdealWarp(lpfl, 0);
+                                lpord[1].iWarp = IFindIdealWarp(lpfl, FALSE);
                             } else {
                                 lpord[1].iWarp = lpord[1].tsell.iPlrX;
                             }
@@ -149,7 +149,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                             } else if (lpord[iord].grobj == grobjFleet) {
                                 fNoAutoTrack = lpord[iord].fNoAutoTrack;
                                 if (fNoAutoTrack != 0) {
-                                    lpord[iord].fNoAutoTrack = 0;
+                                    lpord[iord].fNoAutoTrack = FALSE;
                                 }
                                 lpflT = LpflFromId(lpord[iord].id);
                                 if (lpflT == 0 || lpflT->fDead != 0) {
@@ -198,7 +198,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
             AlertSz(PszFormatIds(idsUnableCreateHostFile, NULL), MB_ICONHAND);
         }
         idPlayer = -1;
-        fRet = 0;
+        fRet = FALSE;
     } else {
         WriteBattles(iPlayer);
         for (i = 0; i < game.cPlayer; i++) {
@@ -218,18 +218,18 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         while (i < cPlanet) {
             if (lpplT->fInclude != 0) {
                 if (lpplT->det == detAll) {
-                    WritePlanet(lpplT, rtPlanet, 0);
+                    WritePlanet(lpplT, rtPlanet, FALSE);
                     if (lpplT->lpplprod != 0) {
                         WriteRt(rtProdQ, lpplT->lpplprod->iprodMac * 4, lpplT->lpplprod->rgprod);
                     }
                 } else if (lpplT->det == detObscure) {
                     pl = *lpplT;
-                    lpplT->fStarbase = 0;
+                    lpplT->fStarbase = FALSE;
                     lpplT->det = detSome;
-                    WritePlanet(lpplT, rtPlanetB, 0);
+                    WritePlanet(lpplT, rtPlanetB, FALSE);
                     *lpplT = pl;
                 } else {
-                    WritePlanet(lpplT, rtPlanetB, 0);
+                    WritePlanet(lpplT, rtPlanetB, FALSE);
                 }
             }
             i++;
@@ -332,7 +332,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
             lpbtlplan = rglpbtlplan[i];
             j = 0;
             while (j < rgcbtlplan[i]) {
-                WriteBattlePlan(lpbtlplan, 0);
+                WriteBattlePlan(lpbtlplan, FALSE);
                 j++;
                 lpbtlplan++;
             }

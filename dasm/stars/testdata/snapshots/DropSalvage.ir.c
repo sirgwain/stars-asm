@@ -112,7 +112,7 @@ L_26d5:
     lpth->thp.wtMax = 0;
 
 L_26e9:
-    lpth->thp.fMoved = 1;
+    lpth->thp.fMoved = TRUE;
     goto L_2927;
 
 L_2700:

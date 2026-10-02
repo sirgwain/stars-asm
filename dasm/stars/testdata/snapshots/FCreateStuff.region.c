@@ -5,7 +5,7 @@ int16_t FCreateStuff() {
     HBITMAP hbmp;
     int16_t dx;
 
-    fFailed = 0;
+    fFailed = FALSE;
     dx = GetSystemMetrics(SM_CXSCREEN);
     dy = GetSystemMetrics(SM_CYSCREEN);
     if (dx < 800 || dy < 600) {
@@ -17,8 +17,8 @@ int16_t FCreateStuff() {
     } else {
         gd.mdScreenSize = 3;
     }
-    gd.fNoIdleChecks = 0;
-    gd.fAisDone = 0;
+    gd.fNoIdleChecks = FALSE;
+    gd.fAisDone = FALSE;
     vplr = vrgplrDef[0];
     hrgnHuge = CreateRectRgn(-10, -10, 2000, 2000);
     hrgnScratch = CreateRectRgn(0, 0, 10, 10);
@@ -101,22 +101,22 @@ int16_t FCreateStuff() {
     hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
     hdibToolbar = HdibLoadBigResource(IDB_TOOLBAR);
     if (hdibPlanets == 0 || hdibThings == 0 || hdibToolbar == 0) {
-        fFailed = 1;
+        fFailed = TRUE;
     }
     for (i = 0; i < 5; i++) {
         rghdibShips[i] = HdibLoadBigResource(i + 552);
         if (rghdibShips[i] == 0) {
-            fFailed = 1;
+            fFailed = TRUE;
         }
         rghdibShipsT[i] = HdibLoadBigResource(i + 557);
         if (rghdibShipsT[i] == 0) {
-            fFailed = 1;
+            fFailed = TRUE;
         }
     }
     for (i = 0; i < 7; i++) {
         rghdibInventory[i] = HdibLoadBigResource(i + 500);
         if (rghdibInventory[i] == 0) {
-            fFailed = 1;
+            fFailed = TRUE;
         }
     }
     vhpal = HpalFromDib(rghdibShips[3]);
@@ -155,7 +155,7 @@ int16_t FCreateStuff() {
     if (fFailed != 0 || hbmpScanner == 0 || hbmpUnknownPlanet == 0 || hbmpBackBld == 0 || hdibRaces == 0 || hdibRacesT == 0 || hdibRacesX == 0 ||
         hbmpMono == 0 || hbmpScanShip == 0 || hbmpMsg == 0 || hiconHost == 0 || hiconStars == 0 || hiconWait == 0) {
         AlertSz(PszFormatIds(idsUnableLoadBitmaps, NULL), MB_ICONHAND);
-        return 0;
+        return FALSE;
     }
-    return 1;
+    return TRUE;
 }

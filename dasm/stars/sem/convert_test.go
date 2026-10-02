@@ -791,7 +791,7 @@ func TestLowerMachineResolvesWideBitfieldStores(t *testing.T) {
 	}
 
 	wants := []string{
-		"lppl->fNoResearch = 0",
+		"lppl->fNoResearch = FALSE",
 		"lppl->cDefenses = 0",
 		"lppl->iScanner = 31",
 		"lppl->lStarbase = 0",

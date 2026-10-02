@@ -9,7 +9,7 @@ void EnsureAis() {
 
 L_56bc:
     fSubmitSav = gd.fSubmit;
-    fWorkDone = 0;
+    fWorkDone = FALSE;
     if (gd.fAisDone != 0)
         goto L_5893;
     else
@@ -44,9 +44,9 @@ L_5740:
     goto L_5731;
 
 L_575d:
-    gd.fSubmit = 1;
+    gd.fSubmit = TRUE;
     fErrSav = fFileErrSilent;
-    fFileErrSilent = 1;
+    fFileErrSilent = TRUE;
     iPlayer = 0;
     goto L_5781;
 
@@ -67,11 +67,11 @@ L_578c:
         goto L_57c5;
 
 L_57c5:
-    fWorkDone = 1;
-    gd.fGeneratingTurn = 1;
-    gd.fHostMode = 1;
+    fWorkDone = TRUE;
+    gd.fGeneratingTurn = TRUE;
+    gd.fHostMode = TRUE;
     fOpened = FOpenFile(dtLog, iPlayer, 32);
-    gd.fGeneratingTurn = 0;
+    gd.fGeneratingTurn = FALSE;
     gd.fHostMode = fHostSav;
     if (fOpened == 0)
         goto L_582e;
@@ -101,7 +101,7 @@ L_586c:
 
 L_5881:
     fFileErrSilent = fErrSav;
-    gd.fAisDone = 1;
+    gd.fAisDone = TRUE;
 
 L_5893:
     return;

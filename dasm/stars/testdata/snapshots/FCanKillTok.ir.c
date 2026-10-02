@@ -11,7 +11,7 @@ L_391e:
         goto L_3986;
 
 L_3986:
-    return 0;
+    return FALSE;
 
 L_398f:
     if ((lp2 & 0x7ffff000) < (lp1 & 0x7ffff000))
@@ -20,7 +20,7 @@ L_398f:
         goto L_39c6;
 
 L_39bd:
-    return 1;
+    return TRUE;
 
 L_39c6:
     if ((lp2 & 0x7fffff00) != (lp1 & 0x7fffff00))
@@ -35,8 +35,8 @@ L_39ef:
         goto L_3a14;
 
 L_3a14:
-    return 1;
+    return TRUE;
 
 L_3a1a:
-    return 0;
+    return FALSE;
 }

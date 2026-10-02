@@ -2,6 +2,12 @@
   "headers": ["WINDOWS.H", "COMMDLG.H"],
   "families": [
     {
+      "name": "Bool",
+      "kind": "truth",
+      "decl": "int16_t",
+      "members": ["FALSE", "TRUE"]
+    },
+    {
       "name": "ButtonNotify",
       "members": ["BN_CLICKED", "BN_PAINT", "BN_HILITE", "BN_UNHILITE", "BN_DISABLE", "BN_DOUBLECLICKED"]
     },

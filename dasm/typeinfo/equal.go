@@ -66,10 +66,11 @@ func enumsEqual(a, b *Enum) bool {
 		slices.Equal(a.Values, b.Values)
 }
 
-// functionsEqual reports whether two function signatures are equivalent.
+// functionsEqual reports whether two function signatures are equivalent: the
+// same C function type, where a Win16 constant family is its declared storage.
 func functionsEqual(a, b *Function) bool {
-	if a.Conv != b.Conv || a.VarArgs != b.VarArgs || !Equals(a.Ret, b.Ret) || len(a.Params) != len(b.Params) {
+	if a.Conv != b.Conv || a.VarArgs != b.VarArgs || !Equals(DeclaredType(a.Ret), DeclaredType(b.Ret)) || len(a.Params) != len(b.Params) {
 		return false
 	}
-	return slices.EqualFunc(a.Params, b.Params, func(a, b FunctionVar) bool { return Equals(a.Type, b.Type) })
+	return slices.EqualFunc(a.Params, b.Params, func(a, b FunctionVar) bool { return Equals(DeclaredType(a.Type), DeclaredType(b.Type)) })
 }

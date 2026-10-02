@@ -64,7 +64,7 @@ func TestRecoverStoredBitfieldRMW(t *testing.T) {
 				if len(converted) != 2 {
 					t.Fatalf("got %d effects, want two field assignments without stale-load capture", len(converted))
 				}
-				for i, want := range []string{"ord.grTask = grTaskXfer", "ord.fValidTask = 1"} {
+				for i, want := range []string{"ord.grTask = grTaskXfer", "ord.fValidTask = TRUE"} {
 					if text := FormatEffect(converted[i]); text != want {
 						t.Fatalf("effect %d = %s, want %s", i, text, want)
 					}

@@ -100,7 +100,7 @@ L_3bae:
         goto L_3bb7;
 
 L_3bb7:
-    lpfl->fDead = 1;
+    lpfl->fDead = TRUE;
 
 L_3bcb:
     if (lpfl->det < detMore)
@@ -175,7 +175,7 @@ L_3cd2:
     lpfl->wtFleet = RawLoad32(pb);
     pb += 4;
     ReadRt();
-    return 1;
+    return TRUE;
 
 L_3d11:
     if (hdrCur.rt == rtFleetA)
@@ -185,7 +185,7 @@ L_3d11:
 
 Corrupt:
     AlertSz(PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, NULL), MB_ICONHAND);
-    return 0;
+    return FALSE;
 
 L_3d4b:
     us = RawLoad16(pb);
@@ -259,7 +259,7 @@ L_3ef5:
 
 L_3f0b:
     *lpord = *(ORDER *)rgbCur;
-    lpord->fNoAutoTrack = 0;
+    lpord->fNoAutoTrack = FALSE;
     goto L_3eaf;
 
 L_3f33:
@@ -338,5 +338,5 @@ L_40b2:
     lpfl->lpszName = NULL;
 
 L_40c1:
-    return 1;
+    return TRUE;
 }

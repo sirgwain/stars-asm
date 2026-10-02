@@ -37,7 +37,7 @@ void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT16 *pp
         }
         lpth->thp.wtMax = 0;
     }
-    lpth->thp.fMoved = 1;
+    lpth->thp.fMoved = TRUE;
     while (wtTotal > 0) {
         for (i = 0; i < 3; i++) {
             if ((uint32_t)(lpth->thp.wtMax * 10) + rgwtMinerals[i] > 30000) {

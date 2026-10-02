@@ -80,7 +80,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         hdc = BeginPaint(hwnd, &ps);
         if (rglpfl != 0 && gd.fNoScannerDraw == 0) {
             GetClientRect(hwnd, &rc);
-            DrawScannerSBar(hdc, &ps.rcPaint, NULL, 1);
+            DrawScannerSBar(hdc, &ps.rcPaint, NULL, TRUE);
             rc.bottom -= dySBar;
             DrawScanner(hdc, &ps.rcPaint);
         }
@@ -97,7 +97,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             SetCursor(LoadCursor(NULL, MAKEINTRESOURCE(32512)));
         } else if (sel.grobj == grobjFleet && ((GetAsyncKeyState(VK_SHIFT) & 0xfffe) != 0 || (grbitScan & grbitScanAddWaypoints) != 0)) {
             SetCursor(hcurScanAdd);
-        } else if (FNearAWayPoint(pt, 0) != 0) {
+        } else if (FNearAWayPoint(pt, FALSE) != 0) {
             SetCursor(hcurOpenGrab);
         } else if (gd.fSetMassMode != 0 || gd.fSetRouteMode != 0 ||
                    (sel.grobj == grobjPlanet &&
@@ -130,28 +130,28 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         ScanToLogical(&pt);
         FFindNearestObject(pt, gd.fSetMassMode != 0 || gd.fSetRouteMode != 0 ? grobjPlanet : grobjPlanet | grobjFleet | grobjOther | grobjThing, &scan);
         if ((gd.fSetMassMode != 0 || (sel.grobj == grobjPlanet && (wParam & 4) != 0 && IWarpMAFromLppl(&sel.pl, NULL) > 0)) && msg == WM_LBUTTONDOWN) {
-            DrawShipScanPath(NULL, 0);
+            DrawShipScanPath(NULL, FALSE);
             if (scan.idpl == sel.pl.id) {
                 sel.pl.idFling = 0;
             } else {
                 sel.pl.idFling = scan.idpl + 1;
             }
             FLookupPlanet(-1, &sel.pl);
-            gd.fSetMassMode = 0;
-            DrawShipScanPath(NULL, 1);
+            gd.fSetMassMode = FALSE;
+            DrawShipScanPath(NULL, TRUE);
             DrawPlanShip(NULL, tileStarbaseOrWaypoint | tileMinimized);
             break;
         }
         if ((gd.fSetRouteMode != 0 || (sel.grobj == grobjPlanet && (wParam & 8) != 0)) && msg == WM_LBUTTONDOWN) {
-            DrawShipScanPath(NULL, 0);
+            DrawShipScanPath(NULL, FALSE);
             if (scan.idpl == sel.pl.id) {
                 sel.pl.idRoute = 0;
             } else {
                 sel.pl.idRoute = scan.idpl + 1;
             }
             FLookupPlanet(-1, &sel.pl);
-            gd.fSetRouteMode = 0;
-            DrawShipScanPath(NULL, 1);
+            gd.fSetRouteMode = FALSE;
+            DrawShipScanPath(NULL, TRUE);
             DrawPlanShip(NULL, tileProductionOrOrbit | tileMinimized);
             break;
         }
@@ -195,7 +195,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 if (pt.x == lpth->pt.x && pt.y == lpth->pt.y) {
                     if (fSep == 0) {
                         rgid[c++] = -1;
-                        fSep = 1;
+                        fSep = TRUE;
                     }
                     rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;
                     if (c >= 100)
@@ -203,7 +203,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 }
             }
             LogicalToScan(&pt);
-            iSel = PopupMenu(hwnd, pt.x, pt.y, c, rgid, NULL, iChecked, 1);
+            iSel = PopupMenu(hwnd, pt.x, pt.y, c, rgid, NULL, iChecked, TRUE);
             if (iSel < 0)
                 break;
             if ((rgid[iSel] & 0x80000000) != 0) {
@@ -235,10 +235,10 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             }
             fChgScan = scan.pt.x == sel.scan.pt.x && scan.pt.y == sel.scan.pt.y;
             ChangeScanSel(&scan, 1);
-            if ((FNearAWayPoint(pt, 1) != 0 && FHandleWayPointDrag(pt) != 0) || fChgScan == 0 || (scan.grobj != grobjFleet && scan.grobj != grobjPlanet))
+            if ((FNearAWayPoint(pt, TRUE) != 0 && FHandleWayPointDrag(pt) != 0) || fChgScan == 0 || (scan.grobj != grobjFleet && scan.grobj != grobjPlanet))
                 break;
             if (scan.pt.x == sel.pt.x && scan.pt.y == sel.pt.y) {
-                if (FGetNextObjHere(&scan, 1) == 0)
+                if (FGetNextObjHere(&scan, TRUE) == 0)
                     break;
             } else if (scan.grobj == grobjPlanet) {
                 if (FLookupPlanet(scan.idpl, &plT) == 0)
@@ -296,13 +296,13 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             break;
         if (msg == WM_VSCROLL) {
             dy = yScanTop;
-            SetScrollPos(hwnd, SB_VERT, yScanTop + d, 1);
+            SetScrollPos(hwnd, SB_VERT, yScanTop + d, TRUE);
             yScanTop = GetScrollPos(hwnd, SB_VERT);
             ScrollScanner(0, PtToScan(dy - yScanTop));
             break;
         }
         dx = xScanTop;
-        SetScrollPos(hwnd, SB_HORZ, xScanTop + d, 1);
+        SetScrollPos(hwnd, SB_HORZ, xScanTop + d, TRUE);
         xScanTop = GetScrollPos(hwnd, SB_HORZ);
         ScrollScanner(PtToScan(dx - xScanTop), 0);
         break;

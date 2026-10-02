@@ -11,7 +11,7 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
 L_4ac2:
     fSilentSav = fFileErrSilent;
     ids = idsCantOpenFile;
-    gd.fPartialTurn = 0;
+    gd.fPartialTurn = FALSE;
     fCheckMulti = dt & 0x2000;
     fRewind = dt & 0x1000;
     dt &= 0xff;
@@ -28,10 +28,10 @@ L_4b27:
     FileError(ids);
     StreamClose();
     penvMem = penvMemSav;
-    return 0;
+    return FALSE;
 
 L_4b49:
-    fFileErrSilent = 1;
+    fFileErrSilent = TRUE;
     StreamOpen(szWork, md);
     fFileErrSilent = fSilentSav;
     ids = idsGameFileAppearsCorruptUnableLoadFile;
@@ -100,7 +100,7 @@ L_4c2a:
 LBadFile:
     StreamClose();
     penvMem = penvMemSav;
-    return 0;
+    return FALSE;
 
 L_4c47:
     rtbof = *((RTBOF *)rgbCur);
@@ -238,7 +238,7 @@ L_4e34:
         goto L_4e46;
 
 L_4e46:
-    gd.fPartialTurn = 1;
+    gd.fPartialTurn = TRUE;
     goto LBadFile;
 
 L_4e58:
@@ -283,5 +283,5 @@ L_4ee3:
     penvMem = penvMemSav;
     wVersFile = rtbof.wVersion;
     gd.fFileCrippled = rtbof.fCrippled;
-    return 1;
+    return TRUE;
 }

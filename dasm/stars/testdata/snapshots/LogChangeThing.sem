@@ -13,7 +13,7 @@ LogChangeThing  (log)
   stats: blocks=0  labels=0
 */
 L_9908:
-    fChg = 0
+    fChg = FALSE
     branch gd.fGeneratingTurn != 0 ? L_99f0 : L_9929
 
 L_9929:
@@ -29,7 +29,7 @@ L_9952:
 
 
 L_999c:
-    fChg = 1
+    fChg = TRUE
 
 L_99a1:
     i = (i + 1)
@@ -45,12 +45,12 @@ L_99b7:
 
 L_99c1:
     call LogMakeValidXfer(&lx, &lxNew) -> callresult(void)
-    fValidLx = 0
+    fValidLx = FALSE
     goto L_99f0
 
 L_99da:
     lx = lxNew
-    fValidLx = 1
+    fValidLx = TRUE
 
 L_99f0:
     return

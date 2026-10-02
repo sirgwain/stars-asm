@@ -76,7 +76,7 @@ L_5e8d:
         goto L_5e98;
 
 L_5e98:
-    psz = PszPlayerName(i, 1, 1, 1, 0, NULL);
+    psz = PszPlayerName(i, TRUE, TRUE, TRUE, 0, NULL);
     SendMessage(hwndMsgDrop, CB_ADDSTRING, 0, (LPARAM)psz);
     goto L_5e89;
 
@@ -149,7 +149,7 @@ L_6116:
     idm = IdmGetMessageN(iMsgCur);
     fSet = (bitfMsgFiltered[idm >> 3] & 1 << (idm & 7)) != 0;
     SetFilteringGroups(idm, fSet == 0);
-    DirtyGame(1);
+    DirtyGame(TRUE);
     if (gd.fTutorial == 0)
         goto L_61a0;
     else
@@ -159,7 +159,7 @@ L_619b:
     AdvanceTutor();
 
 L_61a0:
-    InvalidateRect(hwndMessage, NULL, 1);
+    InvalidateRect(hwndMessage, NULL, TRUE);
     SetMsgTitle(hwnd);
     goto L_7207;
 
@@ -197,7 +197,7 @@ L_6266:
     iMsgCur = i;
 
 L_626c:
-    InvalidateRect(hwndMessage, NULL, 1);
+    InvalidateRect(hwndMessage, NULL, TRUE);
     SetMsgTitle(hwnd);
     goto L_7207;
 
@@ -275,7 +275,7 @@ L_6374:
 
 L_637a:
     gd.fSendMsgMode = gd.fSendMsgMode == 0;
-    InvalidateRect(hwndMessage, NULL, 1);
+    InvalidateRect(hwndMessage, NULL, TRUE);
     SetMsgTitle(hwnd);
     SetFocus(hwndMsgEdit);
 
@@ -373,7 +373,7 @@ L_6639:
 L_663f:
 
 L_6642:
-    cch = _wsprintf(lpb2k, szT, PszPlayerName(lpmsgplr->iPlrFrom, 1, 1, 1, 0, NULL), 13, 10);
+    cch = _wsprintf(lpb2k, szT, PszPlayerName(lpmsgplr->iPlrFrom, TRUE, TRUE, TRUE, 0, NULL), 13, 10);
     if (CchGetString(idsSCC2, szT) >= 32)
         goto L_66a9;
     else
@@ -395,7 +395,7 @@ L_66c1:
     goto L_66fb;
 
 L_66d2:
-    t_merge_66fb_0001 = PszPlayerName(lpmsgplr->iPlrTo - 1, 1, 1, 1, 0, NULL);
+    t_merge_66fb_0001 = PszPlayerName(lpmsgplr->iPlrTo - 1, TRUE, TRUE, TRUE, 0, NULL);
 
 L_66fb:
     cch += _wsprintf(lpb2k + cch, szT, t_merge_66fb_0001, 13, 10);
@@ -661,11 +661,11 @@ L_6bc2:
 
 L_6bd6:
     iMsgCur = -1;
-    i = IMsgNext(0);
+    i = IMsgNext(FALSE);
     goto L_6bfd;
 
 L_6bee:
-    i = IMsgPrev(0);
+    i = IMsgPrev(FALSE);
 
 L_6bfd:
     if (i == -1)
@@ -687,16 +687,16 @@ L_6c1f:
     iMsgCur--;
 
 SetupNewMsg:
-    gd.fGotoVCR = 0;
+    gd.fGotoVCR = FALSE;
     SetMsgTitle(hwnd);
-    InvalidateRect(hwnd, &rcMsgText, 1);
+    InvalidateRect(hwnd, &rcMsgText, TRUE);
     if (gd.fTutorial == 0)
         goto L_7207;
     else
         goto L_6c67;
 
 L_6c67:
-    tutor.fChange = 1;
+    tutor.fChange = TRUE;
     AdvanceTutor();
 
 L_6c78:
@@ -732,11 +732,11 @@ L_6ccb:
 
 L_6cdf:
     iMsgCur = cMsg + vcmsgplrIn;
-    i = IMsgPrev(0);
+    i = IMsgPrev(FALSE);
     goto L_6d0a;
 
 L_6cfb:
-    i = IMsgNext(0);
+    i = IMsgNext(FALSE);
 
 L_6d0a:
     if (i == -1)
@@ -826,7 +826,7 @@ L_6e1f:
         goto L_6e32;
 
 L_6e32:
-    gd.fGotoVCR = 1;
+    gd.fGotoVCR = TRUE;
     SetMsgTitle(hwnd);
     goto L_7163;
 
@@ -843,7 +843,7 @@ L_6e56:
         goto L_6e62;
 
 L_6e62:
-    ChangeProduction(0);
+    ChangeProduction(FALSE);
 
 L_6e6e:
     goto L_7163;
@@ -865,7 +865,7 @@ L_6eca:
     scan.pt = lpth->pt;
     scan.grobj = grobjThing;
     ChangeScanSel(&scan, 0);
-    CtrPointScan(scan.pt, 1);
+    CtrPointScan(scan.pt, TRUE);
 
 L_6f02:
     goto L_7163;
@@ -882,7 +882,7 @@ L_6f24:
     goto L_7163;
 
 L_6f33:
-    gd.fGotoVCR = 1;
+    gd.fGotoVCR = TRUE;
     SetMsgTitle(hwnd);
 
 L_6f4a:
@@ -965,11 +965,11 @@ L_70b3:
         goto L_70fd;
 
 L_70fd:
-    InvalidateRect(hwndBrowserChild, NULL, 1);
+    InvalidateRect(hwndBrowserChild, NULL, TRUE);
     goto L_7163;
 
 L_7115:
-    fBrowserValid = 1;
+    fBrowserValid = TRUE;
     PostMessage(hwndFrame, WM_COMMAND, IDM_VIEW_BROWSER_TOGGLE2, 0);
 
 L_7134:
@@ -1016,7 +1016,7 @@ L_7163:
         goto L_7176;
 
 L_7176:
-    tutor.fChange = 1;
+    tutor.fChange = TRUE;
     AdvanceTutor();
 
 L_7187:

@@ -148,13 +148,14 @@ func (p *resolveEnumsProcessor) rewriter() *semRewriter {
 			case *Compare:
 				lhs, lhsChanged := w.rewriteExpr(e.LHS)
 				rhs, rhsChanged := w.rewriteExpr(e.RHS)
-				if enumType, ok := p.expectedEnumType(lhs); ok {
+				// a truth test stays numeric: f != 0, not f != FALSE
+				if enumType, ok := p.expectedEnumType(lhs); ok && !enumType.Truth {
 					if nextRHS, changed := p.resolveExpectedEnum(rhs, enumType); changed {
 						rhs = nextRHS
 						rhsChanged = true
 					}
 				}
-				if enumType, ok := p.expectedEnumType(rhs); ok {
+				if enumType, ok := p.expectedEnumType(rhs); ok && !enumType.Truth {
 					if nextLHS, changed := p.resolveExpectedEnum(lhs, enumType); changed {
 						lhs = nextLHS
 						lhsChanged = true

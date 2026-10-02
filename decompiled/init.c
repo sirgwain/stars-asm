@@ -9,7 +9,7 @@ int16_t FCreateStuff() {
     HBITMAP hbmp;
     int16_t dx;
 
-    fFailed = 0;
+    fFailed = FALSE;
     dx = GetSystemMetrics(SM_CXSCREEN);
     dy = GetSystemMetrics(SM_CYSCREEN);
     if (dx < 800 || dy < 600) {
@@ -21,8 +21,8 @@ int16_t FCreateStuff() {
     } else {
         gd.mdScreenSize = 3;
     }
-    gd.fNoIdleChecks = 0;
-    gd.fAisDone = 0;
+    gd.fNoIdleChecks = FALSE;
+    gd.fAisDone = FALSE;
     vplr = vrgplrDef[0];
     hrgnHuge = CreateRectRgn(-10, -10, 2000, 2000);
     hrgnScratch = CreateRectRgn(0, 0, 10, 10);
@@ -105,22 +105,22 @@ int16_t FCreateStuff() {
     hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
     hdibToolbar = HdibLoadBigResource(IDB_TOOLBAR);
     if (hdibPlanets == 0 || hdibThings == 0 || hdibToolbar == 0) {
-        fFailed = 1;
+        fFailed = TRUE;
     }
     for (i = 0; i < 5; i++) {
         rghdibShips[i] = HdibLoadBigResource(i + 552);
         if (rghdibShips[i] == 0) {
-            fFailed = 1;
+            fFailed = TRUE;
         }
         rghdibShipsT[i] = HdibLoadBigResource(i + 557);
         if (rghdibShipsT[i] == 0) {
-            fFailed = 1;
+            fFailed = TRUE;
         }
     }
     for (i = 0; i < 7; i++) {
         rghdibInventory[i] = HdibLoadBigResource(i + 500);
         if (rghdibInventory[i] == 0) {
-            fFailed = 1;
+            fFailed = TRUE;
         }
     }
     vhpal = HpalFromDib(rghdibShips[3]);
@@ -159,9 +159,9 @@ int16_t FCreateStuff() {
     if (fFailed != 0 || hbmpScanner == 0 || hbmpUnknownPlanet == 0 || hbmpBackBld == 0 || hdibRaces == 0 || hdibRacesT == 0 || hdibRacesX == 0 ||
         hbmpMono == 0 || hbmpScanShip == 0 || hbmpMsg == 0 || hiconHost == 0 || hiconStars == 0 || hiconWait == 0) {
         AlertSz(PszFormatIds(idsUnableLoadBitmaps, NULL), MB_ICONHAND);
-        return 0;
+        return FALSE;
     }
-    return 1;
+    return TRUE;
 }
 
 int16_t FCreateFonts(HDC hdc) {
@@ -211,15 +211,15 @@ int16_t FCreateFonts(HDC hdc) {
     dyArial10 = tm.tmHeight + tm.tmExternalLeading;
     SelectObject(hdc, hfontSav);
     LocalFree(plf);
-    return 1;
+    return TRUE;
 }
 
 int16_t InitInstance(int16_t nCmdShow) {
     int16_t sw;
     RECT    rc;
 
-    ini.fWait = 0;
-    ini.fStartupFile = 0;
+    ini.fWait = FALSE;
+    ini.fStartupFile = FALSE;
     ini.grobjSel = 0;
     ini.idPlayer = -1;
     ReadIniSettings();
@@ -267,8 +267,8 @@ void InitTiles() {
             }
             rgtile[i].dyFull += rgtile[i].yTop * dyArial8;
             rgtile[i].yTop = yTop;
-            rgtile[i].fFixCtls = 0;
-            rgtile[i].fMinDraw = 0;
+            rgtile[i].fFixCtls = FALSE;
+            rgtile[i].fMinDraw = FALSE;
             if (rgtile[i].fPopped != 0) {
                 yTop += rgtile[i].dyFull + 4;
             } else {
@@ -306,11 +306,11 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
             pch = &szWork[1];
             for (i = 0; i < 4; i++) {
                 rg[i] = 0;
-                fNeg = 0;
+                fNeg = FALSE;
                 j = 0;
                 while (j < 4) {
                     if (*pch == '-') {
-                        fNeg = 1;
+                        fNeg = TRUE;
                     } else {
                         if (*pch < '0' || *pch > '9')
                             goto NoRc;
@@ -329,7 +329,7 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
             rc.bottom = rg[3];
             fMaximized = szWork[0] == 'M';
             fMinimized = szWork[0] == 'I';
-            fInitalized = 1;
+            fInitalized = TRUE;
         }
         goto L_11ec;
     }
@@ -339,8 +339,8 @@ NoRc:
     rc.bottom = 0;
     rc.top = 0;
     fMaximized = ids == idsMain;
-    fMinimized = 0;
-    fInitalized = 0;
+    fMinimized = FALSE;
+    fInitalized = FALSE;
 L_11ec:
     pwn->rc = rc;
     pwn->fMaximized = fMaximized;
@@ -364,9 +364,9 @@ void ReadIniSettings() {
     uint16_t t_scratch_m4a_8;
     uint16_t t_scratch_m4c;
 
-    ini.fGen = 0;
-    ini.fTry = 0;
-    ini.fWait = 0;
+    ini.fGen = FALSE;
+    ini.fTry = FALSE;
+    ini.fWait = FALSE;
     CchGetString(idsWindows, szSection);
     CchGetString(idsStarsIni, szIniFile);
     GetIniWinRc(szSection, szIniFile, idsMain, &ini.wnFrame);
@@ -526,10 +526,10 @@ void ReadIniSettings() {
     CchGetString(idsFile1, szEntry);
     cch = GetPrivateProfileString(szSection, szEntry, ".", szWork, 256, szIniFile);
     if (cch > 3) {
-        ini.fStartupFile = 1;
+        ini.fStartupFile = TRUE;
         strcpy(szBase, szWork);
     } else {
-        ini.fStartupFile = 0;
+        ini.fStartupFile = FALSE;
     }
     if (vrgszMRU == 0) {
         vrgszMRU = LpAlloc(2304, htPerm);
@@ -658,7 +658,7 @@ void ReadIniSettings() {
                     psz++;
                 }
                 strcpy(vrgZip[i].szName, psz);
-                vrgZip[i].fValid = 1;
+                vrgZip[i].fValid = TRUE;
             }
         }
     }
@@ -683,7 +683,7 @@ void ReadIniSettings() {
                     strcpy(vrgZipProd[i].szName, psz);
                     psz = szWork;
                     vrgZipProd[i].fNoResearch = *psz != 'a';
-                    vrgZipProd[i].fValid = 1;
+                    vrgZipProd[i].fValid = TRUE;
                     vrgZipProd[i].cpq = cpq;
                     psz += 2;
                     for (iPass = 0; iPass < cpq; iPass++) {
@@ -707,7 +707,7 @@ void ReadIniSettings() {
         }
     }
     CchGetString(idsDefault, vrgZipProd[0].szName);
-    vrgZipProd[0].fValid = 1;
+    vrgZipProd[0].fValid = TRUE;
     return;
 }
 

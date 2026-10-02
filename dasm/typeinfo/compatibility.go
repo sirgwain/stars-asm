@@ -16,6 +16,8 @@ func isCallCompatible(formal, actual Type, seen map[typePair]bool) bool {
 	if formal == nil || actual == nil {
 		return false
 	}
+	// a Win16 constant family is passed as the storage C declares it with
+	formal, actual = DeclaredType(formal), DeclaredType(actual)
 	if Equals(formal, actual) {
 		return true
 	}

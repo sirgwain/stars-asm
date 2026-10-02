@@ -20,7 +20,7 @@ ReadPlayerMessages  (msg)
 */
 L_994a:
     imemMsgT = 0
-    fOOM = 0
+    fOOM = FALSE
     lpb = ptroff(lpMsg, imemMsgCur)
 
 L_9970:
@@ -87,7 +87,7 @@ L_9b0c:
 
 L_9b2c:
     penvMem = penvMemSav
-    fOOM = 1
+    fOOM = TRUE
     goto L_9bb2
 
 L_9b3a:
@@ -109,5 +109,5 @@ LOutOfMem:
 
 L_9bba:
     iMsgCur = -1
-    iMsgCur = IMsgNext(0)
+    iMsgCur = IMsgNext(FALSE)
     return

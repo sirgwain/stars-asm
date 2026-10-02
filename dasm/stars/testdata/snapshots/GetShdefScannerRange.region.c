@@ -19,7 +19,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
 
     lRange4 = (double)0;
     lPlanRange4 = (double)0;
-    fHasScanner = 0;
+    fHasScanner = FALSE;
     iSteal = 0;
     cDetectors = 0;
     fBuiltIn = iplr != -1 && GetRaceStat(&rgplr[iplr], rsMajorAdv) == raNone;
@@ -56,7 +56,7 @@ int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange,
     while (j < chs) {
         if (lphs->cItem != 0) {
             if (lphs->grhst == hstScanner) {
-                fHasScanner = 1;
+                fHasScanner = TRUE;
                 iScanner = lphs->iItem;
                 t_call_52ec = LpscannerFromId(lphs->iItem);
                 dRangeT = t_call_52ec->dRange;
