@@ -1,0 +1,76 @@
+/*
+WriteRtShDef  (save)
+  addr: 000f:574e  len=534
+  sig:  void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    uint8_t * *      ppbStore       [BP+0xa]
+  locals:
+    int16_t          cOut           [BP-0xba]
+    uint8_t *        pb             [BP-0xb8]
+    char[32]         szHulName      [BP-0xb6]
+    uint8_t[147]     rgb            [BP-0x96]
+
+  stats: blocks=0  labels=0
+*/
+L_574e:
+    ((RTSHDEF *)rgb)->ihuldef = lobyte(lpshdef->hul.ihuldef)
+    ((RTSHDEF *)rgb)->wFlags = lpshdef->wFlags
+    ((RTSHDEF *)rgb)->chs = lpshdef->hul.chs
+    ((RTSHDEF *)rgb)->ibmp = lobyte(lpshdef->hul.ibmp)
+    branch lpshdef->det != detAll ? L_5816 : L_5794
+
+L_5794:
+    ((RTSHDEF *)rgb)->dp = lpshdef->hul.dp
+    ((RTSHDEF *)rgb)->turn = lpshdef->turn
+    ((RTSHDEF *)rgb)->cBuilt = lpshdef->cBuilt
+    ((RTSHDEF *)rgb)->cExist = lpshdef->cExist
+    pb = (uint8_t *)&((RTSHDEF *)rgb)->rghs
+    call fmemmove(pb, lpshdef->hul.rghs, (((RTSHDEF *)rgb)->chs * 4)) -> callresult(void *)
+    pb = &pb[(((RTSHDEF *)rgb)->chs * 4)]
+    goto L_5829
+
+L_5816:
+    ((RTSHDEF *)rgb)->wtEmpty = lpshdef->hul.wtEmpty
+    pb = &((RTSHDEF *)rgb)->chs
+
+L_5829:
+    branch lpshdef->det != detAll ? L_585b : L_583b
+
+L_583b:
+    call fstrcpy(szHulName, lpshdef->hul.szClass) -> callresult(char *)
+    goto L_5880
+
+L_585b:
+    call fstrcpy(szHulName, LphuldefFromId(lpshdef->hul.ihuldef)->hul.szClass) -> callresult(char *)
+
+L_5880:
+    cOut = 31
+    branch sext8to16(szHulName[0]) == 0 ? L_58d5 : L_5893
+
+L_5893:
+    branch FCompressUserString(szHulName, &pb[1], &cOut) == 0 ? L_58d5 : L_58bd
+
+L_58bd:
+    *pb = lobyte(cOut)
+    pb = &pb[(1 + cOut)]
+    goto L_5907
+
+L_58d5:
+    call strcpy(&pb[1], szHulName) -> callresult(char *)
+    *pb = 0
+    pb = &pb[(2 + strlen(szHulName))]
+
+L_5907:
+    branch ppbStore == 0 ? L_593f : L_5910
+
+L_5910:
+    call memmove(*ppbStore, rgb, (pb - rgb)) -> callresult(void *)
+    *ppbStore = (*ppbStore + (pb - rgb))
+    goto L_595e
+
+L_593f:
+    call WriteRt(rtShDef, (pb - rgb), rgb) -> callresult(void)
+
+L_595e:
+    return

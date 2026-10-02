@@ -401,8 +401,9 @@ func TestConvertTypedCodeSegmentIndexedAddressPreservesArrayIndex(t *testing.T) 
 	}
 
 	got := FormatExpr((&machineConverter{ctx: ctx}).convertValueTyped(value, create.Params[2].Type))
-	if got != "&vrgRobAip[vrgRobIshAip[37]]" {
-		t.Fatalf("converted CS indexed pointer = %q, want &vrgRobAip[vrgRobIshAip[37]]", got)
+	want := "(uint8_t *)&vrgRobAip[vrgRobIshAip[37]]"
+	if got != want {
+		t.Fatalf("converted CS indexed pointer = %q, want %s", got, want)
 	}
 }
 

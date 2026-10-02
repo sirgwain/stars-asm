@@ -1070,7 +1070,6 @@ void DoBattles(int16_t fPostMovement) {
     uint16_t grfSpectator;
     uint16_t grfPlayer;
     uint16_t rggrfAttack[16];
-    int16_t  t_call_3b1d;
 
     LinkFleets(fPostMovement);
     vrgtok = LpAlloc(256 * sizeof(TOK), htMisc);
@@ -1081,9 +1080,8 @@ void DoBattles(int16_t fPostMovement) {
             break;
         lpfl->fBombed = 0;
         if (lpfl->fDone == 0 && lpfl->fDead == 0 && lpfl->lpflNext != 0) {
-            t_call_3b1d = CplrBattle(lpfl, rggrfAttack, &grfPlayer, &grfSpectator);
-            cplr = t_call_3b1d;
-            if (t_call_3b1d != -1 && t_call_3b1d != 0 && FDoCoolBattle(lpfl, cplr, rggrfAttack, grfPlayer, grfSpectator) != 0) {
+            cplr = CplrBattle(lpfl, rggrfAttack, &grfPlayer, &grfSpectator);
+            if (cplr != -1 && cplr != 0 && FDoCoolBattle(lpfl, cplr, rggrfAttack, grfPlayer, grfSpectator) != 0) {
             }
         }
     }
@@ -2103,46 +2101,46 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
 }
 
 int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack) {
-    int32_t  dpShieldLeft;
-    int16_t  dz;
-    SHDEF   *lpshdefE;
-    int32_t  dpArmorLeft;
-    int32_t  dpSingle;
-    int32_t  scoreBest;
-    TOK     *ptok;
-    int16_t  ctokDamaged;
-    int16_t  itokTarget;
-    int32_t  dpMain;
-    int32_t  score;
-    int16_t  fSetItok;
-    int16_t  dxRangeCur;
-    int16_t  ihs;
-    int32_t  cTorpMiss;
-    int32_t  cTorpFire;
-    int32_t  cTorpsLeft;
-    int16_t  i;
-    int32_t  cTorpBase;
-    uint16_t grfWeapon;
-    int16_t  cItem;
-    int32_t  pctHit;
-    TOK     *ptokTarget;
-    SHDEF   *lpshdef;
-    int32_t  lValue;
-    int32_t  dpT;
-    HUL     *lphul;
-    int32_t  cTorpHit;
-    int16_t  fPrimary;
-    int32_t  dp;
-    int16_t  itok;
-    int32_t  dpCol;
-    TOK     *ptokE;
-    PART     part;
-    int32_t  nds;
-    int16_t  fCapMissile;
-    int32_t  nts;
-    int32_t  ntk;
-    int32_t  dpShieldCur;
-    int32_t  dpHitArmor;
+    int32_t   dpShieldLeft;
+    int16_t   dz;
+    SHDEF    *lpshdefE;
+    int32_t   dpArmorLeft;
+    int32_t   dpSingle;
+    int32_t   scoreBest;
+    TOK      *ptok;
+    int16_t   ctokDamaged;
+    int16_t   itokTarget;
+    int32_t   dpMain;
+    int32_t   score;
+    int16_t   fSetItok;
+    int16_t   dxRangeCur;
+    int16_t   ihs;
+    int32_t   cTorpMiss;
+    int32_t   cTorpFire;
+    int32_t   cTorpsLeft;
+    int16_t   i;
+    int32_t   cTorpBase;
+    GrfWeapon grfWeapon;
+    int16_t   cItem;
+    int32_t   pctHit;
+    TOK      *ptokTarget;
+    SHDEF    *lpshdef;
+    int32_t   lValue;
+    int32_t   dpT;
+    HUL      *lphul;
+    int32_t   cTorpHit;
+    int16_t   fPrimary;
+    int32_t   dp;
+    int16_t   itok;
+    int32_t   dpCol;
+    TOK      *ptokE;
+    PART      part;
+    int32_t   nds;
+    int16_t   fCapMissile;
+    int32_t   nts;
+    int32_t   ntk;
+    int32_t   dpShieldCur;
+    int32_t   dpHitArmor;
 
     dxRangeCur = 0;
     fSetItok = 0;
@@ -2167,9 +2165,9 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                 if (part.hs.grhst == hstBeam && (part.pbeam->grfAbilities & beamGatling) != 0) {
                     dp = (uint32_t)((uint32_t)(part.pbeam->dp * cItem) * (uint32_t)ptok->csh);
                     if (part.pbeam->dp >= 200) {
-                        grfWeapon = 2;
+                        grfWeapon = bitFBeamHigh;
                     } else {
-                        grfWeapon = 1;
+                        grfWeapon = bitFBeamLow;
                     }
                     if (ptok->pctCap != 0) {
                         dp = (int32_t)(dp * (int16_t)ptok->pctCap) / 100;
@@ -2305,9 +2303,9 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                 dp = (int32_t)(dp * (100 - (int32_t)((int32_t)(dz * 10) / part.pbeam->dRangeMax))) / 100;
                             }
                             if (part.pbeam->dp >= 200) {
-                                grfWeapon = 2;
+                                grfWeapon = bitFBeamHigh;
                             } else {
-                                grfWeapon = 1;
+                                grfWeapon = bitFBeamLow;
                             }
                             dpT = dp;
                             if (FDamageTok(ptokTarget, itokTarget, &dp, 0, grfWeapon, part.pbeam->grfAbilities & beamSapper, NULL) != 0) {
@@ -2328,7 +2326,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                 dpMain = 0;
                             }
                         } else if (part.hs.grhst == hstTorp && cTorpsLeft > 0) {
-                            grfWeapon = 4;
+                            grfWeapon = bitFTorp;
                             cTorpBase = cTorpsLeft;
                             cTorpHit = CTorpHit(cTorpBase, ptokTarget, part.ptorp->dHitChance, ptok->pctBC);
                             lpshdefE = LpshdefFromTok(ptokTarget);
@@ -2345,7 +2343,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                 if (dpShieldLeft <= 0) {
                                     dp = (int32_t)(dp * 2);
                                 }
-                                grfWeapon |= 8;
+                                grfWeapon |= bitFMissile;
                             }
                             i = ptokTarget->csh;
                             if (i >= cTorpBase || (int32_t)(uint32_t)(cTorpHit * dp) <= dpArmorLeft) {
@@ -2369,7 +2367,7 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
                                 }
                             }
                             dpCol = (int32_t)(cTorpMiss * dp) / 8;
-                            if (dpCol > 0 && FDamageTok(ptokTarget, itokTarget, &dpCol, 0, grfWeapon | 0x80, 1, NULL) != 0) {
+                            if (dpCol > 0 && FDamageTok(ptokTarget, itokTarget, &dpCol, 0, grfWeapon | bitFDeflected, 1, NULL) != 0) {
                                 ctokDamaged++;
                             }
                             dpT = (int32_t)(cTorpFire * dp) / 2;
@@ -2494,7 +2492,7 @@ void CreateSalvage(FLEET *pfl, THING **plpth) {
     return;
 }
 
-int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, uint16_t grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp) {
+int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, GrfWeapon grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp) {
     int16_t   pctSh;
     DV        dv;
     uint16_t *pwLosses;
@@ -2516,30 +2514,30 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
 
     dp = *pdpBeam;
     fmemset(lpbBattleCur, 0, 8);
-    *lpbBattleCur = LOBYTE(itok);
-    lpbBattleCur[1] = LOBYTE(grfWeapon);
+    ((KILL *)lpbBattleCur)->itok = LOBYTE(itok);
+    ((KILL *)lpbBattleCur)->grfWeapon = LOBYTE(grfWeapon);
     if (ptok->dpShield != 0) {
         dpOrig = (uint32_t)ptok->dpShield;
         dpT = (uint32_t)ptok->dpShield - dpOrig;
         dpOrig = (uint32_t)(dpOrig * (uint32_t)ptok->csh);
         if (dpOrig > dp) {
             dpOrig -= dp;
-            RawStore16((uint8_t *)lpbBattleCur + 0x4, WPackLong(dp));
+            ((KILL *)lpbBattleCur)->dpShield = WPackLong(dp);
             ptok->dpShield = LOWORD((int32_t)(dpOrig / (int32_t)ptok->csh)) + LOWORD(dpT);
             dp = 0;
         } else {
             dp -= dpOrig;
-            RawStore16((uint8_t *)lpbBattleCur + 0x4, WPackLong(dpOrig));
+            ((KILL *)lpbBattleCur)->dpShield = WPackLong(dpOrig);
             ptok->dpShield = 0;
         }
     } else if (fShieldsOnly != 0) {
         return 0;
     }
     if ((dp == 0 || fShieldsOnly != 0) && dpTorp == 0) {
-        RawStore16((uint8_t *)lpbBattleCur + 0x6, ptok->dv.dp);
+        ((KILL *)lpbBattleCur)->dv.dp = ptok->dv.dp;
         *pdpBeam = dp;
-        if ((lpbBattleCur[1] & 4) != 0) {
-            lpbBattleCur[1] |= 0xc0;
+        if ((((KILL *)lpbBattleCur)->grfWeapon & bitFTorp) != 0) {
+            ((KILL *)lpbBattleCur)->grfWeapon |= bitFNoHit | bitFDeflected;
         }
         lpbBattleCur += 8;
         return 1;
@@ -2560,8 +2558,8 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
             dp += (int32_t)(dpShdef * dv.pctDp) / 500;
         }
         if (dp >= dpShdef) {
-            RawStore16((uint8_t *)lpbBattleCur + 0x6, (RawLoad16((uint8_t *)lpbBattleCur + 0x6) & 0x7f) | 0xfa00);
-            RawStore16((uint8_t *)lpbBattleCur + 0x2, 1);
+            ((KILL *)lpbBattleCur)->dv.pctDp = 500;
+            ((KILL *)lpbBattleCur)->cshKill = 1;
             ptok->fActive = 0;
             ptok->csh = 0;
             fStarbaseDied = 1;
@@ -2577,12 +2575,12 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
             } else {
                 lppl->pctDp++;
             }
-            RawStore16((uint8_t *)lpbBattleCur + 0x6, (RawLoad16((uint8_t *)lpbBattleCur + 0x6) & 0x7f) | (lppl->pctDp & 0x1ff) << 7);
+            ((KILL *)lpbBattleCur)->dv.pctDp = lppl->pctDp;
             fStarbaseDamaged = 1;
         }
-        if ((RawLoad16((uint8_t *)lpbBattleCur + 0x6) >> 7 & 0x1ff) != 0) {
-            RawStore16((uint8_t *)lpbBattleCur + 0x6, (RawLoad16((uint8_t *)lpbBattleCur + 0x6) & 0xff80) | 0x64);
-            ptok->dv.dp = RawLoad16((uint8_t *)lpbBattleCur + 0x6);
+        if (((KILL *)lpbBattleCur)->dv.pctDp != 0) {
+            ((KILL *)lpbBattleCur)->dv.pctSh = 100;
+            ptok->dv.dp = ((KILL *)lpbBattleCur)->dv.dp;
         }
         *pdpBeam = 0;
         lpbBattleCur += 8;
@@ -2658,9 +2656,9 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
         pctSh = 0;
         pctDp = 0;
     }
-    RawStore16((uint8_t *)lpbBattleCur + 0x2, ptok->csh - csh);
+    ((KILL *)lpbBattleCur)->cshKill = ptok->csh - csh;
     if (csh != ptok->csh) {
-        KillShips(ptok, RawLoad16((uint8_t *)lpbBattleCur + 0x2), ishdef, lpfl, 1);
+        KillShips(ptok, ((KILL *)lpbBattleCur)->cshKill, ishdef, lpfl, 1);
     }
     if (csh != 0) {
         if (pctDp > 499) {
@@ -2678,7 +2676,7 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
         *pdpBeam = 0;
     }
     dpOrig -= *pdpBeam;
-    RawStore16((uint8_t *)lpbBattleCur + 0x6, ptok->dv.dp);
+    ((KILL *)lpbBattleCur)->dv.dp = ptok->dv.dp;
     lpbBattleCur += 8;
     if (pcTorp != 0) {
         *pcTorp = cKillMax;

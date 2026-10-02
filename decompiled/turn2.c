@@ -1599,16 +1599,9 @@ void UpdatePlayerScores() {
     int16_t  imsg;
     int32_t  lScore2nd;
     int32_t  lScoreMax;
-    uint16_t t_scratch_m86_5;
     int32_t  t_scratch_m88_2;
-    uint16_t t_scratch_m86_6;
-    uint16_t t_scratch_m86_7;
     int16_t  t_scratch_m86_8;
-    uint16_t t_scratch_m86_9;
     int32_t  t_scratch_m88_6;
-    uint16_t t_scratch_m86_10;
-    uint16_t t_scratch_m86_12;
-    uint16_t t_scratch_m86_13;
 
     cDead = 0;
     cFirst = 0;
@@ -1633,26 +1626,20 @@ void UpdatePlayerScores() {
             }
         }
         if (score.cPlanet >= MulDiv(cPlanet, GetVCVal(&game, vcOwnsPercentPlanets, 0), 100)) {
-            t_scratch_m86_5 = (vlprgScoreX[i].wWord | 0x40) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0;
-            vlprgScoreX[i].wWord |= t_scratch_m86_5;
+            vlprgScoreX[i].grbitVC |= 1;
             if (GetVCCheck(&game, vcOwnsPercentPlanets) != 0) {
                 rgcCond[i]++;
             }
         }
         t_scratch_m88_2 = (int32_t)((uint32_t)(score.rgcsh[2] & 0x1fff) << (score.rgcsh[2] >> 0xd << 1));
         if ((int32_t)t_scratch_m88_2 >= GetVCVal(&game, vcOwnsCapitalShips, 0)) {
-            t_scratch_m86_6 = (vlprgScoreX[i].wWord | 0x800) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0;
-            vlprgScoreX[i].wWord |= t_scratch_m86_6;
+            vlprgScoreX[i].grbitVC |= 0x20;
             if (GetVCCheck(&game, vcOwnsCapitalShips) != 0) {
                 rgcCond[i]++;
             }
         }
         if (rglScore[i] >= GetVCVal(&game, vcExceedsScore, 0)) {
-            t_scratch_m86_7 = (vlprgScoreX[i].wWord | 0x100) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0;
-            vlprgScoreX[i].wWord |= t_scratch_m86_7;
+            vlprgScoreX[i].grbitVC |= 4;
             if (GetVCCheck(&game, vcExceedsScore) != 0) {
                 rgcCond[i]++;
             }
@@ -1665,18 +1652,14 @@ void UpdatePlayerScores() {
             }
         }
         if (c >= GetVCVal(&game, vcAttainsTechFields, 0)) {
-            t_scratch_m86_9 = (vlprgScoreX[i].wWord | 0x80) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0;
-            vlprgScoreX[i].wWord |= t_scratch_m86_9;
+            vlprgScoreX[i].grbitVC |= 2;
             if (GetVCCheck(&game, vcAttainsTechLevel) != 0) {
                 rgcCond[i]++;
             }
         }
         t_scratch_m88_6 = (int32_t)(score.cResources / 1000);
         if ((int32_t)t_scratch_m88_6 >= GetVCVal(&game, vcProductionCapacity, 0)) {
-            t_scratch_m86_10 = (vlprgScoreX[i].wWord | 0x400) & 0x3fc0;
-            vlprgScoreX[i].grbitVC = 0;
-            vlprgScoreX[i].wWord |= t_scratch_m86_10;
+            vlprgScoreX[i].grbitVC |= 0x10;
             if (GetVCCheck(&game, vcProductionCapacity) != 0) {
                 rgcCond[i]++;
             }
@@ -1710,9 +1693,7 @@ void UpdatePlayerScores() {
             vlprgScoreX[i].turn = rgplr[i].wScore;
         }
         if ((int16_t)game.turn >= GetVCVal(&game, vcHighestScoreAfterYears, 0) && cFirst == 1) {
-            t_scratch_m86_12 = (vlprgScoreX[iScoreMax].wWord | 0x1000) & 0x3fc0;
-            vlprgScoreX[iScoreMax].grbitVC = 0;
-            vlprgScoreX[iScoreMax].wWord |= t_scratch_m86_12;
+            vlprgScoreX[iScoreMax].grbitVC |= 0x40;
             if (GetVCCheck(&game, vcHighestScoreAfterYears) != 0) {
                 rgcCond[iScoreMax]++;
             }
@@ -1729,9 +1710,7 @@ void UpdatePlayerScores() {
             }
         } else {
             if (lScoreMax >= (int32_t)(lScore2nd * (int16_t)(GetVCVal(&game, vcExceedsSecondPlaceBy, 0) + 100)) / 100) {
-                t_scratch_m86_13 = (vlprgScoreX[iScoreMax].wWord | 0x200) & 0x3fc0;
-                vlprgScoreX[iScoreMax].grbitVC = 0;
-                vlprgScoreX[iScoreMax].wWord |= t_scratch_m86_13;
+                vlprgScoreX[iScoreMax].grbitVC |= 8;
                 if (GetVCCheck(&game, vcExceedsSecondPlaceBy) != 0) {
                     rgcCond[iScoreMax]++;
                 }

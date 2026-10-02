@@ -1884,7 +1884,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
                     rgidRep[cRows++] = iItem;
                 }
             }
-            goto L_5b5d;
+            break;
         case rptEnemyFleets:
             vlprgidRep = vlprgidMisc;
             vrptBattle.fCached = 0;
@@ -1898,7 +1898,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
                 if (cRows >= 1020)
                     break;
             }
-            goto L_5b5d;
+            break;
         case rptPlanets:
             vlprgidRep = vlprgidPlanet;
             lppl = lpPlanets;
@@ -1909,7 +1909,7 @@ void SortReportCache(ReportType irpt, int16_t icol) {
                 }
                 iItem++;
             }
-            goto L_5b5d;
+            break;
         case rptBattles:
             vlprgidRep = vlprgidMisc;
             vrptEFleet.fCached = 0;
@@ -1917,10 +1917,10 @@ void SortReportCache(ReportType irpt, int16_t icol) {
             for (i = 0; i < cRows; i++) {
                 rgidRep[i] = i;
             }
-            goto L_5b5d;
+            break;
+        default:
+            return;
         }
-        return;
-    L_5b5d:
         vprptCur->cRows = cRows;
         qsort(rgidRep, cRows, sizeof(uint16_t), (QSORTCOMPARE)ICompReport);
         fmemcpy(vlprgidRep, rgidRep, cRows * 2);

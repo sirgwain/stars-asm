@@ -46,8 +46,12 @@ func (p *forwardTempsProcessor) ProcessFunc(_ *Result, f *Func) bool {
 				i--
 				continue
 			}
-			if next, ok := forwardTempCopy(f, effects, i, temp, addressed); ok {
+			if next, ok := forwardTempCopy(f, effects, i, temp, addressed, p.writes); ok {
 				f.Blocks[bi].Effects = next
+				changed = true
+				continue
+			}
+			if forwardTempCopyAcrossBlocks(f, bi, i, temp, addressed) {
 				changed = true
 				continue
 			}
@@ -58,6 +62,80 @@ func (p *forwardTempsProcessor) ProcessFunc(_ *Result, f *Func) bool {
 		}
 	}
 	return changed
+}
+
+// forwardTempCopyAcrossBlocks reuses an immediately copied local only when
+// every path to every remaining temp read encounters that copy before any
+// other local write or temp definition. Calls retain their original position.
+func forwardTempCopyAcrossBlocks(f *Func, bi, index int, temp *Temp, addressed map[string]bool) bool {
+	effects := f.Blocks[bi].Effects
+	if index+1 >= len(effects) {
+		return false
+	}
+	cp, ok := effects[index+1].(*Assign)
+	if !ok || !sameExpr(cp.Src, temp) {
+		return false
+	}
+	local, ok := cp.Dst.(*Local)
+	if !ok || addressed[local.Name] || !typeinfo.Equals(local.Type, temp.TypeInfo) {
+		return false
+	}
+	blocks := blockIndexByID(f.Blocks)
+	var holdsCopy func(int, int, map[int]bool) bool
+	holdsCopy = func(block, before int, visiting map[int]bool) bool {
+		for i := before - 1; i >= 0; i-- {
+			if block == bi && i == index+1 {
+				return true
+			}
+			effect := f.Blocks[block].Effects[i]
+			if _, opaque := effect.(*RawEffect); opaque {
+				return false
+			}
+			if assignsLocal(effect, local) {
+				return false
+			}
+			if t, _, ok := tempDefinition(effect); ok && sameExpr(t, temp) {
+				return false
+			}
+		}
+		if visiting[block] {
+			return false
+		}
+		visiting[block] = true
+		defer delete(visiting, block)
+		preds := f.CFG.Predecessors(f.Blocks[block].ID)
+		if len(preds) == 0 || block == 0 {
+			return false
+		}
+		for _, pred := range preds {
+			pi, ok := blocks[pred]
+			if !ok || !holdsCopy(pi, len(f.Blocks[pi].Effects), visiting) {
+				return false
+			}
+		}
+		return true
+	}
+	for b, block := range f.Blocks {
+		for i, effect := range block.Effects {
+			if b == bi && (i == index || i == index+1) {
+				continue
+			}
+			if countTempRefs([]Effect{effect}, temp) > 0 && !holdsCopy(b, i, map[int]bool{}) {
+				return false
+			}
+		}
+	}
+	rewriter := &semRewriter{expr: func(_ *semRewriter, expr Expr) (Expr, bool, bool) {
+		if sameExpr(expr, temp) {
+			return local, true, true
+		}
+		return nil, false, false
+	}}
+	for b := range f.Blocks {
+		f.Blocks[b].Effects, _ = rewriter.rewriteEffects(f.Blocks[b].Effects)
+	}
+	f.Blocks[bi].Effects = slices.Delete(slices.Clone(f.Blocks[bi].Effects), index+1, index+2)
+	return true
 }
 
 // sinkMergeCopy assigns the values of one copied merge temp to its copy
@@ -211,10 +289,15 @@ func dropUnreadTemp(f *Func, effects []Effect, index int, temp *Temp, value Expr
 }
 
 // forwardTempCopy rewrites t = x; v = t; ... t ... into v = x; ... v ...
-// when v is a local of the temp's type whose address is never taken, every
-// other read of the temp follows in the same block, and v is not assigned
-// again before the last of them.
-func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed map[string]bool) ([]Effect, bool) {
+// when v has the temp's type, every other read of the temp follows in the
+// same block, and v still holds the temp's value at each of them. For a
+// local whose address is never taken, v must not be assigned again before
+// the last read. Any other v, a global or a field or element of one, must
+// be re-readable at each read: no effect up to the last read may store to
+// anything v reads, including through a call, as in
+// hAccel = LoadAccelerators(...); if (hAccel == 0). A bitfield is never v,
+// since reading one back truncates the value.
+func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed map[string]bool, writes func(*typeinfo.Function) machine.Writes) ([]Effect, bool) {
 	if index+1 >= len(effects) {
 		return nil, false
 	}
@@ -222,8 +305,15 @@ func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed
 	if !ok || !sameExpr(cp.Src, temp) {
 		return nil, false
 	}
-	local, ok := cp.Dst.(*Local)
-	if !ok || addressed[local.Name] || !typeinfo.Equals(local.Type, temp.TypeInfo) {
+	dst := cp.Dst
+	if !typeinfo.Equals(dst.ExprType(), temp.TypeInfo) {
+		return nil, false
+	}
+	// An address-taken local is checked like a global: a store through a
+	// pointer or a call may change it.
+	local, isLocal := dst.(*Local)
+	isLocal = isLocal && !addressed[local.Name]
+	if !isLocal && !rereadableCopyTarget(dst) {
 		return nil, false
 	}
 	rest := effects[index+2:]
@@ -232,7 +322,7 @@ func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed
 		if countTempRefs(rest[k:k+1], temp) > 0 {
 			last = k
 		}
-		if assignsLocal(effect, local) && last < k {
+		if isLocal && assignsLocal(effect, local) && last < k {
 			break
 		}
 	}
@@ -244,16 +334,20 @@ func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed
 	if total != 2+countTempRefs(rest[:last+1], temp) {
 		return nil, false
 	}
-	for _, effect := range rest[:last+1] {
-		if assignsLocal(effect, local) {
-			return nil, false
+	if isLocal {
+		for _, effect := range rest[:last+1] {
+			if assignsLocal(effect, local) {
+				return nil, false
+			}
 		}
+	} else if !forwardsPast(dst, storingEffects(rest[:last+1]), addressed, writes) {
+		return nil, false
 	}
 
 	rewriter := &semRewriter{
 		expr: func(_ *semRewriter, expr Expr) (Expr, bool, bool) {
 			if sameExpr(expr, temp) {
-				return local, true, true
+				return dst, true, true
 			}
 			return nil, false, false
 		},
@@ -262,11 +356,11 @@ func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed
 	switch def := effects[index].(type) {
 	case *Assign:
 		next := *def
-		next.Dst = local
+		next.Dst = dst
 		out = append(out, &next)
 	case *CallEffect:
 		next := *def
-		next.Result = local
+		next.Result = dst
 		out = append(out, &next)
 	}
 	for _, effect := range rest[:last+1] {
@@ -276,15 +370,65 @@ func forwardTempCopy(f *Func, effects []Effect, index int, temp *Temp, addressed
 	return append(out, rest[last+1:]...), true
 }
 
-// assignsLocal reports whether effect stores to local.
-func assignsLocal(effect Effect, local *Local) bool {
-	switch e := effect.(type) {
-	case *Assign:
-		return sameExpr(e.Dst, local)
-	case *CallEffect:
-		return sameExpr(e.Result, local)
+// rereadableCopyTarget reports whether dst is storage that reading again
+// yields what was stored, unless something stores to it: a global, or a
+// field or element of one or of a local, whose indexes are constants or
+// locals. A bitfield field is not, since it truncates what is stored.
+func rereadableCopyTarget(dst Expr) bool {
+	switch d := dst.(type) {
+	case *Global, *Local:
+		return true
+	case *FieldAccess:
+		return d.Field != nil && d.Field.Bitfield == nil && rereadableCopyTarget(d.Base)
+	case *ArrayIndex:
+		switch d.Index.(type) {
+		case *Const, *Local:
+			return rereadableCopyTarget(d.Base)
+		}
 	}
 	return false
+}
+
+// storingEffects returns the effects that may store something: assignments
+// and calls, and any other effect, such as a branch, that evaluates a call.
+func storingEffects(effects []Effect) []Effect {
+	var out []Effect
+	for _, effect := range effects {
+		switch effect.(type) {
+		case *Assign, *CallEffect:
+			out = append(out, effect)
+			continue
+		}
+		calls := false
+		walkEffect(effect, func(expr Expr) {
+			if _, ok := expr.(*Call); ok {
+				calls = true
+			}
+		})
+		if calls {
+			out = append(out, effect)
+		}
+	}
+	return out
+}
+
+// assignsLocal reports whether effect stores to local, including partial
+// word stores that mutate the value retained by a copied temp.
+func assignsLocal(effect Effect, local *Local) bool {
+	var dst Expr
+	switch e := effect.(type) {
+	case *Assign:
+		dst = e.Dst
+	case *CallEffect:
+		dst = e.Result
+	}
+	for {
+		if part, ok := dst.(*Part); ok {
+			dst = part.Base
+			continue
+		}
+		return sameExpr(dst, local)
+	}
 }
 
 // maxForwardDistance is the most effects a temp's value may move past to

@@ -40,6 +40,11 @@ type FuncContext struct {
 	messageByBlock map[machine.BlockID]*typeinfo.MessageRule
 	currentMessage *typeinfo.MessageRule
 
+	// bufferViewsByBlock is the record struct each discriminated buffer view
+	// reads on entry to a block, where its discriminator is known.
+	bufferViewsByBlock map[machine.BlockID]map[*typeinfo.BufferView]*typeinfo.Struct
+	currentBufferViews map[*typeinfo.BufferView]*typeinfo.Struct
+
 	// callWindowClasses is the window class of each GetDlgItem result, keyed
 	// by call instruction offset, and loadWindowClasses the class of the
 	// control a local holds where it is passed as a call's first argument,
@@ -130,6 +135,7 @@ func (ctx *FuncContext) SetUnionContexts(contexts map[machine.BlockID]*symresolv
 func (ctx *FuncContext) SetCurrentBlock(id machine.BlockID) {
 	ctx.currentBlock = &id
 	ctx.currentMessage = ctx.messageByBlock[id]
+	ctx.currentBufferViews = ctx.bufferViewsByBlock[id]
 	ctx.currentUnionContext = ctx.configuredUnionBase
 	if configured := ctx.configuredUnionByBlock[id]; configured != nil {
 		ctx.currentUnionContext = configured
@@ -152,6 +158,7 @@ func (ctx *FuncContext) ClearCurrentBlock() {
 	ctx.currentInstOff = 0
 	ctx.currentUnionContext = nil
 	ctx.currentMessage = nil
+	ctx.currentBufferViews = nil
 }
 
 // unionContext returns the active path-sensitive union context.

@@ -56,6 +56,49 @@ type windowClassJSON struct {
 	Messages string `json:"messages"`
 }
 
+// BufferView is a byte buffer a function reads and writes as one record
+// struct, as the original source did with casts like ((RTPLANET *)rgbCur):
+// a global or local array, or a param or local pointing at one.
+//
+// A view either always reads Struct, or reads the struct Views gives the
+// value of Discriminator, a path rooted at one of the function's params or
+// locals or at a global, such as the record type rt of the record the buffer
+// holds.
+type BufferView struct {
+	Func   string
+	Param  string
+	Local  string
+	Global string
+	Struct *Struct
+
+	Discriminator     []string
+	DiscriminatorEnum *Enum
+	Views             map[int]*Struct
+}
+
+// Var reports whether v is the buffer the view covers.
+func (bv *BufferView) Var(v Var) bool {
+	switch v := v.(type) {
+	case *GlobalVar:
+		return bv.Global != "" && bv.Global == v.Name
+	case *FunctionVar:
+		return bv.Param == v.Name || bv.Local == v.Name
+	}
+	return false
+}
+
+// bufferViewJSON is one buffer_views record.
+type bufferViewJSON struct {
+	Func              string            `json:"func"`
+	Param             string            `json:"param"`
+	Local             string            `json:"local"`
+	Global            string            `json:"global"`
+	Struct            string            `json:"struct"`
+	Discriminator     []string          `json:"discriminator"`
+	DiscriminatorEnum string            `json:"discriminator_enum"`
+	Views             map[string]string `json:"views"`
+}
+
 // dialogControlsJSON names the enum of one dialog template's own controls.
 type dialogControlsJSON struct {
 	Dialog string `json:"dialog"`
@@ -124,6 +167,13 @@ func (l *enumLoader) loadWindows(path string, sdb *SymbolDB) error {
 			return fmt.Errorf("dialog controls %+v: dialog %s already has a control enum", dc, dc.Dialog)
 		}
 		sdb.DialogControls[dialog.Value] = controls
+	}
+	for _, bv := range cfg.BufferViews {
+		view, err := parseBufferView(bv, sdb)
+		if err != nil {
+			return err
+		}
+		sdb.BufferViews = append(sdb.BufferViews, view)
 	}
 	for _, sent := range cfg.SentMessages {
 		if sent.Func == "" || len(sent.Messages) == 0 {
@@ -196,6 +246,99 @@ func (sdb *SymbolDB) FunctionVarWindow(funcName, name string, param bool) *Windo
 		}
 	}
 	return nil
+}
+
+// parseBufferView resolves a buffer_views record, checking that its function,
+// buffer variable and struct exist.
+func parseBufferView(bv bufferViewJSON, sdb *SymbolDB) (*BufferView, error) {
+	names := 0
+	for _, name := range []string{bv.Param, bv.Local, bv.Global} {
+		if name != "" {
+			names++
+		}
+	}
+	if bv.Func == "" || names != 1 {
+		return nil, fmt.Errorf("buffer view %+v must name a func and one param, local or global", bv)
+	}
+	fn := sdb.GetFunction(bv.Func)
+	if fn == nil {
+		return nil, fmt.Errorf("buffer view %+v: func %s not found", bv, bv.Func)
+	}
+	switch {
+	case bv.Param != "" && !hasFunctionVar(fn.Params, bv.Param):
+		return nil, fmt.Errorf("buffer view %+v: %s has no param %s", bv, bv.Func, bv.Param)
+	case bv.Local != "" && !hasFunctionVar(fn.Vars, bv.Local):
+		return nil, fmt.Errorf("buffer view %+v: %s has no local %s", bv, bv.Func, bv.Local)
+	case bv.Global != "" && sdb.GetGlobal(bv.Global) == nil:
+		return nil, fmt.Errorf("buffer view %+v: global %s not found", bv, bv.Global)
+	}
+	view := &BufferView{Func: bv.Func, Param: bv.Param, Local: bv.Local, Global: bv.Global}
+	if (bv.Struct == "") == (len(bv.Views) == 0) {
+		return nil, fmt.Errorf("buffer view %+v must name one struct or discriminated views", bv)
+	}
+	if bv.Struct != "" {
+		if view.Struct = sdb.GetStruct(bv.Struct); view.Struct == nil {
+			return nil, fmt.Errorf("buffer view %+v: struct %s not found", bv, bv.Struct)
+		}
+		return view, nil
+	}
+	if len(bv.Discriminator) == 0 {
+		return nil, fmt.Errorf("buffer view %+v: views need a discriminator", bv)
+	}
+	if !hasFunctionVar(fn.Params, bv.Discriminator[0]) && !hasFunctionVar(fn.Vars, bv.Discriminator[0]) && sdb.GetGlobal(bv.Discriminator[0]) == nil {
+		return nil, fmt.Errorf("buffer view %+v: discriminator %s is not a param, local or global", bv, bv.Discriminator[0])
+	}
+	if view.DiscriminatorEnum = sdb.GetEnum(bv.DiscriminatorEnum); view.DiscriminatorEnum == nil {
+		return nil, fmt.Errorf("buffer view %+v: discriminator enum %s not found", bv, bv.DiscriminatorEnum)
+	}
+	view.Discriminator = append([]string(nil), bv.Discriminator...)
+	view.Views = make(map[int]*Struct, len(bv.Views))
+	for valueName, structName := range bv.Views {
+		value, ok := enumValueByName(view.DiscriminatorEnum, valueName)
+		if !ok {
+			return nil, fmt.Errorf("buffer view %+v: %s is not a %s value", bv, valueName, bv.DiscriminatorEnum)
+		}
+		strct := sdb.GetStruct(structName)
+		if strct == nil {
+			return nil, fmt.Errorf("buffer view %+v: struct %s not found", bv, structName)
+		}
+		view.Views[value.Value] = strct
+	}
+	return view, nil
+}
+
+// hasFunctionVar reports whether vars has one named name.
+func hasFunctionVar(vars []FunctionVar, name string) bool {
+	for _, v := range vars {
+		if v.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+// FunctionBufferView returns the struct funcName always reads the variable
+// as, a global or one of its params or locals, or nil when no view covers it
+// or the view depends on a discriminator.
+func (sdb *SymbolDB) FunctionBufferView(funcName string, v Var) *Struct {
+	for _, bv := range sdb.BufferViews {
+		if bv.Func == funcName && bv.Struct != nil && bv.Var(v) {
+			return bv.Struct
+		}
+	}
+	return nil
+}
+
+// FunctionDiscriminatedBufferViews returns funcName's buffer views that
+// depend on a discriminator.
+func (sdb *SymbolDB) FunctionDiscriminatedBufferViews(funcName string) []*BufferView {
+	var views []*BufferView
+	for _, bv := range sdb.BufferViews {
+		if bv.Func == funcName && bv.Views != nil {
+			views = append(views, bv)
+		}
+	}
+	return views
 }
 
 // FunctionDialog returns the dialog template of the dialog a function's HWND

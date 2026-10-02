@@ -42,7 +42,7 @@ int32_t          CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t
 int16_t          FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack);
 void             KillShips(TOK *ptok, int16_t cshKill, int16_t ishdef, FLEET *lpfl, int16_t fFallout);
 void             CreateSalvage(FLEET *pfl, THING **plpth);
-int16_t          FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, uint16_t grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp);
+int16_t          FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, GrfWeapon grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp);
 int16_t          DxyFromSpdRound(uint16_t spd, int16_t iRound);
 int16_t          FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t grfPlayer, uint16_t grfSpectator);
 int16_t          ITechLearnATech(int16_t iplr, int16_t x, int16_t y, MessageId idm, uint16_t *piGoto);

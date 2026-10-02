@@ -740,16 +740,14 @@ void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
 }
 
 int32_t CMineFromLpfl(FLEET *lpfl) {
-    int32_t  cMine;
-    int16_t  j;
-    int16_t  i;
-    HUL     *lphuldef;
-    PART     part;
-    int32_t  cMineTot;
-    int16_t  chs;
-    HS      *lphs;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
+    int32_t cMine;
+    int16_t j;
+    int16_t i;
+    HUL    *lphuldef;
+    PART    part;
+    int32_t cMineTot;
+    int16_t chs;
+    HS     *lphs;
 
     cMineTot = 0;
     for (i = 0; i < 16; i++) {
@@ -761,11 +759,7 @@ int32_t CMineFromLpfl(FLEET *lpfl) {
             lphs = lphuldef->rghs;
             while (j < chs) {
                 if (lphs->grhst == hstMining && lphs->iItem >= iminingRoboMidgetMiner && lphs->iItem <= iminingAlienMiner) {
-                    part.hs.grhst = lphs->grhst;
-                    t_fields_1 = &part.hs;
-                    t_fields_3 = lphs->cItem;
-                    t_fields_1->iItem = lphs->iItem;
-                    t_fields_1->cItem = t_fields_3;
+                    part.hs = *lphs;
                     FLookupPart(&part);
                     cMine += (uint32_t)(lphs->cItem * part.pmining->grAbility);
                 }
@@ -822,8 +816,6 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, MineFieldType iType, int16_t ishdef) {
     int32_t  cMineTot;
     int16_t  chs;
     HS      *lphs;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
 
     cMineTot = 0;
     switch (iType) {
@@ -853,11 +845,7 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, MineFieldType iType, int16_t ishdef) {
             lphs = lphul->rghs;
             while (j < chs) {
                 if (lphs->grhst == hstMines && lphs->iItem >= iMin && lphs->iItem <= iMax) {
-                    part.hs.grhst = lphs->grhst;
-                    t_fields_1 = &part.hs;
-                    t_fields_3 = lphs->cItem;
-                    t_fields_1->iItem = lphs->iItem;
-                    t_fields_1->cItem = t_fields_3;
+                    part.hs = *lphs;
                     FLookupPart(&part);
                     cMine += (uint32_t)(lphs->cItem * part.pmines->grAbility);
                 } else if ((int16_t)iType <= mineStandard && lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition) {
@@ -899,15 +887,13 @@ int32_t CMineSweepFromLpfl(FLEET *lpfl) {
 }
 
 int32_t CMineSweepFromLphul(HUL *lphul) {
-    int16_t  chs;
-    HS      *lphs;
-    int32_t  lRange;
-    int16_t  j;
-    int16_t  fStarbase;
-    int32_t  lPow;
-    PART     part;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
+    int16_t chs;
+    HS     *lphs;
+    int32_t lRange;
+    int16_t j;
+    int16_t fStarbase;
+    int32_t lPow;
+    PART    part;
 
     fStarbase = (int16_t)lphul->ihuldef < ihuldefOrbitalFort ? 0 : 1;
     chs = lphul->chs;
@@ -916,11 +902,7 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     lphs = lphul->rghs;
     while (j < chs) {
         if (lphs->grhst == hstBeam) {
-            part.hs.grhst = lphs->grhst;
-            t_fields_1 = &part.hs;
-            t_fields_3 = lphs->cItem;
-            t_fields_1->iItem = lphs->iItem;
-            t_fields_1->cItem = t_fields_3;
+            part.hs = *lphs;
             FLookupPart(&part);
             if ((part.pbeam->grfAbilities & beamGatling) != 0) {
                 lRange = 4;
@@ -1044,10 +1026,8 @@ int16_t PctCloakFromLpfl(FLEET *lpfl) {
 }
 
 int16_t CPtsCloakFromLphs(HS *lphs) {
-    int16_t  cPts;
-    PART     part;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
+    int16_t cPts;
+    PART    part;
 
     cPts = 0;
     if (lphs->cItem <= 0) {
@@ -1057,11 +1037,7 @@ int16_t CPtsCloakFromLphs(HS *lphs) {
     case hstSpecialE:
         if (lphs->iItem < ispecialETransportCloaking || lphs->iItem > ispecialEMultiFunctionPod)
             break;
-        part.hs.grhst = lphs->grhst;
-        t_fields_1 = &part.hs;
-        t_fields_3 = lphs->cItem;
-        t_fields_1->iItem = lphs->iItem;
-        t_fields_1->cItem = t_fields_3;
+        part.hs = *lphs;
         FLookupPart(&part);
         cPts = part.pspecial->grAbility;
         break;

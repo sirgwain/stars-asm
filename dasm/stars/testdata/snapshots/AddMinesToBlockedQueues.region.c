@@ -80,7 +80,7 @@ void AddMinesToBlockedQueues() {
                             sel.pl.lpplprod->iprodMac--;
                             fmemmove(sel.pl.lpplprod->rgprod, &sel.pl.lpplprod->rgprod[1], sel.pl.lpplprod->iprodMac * sizeof(PROD));
                         } else {
-                            sel.pl.lpplprod->rgprod[0].cItem = LOWORD((uint32_t)LOWORD(cBuild));
+                            sel.pl.lpplprod->rgprod[0].cItem = LOWORD(cBuild);
                         }
                     }
                 }

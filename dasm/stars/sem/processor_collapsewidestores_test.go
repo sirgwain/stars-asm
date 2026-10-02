@@ -566,6 +566,81 @@ func TestCollapseWideMachineStorePair(t *testing.T) {
 	}
 }
 
+// TestCollapseWideLoadedLowConstantHigh verifies indexed dword construction
+// zero-extends a signed word and retains the store-pair proof boundaries.
+func TestCollapseWideLoadedLowConstantHigh(t *testing.T) {
+	fx := testfixture.Stars(t)
+	res := symresolve.NewResolver(fx.Image, fx.SDB)
+	ctx := mustFuncContext(t, fx, res, "PopupMineralScanChoices")
+	ctx.SetCurrentBlock(0x50cd)
+	index := frameLoad(ctx, 0x50dd-ctx.fs.Addr.Off, -0x10, 2)
+	lowAddr := frameMemoryAccess(ctx, 0x50ee-ctx.fs.Addr.Off, -0x1ac, 2)
+	lowAddr.Seg = machine.RegVal(asm.RegSS)
+	lowAddr.Index = machine.BinaryVal(machine.ValueOpMul, index, machine.ConstVal(4))
+	highAddr := lowAddr
+	highAddr.Disp += 2
+	source := frameMemoryAccess(ctx, 0x50dd-ctx.fs.Addr.Off, -0x10, 2)
+	wideSource := source
+	wideSource.Width = 4
+	differentElement := highAddr
+	differentElement.Disp += 2
+	relocated := machine.ConstVal(0x2000)
+	relocated.Fixup = &asm.Fixup{}
+	for _, tc := range []struct {
+		name     string
+		src      machine.Value
+		high     machine.MemoryAddress
+		constant *machine.Const
+		want     bool
+	}{
+		{"signed word", machine.LoadVal(source), highAddr, machine.ConstVal(0x2000), true},
+		{"different element", machine.LoadVal(source), differentElement, machine.ConstVal(0x2000), false},
+		{"wide source", machine.LoadVal(wideSource), highAddr, machine.ConstVal(0x2000), false},
+		{"relocated high word", machine.LoadVal(source), highAddr, relocated, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			low := machine.StoreEffect{Addr: lowAddr, Src: tc.src, Width: 2}
+			high := machine.StoreEffect{Addr: tc.high, Src: tc.constant, Width: 2}
+			p := &collapseWideStoresProcessor{ctx: ctx}
+			got, changed := p.collapseWideMachineStorePair(low, high)
+			if changed != tc.want {
+				t.Fatalf("collapsed = %v, want %v", changed, tc.want)
+			}
+			if !changed {
+				return
+			}
+			if got.Width != 4 || got.Addr.Width != 4 {
+				t.Fatal("collapsed store is not a dword")
+			}
+			want := "((uint32_t)(uint16_t)load([bp-0x10]) | 0x20000000)"
+			if got.Src.String() != want {
+				t.Fatalf("source = %s, want %s", got.Src, want)
+			}
+			// The same stores separated by an observable store stay separate.
+			between := machine.StoreEffect{Addr: source, Src: machine.ConstVal(1), Width: 2}
+			block := machine.BlockEffects{Effects: []machine.Effect{low, between, high}}
+			if _, changed := p.ProcessMachineBlock(nil, machine.FuncEffects{}, block); changed {
+				t.Fatal("collapsed across an intervening store")
+			}
+		})
+	}
+	t.Run("aggregate destination", func(t *testing.T) {
+		ctx := mustFuncContext(t, fx, res, "DxyMoveTokTo")
+		ctx.SetCurrentBlock(0x65a1)
+		relOff := uint32(0x65a1) - ctx.fs.Addr.Off
+		lowAddr := frameMemoryAccess(ctx, relOff, -0x60, 2)  // rgptDeltas[1].x
+		highAddr := frameMemoryAccess(ctx, relOff, -0x5e, 2) // rgptDeltas[1].y
+		dx := frameLoad(ctx, relOff, -0x4e, 2)
+		p := &collapseWideStoresProcessor{ctx: ctx}
+		if _, changed := p.collapseWideMachineStorePair(
+			machine.StoreEffect{Addr: lowAddr, Src: dx, Width: 2},
+			machine.StoreEffect{Addr: highAddr, Src: machine.ConstVal(1), Width: 2},
+		); changed {
+			t.Fatal("collapsed distinct POINT16 fields into an integer store")
+		}
+	})
+}
+
 // TestCollapseWideMachineStorePairThroughFlexibleFarPointer verifies a split
 // far-pointer member path retains the trailing array element as its storage root.
 func TestCollapseWideMachineStorePairThroughFlexibleFarPointer(t *testing.T) {

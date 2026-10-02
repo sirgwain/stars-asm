@@ -152,6 +152,21 @@ func (p *collapseWideStoresProcessor) collapseWideMachineStorePair(low machine.S
 		src, ok = (&wideMachineCollapser{ctx: p.ctx}).pair(low.Src, high.Src)
 	}
 	if !ok {
+		// A word load plus a constant high lane constructs a dword with no
+		// second source read. Convert through U16 before widening: a
+		// signed source's bit 15 must not fill the constant high lane.
+		load, lowOK := low.Src.(*machine.Load)
+		constant, highOK := high.Src.(*machine.Const)
+		dst, dstOK := p.ctx.symbols.memoryPath(wideAddress)
+		if lowOK && highOK && load.Addr.Width == 2 && constant.Fixup == nil &&
+			dstOK && dst.Type().Kind() == typeinfo.KInt && dst.Type().Bytes() == 4 {
+			src = machine.BinaryVal(machine.ValueOpOr,
+				machine.CastVal(machine.CastVal(load, typeinfo.U16), typeinfo.U32),
+				machine.ConstVal((constant.Val&0xffff)<<16))
+			ok = true
+		}
+	}
+	if !ok {
 		return low, false
 	}
 

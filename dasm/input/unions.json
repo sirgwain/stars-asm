@@ -1,6 +1,15 @@
 {
   "union_variants": [
     {
+      "type": "RTSHDEF",
+      "discriminator": ["det"],
+      "enum": "DetType",
+      "value_to_member": {
+        "detAll": "dp",
+        "detSome": "wtEmpty"
+      }
+    },
+    {
       "type": "PART",
       "discriminator": ["hs", "grhst"],
       "enum": "HullSlotType",
@@ -249,6 +258,13 @@
       "root": "xfer",
       "type": "XFER",
       "enum": "GrobjClass"
+    },
+    {
+      "func": "WriteRtShDef",
+      "source": ["lpshdef", "det"],
+      "root": "rgb",
+      "type": "RTSHDEF",
+      "enum": "DetType"
     }
   ]
 }

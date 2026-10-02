@@ -61,6 +61,13 @@ func PreProcessorSpecs() []PreProcessor {
 			},
 		},
 		{
+			Name:    "record-context",
+			Purpose: "Record which struct each discriminated buffer view reads in each block.",
+			Func: func(ctx *FuncContext) MachineFuncProcessor {
+				return &recordContextProcessor{ctx: ctx}
+			},
+		},
+		{
 			Name:    "message-context",
 			Purpose: "Record the window message a window procedure handles in each block.",
 			Func: func(ctx *FuncContext) MachineFuncProcessor {
@@ -203,6 +210,11 @@ func ProcessorSpecs() []Processor {
 			Sem: func(ctx *FuncContext) SemBlockProcessor {
 				return &resolveLateFieldsProcessor{ctx: ctx}
 			},
+		},
+		{
+			Name:    "recover-captured-bitfields",
+			Purpose: "Recover masked field updates captured before a clear-and-insert sequence.",
+			Func:    func(*FuncContext) SemFuncProcessor { return &capturedBitfieldsProcessor{} },
 		},
 		{
 			Name:    "resolve-late-bitfields",
@@ -371,11 +383,21 @@ func ProcessorSpecs() []Processor {
 			},
 		},
 		{
+			Name:    "recover-field-copies",
+			Purpose: "Recover complete aggregate copies from declared field copies and merge edges.",
+			Func:    func(*FuncContext) SemFuncProcessor { return &fieldCopiesProcessor{} },
+		},
+		{
 			Name:    "forward-temps",
 			Purpose: "Forward temps that only relay a value to the next effect, and assign copied temps' values to their copy directly.",
 			Func: func(ctx *FuncContext) SemFuncProcessor {
 				return &forwardTempsProcessor{fs: ctx.fs, writes: ctx.writes.Of}
 			},
+		},
+		{
+			Name:    "return-temp-sink",
+			Purpose: "Return complete edge definitions directly instead of through a shared temp.",
+			Func:    func(ctx *FuncContext) SemFuncProcessor { return &returnTempsProcessor{fs: ctx.fs} },
 		},
 		{
 			// Last before lowering, so no earlier pass sees an expression

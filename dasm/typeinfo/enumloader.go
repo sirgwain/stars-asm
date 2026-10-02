@@ -238,6 +238,7 @@ type symbolicConfigJSON struct {
 	Windows         []windowRuleJSON        `json:"windows"`
 	SentMessages    []sentMessagesJSON      `json:"sent_messages"`
 	DialogControls  []dialogControlsJSON    `json:"dialog_controls"`
+	BufferViews     []bufferViewJSON        `json:"buffer_views"`
 	MessageHandlers []messageHandlerJSON    `json:"message_handlers"`
 }
 

@@ -2,6 +2,7 @@ package sem
 
 import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
+	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
 type simplifyWordProjectionsProcessor struct{}
@@ -34,6 +35,10 @@ func (p *simplifyWordProjectionsProcessor) ProcessBlock(_ *Result, _ Func, b Blo
 //     rebuild a long multiply, as in LOWORD(11 * dyArial8) * 3.
 //   - loword((uint32_t)(l >> 16)) is HIWORD(l), the expansion of the Windows
 //     HIWORD macro, as in HIWORD(lParam).
+//   - loword((uint32_t)x) of a value no wider than a word is x, as an
+//     unsigned word: LOWORD((uint32_t)pplNew->idRoute) is pplNew->idRoute,
+//     and a signed x is (uint16_t)x. A bitfield of at most 16 bits counts
+//     as no wider than a word whatever its storage.
 //   - w & 0xffff on a word projection is w.
 func simplifyWordProjection(expr Expr) (Expr, bool) {
 	if and, ok := expr.(*Binary); ok && and.Op == OpAnd {
@@ -51,6 +56,9 @@ func simplifyWordProjection(expr Expr) (Expr, bool) {
 	parent := word.Parent
 	if cast, ok := parent.(*Cast); ok && exprWidth(cast) == 4 {
 		parent = cast.Value
+		if word, ok := wordSizedValue(parent); ok {
+			return word, true
+		}
 	}
 	binary, ok := parent.(*Binary)
 	if !ok {
@@ -67,4 +75,23 @@ func simplifyWordProjection(expr Expr) (Expr, bool) {
 		}
 	}
 	return nil, false
+}
+
+// wordSizedValue returns x as the unsigned word LOWORD makes of it when x
+// fits in a word: an integer no wider than 16 bits, or a bitfield of at
+// most 16 bits. A signed x is cast to uint16_t.
+func wordSizedValue(x Expr) (Expr, bool) {
+	typ := x.ExprType()
+	if field, ok := x.(*FieldAccess); ok && field.Field != nil && field.Field.Bitfield != nil {
+		if field.Field.Bitfield.BitWidth > 16 {
+			return nil, false
+		}
+		typ = field.Field.Bitfield.BaseType
+	} else if width := exprWidth(x); width <= 0 || width > 2 {
+		return nil, false
+	}
+	if !isSignedInt(typ) {
+		return x, true
+	}
+	return &Cast{Value: x, To: typeinfo.U16.String(), TypeInfo: typeinfo.U16}, true
 }

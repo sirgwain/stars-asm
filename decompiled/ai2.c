@@ -1,10 +1,145 @@
 #include "common.h"
 
-uint8_t vrgISIshAip[19] = {0, 3, 6, 9, 12, 19, 26, 33, 40, 47, 54, 65, 76, 87, 98, 101, 105, 112, 117};
-uint8_t vrgISAip[182] = {30, 31, 10, 30, 26, 4,  30, 26, 3, 30, 26, 2,  30, 0,  0,  13, 9,  18, 11, 30, 1,  1,  11, 9,  18, 11, 8,  10, 15, 7, 4,
-                         6,  9,  8,  11, 13, 0,  0,  0,  9, 8,  10, 15, 7,  3,  6,  17, 8,  11, 13, 1,  1,  1,  17, 8,  12, 10, 6,  3,  5,  3, 7,
-                         9,  20, 20, 8,  12, 10, 0,  0,  0, 0,  0,  9,  19, 11, 8,  12, 10, 6,  3,  4,  2,  7,  17, 20, 20, 8,  12, 10, 1,  1, 1,
-                         1,  1,  17, 19, 11, 8,  16, 10, 8, 21, 23, 12, 8,  21, 23, 23, 23, 12, 10, 30, 10, 12, 25, 32, 8,  16, 10, 19};
+uint8_t vrgISIshAip[19] = {isOffsetColonizingMediumFreighter,
+                           isOffsetScoutStreamingBeam,
+                           isOffsetUnusedThreeSlotAntiMatterBeam,
+                           isOffsetUnusedThreeSlotMcmBeam,
+                           isOffsetDestroyerTorpedo,
+                           isOffsetUnusedSevenSlotMissile,
+                           isOffsetUnusedSevenSlotBeamA,
+                           isOffsetUnusedSevenSlotTorpedo,
+                           isOffsetUnusedSevenSlotBeamB,
+                           isOffsetUnusedSevenSlotMissileB,
+                           isOffsetBattleshipBeamA,
+                           isOffsetBattleshipTorpedo,
+                           isOffsetBattleshipBeamB,
+                           isOffsetBattleshipMissile,
+                           isOffsetMediumFreighter,
+                           isOffsetB17Bomber,
+                           isOffsetB52Bomber,
+                           isOffsetPrivateerMineLayer,
+                           isOffsetSuperFreighter};
+uint8_t vrgISAip[182] = {aiPartEnginePreferTransStar,
+                         aiPartColonyPreferOrbitalConstruction,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartEnginePreferTransStar,
+                         aiPartScannerPreferElephant,
+                         aiPartBeamPreferStreamingPulverizer,
+                         aiPartEnginePreferTransStar,
+                         aiPartScannerPreferElephant,
+                         aiPartBeamPreferAntiMatterPulverizer,
+                         aiPartEnginePreferTransStar,
+                         aiPartScannerPreferElephant,
+                         aiPartBeamPreferMultiContainedMunition,
+                         aiPartEnginePreferTransStar,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartSpecialPodThrustCloak,
+                         aiPartArmorPreferSuperlatanium,
+                         aiPartSpecialThrustDeflectorFuel,
+                         aiPartBattleComputer,
+                         aiPartEnginePreferTransStar,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartBattleComputer,
+                         aiPartArmorPreferSuperlatanium,
+                         aiPartSpecialThrustDeflectorFuel,
+                         aiPartBattleComputer,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartSpecialDeflectorCapacitorFuel,
+                         aiPartSapper,
+                         aiPartBeamPreferStreamingPulverizer,
+                         aiPartBeamPreferBigMuthaCannon,
+                         aiPartArmorPreferSuperlatanium,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartBattleComputer,
+                         aiPartSpecialPodThrustCloak,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartArmorPreferSuperlatanium,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartSpecialDeflectorCapacitorFuel,
+                         aiPartSapper,
+                         aiPartBeamPreferAntiMatterPulverizer,
+                         aiPartBeamPreferBigMuthaCannon,
+                         aiPartArmorPreferMegaPolyShell,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartBattleComputer,
+                         aiPartSpecialPodThrustCloak,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartArmorPreferMegaPolyShell,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartBeamPreferBigMuthaCannon,
+                         aiPartBeamPreferAntiMatterPulverizer,
+                         aiPartBeamPreferBlunderbuss,
+                         aiPartBeamPreferAntiMatterPulverizer,
+                         aiPartSapper,
+                         aiPartArmorPreferSuperlatanium,
+                         aiPartSpecialCapacitorJammerPodComputer,
+                         aiPartSpecialCapacitorJammerPodComputer,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartTorpedo,
+                         aiPartArmorPreferSuperlatanium,
+                         aiPartSpecialJammerComputer,
+                         aiPartBattleComputer,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartBeamPreferBigMuthaCannon,
+                         aiPartBeamPreferAntiMatterPulverizer,
+                         aiPartBeamPreferStreamingPulverizer,
+                         aiPartBeamPreferMultiContainedMunition,
+                         aiPartSapper,
+                         aiPartArmorPreferMegaPolyShell,
+                         aiPartSpecialCapacitorJammerPodComputer,
+                         aiPartSpecialCapacitorJammerPodComputer,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartMissile,
+                         aiPartArmorPreferMegaPolyShell,
+                         aiPartSpecialJammerComputer,
+                         aiPartBattleComputer,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartCargoPod,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartBombHushThenNormal,
+                         aiPartBombHushThenSmartThenNormalThenRetro,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartBombHushThenNormal,
+                         aiPartBombHushThenSmartThenNormalThenRetro,
+                         aiPartBombHushThenSmartThenNormalThenRetro,
+                         aiPartBombHushThenSmartThenNormalThenRetro,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartEnginePreferTransStar,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartSpecialPodJammerDeflectorThrust,
+                         aiPartStandardMineDispenser,
+                         aiPartSpeedTrapMineDispenser,
+                         aiPartEnginePreferGalaxyScoop,
+                         aiPartCargoPod,
+                         aiPartShieldPreferCompletePhase,
+                         aiPartSpecialJammerComputer};
 uint8_t vrgAiISResOrder[18] = {aiResearchElectronics6,   aiResearchConstruction4,  aiResearchPropulsion5,   aiResearchWeapons5,       aiResearchBiotechnology4,
                                aiResearchEnergy4,        aiResearchElectronics7,   aiResearchConstruction6, aiResearchPropulsion7,    aiResearchWeapons8,
                                aiResearchBiotechnology6, aiResearchEnergy7,        aiResearchElectronics12, aiResearchConstruction13, aiResearchPropulsion9,
@@ -157,8 +292,8 @@ void DoAutomitronAiTurn(PROD *rgprod) {
             if (i < lpplProdGlob->iprodMac) {
                 FinishProduction(0);
             } else {
-                cFr = rgplr[idPlayer].cPlanet / 10 <= RawLoad16((uint8_t *)vlpbAiData + 0x2) * 2 ? RawLoad16((uint8_t *)vlpbAiData + 0x2) * 2
-                                                                                                 : rgplr[idPlayer].cPlanet / 10;
+                cFr = rgplr[idPlayer].cPlanet / 10 <= ((AIHIST *)vlpbAiData)->cStarbase * 2 ? ((AIHIST *)vlpbAiData)->cStarbase * 2
+                                                                                            : rgplr[idPlayer].cPlanet / 10;
                 if (rgplr[idPlayer].rgTech[2] >= 5 && iLatestCargo != -1 && (cExistCargo < cFr || (cExistCargo < (int16_t)(10 * cFr) / 7 && Random(4) == 0))) {
                     AddItemToQueue(iLatestCargo, 1, grobjFleet, addItemEnd);
                     fWrite = 1;
@@ -367,14 +502,14 @@ void DoAutomitronAiTurn(PROD *rgprod) {
                         if (lpplHome == 0)
                             break;
                         lppl = NULL;
-                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            for (j = 0; j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
+                        for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                            for (j = 0; j < ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter && ((AIHIST *)vlpbAiData)->rgasb[i].rgflid[j] != lpfl->id; j++) {
                             }
-                            if (j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)))
+                            if (j < ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter)
                                 break;
                         }
-                        if (i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
-                            lppl = LpplFromId(RawLoad16(vlpbAiData + (i * 20 + 4)));
+                        if (i < ((AIHIST *)vlpbAiData)->cStarbase) {
+                            lppl = LpplFromId(((AIHIST *)vlpbAiData)->rgasb[i].idPlanet);
                         }
                         IdTargetFreighter(lpfl, lppl == 0 ? lpplHome : lppl);
                         continue;
@@ -447,14 +582,14 @@ void EnsureISShdefs(int16_t iroCur) {
     int16_t i;
 
     if (rgshdef[4].fFree != 0 && rgplr[idPlayer].rgTech[2] >= 5) {
-        FCreateAiShdef(4, ihuldefMediumFreighter, &vrgISAip[vrgISIshAip[14]]);
+        FCreateAiShdef(4, ihuldefMediumFreighter, (uint8_t *)&vrgISAip[vrgISIshAip[14]]);
     }
     if (rgshdef[5].fFree != 0 && rgplr[idPlayer].rgTech[2] >= 7) {
-        FCreateAiShdef(5, ihuldefSuperFreighter, &vrgISAip[vrgISIshAip[18]]);
+        FCreateAiShdef(5, ihuldefSuperFreighter, (uint8_t *)&vrgISAip[vrgISIshAip[18]]);
     }
     if (rgshdef[14].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 5 && rgplr[idPlayer].rgTech[4] >= 6 && rgplr[idPlayer].rgTech[3] >= 4 &&
         rgplr[idPlayer].rgTech[2] >= 5) {
-        for (i = 0; i < 4 && FCreateAiShdef(14, ihuldefDestroyer, &vrgISAip[vrgISIshAip[Random(1) + 4]]) == 0; i++) {
+        for (i = 0; i < 4 && FCreateAiShdef(14, ihuldefDestroyer, (uint8_t *)&vrgISAip[vrgISIshAip[Random(1) + 4]]) == 0; i++) {
         }
     }
     if (rgshdef[1].fFree != 0 || rgshdef[1].cExist == 0) {
@@ -463,7 +598,7 @@ void EnsureISShdefs(int16_t iroCur) {
             shdef.fFree = 1;
             FChangeAiShdef(&shdef, 1);
         }
-        FCreateAiShdef(1, ihuldefMediumFreighter, &vrgISAip[vrgISIshAip[0]]);
+        FCreateAiShdef(1, ihuldefMediumFreighter, (uint8_t *)&vrgISAip[vrgISIshAip[0]]);
     }
     if (rgshdef[0].fFree != 0 || rgshdef[0].cExist == 0) {
         if (rgshdef[0].fFree == 0) {
@@ -471,22 +606,22 @@ void EnsureISShdefs(int16_t iroCur) {
             shdef.fFree = 1;
             FChangeAiShdef(&shdef, 0);
         }
-        FCreateAiShdef(0, ihuldefScout, &vrgISAip[vrgISIshAip[1]]);
+        FCreateAiShdef(0, ihuldefScout, (uint8_t *)&vrgISAip[vrgISIshAip[1]]);
     }
     if (rgshdef[6].fFree != 0 && rgplr[idPlayer].rgTech[3] >= 4 && rgplr[idPlayer].rgTech[2] >= 5 && rgplr[idPlayer].rgTech[5] >= 6) {
-        FCreateAiShdef(6, ihuldefPrivateer, &vrgISAip[vrgISIshAip[17]]);
+        FCreateAiShdef(6, ihuldefPrivateer, (uint8_t *)&vrgISAip[vrgISIshAip[17]]);
     }
     if (rgshdef[2].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 8 && rgplr[idPlayer].rgTech[4] >= 7 && rgplr[idPlayer].rgTech[3] >= 6 &&
         rgplr[idPlayer].rgTech[2] >= 7) {
-        FCreateAiShdef(2, ihuldefB17Bomber, &vrgISAip[vrgISIshAip[15]]);
+        FCreateAiShdef(2, ihuldefB17Bomber, (uint8_t *)&vrgISAip[vrgISIshAip[15]]);
     }
     if (rgshdef[3].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 11 && rgplr[idPlayer].rgTech[4] >= 12 && rgplr[idPlayer].rgTech[3] >= 15 &&
         rgplr[idPlayer].rgTech[2] >= 9) {
-        FCreateAiShdef(3, ihuldefB52Bomber, &vrgISAip[vrgISIshAip[16]]);
+        FCreateAiShdef(3, ihuldefB52Bomber, (uint8_t *)&vrgISAip[vrgISIshAip[16]]);
     }
     if (rgshdef[9].fFree != 0 && rgplr[idPlayer].rgTech[1] >= 5 && rgplr[idPlayer].rgTech[4] >= 6 && rgplr[idPlayer].rgTech[3] >= 13 &&
         rgplr[idPlayer].rgTech[2] >= 7) {
-        for (i = 0; i < 5 && FCreateAiShdef(9, ihuldefBattleship, &vrgISAip[vrgISIshAip[Random(4) + 10]]) == 0; i++) {
+        for (i = 0; i < 5 && FCreateAiShdef(9, ihuldefBattleship, (uint8_t *)&vrgISAip[vrgISIshAip[Random(4) + 0xa]]) == 0; i++) {
         }
     }
     return;
@@ -733,14 +868,14 @@ void DoRototillAiTurn(PROD *rgprod) {
                         if (lpplHome == 0)
                             break;
                         lppl = NULL;
-                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            for (j = 0; j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
+                        for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                            for (j = 0; j < ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter && ((AIHIST *)vlpbAiData)->rgasb[i].rgflid[j] != lpfl->id; j++) {
                             }
-                            if (j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)))
+                            if (j < ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter)
                                 break;
                         }
-                        if (i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
-                            lppl = LpplFromId(RawLoad16(vlpbAiData + (i * 20 + 4)));
+                        if (i < ((AIHIST *)vlpbAiData)->cStarbase) {
+                            lppl = LpplFromId(((AIHIST *)vlpbAiData)->rgasb[i].idPlanet);
                         }
                         IdTargetFreighter(lpfl, lppl == 0 ? lpplHome : lppl);
                         continue;

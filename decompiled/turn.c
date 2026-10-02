@@ -34,7 +34,6 @@ int16_t FGenerateTurn() {
     int16_t  dRange;
     int16_t  iSteal;
     int16_t  pctDetect;
-    HS      *t_fields_1;
     int16_t  t_call_120d;
 
     idCur = idPlayer;
@@ -132,8 +131,7 @@ int16_t FGenerateTurn() {
                     rglpshdef[i][ish].hul.rghs[0].grhst = hstEngine;
                     rglpshdef[i][ish].hul.rghs[0].iItem = 1;
                     if (rglpshdef[i][ish].hul.rghs[0].cItem < 1) {
-                        t_fields_1 = rglpshdef[i][ish].hul.rghs;
-                        t_fields_1->cItem = 1;
+                        rglpshdef[i][ish].hul.rghs[0].cItem = 1;
                     }
                 }
             }
@@ -924,10 +922,8 @@ void MoveFleets() {
                                                 lpplSrc->id, 0, 0, 0, 0);
                                     continue;
                                 }
-                                ptMsg.x = lpord[1].pt.x;
-                                ptMsg.y = lpord[1].pt.y;
-                                ptEnd.x = lpord[1].pt.x;
-                                ptEnd.y = lpord[1].pt.y;
+                                ptMsg = lpord[1].pt;
+                                ptEnd = lpord[1].pt;
                                 if (lpord[1].grobj == grobjPlanet) {
                                     ptMsg.x = -1;
                                     ptMsg.y = lpord[1].id;
@@ -1011,8 +1007,7 @@ void MoveFleets() {
                                 if (cPass > 0 && lpord[1].fNoAutoTrack == 0) {
                                     lpord[1].pt = lpfl->lpflNext->pt;
                                 }
-                                ptEnd.x = lpord[1].pt.x;
-                                ptEnd.y = lpord[1].pt.y;
+                                ptEnd = lpord[1].pt;
                                 dRange = EstFuelUse(lpfl, 0, -1, -1, 1);
                                 wtFuel2Dest = EstFuelUse(lpfl, 0, -1, -1, 0);
                                 fGotEnufFuel = wtFuel2Dest <= lpfl->rgwtMin[4] ? 1 : 0;

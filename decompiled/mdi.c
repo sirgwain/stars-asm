@@ -2146,13 +2146,12 @@ int16_t FWasRaceFile(char *szFile, int16_t fChkPass) {
     if (setjmp(env) == 0) {
         StreamOpen(szFile, mdRead);
         ReadRt();
-        if (hdrCur.rt != rtBOF || (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2 || (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49 ||
-            (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84) {
+        if (hdrCur.rt != rtBOF || ((RTBOF *)rgbCur)->verMajor != 2 || ((RTBOF *)rgbCur)->verMinor < 49 || ((RTBOF *)rgbCur)->verMinor >= 84) {
             idsError = 13;
             fRet = -1;
         } else {
-            wVersFile = RawLoad16(&rgbCur[8]);
-            if ((RawLoad16(&rgbCur[14]) & 0xff) == 5) {
+            wVersFile = ((RTBOF *)rgbCur)->wVersion;
+            if (((RTBOF *)rgbCur)->dt == 5) {
                 ReadRt();
                 if (hdrCur.rt == rtPlr) {
                     idsError = 3;

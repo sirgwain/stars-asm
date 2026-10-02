@@ -42,19 +42,19 @@ L_4b49:
         goto L_4b81;
 
 L_4b81:
-    if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2)
+    if (((RTBOF *)rgbCur)->verMajor != 2)
         goto L_4bc4;
     else
         goto L_4b94;
 
 L_4b94:
-    if ((RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49)
+    if (((RTBOF *)rgbCur)->verMinor < 49)
         goto L_4bc4;
     else
         goto L_4bac;
 
 L_4bac:
-    if ((RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 84)
+    if (((RTBOF *)rgbCur)->verMinor < 84)
         goto L_4c47;
     else
         goto L_4bc4;
@@ -66,19 +66,19 @@ L_4bc4:
         goto L_4bd7;
 
 L_4bd7:
-    if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2)
+    if (((RTBOF *)rgbCur)->verMajor > 2)
         goto L_4c15;
     else
         goto L_4bea;
 
 L_4bea:
-    if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2)
+    if (((RTBOF *)rgbCur)->verMajor != 2)
         goto L_4c1b;
     else
         goto L_4bfd;
 
 L_4bfd:
-    if ((RawLoad16(&rgbCur[8]) >> 5 & 0x7f) <= 84)
+    if (((RTBOF *)rgbCur)->verMinor <= 84)
         goto L_4c1b;
     else
         goto L_4c15;
@@ -103,7 +103,7 @@ LBadFile:
     return 0;
 
 L_4c47:
-    rtbof = *(RTBOF *)rgbCur;
+    rtbof = *((RTBOF *)rgbCur);
     if (rtbof.iPlayer == iPlayer)
         goto L_4c7b;
     else

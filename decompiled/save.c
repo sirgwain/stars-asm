@@ -71,21 +71,21 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
     uint8_t *pb;
     int16_t  cOut;
 
-    rgb[2] = LOBYTE(lpshdef->hul.ihuldef);
-    RawStore16(rgb, lpshdef->wFlags);
-    rgb[6] = lpshdef->hul.chs;
-    rgb[3] = LOBYTE(lpshdef->hul.ibmp);
+    ((RTSHDEF *)rgb)->ihuldef = LOBYTE(lpshdef->hul.ihuldef);
+    ((RTSHDEF *)rgb)->wFlags = lpshdef->wFlags;
+    ((RTSHDEF *)rgb)->chs = lpshdef->hul.chs;
+    ((RTSHDEF *)rgb)->ibmp = LOBYTE(lpshdef->hul.ibmp);
     if (lpshdef->det == detAll) {
-        RawStore16(&rgb[4], lpshdef->hul.dp);
-        RawStore32(&rgb[7], lpshdef->turn | ((uint32_t)lpshdef->cBuilt & 0xffff) << 0x10);
-        RawStore32(&rgb[11], ((uint32_t)lpshdef->cBuilt >> 0x10 & 0xffff) | ((uint32_t)lpshdef->cExist & 0xffff) << 0x10);
-        RawStore16(&rgb[15], HIWORD(lpshdef->cExist));
-        pb = &rgb[17];
-        fmemmove(pb, lpshdef->hul.rghs, rgb[6] * 4);
-        pb += rgb[6] * 4;
+        ((RTSHDEF *)rgb)->dp = lpshdef->hul.dp;
+        ((RTSHDEF *)rgb)->turn = lpshdef->turn;
+        ((RTSHDEF *)rgb)->cBuilt = lpshdef->cBuilt;
+        ((RTSHDEF *)rgb)->cExist = lpshdef->cExist;
+        pb = (uint8_t *)&((RTSHDEF *)rgb)->rghs;
+        fmemmove(pb, lpshdef->hul.rghs, ((RTSHDEF *)rgb)->chs * 4);
+        pb += ((RTSHDEF *)rgb)->chs * 4;
     } else {
-        RawStore16(&rgb[4], lpshdef->hul.wtEmpty);
-        pb = &rgb[6];
+        ((RTSHDEF *)rgb)->wtEmpty = lpshdef->hul.wtEmpty;
+        pb = &((RTSHDEF *)rgb)->chs;
     }
     if (lpshdef->det == detAll) {
         fstrcpy(szHulName, lpshdef->hul.szClass);
@@ -139,8 +139,6 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     int32_t  lBest;
     int32_t  l;
     PLANET   pl;
-    int16_t  t_merge_5be5_0001;
-    int16_t  t_merge_5be5_0002;
 
     fRet = 1;
     SetVisiblePlanFleet(iPlayer);
@@ -175,14 +173,10 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                         lBest = 100000000;
                         fFoundIdeal = 0;
                         if (lpfl->idPlanet == -1 && lpfl->cord >= 2 && lpfl->fRepOrders != 0) {
-                            t_merge_5be5_0001 = lpord[1].pt.x;
-                            t_merge_5be5_0002 = lpord[1].pt.y;
+                            pt = lpord[1].pt;
                         } else {
-                            t_merge_5be5_0001 = lpfl->pt.x;
-                            t_merge_5be5_0002 = lpfl->pt.y;
+                            pt = lpfl->pt;
                         }
-                        pt.x = t_merge_5be5_0001;
-                        pt.y = t_merge_5be5_0002;
                         lpbtlplan = rglpbtlplan[lpfl->iPlayer] + lpfl->iplan;
                         mdTarget = lpbtlplan->mdTarget1;
                         for (iflT = 0; iflT < cFleet; iflT++) {
@@ -626,20 +620,20 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     uint8_t *pb;
 
     memset(rgb, 0, 80);
-    RawStore16(rgb, (RawLoad16(rgb) & 0xf800) | (lppl->id & 0x7ff));
-    RawStore16(rgb, (RawLoad16(rgb) & 0x7ff) | (lppl->iPlayer & 0x1f) << 0xb);
-    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xff80) | (lppl->det & 0x7f));
+    ((RTPLANET *)rgb)->id = lppl->id;
+    ((RTPLANET *)rgb)->iPlayer = lppl->iPlayer;
+    ((RTPLANET *)rgb)->det = lppl->det;
     if (rt == rtPlanetB && lppl->det > detSome) {
-        RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xff80) | ((fHistory == 0 ? 4 : 3) & 0x7f));
+        ((RTPLANET *)rgb)->det = fHistory == 0 ? 4 : 3;
     }
-    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xfeff) | (lppl->fInclude & 1) << 8);
-    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xfdff) | (lppl->fStarbase & 1) << 9);
-    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xff7f) | (lppl->fHomeworld & 1) << 7);
-    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0x7fff) | (lppl->fFirstYear & 1) << 0xf);
-    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xbfff) | ((lppl->idRoute == 0 ? 0 : 1) & 1) << 0xe);
-    pbBase = &rgb[4];
+    ((RTPLANET *)rgb)->fInclude = lppl->fInclude;
+    ((RTPLANET *)rgb)->fStarbase = lppl->fStarbase;
+    ((RTPLANET *)rgb)->fHomeworld = lppl->fHomeworld;
+    ((RTPLANET *)rgb)->fFirstYear = lppl->fFirstYear;
+    ((RTPLANET *)rgb)->fRouting = lppl->idRoute == 0 ? 0 : 1;
+    pbBase = (uint8_t *)(((RTPLANET *)rgb) + 1);
     pb = pbBase;
-    if ((RawLoad16(&rgb[2]) & 0x7f) > 1) {
+    if (((RTPLANET *)rgb)->det > detMinimal) {
         pb = pbBase + 1;
         bMask = 3;
         i = 0;
@@ -660,10 +654,10 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
         for (i = 0; i < 3; i++) {
             *pb++ = lppl->rgEnvVar[i];
             if (lppl->rgEnvVar[i] != lppl->rgEnvVarOrig[i]) {
-                RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xfbff) | 0x400);
+                ((RTPLANET *)rgb)->fIncEVO = 1;
             }
         }
-        if ((RawLoad16(&rgb[2]) >> 0xa & 1) != 0) {
+        if (((RTPLANET *)rgb)->fIncEVO != 0) {
             for (i = 0; i < 3; i++) {
                 *pb++ = lppl->rgEnvVarOrig[i];
             }
@@ -672,7 +666,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
             RawStore16(pb, lppl->uGuesses);
             pb += 2;
         }
-        if ((RawLoad16(&rgb[2]) & 0x7f) > 3) {
+        if (((RTPLANET *)rgb)->det > detSome) {
             pbBase = pb;
             pb++;
             bMask = 3;
@@ -699,13 +693,13 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
             if (*pbBase == 0) {
                 pb = pbBase;
             } else {
-                RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xdfff) | 0x2000);
+                ((RTPLANET *)rgb)->fIncSurfMin = 1;
             }
             if (rt != rtPlanetB) {
-                RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xefff) | (lppl->fArtifact & 1) << 0xc);
+                ((RTPLANET *)rgb)->fIsArtifact = lppl->fArtifact;
                 if ((lppl->iPlayer != -1 && (lppl->iDeltaPop != 0 || lppl->fNoResearch != 0)) ||
                     (lppl->cMines != 0 || lppl->cFactories != 0 || lppl->cDefenses != 0 || lppl->iScanner != 31)) {
-                    RawStore16(&rgb[2], (RawLoad16(&rgb[2]) & 0xf7ff) | 0x800);
+                    ((RTPLANET *)rgb)->fIncImp = 1;
                     fmemmove(pb, lppl->rgbImp, 8);
                     pb += 8;
                 }
@@ -1066,12 +1060,12 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, MdMark mdMark, int16_t f) {
     ReadRt();
     if (hdrCur.rt != rtBOF) {
         FileError(idmColonistsDroppedDestroyedSpiritedFighting);
-    } else if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) < 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49)) {
+    } else if (((RTBOF *)rgbCur)->verMajor < 2 || (((RTBOF *)rgbCur)->verMajor == 2 && ((RTBOF *)rgbCur)->verMinor < 49)) {
         FileError(1235);
-    } else if ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84)) {
+    } else if (((RTBOF *)rgbCur)->verMajor > 2 || (((RTBOF *)rgbCur)->verMajor == 2 && ((RTBOF *)rgbCur)->verMinor >= 84)) {
         FileError(714);
     } else {
-        rtbof = *(RTBOF *)rgbCur;
+        rtbof = *((RTBOF *)rgbCur);
         if (game.lid != 0) {
             if (rtbof.lidGame != game.lid) {
                 FileError(idmBraveForcesObliteratedVastlyGreaterForcesCowardl);
@@ -1100,17 +1094,17 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, MdMark mdMark, int16_t f) {
                     do {
                         GetFileSeeds(&lSeedSav1, &lSeedSav2);
                         ReadRt();
-                    } while (hdrCur.rt != rtPlr || rgbCur[0] != iPlayer);
-                    if ((RawLoad16(&rgbCur[6]) >> 9 & 1) != f) {
-                        if ((RawLoad16(&rgbCur[6]) >> 9 & 1) != 0) {
-                            if ((RawLoad16(&rgbCur[6]) >> 0xd & 7) != 7)
+                    } while (hdrCur.rt != rtPlr || ((PLAYER *)rgbCur)->iPlayer != iPlayer);
+                    if (((PLAYER *)rgbCur)->fAi != f) {
+                        if (((PLAYER *)rgbCur)->fAi != 0) {
+                            if (((PLAYER *)rgbCur)->idAi != idAiMaid)
                                 break;
-                            RawStore16(&rgbCur[6], RawLoad16(&rgbCur[6]) & 0xfdff);
+                            ((PLAYER *)rgbCur)->fAi = 0;
                         } else {
-                            RawStore16(&rgbCur[6], (RawLoad16(&rgbCur[6]) & 0xfdff) | 0x200);
-                            RawStore16(&rgbCur[6], (RawLoad16(&rgbCur[6]) & 0x1fff) | 0xe000);
+                            ((PLAYER *)rgbCur)->fAi = 1;
+                            ((PLAYER *)rgbCur)->idAi = idAiMaid;
                         }
-                        RawStore32(&rgbCur[12], ~RawLoad32(&rgbCur[12]));
+                        ((PLAYER *)rgbCur)->lSalt = ~((PLAYER *)rgbCur)->lSalt;
                         lseek(hf, (int16_t)-(hdrCur.cb + 2), 1);
                         SetFileSeeds(lSeedSav1, lSeedSav2);
                         WriteRt(rtPlr, hdrCur.cb, rgbCur);
@@ -1142,8 +1136,8 @@ void WriteRt(RecordType rt, int16_t cb, void *rg) {
 
     fmemmove(rgbCur, rg, cb);
     if (rt == rtBOF) {
-        SetFileXorStream(RawLoad32(&rgbCur[4]), (int16_t)RawLoad16(&rgbCur[12]) >> 5, RawLoad16(&rgbCur[10]), (int16_t)(RawLoad16(&rgbCur[12]) << 0xb) >> 0xb,
-                         RawLoad16(&rgbCur[14]) >> 0xc & 1);
+        SetFileXorStream(((RTBOF *)rgbCur)->lidGame, ((RTBOF *)rgbCur)->lSaltTime, ((RTBOF *)rgbCur)->turn, ((RTBOF *)rgbCur)->iPlayer,
+                         ((RTBOF *)rgbCur)->fCrippled);
     } else if (rt != rtEOF) {
         XorFileBuf(rgbCur, cb);
     }
@@ -1495,7 +1489,6 @@ void SetVisPFPlanets(int16_t iPlr) {
     uint16_t grbitPlr;
     int16_t  rgStargateRange[16];
     int32_t  lVis2;
-    int16_t  t_call_ac7a;
 
     grbitPlr = iPlr == -1 ? 0 : 1 << iPlr;
     fStargateView = 0;
@@ -1503,9 +1496,8 @@ void SetVisPFPlanets(int16_t iPlr) {
         for (i = 0; i < 10; i++) {
             rgStargateRange[i] = 0;
             if (rglpshdefSB[iPlr][i].fFree == 0) {
-                t_call_ac7a = StargateRangeFromLppl(NULL, iPlr, i);
-                rgStargateRange[i] = t_call_ac7a;
-                if (t_call_ac7a > 0) {
+                rgStargateRange[i] = StargateRangeFromLppl(NULL, iPlr, i);
+                if (rgStargateRange[i] > 0) {
                     fStargateView = 1;
                 }
             }

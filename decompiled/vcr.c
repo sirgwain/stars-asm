@@ -723,7 +723,7 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
                 for (i = vlpbrVCR->ctok; i > 0; i--) {
                     itokT = vlpbrVCR->rgkill[i - 1].itok;
                     if (itokT == vlpbrVCR->itokAttack && fJam == 0) {
-                        fJam |= vlpbrVCR->rgkill[i - 1].grfWeapon & 0xc0;
+                        fJam |= vlpbrVCR->rgkill[i - 1].grfWeapon & (bitFNoHit | bitFDeflected);
                     }
                     j += vlpbrVCR->rgkill[i - 1].cshKill;
                     if (rgfSeen[itokT] == 0) {
@@ -988,7 +988,7 @@ void AnimateAttack(HDC hdc) {
     POINT16      ptRight;
     POINT16      ptDest;
     int16_t      iHit;
-    uint16_t     grfWeapon;
+    GrfWeapon    grfWeapon;
     POINT16      ptSrc;
     POINT16      ptTorp;
     POINT16      ptLeft;
@@ -1010,18 +1010,6 @@ void AnimateAttack(HDC hdc) {
     uint16_t     t_scratch_m76_4;
     uint16_t     t_scratch_m76_8;
     uint16_t     t_scratch_m76_9;
-    int16_t      t_merge_3ef2_0001;
-    int16_t      t_merge_3ef2_0002;
-    int16_t      t_merge_3f10_0001;
-    int16_t      t_merge_3f10_0002;
-    int16_t      t_merge_3f2e_0001;
-    int16_t      t_merge_3f2e_0002;
-    int16_t      t_merge_3f96_0001;
-    int16_t      t_merge_3f96_0002;
-    int16_t      t_merge_3fb4_0001;
-    int16_t      t_merge_3fb4_0002;
-    int16_t      t_merge_3fd2_0001;
-    int16_t      t_merge_3fd2_0002;
     int16_t      t_scratch_m7c;
     int16_t      t_merge_41df_0001;
 
@@ -1078,62 +1066,38 @@ void AnimateAttack(HDC hdc) {
                     ptBeam1 = ptRight;
                     ptBeam2 = ptLeft;
                     if (dy > 0) {
-                        t_merge_3ef2_0001 = ptTop.x;
-                        t_merge_3ef2_0002 = ptTop.y;
+                        ptTorp = ptTop;
                     } else {
-                        t_merge_3ef2_0001 = ptBottom.x;
-                        t_merge_3ef2_0002 = ptBottom.y;
+                        ptTorp = ptBottom;
                     }
-                    ptTorp.x = t_merge_3ef2_0001;
-                    ptTorp.y = t_merge_3ef2_0002;
                     if (dy > 0) {
-                        t_merge_3f10_0001 = ptDestLeft.x;
-                        t_merge_3f10_0002 = ptDestLeft.y;
+                        ptRay2 = ptDestLeft;
                     } else {
-                        t_merge_3f10_0001 = ptDestRight.x;
-                        t_merge_3f10_0002 = ptDestRight.y;
+                        ptRay2 = ptDestRight;
                     }
-                    ptRay2.x = t_merge_3f10_0001;
-                    ptRay2.y = t_merge_3f10_0002;
                     if (dy > 0) {
-                        t_merge_3f2e_0001 = ptDestRight.x;
-                        t_merge_3f2e_0002 = ptDestRight.y;
+                        ptRay1 = ptDestRight;
                     } else {
-                        t_merge_3f2e_0001 = ptDestLeft.x;
-                        t_merge_3f2e_0002 = ptDestLeft.y;
+                        ptRay1 = ptDestLeft;
                     }
-                    ptRay1.x = t_merge_3f2e_0001;
-                    ptRay1.y = t_merge_3f2e_0002;
                 } else if (dy == 0 || (abs(dy) == 1 && abs(dx) > 2)) {
                     ptBeam1 = ptTop;
                     ptBeam2 = ptBottom;
                     if (dx > 0) {
-                        t_merge_3f96_0001 = ptLeft.x;
-                        t_merge_3f96_0002 = ptLeft.y;
+                        ptTorp = ptLeft;
                     } else {
-                        t_merge_3f96_0001 = ptRight.x;
-                        t_merge_3f96_0002 = ptRight.y;
+                        ptTorp = ptRight;
                     }
-                    ptTorp.x = t_merge_3f96_0001;
-                    ptTorp.y = t_merge_3f96_0002;
                     if (dx > 0) {
-                        t_merge_3fb4_0001 = ptDestTop.x;
-                        t_merge_3fb4_0002 = ptDestTop.y;
+                        ptRay1 = ptDestTop;
                     } else {
-                        t_merge_3fb4_0001 = ptDestBottom.x;
-                        t_merge_3fb4_0002 = ptDestBottom.y;
+                        ptRay1 = ptDestBottom;
                     }
-                    ptRay1.x = t_merge_3fb4_0001;
-                    ptRay1.y = t_merge_3fb4_0002;
                     if (dx > 0) {
-                        t_merge_3fd2_0001 = ptDestBottom.x;
-                        t_merge_3fd2_0002 = ptDestBottom.y;
+                        ptRay2 = ptDestBottom;
                     } else {
-                        t_merge_3fd2_0001 = ptDestTop.x;
-                        t_merge_3fd2_0002 = ptDestTop.y;
+                        ptRay2 = ptDestTop;
                     }
-                    ptRay2.x = t_merge_3fd2_0001;
-                    ptRay2.y = t_merge_3fd2_0002;
                 } else if (dx > 0) {
                     if (dy > 0) {
                         ptRay2 = ptDestBottom;
@@ -1161,15 +1125,15 @@ void AnimateAttack(HDC hdc) {
                     ptTorp.x = ptRight.x;
                     ptTorp.y = ptBeam1.y;
                 }
-                if ((grfWeapon & 3) != 0) {
-                    SelectObject(hdc, (grfWeapon & 2) == 0 ? hpenEnemy : hpenStarbase);
+                if ((grfWeapon & (bitFBeamLow | bitFBeamHigh)) != 0) {
+                    SelectObject(hdc, (grfWeapon & bitFBeamHigh) == 0 ? hpenEnemy : hpenStarbase);
                     MoveTo(hdc, ptBeam1.x, ptBeam1.y);
                     LineTo(hdc, ptDest.x, ptDest.y);
                     MoveTo(hdc, ptBeam2.x, ptBeam2.y);
                     LineTo(hdc, ptDest.x, ptDest.y);
                     DrawIcon(hdc, ptDest.x - 16, ptDest.y - 16, rghiconVCR[0]);
                 }
-                if ((grfWeapon & 4) != 0) {
+                if ((grfWeapon & bitFTorp) != 0) {
                     if (fAnimate != 0) {
                         hdcMem = CreateCompatibleDC(hdc);
                         if (hdcMem == 0)
@@ -1182,7 +1146,7 @@ void AnimateAttack(HDC hdc) {
                         hbmpSav = SelectObject(hdcMem, hbmpScreen);
                         t_scratch_m7c = abs(dx);
                         t_merge_41df_0001 = t_scratch_m7c > abs(dy) ? abs(dx) : abs(dy);
-                        cFrame = t_merge_41df_0001 * ((grfWeapon & 4) == 0 ? 4 : 8);
+                        cFrame = t_merge_41df_0001 * ((grfWeapon & bitFTorp) == 0 ? 4 : 8);
                         ptBase = ptTorp;
                         dxFrame = ptTorp.x - ptDest.x;
                         dyFrame = ptTorp.y - ptDest.y;
@@ -1205,7 +1169,7 @@ void AnimateAttack(HDC hdc) {
                         DeleteObject(hbmpScreen);
                         DeleteDC(hdcMem);
                     }
-                    if ((grfWeapon & 0x40) == 0) {
+                    if ((grfWeapon & bitFNoHit) == 0) {
                         DrawIcon(hdc, ptDest.x - 16, ptDest.y - 16, rghiconVCR[1]);
                     }
                 }

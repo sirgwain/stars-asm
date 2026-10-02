@@ -1301,22 +1301,19 @@ int16_t FOtherStuffAtScanSel() {
 }
 
 void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
-    int16_t  fSep;
-    int16_t  id;
-    int16_t  fOurs;
-    PLANET  *lppl;
-    int16_t  i;
-    int16_t  c;
-    THING   *lpth;
-    FLEET   *lpfl;
-    THING   *lpthMac;
-    int32_t  rgid[100];
-    int16_t  idNew;
-    int16_t  iChecked;
-    SCAN     scan;
-    int16_t  t_50dd;
-    int32_t *t_assign_1;
-    int32_t *t_assign_2;
+    int16_t fSep;
+    int16_t id;
+    int16_t fOurs;
+    PLANET *lppl;
+    int16_t i;
+    int16_t c;
+    THING  *lpth;
+    FLEET  *lpfl;
+    THING  *lpthMac;
+    int32_t rgid[100];
+    int16_t idNew;
+    int16_t iChecked;
+    SCAN    scan;
 
     iChecked = -1;
     if (sel.scan.idpl != -1) {
@@ -1357,12 +1354,7 @@ void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y) {
             if (sel.scan.grobj == grobjThing && (int16_t)((uint8_t *)lpth - (uint8_t *)lpThings) / 18 == sel.scan.ith) {
                 iChecked = c;
             }
-            t_50dd = c;
-            c++;
-            t_assign_1 = &rgid[t_50dd];
-            *t_assign_1 = (int32_t)(((uint32_t)*t_assign_1 & 0xffff0000) | ((uint32_t)lpth->idFull & 0xffff));
-            t_assign_2 = &rgid[t_50dd];
-            *t_assign_2 = (int32_t)(((uint32_t)*t_assign_2 & 0xffff) | ((uint32_t)0x2000 & 0xffff) << 0x10);
+            rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;
         }
     }
     i = PopupMenu(hwnd, x, y, c, rgid, NULL, iChecked, 1);

@@ -46,25 +46,25 @@ L_4b49:
     branch hdrCur.rt != rtBOF ? L_4bc4 : L_4b81
 
 L_4b81:
-    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 2 ? L_4bc4 : L_4b94
+    branch ((RTBOF *)rgbCur)->verMajor != 2 ? L_4bc4 : L_4b94
 
 L_4b94:
-    branch ((*&rgbCur[8] >> 5) & 0x7f) < 49 ? L_4bc4 : L_4bac
+    branch ((RTBOF *)rgbCur)->verMinor < 49 ? L_4bc4 : L_4bac
 
 L_4bac:
-    branch ((*&rgbCur[8] >> 5) & 0x7f) < 84 ? L_4c47 : L_4bc4
+    branch ((RTBOF *)rgbCur)->verMinor < 84 ? L_4c47 : L_4bc4
 
 L_4bc4:
     branch hdrCur.rt != rtBOF ? L_4c2a : L_4bd7
 
 L_4bd7:
-    branch ((*&rgbCur[8] >> 0xc) & 0xf) > 2 ? L_4c15 : L_4bea
+    branch ((RTBOF *)rgbCur)->verMajor > 2 ? L_4c15 : L_4bea
 
 L_4bea:
-    branch ((*&rgbCur[8] >> 0xc) & 0xf) != 2 ? L_4c1b : L_4bfd
+    branch ((RTBOF *)rgbCur)->verMajor != 2 ? L_4c1b : L_4bfd
 
 L_4bfd:
-    branch ((*&rgbCur[8] >> 5) & 0x7f) <= 84 ? L_4c1b : L_4c15
+    branch ((RTBOF *)rgbCur)->verMinor <= 84 ? L_4c1b : L_4c15
 
 L_4c15:
     t_merge_4c1e_0001 = 714
@@ -86,7 +86,7 @@ LBadFile:
     return 0
 
 L_4c47:
-    rtbof = *(RTBOF *)rgbCur
+    rtbof = *((RTBOF *)rgbCur)
     branch rtbof.iPlayer == iPlayer ? L_4c7b : L_4c6c
 
 L_4c6c:

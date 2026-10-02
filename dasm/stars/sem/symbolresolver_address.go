@@ -28,11 +28,11 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 	withoutIndex := mem
 	withoutIndex.Index = nil
 	if path, fieldOff, ok := sr.addressBaseFromMemory(withoutIndex); ok {
-		addr := resolvedAddress{base: path, offset: fieldOff - mem.Disp}
+		addr := sr.bufferViewAddress(resolvedAddress{base: path, offset: fieldOff - mem.Disp})
 		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, sr.addMemoryAddressTerms(addr, mem)), expected, mem.Width), true
 	}
 	if addr, ok := sr.addressFromNativePointerMemory(mem); ok {
-		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
+		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, sr.bufferViewAddress(addr)), expected, mem.Width), true
 	}
 	if addr, ok := sr.addressFromStackAddressMemory(mem); ok {
 		return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
@@ -43,7 +43,7 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 			addr.deref = resolvedAddressIsPointer(addr)
 			addr = sr.addMemoryAddressTerms(addr, mem)
 			if addr.base != nil || addr.baseValue != nil {
-				return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
+				return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, sr.bufferViewAddress(addr)), expected, mem.Width), true
 			}
 			path, fieldOff, ok := sr.globalAddressBase(sr.segFromRegister(seg.Val), uint32(uint16(addr.offset)))
 			if !ok && len(addr.terms) > 0 {
@@ -52,6 +52,7 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 			if ok {
 				addr.base = path
 				addr.offset = fieldOff
+				addr = sr.bufferViewAddress(addr)
 				return resolvedAddressWithExpectedType(sr.addressWithExactPath(mem, addr), expected, mem.Width), true
 			}
 		}
@@ -59,7 +60,7 @@ func (sr *symbolResolver) addressFromMemory(mem machine.MemoryAddress, expected 
 
 	if addr, ok := sr.addressFromFarPointerMemory(mem); ok {
 		return resolvedAddressWithExpectedType(
-			sr.addressWithExactPath(mem, addr),
+			sr.addressWithExactPath(mem, sr.bufferViewAddress(addr)),
 			expected,
 			mem.Width,
 		), true

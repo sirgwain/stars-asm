@@ -10,7 +10,7 @@ extern uint8_t vrgSBMacAisb[6];
 extern AIPART  vrgAiParts[150];
 
 int16_t  FCreateAiShdef(int16_t ishdef, HulDef ihul, uint8_t *rgaip);
-int16_t  FGetAIPart(int16_t aip, PART *ppart);
+int16_t  FGetAIPart(AiPartPreference aip, PART *ppart);
 void     PickANameAndBmp(SHDEF *pshdef, StringId ids, int16_t cids, int16_t ibmpStart);
 int16_t  FChangeAiShdef(SHDEF *pshdef, int16_t ishdef);
 int16_t  XferAiSupply(GrobjClass grobjSrc, int16_t idSrc, GrobjClass grobjDst, int16_t idDst, MineralType iSupply, int16_t cQuan);
@@ -56,7 +56,7 @@ int16_t  FMoveToNearestStarbase(FLEET *lpfl, int16_t fBigOnes);
 void     MoveToNearestPlanetOrEnemy(FLEET *lpfl, int16_t dEnemyRange);
 void     EnsureAiStarbaseDesigns();
 void     EnsureMacintiStarbaseDesigns(uint8_t *rgSB);
-int16_t  FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, isbhull isb);
+int16_t  FCreateAiStarbase(int16_t ishdef, int16_t iLevel, AiStarbaseRecipeOffset aisb, isbhull isb);
 int16_t  FAIFling(PLANET *lppl, int32_t *rgResAvail);
 int16_t  IshdefAiSBLatestOF();
 int16_t  IshdefAiSBLatest();

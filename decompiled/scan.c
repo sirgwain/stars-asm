@@ -28,9 +28,6 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     int16_t     d;
     int16_t     dy;
     int16_t     dx;
-    int16_t     t_08b4;
-    int32_t    *t_assign_1;
-    int32_t    *t_assign_2;
 
     switch (msg) {
     case WM_MDIACTIVATE:
@@ -205,12 +202,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                         rgid[c++] = -1;
                         fSep = 1;
                     }
-                    t_08b4 = c;
-                    c++;
-                    t_assign_1 = &rgid[t_08b4];
-                    *t_assign_1 = (int32_t)(((uint32_t)*t_assign_1 & 0xffff0000) | ((uint32_t)lpth->idFull & 0xffff));
-                    t_assign_2 = &rgid[t_08b4];
-                    *t_assign_2 = (int32_t)(((uint32_t)*t_assign_2 & 0xffff) | ((uint32_t)0x2000 & 0xffff) << 0x10);
+                    rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;
                     if (c >= 100)
                         break;
                 }
@@ -2453,15 +2445,13 @@ int16_t FHandleWayPointDrag(POINT16 pt) {
         SetScanWp(i);
     }
     rgpt[2] = sel.fl.lpplord->rgord[sel.iwpAct - 1].pt;
-    ptPrev.x = rgpt[2].x;
-    ptPrev.y = rgpt[2].y;
+    ptPrev = rgpt[2];
     if (sel.iwpAct == sel.fl.cord - 1) {
         cpt = 3;
     } else {
         cpt = 4;
         rgpt[3] = sel.fl.lpplord->rgord[sel.iwpAct + 1].pt;
-        ptNext.x = rgpt[3].x;
-        ptNext.y = rgpt[3].y;
+        ptNext = rgpt[3];
     }
     rgpt[0] = sel.fl.lpplord->rgord[sel.iwpAct].pt;
     rgpt[1] = rgpt[0];
@@ -2507,8 +2497,7 @@ int16_t FHandleWayPointDrag(POINT16 pt) {
                     }
                     sbar.psz = 0;
                 }
-                sbar.pt.x = rgpt[0].x;
-                sbar.pt.y = rgpt[0].y;
+                sbar.pt = rgpt[0];
                 sbar.grbit = scan.grobj;
                 LogicalToScan(rgpt);
                 DrawScanXorLines(hdc, rgpt, cpt);

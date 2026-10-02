@@ -527,7 +527,11 @@ func (l *unionLoader) parseExternalDiscriminatorAlias(cfg externalDiscriminatorA
 		return nil, fmt.Errorf("union external discriminator alias %s target root %s not found", cfg.Func, cfg.Root)
 	}
 	rootStruct, ok := namedStructType(rootType)
-	if !ok || rootStruct != strct {
+	if !ok {
+		// a byte buffer the function reads as the struct through a buffer view
+		rootStruct = sdb.FunctionBufferView(fn.Name, &FunctionVar{Name: cfg.Root})
+	}
+	if rootStruct != strct {
 		return nil, fmt.Errorf("union external discriminator alias %s target root %s is %s, not %s", cfg.Func, cfg.Root, rootType, cfg.Type)
 	}
 	return &UnionExternalDiscriminatorAlias{

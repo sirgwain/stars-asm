@@ -160,7 +160,8 @@ func machineMaskBeforeShiftBitfieldExtract(ctx *FuncContext, value machine.Value
 //	bitOff   = right - left
 //	bitWidth = N - right
 //
-// SAR indicates a signed extraction.
+// SAR indicates a signed extraction. A right shift alone is the left = 0
+// case, which reads the field in the storage's top bits.
 func machineShiftPairBitfieldExtract(ctx *FuncContext, value machine.Value) (machineBitfieldRead, bool) {
 	value = unwrapMachineBitfieldValue(value)
 
@@ -174,20 +175,17 @@ func machineShiftPairBitfieldExtract(ctx *FuncContext, value machine.Value) (mac
 		return machineBitfieldRead{}, false
 	}
 
-	leftShift, ok := unwrapMachineBitfieldValue(rightShift.LHS).(*machine.Binary)
-	if !ok || leftShift.Op != machine.ValueOpShl {
-		return machineBitfieldRead{}, false
+	// A right shift alone, as in (int16_t)word >> 11, reads the top field:
+	// a left shift by zero.
+	left, storage := 0, unwrapMachineBitfieldValue(rightShift.LHS)
+	if leftShift, ok := storage.(*machine.Binary); ok && leftShift.Op == machine.ValueOpShl {
+		if left, ok = machineShiftAmount(leftShift.RHS); !ok {
+			return machineBitfieldRead{}, false
+		}
+		storage = unwrapMachineBitfieldValue(leftShift.LHS)
 	}
 
-	left, ok := machineShiftAmount(leftShift.RHS)
-	if !ok {
-		return machineBitfieldRead{}, false
-	}
-
-	load, ok := machineBitfieldStorageLoad(
-		ctx,
-		unwrapMachineBitfieldValue(leftShift.LHS),
-	)
+	load, ok := machineBitfieldStorageLoad(ctx, storage)
 	if !ok {
 		return machineBitfieldRead{}, false
 	}

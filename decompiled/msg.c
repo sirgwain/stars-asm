@@ -1694,9 +1694,6 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
     uint8_t *lpb;
     uint8_t *lpbBase;
     int16_t  rgArgs[7];
-    uint16_t t_scratch_m16_2;
-    MSGHDR  *t_fields_1;
-    uint32_t t_fields_3;
 
     if (iPlr == -1) {
         return 0;
@@ -1735,12 +1732,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
     i = 0;
     while (i < rgcMsgArgs[iMsg]) {
         if ((*pi & 0xff00) != 0) {
-            t_scratch_m16_2 = (grbit << 9 | (lpmt->msghdr.iMsg | lpmt->msghdr.grWord << 9)) & 0xfe00;
-            lpmt->msghdr.grWord = 0;
-            t_fields_1 = &lpmt->msghdr;
-            t_fields_3 = t_fields_1->grWord | ((uint32_t)t_scratch_m16_2 >> 9 & 0x7f);
-            t_fields_1->iMsg |= (uint32_t)t_scratch_m16_2 & 0x1ff;
-            t_fields_1->grWord = t_fields_3;
+            lpmt->msghdr.grWord |= grbit;
             RawStore16(lpb, *pi);
             lpb += 2;
         } else {
@@ -1764,8 +1756,6 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     uint16_t cSize;
     MSGHDR  *pmsghdr;
     int16_t  rgArgs[2];
-    uint16_t t_scratch_m50_2;
-    uint32_t t_fields_2;
 
     if ((uint16_t)(imemMsgCur + 20) > 0xffc8) {
         return 0;
@@ -1784,11 +1774,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     i = 0;
     while (i < rgcMsgArgs[iMsg]) {
         if ((*pi & 0xff00) != 0) {
-            t_scratch_m50_2 = (grbit << 9 | (pmsghdr->iMsg | pmsghdr->grWord << 9)) & 0xfe00;
-            pmsghdr->grWord = 0;
-            t_fields_2 = pmsghdr->grWord | ((uint32_t)t_scratch_m50_2 >> 9 & 0x7f);
-            pmsghdr->iMsg |= (uint32_t)t_scratch_m50_2 & 0x1ff;
-            pmsghdr->grWord = t_fields_2;
+            pmsghdr->grWord |= grbit;
             RawStore16(pb, *pi);
             pb += 2;
         } else {

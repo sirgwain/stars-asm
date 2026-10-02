@@ -26,7 +26,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     MessageId idm;
 
 L_ae39:
-    rgcXfer[i] = (int16_t)(int8_t)lpb[iLook + 6];
+    rgcXfer[i] = (int16_t)((RTXFER *)lpb)->rgcQuan[iLook];
     goto L_aecd;
 
 L_ae66:
@@ -36,9 +36,9 @@ L_ae66:
         goto L_ae6f;
 
 L_ae6f:
-    rgcXfer[i] = (int16_t)RawLoad16(lpb + (iLook * 2 + 6));
+    rgcXfer[i] = ((RTXFERX *)lpb)->rgcQuan[iLook];
     goto L_aecd;
 
 L_ae9d:
-    rgcXfer[i] = RawLoad32(lpb + (iLook * 4 + 6));
+    rgcXfer[i] = ((RTXFERL *)lpb)->rgcQuan[iLook];
 }

@@ -21,7 +21,9 @@ type SymbolDB struct {
 	SentMessages  []*SentMessage
 	// DialogControls maps a dialog template resource id to the enum naming
 	// its own controls.
-	DialogControls  map[int]*Enum
+	DialogControls map[int]*Enum
+	// BufferViews are byte buffers a function reads as a record struct.
+	BufferViews     []*BufferView
 	MessageHandlers []*MessageHandler
 
 	EnumRules          []*EnumUseRule

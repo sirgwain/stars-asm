@@ -1101,9 +1101,7 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
                 goto Restore;
             hsShip = lpshdefBuild->hul.rghs[iselSlot];
             t_call_3c58 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
-            hsHul.grhst = t_call_3c58->hul.rghs[iselSlot].grhst;
-            hsHul.iItem = t_call_3c58->hul.rghs[iselSlot].iItem;
-            hsHul.cItem = t_call_3c58->hul.rghs[iselSlot].cItem;
+            hsHul = t_call_3c58->hul.rghs[iselSlot];
             if (hsShip.cItem == 0) {
                 i = CchGetString((hsHul.grhst & hstEngine) == 0 ? idsCanHold : idsRequiresExactly, szWork);
                 fPlural = hsHul.cItem == 1 ? 0 : 1;
@@ -1542,7 +1540,6 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     HS      hsHul;
     HS      hsDst;
     RECT    rc;
-    HULDEF *t_call_5761;
 
     GetClientRect(hwndSlotDlg, &rc);
     if ((GetAsyncKeyState(VK_CONTROL) & 0xfffe) != 0) {
@@ -1583,10 +1580,7 @@ int16_t IDropPart(POINT16 pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
         return 0;
     }
     hsDst = lpshdefBuild->hul.rghs[i];
-    t_call_5761 = LphuldefFromId(lpshdefBuild->hul.ihuldef);
-    hsHul.grhst = t_call_5761->hul.rghs[i].grhst;
-    hsHul.iItem = t_call_5761->hul.rghs[i].iItem;
-    hsHul.cItem = t_call_5761->hul.rghs[i].cItem;
+    hsHul = LphuldefFromId(lpshdefBuild->hul.ihuldef)->hul.rghs[i];
     if ((hsHul.grhst & hstEngine) != 0) {
         hsSrc.cItem = 100;
     }

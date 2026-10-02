@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 289,
-    "hiWords": 95,
-    "loWords": 709,
+    "temps": 238,
+    "hiWords": 91,
+    "loWords": 676,
     "branchHiWords": 30,
-    "branchLoWords": 58,
+    "branchLoWords": 53,
     "ir": {
-      "numStatements": 32060
+      "numStatements": 31945
     }
   },
   "functions": {
@@ -29,7 +29,7 @@
     },
     "AddMinesToBlockedQueues": {
       "temps": 1,
-      "loWords": 3,
+      "loWords": 2,
       "ir": {
         "numStatements": 33
       }
@@ -45,10 +45,10 @@
       }
     },
     "AnimateAttack": {
-      "temps": 18,
+      "temps": 6,
       "loWords": 2,
       "ir": {
-        "numStatements": 143
+        "numStatements": 119
       }
     },
     "AskSaveDialog": {
@@ -169,9 +169,8 @@
       }
     },
     "CLayMinesFromLpfl": {
-      "temps": 2,
       "ir": {
-        "numStatements": 30
+        "numStatements": 26
       }
     },
     "CMaxDefenses": {
@@ -210,9 +209,8 @@
       }
     },
     "CMineFromLpfl": {
-      "temps": 2,
       "ir": {
-        "numStatements": 20
+        "numStatements": 16
       }
     },
     "CMineSweepFromLpfl": {
@@ -221,9 +219,8 @@
       }
     },
     "CMineSweepFromLphul": {
-      "temps": 2,
       "ir": {
-        "numStatements": 19
+        "numStatements": 15
       }
     },
     "CMinesOperating": {
@@ -244,9 +241,8 @@
       }
     },
     "CPtsCloakFromLphs": {
-      "temps": 2,
       "ir": {
-        "numStatements": 21
+        "numStatements": 17
       }
     },
     "CResourcesAtPlanet": {
@@ -361,7 +357,7 @@
       }
     },
     "ChgPopFromPlanet": {
-      "loWords": 3,
+      "loWords": 2,
       "ir": {
         "numStatements": 37
       }
@@ -393,12 +389,10 @@
       }
     },
     "ClickInShipOrders": {
-      "temps": 1,
-      "hiWords": 1,
-      "loWords": 9,
+      "loWords": 8,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 186
+        "numStatements": 181
       }
     },
     "CommaFormatLong": {
@@ -413,9 +407,8 @@
       }
     },
     "ComputeShdefPowers": {
-      "temps": 1,
       "ir": {
-        "numStatements": 7
+        "numStatements": 6
       }
     },
     "CostOfDevelopingItem": {
@@ -586,9 +579,8 @@
       }
     },
     "DoBattles": {
-      "temps": 1,
       "ir": {
-        "numStatements": 19
+        "numStatements": 18
       }
     },
     "DoBombing": {
@@ -647,7 +639,6 @@
       }
     },
     "DoTurinDroneAiTurn": {
-      "loWords": 1,
       "ir": {
         "numStatements": 275
       }
@@ -663,10 +654,9 @@
       }
     },
     "DpShieldOfShdef": {
-      "temps": 2,
       "loWords": 1,
       "ir": {
-        "numStatements": 19
+        "numStatements": 15
       }
     },
     "DrawABunchOfStars": {
@@ -690,7 +680,7 @@
       "temps": 2,
       "loWords": 2,
       "ir": {
-        "numStatements": 88
+        "numStatements": 86
       }
     },
     "DrawBuildSelHull": {
@@ -1616,7 +1606,7 @@
     },
     "FFindNearestObject": {
       "ir": {
-        "numStatements": 83
+        "numStatements": 82
       }
     },
     "FFindPlayerMessage": {
@@ -1677,9 +1667,9 @@
       }
     },
     "FGenerateTurn": {
-      "temps": 3,
+      "temps": 2,
       "ir": {
-        "numStatements": 234
+        "numStatements": 233
       }
     },
     "FGetAIPart": {
@@ -1758,7 +1748,7 @@
     "FHandleWayPointDrag": {
       "temps": 3,
       "ir": {
-        "numStatements": 129
+        "numStatements": 126
       }
     },
     "FHullHasBombs": {
@@ -1809,7 +1799,7 @@
     },
     "FLoadGame": {
       "temps": 2,
-      "loWords": 6,
+      "loWords": 4,
       "branchLoWords": 5,
       "ir": {
         "numStatements": 382
@@ -1974,17 +1964,14 @@
     },
     "FReadPlanet": {
       "temps": 1,
-      "loWords": 2,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 81
       }
     },
     "FReadShDef": {
-      "temps": 2,
       "loWords": 1,
       "ir": {
-        "numStatements": 50
+        "numStatements": 46
       }
     },
     "FRemovePlayerMessage": {
@@ -2003,10 +1990,9 @@
       }
     },
     "FRunLogRecord": {
-      "loWords": 12,
-      "branchLoWords": 3,
+      "loWords": 9,
       "ir": {
-        "numStatements": 209
+        "numStatements": 208
       }
     },
     "FSalvageTargetFreighter2": {
@@ -2041,9 +2027,8 @@
       }
     },
     "FSendPlrMsg2XGen": {
-      "temps": 2,
       "ir": {
-        "numStatements": 34
+        "numStatements": 30
       }
     },
     "FSendPrependedPlrMsg": {
@@ -2155,9 +2140,9 @@
       }
     },
     "FTutorialEnabledShipBuilder": {
-      "temps": 2,
+      "temps": 1,
       "ir": {
-        "numStatements": 112
+        "numStatements": 111
       }
     },
     "FUpgradeAiStarbase": {
@@ -2183,9 +2168,8 @@
       }
     },
     "FWriteDataFile": {
-      "temps": 2,
       "ir": {
-        "numStatements": 153
+        "numStatements": 149
       }
     },
     "FWriteHistFile": {
@@ -2370,10 +2354,10 @@
       }
     },
     "GenerateWorld": {
-      "temps": 12,
+      "temps": 10,
       "loWords": 6,
       "ir": {
-        "numStatements": 552
+        "numStatements": 548
       }
     },
     "GetASubMenu": {
@@ -2632,9 +2616,8 @@
       }
     },
     "IDropPart": {
-      "temps": 1,
       "ir": {
-        "numStatements": 41
+        "numStatements": 38
       }
     },
     "IEmptyBmpFromGrhst": {
@@ -2793,9 +2776,8 @@
       }
     },
     "InitInstance": {
-      "temps": 2,
       "ir": {
-        "numStatements": 20
+        "numStatements": 18
       }
     },
     "InitMDIApp": {
@@ -2815,7 +2797,7 @@
     },
     "InitProduction": {
       "temps": 4,
-      "loWords": 7,
+      "loWords": 5,
       "ir": {
         "numStatements": 88
       }
@@ -3027,8 +3009,6 @@
       }
     },
     "LogChangePlanet": {
-      "loWords": 5,
-      "branchLoWords": 1,
       "ir": {
         "numStatements": 30
       }
@@ -3039,7 +3019,6 @@
       }
     },
     "LogChangeShDef": {
-      "loWords": 8,
       "ir": {
         "numStatements": 12
       }
@@ -3311,7 +3290,7 @@
       "loWords": 20,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 177
+        "numStatements": 174
       }
     },
     "MoveThings": {
@@ -3420,9 +3399,8 @@
       }
     },
     "PackageUpMsg": {
-      "temps": 3,
       "ir": {
-        "numStatements": 36
+        "numStatements": 31
       }
     },
     "PaletteSize": {
@@ -3536,12 +3514,10 @@
       }
     },
     "PopupMineralScanChoices": {
-      "temps": 1,
-      "hiWords": 1,
-      "loWords": 2,
+      "loWords": 1,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 51
+        "numStatements": 46
       }
     },
     "PopupVCRMenu": {
@@ -4032,12 +4008,12 @@
       }
     },
     "ScannerWndProc": {
-      "temps": 2,
-      "hiWords": 2,
-      "loWords": 3,
+      "temps": 1,
+      "hiWords": 1,
+      "loWords": 2,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 138
+        "numStatements": 133
       }
     },
     "ScoreFromGiveAndTakeAndTactic": {
@@ -4076,7 +4052,7 @@
     },
     "SelectOursAtObject": {
       "ir": {
-        "numStatements": 20
+        "numStatements": 19
       }
     },
     "SendBattleMessages": {
@@ -4211,9 +4187,8 @@
       }
     },
     "SetVisPFPlanets": {
-      "temps": 1,
       "ir": {
-        "numStatements": 85
+        "numStatements": 84
       }
     },
     "SetVisPFThings": {
@@ -4465,9 +4440,9 @@
       }
     },
     "UpdatePlayerScores": {
-      "temps": 10,
+      "temps": 3,
       "ir": {
-        "numStatements": 95
+        "numStatements": 81
       }
     },
     "UpdatePopulations": {
@@ -4591,7 +4566,7 @@
     },
     "WritePlanet": {
       "hiWords": 1,
-      "loWords": 7,
+      "loWords": 3,
       "ir": {
         "numStatements": 65
       }
@@ -4612,8 +4587,6 @@
       }
     },
     "WriteRtShDef": {
-      "hiWords": 1,
-      "loWords": 1,
       "ir": {
         "numStatements": 25
       }

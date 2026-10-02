@@ -2396,9 +2396,6 @@ HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRig
     int16_t    iChecked;
     THING     *lpthMac;
     SCAN       scan;
-    int16_t    t_84ec;
-    int32_t   *t_assign_1;
-    int32_t   *t_assign_2;
 
     lTempMin = 0;
     irc = -1;
@@ -2536,12 +2533,7 @@ HCURSOR ClickInShipOrders(POINT16 pt, int16_t sks, int16_t fCursor, int16_t fRig
                     }
                     if (c >= 100)
                         break;
-                    t_84ec = c;
-                    c++;
-                    t_assign_1 = &rgid[t_84ec];
-                    *t_assign_1 = (int32_t)(((uint32_t)*t_assign_1 & 0xffff0000) | ((uint32_t)lpth->idFull & 0xffff));
-                    t_assign_2 = &rgid[t_84ec];
-                    *t_assign_2 = (int32_t)(((uint32_t)*t_assign_2 & 0xffff) | ((uint32_t)0x2000 & 0xffff) << 0x10);
+                    rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;
                 }
             }
             i = PopupMenu(hwndPlanet, pt.x, pt.y, c, rgid, NULL, iChecked, 1);

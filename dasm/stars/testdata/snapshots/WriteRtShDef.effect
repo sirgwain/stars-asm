@@ -1,0 +1,135 @@
+/*
+WriteRtShDef  (save)
+  addr: 000f:574e  len=534
+  sig:  void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore)
+  params:
+    SHDEF *          lpshdef        [BP+0x6]
+    uint8_t * *      ppbStore       [BP+0xa]
+  locals:
+    int16_t          cOut           [BP-0xba]
+    uint8_t *        pb             [BP-0xb8]
+    char[32]         szHulName      [BP-0xb6]
+    uint8_t[147]     rgb            [BP-0x96]
+
+  stats: blocks=0  labels=0
+*/
+block L_574e:
+  insts 0..21  off 0x574e..0x5790
+  succs: L_5794, L_5816
+  effects:
+    575d  store[1] byte [bp-rgb+0x2] = lobyte(load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))]))
+    5768  store[2] [bp-rgb] = load@5764/src(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7b])
+    5773  store[1] byte [bp-rgb+0x6] = load(byte farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7a])
+    577e  store[1] byte [bp-rgb+0x3] = lobyte(load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x32]))
+    578f  branch (load@5785/src(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7b]) & 0xff) != 0x7 ? L_5816 : L_5794
+
+block L_5794:
+  insts 23..63  off 0x5794..0x5815
+  preds: L_574e
+  succs: L_5829
+  effects:
+    579b  store[2] [bp-rgb+0x4] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x38])
+    57a6  store[2] [bp-rgb+0x7] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7d])
+    57b6  store[2] [bp-rgb+0x9] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7f])
+    57ba  store[2] [bp-rgb+0xb] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x81])
+    57cb  store[2] [bp-rgb+0xd] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x83])
+    57cf  store[2] [bp-rgb+0xf] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x85])
+    57d7  store[2] [bp-pb] = addr([bp-rgb+0x11])
+    57fc  call fmemmove(words(ds, load([bp-pb])), words(load([bp+lpshdef+0x2]), (load([bp+lpshdef]) + 0x3a)), ((load@57db/src(byte [bp-rgb+0x6]) << 0x1) << 0x1)) -> callresult(void *)
+    580f  store[2] [bp-pb] = (load@580f/dst([bp-pb]) + ((load@5804/src(byte [bp-rgb+0x6]) << 0x1) << 0x1))
+    5813  goto L_5829
+
+block L_5816:
+  insts 64..68  off 0x5816..0x5828
+  preds: L_574e
+  succs: L_5829
+  effects:
+    581d  store[2] [bp-rgb+0x4] = load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x28])
+    5825  store[2] [bp-pb] = addr([bp-rgb+0x6])
+
+block L_5829:
+  insts 69..73  off 0x5829..0x5837
+  preds: L_5794, L_5816
+  succs: L_583b, L_585b
+  effects:
+    5836  branch (load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))+0x7b]) & 0xff) != 0x7 ? L_585b : L_583b
+
+block L_583b:
+  insts 75..87  off 0x583b..0x585a
+  preds: L_5829
+  succs: L_5880
+  effects:
+    5850  call fstrcpy(words(ss, addr([bp-szHulName])), words(load([bp+lpshdef+0x2]), (load([bp+lpshdef]) + 0x8))) -> callresult(char *)
+    5858  goto L_5880
+
+block L_585b:
+  insts 88..101  off 0x585b..0x587f
+  preds: L_5829
+  succs: L_5880
+  effects:
+    5861  call LphuldefFromId(load(farseg(load(dword [bp+lpshdef])):[faroff(load(dword [bp+lpshdef]))])) -> callresult(HULDEF *)
+    5878  call fstrcpy(words(ss, addr([bp-szHulName])), words(farseg(callresult(HULDEF *)), (faroff(callresult(HULDEF *)) + 0x8))) -> callresult(char *)
+
+block L_5880:
+  insts 102..106  off 0x5880..0x588f
+  preds: L_583b, L_585b
+  succs: L_5893, L_58d5
+  effects:
+    5880  store[2] [bp-cOut] = 0x1f
+    588e  branch sext8to16(load(byte [bp-szHulName])) == 0x0 ? L_58d5 : L_5893
+
+block L_5893:
+  insts 108..123  off 0x5893..0x58b9
+  preds: L_5880
+  succs: L_58bd, L_58d5
+  effects:
+    58ad  call FCompressUserString(words(ss, addr([bp-szHulName])), words(ds, (load([bp-pb]) + 0x1)), addr([bp-cOut])) -> callresult(int16_t)
+    58b8  branch callresult(int16_t) == 0x0 ? L_58d5 : L_58bd
+
+block L_58bd:
+  insts 125..131  off 0x58bd..0x58d4
+  preds: L_5893
+  succs: L_5907
+  effects:
+    58c5  store[1] byte ds:[load([bp-pb])] = lobyte(load([bp-cOut]))
+    58ce  store[2] [bp-pb] = (load([bp-pb]) + (load@58c7/src([bp-cOut]) + 0x1))
+    58d2  goto L_5907
+
+block L_58d5:
+  insts 132..147  off 0x58d5..0x5906
+  preds: L_5880, L_5893
+  succs: L_5907
+  effects:
+    58e4  call strcpy((load@58dd/src([bp-pb]) + 0x1), addr([bp-szHulName])) -> callresult(char *)
+    58f0  store[1] byte ds:[load([bp-pb])] = 0x0
+    58f8  call strlen(addr([bp-szHulName])) -> callresult(uint16_t)
+    5903  store[2] [bp-pb] = (load@5903/dst([bp-pb]) + (callresult(uint16_t) + 0x2))
+
+block L_5907:
+  insts 148..149  off 0x5907..0x590c
+  preds: L_58bd, L_58d5
+  succs: L_5910, L_593f
+  effects:
+    590b  branch load([bp+ppbStore]) == 0x0 ? L_593f : L_5910
+
+block L_5910:
+  insts 151..166  off 0x5910..0x593e
+  preds: L_5907
+  succs: L_595e
+  effects:
+    5925  call memmove(load@5923/src(ds:[load([bp+ppbStore])]), addr([bp-rgb]), (load@5914/src([bp-pb]) - addr([bp-rgb]))) -> callresult(void *)
+    593a  store[2] ds:[load([bp+ppbStore])] = (load@593a/dst(ds:[load([bp+ppbStore])]) + (load@5931/src([bp-pb]) - addr([bp-rgb])))
+    593c  goto L_595e
+
+block L_593f:
+  insts 167..178  off 0x593f..0x595d
+  preds: L_5907
+  succs: L_595e
+  effects:
+    5956  call WriteRt(0x1a, (load([bp-pb]) - addr([bp-rgb])), words(ss, addr([bp-rgb]))) -> callresult(void)
+
+block L_595e:
+  insts 179..183  off 0x595e..0x5963
+  preds: L_5910, L_593f
+  effects:
+    5963  return

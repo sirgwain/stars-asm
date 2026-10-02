@@ -215,6 +215,10 @@ func (c *machineConverter) resolveAddressValue(value machine.Value, segNum uint1
 			if !ok {
 				return nil, false
 			}
+			if buffer, ok := c.bufferViewWhole(target); ok {
+				// the address of the record is the buffer itself
+				return buffer, true
+			}
 			return &AddressOf{Target: target, TypeInfo: typeinfo.U16}, true
 		}
 	}

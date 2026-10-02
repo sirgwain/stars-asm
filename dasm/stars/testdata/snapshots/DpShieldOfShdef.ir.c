@@ -1,12 +1,10 @@
 int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
-    int16_t  chs;
-    HS      *lphs;
-    int16_t  ihs;
-    int32_t  dpShdef;
-    HUL     *lphul;
-    PART     part;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
+    int16_t chs;
+    HS     *lphs;
+    int16_t ihs;
+    int32_t dpShdef;
+    HUL    *lphul;
+    PART    part;
 
 L_0f24:
     dpShdef = 0;
@@ -39,11 +37,7 @@ L_0f93:
         goto L_0faa;
 
 L_0faa:
-    part.hs.grhst = lphs->grhst;
-    t_fields_1 = &part.hs;
-    t_fields_3 = lphs->cItem;
-    t_fields_1->iItem = lphs->iItem;
-    t_fields_1->cItem = t_fields_3;
+    part.hs = *lphs;
     FLookupPart(&part);
     dpShdef += (uint32_t)(part.pshield->dp * lphs->cItem);
     goto L_0f69;

@@ -148,7 +148,7 @@ void InitProduction(PROD *rgprod) {
     }
     i = IpctCanTerraformLppl(&sel.pl);
     if (i > 0) {
-        rgprod[cProdGlob].cItem = LOWORD((uint32_t)i);
+        rgprod[cProdGlob].cItem = (uint16_t)i;
         rgprod[cProdGlob].iItem = mdIdleTerraform;
         rgprod[cProdGlob].grobj = grobjPlanet;
         cProdGlob++;
@@ -186,7 +186,7 @@ void InitProduction(PROD *rgprod) {
             lpplProdGlob->iprodMac--;
         } else {
             if (pProdGlob[iSrc].cItem < lpprod->cItem) {
-                lpprod->cItem = LOWORD((uint32_t)pProdGlob[iSrc].cItem);
+                lpprod->cItem = pProdGlob[iSrc].cItem;
             }
             if (pProdGlob[iSrc].cItem != 0x3ff) {
                 if (pProdGlob[iSrc].cItem < lpprod->cItem) {

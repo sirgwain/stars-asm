@@ -461,8 +461,6 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     uint16_t      t_scratch_m116_17;
     uint16_t      t_scratch_m116_19;
     int16_t       t_call_361d;
-    HS           *t_fields_1;
-    uint32_t      t_fields_3;
     int16_t       t_scratch_m116_24;
 
     iMin = 0;
@@ -1171,11 +1169,7 @@ L_15bc:
             k = 0;
             while (k < chs) {
                 cTry = 0;
-                part.hs.grhst = lphs->grhst;
-                t_fields_1 = &part.hs;
-                t_fields_3 = lphs->cItem;
-                t_fields_1->iItem = lphs->iItem;
-                t_fields_1->cItem = t_fields_3;
+                part.hs = *lphs;
                 switch (part.hs.grhst) {
                 case hstEngine:
                     if (part.hs.iItem != iengineQuickJump5)

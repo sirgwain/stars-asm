@@ -164,7 +164,7 @@ L_1c4a:
     goto L_17a3
 
 L_1c8f:
-    sel.pl.lpplprod->rgprod[0].cItem = loword((uint32_t)LOWORD(cBuild))
+    sel.pl.lpplprod->rgprod[0].cItem = LOWORD(cBuild)
     goto L_17a3
 
 L_1cef:

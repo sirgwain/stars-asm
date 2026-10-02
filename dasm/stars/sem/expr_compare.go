@@ -41,7 +41,8 @@ func sameLValue(a, b LValue) bool {
 	}
 }
 
-// sameStructField reports whether two struct field descriptors name the same layout field.
+// sameStructField reports whether two struct field descriptors name the same
+// layout field: the same name, place, type and bit range.
 func sameStructField(a, b *typeinfo.StructField) bool {
 	if a == nil || b == nil {
 		return a == nil && b == nil
@@ -53,7 +54,20 @@ func sameStructField(a, b *typeinfo.StructField) bool {
 		a.Offset == b.Offset &&
 		a.Size == b.Size &&
 		a.End == b.End &&
-		typeinfo.Equals(a.Type, b.Type)
+		typeinfo.Equals(a.Type, b.Type) &&
+		sameBitfield(a.Bitfield, b.Bitfield)
+}
+
+// sameBitfield reports whether two bitfield descriptors select the same bits
+// of the same storage, or are both absent.
+func sameBitfield(a, b *typeinfo.Bitfield) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
+	}
+	return a.StorageSize == b.StorageSize &&
+		a.BitOffset == b.BitOffset &&
+		a.BitWidth == b.BitWidth &&
+		typeinfo.Equals(a.BaseType, b.BaseType)
 }
 
 // sameExpr reports whether two expressions are the same limited lowering value.

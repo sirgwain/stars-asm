@@ -76,7 +76,64 @@ var procs = []string{
 	"SzVersion",
 	"WrapTextOut",
 	"WritePlayerMessages",
+	"WriteRtShDef",
 	"WtMaxShdefStat",
+}
+
+// TestDASM_RecoverySnapshots records the remaining compiler-pattern recoveries
+// against complete real functions, including shared work and exact call results.
+func TestDASM_RecoverySnapshots(t *testing.T) {
+	fx := testfixture.Stars(t)
+	for _, tc := range []struct {
+		name         string
+		want, absent []string
+		once         string
+	}{
+		{name: "AnimateAttack", want: []string{"ptTorp = ptTop;", "ptTorp = ptBottom;"}, absent: []string{"t_merge_3ef2", "t_merge_3f10", "t_merge_3f2e", "t_merge_3f96", "t_merge_3fb4", "t_merge_3fd2"}},
+		{name: "FWriteDataFile", want: []string{"pt = lpfl->pt;"}, absent: []string{"t_merge_"}},
+		{name: "CMineFromLpfl", want: []string{"part.hs = *lphs;"}, absent: []string{"t_fields_"}},
+		{name: "FReadShDef", want: []string{"part.hs = lphul->rghs[0];"}, absent: []string{"t_fields_"}},
+		{name: "UpdatePlayerScores", want: []string{"vlprgScoreX[i].grbitVC |= 1;"}, absent: []string{"grbitVC = 0;", "wWord |= t_scratch_"}},
+		{name: "PackageUpMsg", want: []string{"lpmt->msghdr.grWord |= grbit;"}, absent: []string{"t_fields_", "t_scratch_m16_2"}},
+		{name: "FSendPlrMsg2XGen", want: []string{"pmsghdr->grWord |= grbit;"}, absent: []string{"t_fields_"}},
+		{name: "DoBattles", want: []string{"cplr = CplrBattle("}, absent: []string{"t_call_3b1d"}, once: "CplrBattle("},
+		{name: "SortReportCache", want: []string{"default:\n            return;"}, absent: []string{"goto L_5b5d"}, once: "qsort("},
+		{name: "FTutorialEnabledShipBuilder", want: []string{"return t_call_7c62;"}, absent: []string{"t_merge_81d4"}, once: "FCheckShipBuilder(0, 2)"},
+		{name: "PopupMineralScanChoices", want: []string{"rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;"}, absent: []string{"t_assign_", "t_50dd"}},
+		{name: "ClickInShipOrders", want: []string{"rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;"}, absent: []string{"t_assign_", "t_84ec"}},
+		{name: "ScannerWndProc", want: []string{"rgid[c++] = (uint32_t)(uint16_t)lpth->idFull | 0x20000000;"}, absent: []string{"t_assign_", "t_08b4"}},
+		{name: "InitInstance", want: []string{"hAccel = LoadAccelerators(", "if (hAccel == 0)", "hAccelTitle = LoadAccelerators(", "if (hAccelTitle == 0)"}, absent: []string{"t_call_"}, once: "MAKEINTRESOURCE(IDA_MAIN)"},
+		{name: "SetVisPFPlanets", want: []string{"rgStargateRange[i] = StargateRangeFromLppl(NULL, iPlr, i);", "if (rgStargateRange[i] > 0)"}, absent: []string{"t_call_"}, once: "StargateRangeFromLppl(NULL, iPlr, i)"},
+		{name: "FGenerateTurn", want: []string{"rglpshdef[i][ish].hul.rghs[0].cItem = 1;"}, absent: []string{"t_fields_"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := dumpFunction(fx.SDB, tc.name, "region.c", func(w io.Writer, f *typeinfo.Function) {
+				var output bytes.Buffer
+				if err := DumpFuncRegion(&output, fx.Image, fx.SDB, f, DumpOptions{}); err != nil {
+					t.Fatal(err)
+				}
+				text := output.String()
+				for _, want := range tc.want {
+					if !strings.Contains(text, want) {
+						t.Fatalf("missing %q in recovered output:\n%s", want, text)
+					}
+				}
+				for _, absent := range tc.absent {
+					if strings.Contains(text, absent) {
+						t.Fatalf("remaining %q in recovered output:\n%s", absent, text)
+					}
+				}
+				if tc.once != "" && strings.Count(text, tc.once) != 1 {
+					t.Fatalf("shared work %q changed count", tc.once)
+				}
+				if _, err := w.Write(output.Bytes()); err != nil {
+					t.Fatal(err)
+				}
+			}); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
 }
 
 // TestDASM_BitfieldUpdateSnapshots verifies the reported compiler patterns and
@@ -268,7 +325,8 @@ func TestDASM_IRSnapshots(t *testing.T) {
 }
 
 // TestDASM_CargoTransferSignExtension preserves CBW/CWD when cargo quantities
-// are read through the unsigned log byte pointer and RawLoad16.
+// are read through the log byte pointer, viewed by record type as the
+// transfer record whose signed rgcQuan width matches the record.
 func TestDASM_CargoTransferSignExtension(t *testing.T) {
 	fx := testfixture.Stars(t)
 	err := dumpFunction(fx.SDB, "FRunLogRecord", "cargo.ir.c", func(w io.Writer, f *typeinfo.Function) {
@@ -281,8 +339,8 @@ func TestDASM_CargoTransferSignExtension(t *testing.T) {
 		}
 		text := output.String()
 		for _, want := range []string{
-			"rgcXfer[i] = (int16_t)(int8_t)lpb[iLook + 6];",
-			"rgcXfer[i] = (int16_t)RawLoad16(lpb + (iLook * 2 + 6));",
+			"rgcXfer[i] = (int16_t)((RTXFER *)lpb)->rgcQuan[iLook];",
+			"rgcXfer[i] = ((RTXFERX *)lpb)->rgcQuan[iLook];",
 		} {
 			if !strings.Contains(text, want) {
 				t.Fatalf("missing signed cargo load %q:\n%s", want, text)

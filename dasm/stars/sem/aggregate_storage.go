@@ -483,6 +483,13 @@ func (p *resolveLateBitfieldsProcessor) expandAggregateWrite(a *Assign) ([]Effec
 		}
 		return nil, false
 	}
+	// A single field write whose source does not read the destination
+	// evaluates its address once anyway, so it needs no pointer temporary:
+	// rglpshdef[i][ish].hul.rghs[0].cItem = 1.
+	if len(writes) == 1 && stable != base && !containsExpr(writes[0].Src, func(e Expr) bool { return sameExpr(e, base) }) {
+		prefix = prefix[1:]
+		stable = base
+	}
 	for _, write := range writes {
 		write.Dst = &FieldAccess{Base: stable, Field: write.Dst.(*FieldAccess).Field}
 		if stable != base && scratchExpressionPure(a.Src) {

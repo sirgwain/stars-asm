@@ -9,6 +9,43 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestReturnTempsRequiresCompleteDefinitions verifies direct returns preserve
+// exact values and reject missing edge definitions or narrowing conversions.
+func TestReturnTempsRequiresCompleteDefinitions(t *testing.T) {
+	for _, mode := range []string{"complete", "missing edge", "narrowing"} {
+		t.Run(mode, func(t *testing.T) {
+			cfg := cfgForReturnSinkTest(t, []asm.DecodedInst{
+				jccForReturnSinkTest(0x1000, 0x1004),
+				jmpForReturnSinkTest(0x1002, 0x1006),
+				jmpForReturnSinkTest(0x1004, 0x1006),
+				retForReturnSinkTest(0x1006),
+			})
+			temp := &Temp{Name: "t_merge", TypeInfo: typeinfo.I16}
+			value := testLocal("result", typeinfo.I16)
+			flag := testLocal("flag", typeinfo.I16)
+			f := &Func{CFG: cfg, Blocks: []Block{
+				{ID: 0x1000, Effects: []Effect{&Branch{Cond: &Compare{Op: CompareNE, LHS: flag, RHS: &Const{TypeInfo: typeinfo.I16}}, TrueBlock: 0x1004, FalseBlock: 0x1002}}},
+				{ID: 0x1002, Effects: []Effect{&Assign{Dst: temp, Src: &Const{TypeInfo: typeinfo.I16}}, &Jump{To: 0x1006}}},
+				{ID: 0x1004, Effects: []Effect{&Assign{Dst: temp, Src: value}, &Jump{To: 0x1006}}},
+				{ID: 0x1006, Effects: []Effect{&Return{Value: temp}}},
+			}}
+			if mode == "missing edge" {
+				f.Blocks[2].Effects = f.Blocks[2].Effects[1:]
+			}
+			if mode == "narrowing" {
+				f.Blocks[2].Effects[0].(*Assign).Src = &Const{TypeInfo: typeinfo.U32, U64: 65535}
+			}
+			p := returnTempsProcessor{fs: &typeinfo.Function{Name: "Check", Ret: typeinfo.I16}}
+			if got := p.ProcessFunc(nil, f); got != (mode == "complete") {
+				t.Fatalf("recovered = %v for %s", got, mode)
+			}
+			if mode == "complete" && !sameExpr(f.Blocks[2].Effects[0].(*Return).Value, value) {
+				t.Fatal("return result normalized instead of preserved")
+			}
+		})
+	}
+}
+
 // TestReturnSinkProcessorMovesMergeArmsToPredecessors verifies return merge sinks become predecessor returns.
 func TestReturnSinkProcessorMovesMergeArmsToPredecessors(t *testing.T) {
 	cfg := cfgForReturnSinkTest(t, []asm.DecodedInst{

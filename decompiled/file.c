@@ -19,8 +19,6 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
     int16_t  c;
     HUL     *lphul;
     PART     part;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
 
     memset(&shdef, 0, sizeof(SHDEF));
     shdef.hul.ihuldef = lprt->ihuldef;
@@ -87,11 +85,7 @@ int16_t FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad) {
                 lphul->rghs[0].grhst = hstEngine;
                 lphul->rghs[0].iItem = 1;
                 lphul->rghs[0].cItem = lphulBase->rghs[0].cItem;
-                part.hs.grhst = lphul->rghs[0].grhst;
-                t_fields_1 = &part.hs;
-                t_fields_3 = lphul->rghs[0].cItem;
-                t_fields_1->iItem = lphul->rghs[0].iItem;
-                t_fields_1->cItem = t_fields_3;
+                part.hs = lphul->rghs[0];
                 FLookupPart(&part);
                 wt += (uint32_t)(part.pcom->cMass * lphul->rghs[0].cItem);
             }
@@ -227,8 +221,8 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                 if (iPlayer != -1 && FOpenFile(dtHist, iPlayer, 32) != 0) {
                     ReadRt();
                     if (hdrCur.rt == rtHistHdr) {
-                        cPlanetHist = RawLoad16(rgbCur);
-                        cPlanetAlloc = cPlanetHist + RawLoad16(&rgbCur[2]);
+                        cPlanetHist = ((RTHISTHDR *)rgbCur)->cPlanet;
+                        cPlanetAlloc = cPlanetHist + ((RTHISTHDR *)rgbCur)->cPlanetExtra;
                         if (cPlanetAlloc > 1000) {
                             cPlanetAlloc = 1000;
                         }
@@ -254,7 +248,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                             ReadRt();
                         }
                         while (hdrCur.rt == rtPlr) {
-                            i = rgbCur[0];
+                            i = ((PLAYER *)rgbCur)->iPlayer;
                             ReadRtPlr(&rgplr[i], rgbCur);
                             rgplr[i].cPlanet = 0;
                             rgplr[i].cFleet = 0;
@@ -433,7 +427,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                         }
                     }
                     while (hdrCur.rt == rtPlr) {
-                        i = rgbCur[0];
+                        i = ((PLAYER *)rgbCur)->iPlayer;
                         ReadRtPlr(&rgplr[i], rgbCur);
                         cPlanet += rgplr[i].cPlanet;
                         rgplr[i].cPlanet = 0;
@@ -697,7 +691,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                     }
                     iplrSav = idPlayer;
                     while (hdrCur.rt == rtBtlPlan) {
-                        iP = RawLoad16(rgbCur) & 0xf;
+                        iP = ((BTLPLAN *)rgbCur)->iplr;
                         idPlayer = iP;
                         if (rglpbtlplan[iP] == 0) {
                             rglpbtlplan[iP] = LpAlloc(16 * sizeof(BTLPLAN), htShips);
@@ -715,8 +709,8 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                     ReadRt();
                     if (hdrCur.rt != rtBOF)
                         goto L_2a35;
-                    game.turn = RawLoad16(&rgbCur[10]);
-                    game.wGen = RawLoad16(&rgbCur[14]) >> 0xd & 7;
+                    game.turn = ((RTBOF *)rgbCur)->turn;
+                    game.wGen = ((RTBOF *)rgbCur)->wGen;
                     for (i = 0; i < game.cPlayer; i++) {
                         rgplr[i].cShDef = 0;
                         rgplr[i].cFleet = 0;
@@ -888,7 +882,7 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
         fmemset(lppl, 0, sizeof(PLANET));
     }
     if (fHistory != 0 || iPlayer == -1) {
-        lppl->fFirstYear = RawLoad16(&rgbCur[2]) >> 0xf & 1;
+        lppl->fFirstYear = ((RTPLANET *)rgbCur)->fFirstYear;
     } else if (fPreInited == 0) {
         fFirstYear = 1;
         lppl->fFirstYear = 1;
@@ -899,23 +893,23 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
             fFirstYear = 1;
         }
     }
-    lppl->id = (int16_t)(RawLoad16(rgbCur) << 5) >> 5;
-    lppl->iPlayer = (int16_t)RawLoad16(rgbCur) >> 0xb;
-    if (lppl->det < (RawLoad16(&rgbCur[2]) & 0x7f)) {
-        lppl->det = RawLoad16(&rgbCur[2]) & 0x7f;
+    lppl->id = ((RTPLANET *)rgbCur)->id;
+    lppl->iPlayer = ((RTPLANET *)rgbCur)->iPlayer;
+    if (lppl->det < ((RTPLANET *)rgbCur)->det) {
+        lppl->det = ((RTPLANET *)rgbCur)->det;
     }
-    lppl->fInclude = RawLoad16(&rgbCur[2]) >> 8 & 1;
-    lppl->fStarbase = RawLoad16(&rgbCur[2]) >> 9 & 1;
-    lppl->fHomeworld = RawLoad16(&rgbCur[2]) >> 7 & 1;
-    fRouting = RawLoad16(&rgbCur[2]) >> 0xe & 1;
+    lppl->fInclude = ((RTPLANET *)rgbCur)->fInclude;
+    lppl->fStarbase = ((RTPLANET *)rgbCur)->fStarbase;
+    lppl->fHomeworld = ((RTPLANET *)rgbCur)->fHomeworld;
+    fRouting = ((RTPLANET *)rgbCur)->fRouting;
     if (lppl->fStarbase != 0 && lppl->iPlayer == -1) {
         lppl->fStarbase = 0;
     }
     if (fHistory == 0) {
         lppl->turn = game.turn;
     }
-    pb = &rgbCur[4];
-    if ((RawLoad16(&rgbCur[2]) & 0x7f) >= 3) {
+    pb = (uint8_t *)(((RTPLANET *)rgbCur) + 1);
+    if (((RTPLANET *)rgbCur)->det >= detSome) {
         bMask = *pb;
         pb++;
         i = 0;
@@ -946,7 +940,7 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
             lppl->rgEnvVarOrig[i] = *t_3533;
             lppl->rgEnvVar[i] = *t_3533;
         }
-        if ((RawLoad16(&rgbCur[2]) >> 0xa & 1) != 0) {
+        if (((RTPLANET *)rgbCur)->fIncEVO != 0) {
             for (i = 0; i < 3; i++) {
                 if (*pb > 100) {
                     return 0;
@@ -954,13 +948,13 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
                 lppl->rgEnvVarOrig[i] = *pb++;
             }
         }
-        if ((int16_t)RawLoad16(rgbCur) >> 0xb != -1) {
+        if (((RTPLANET *)rgbCur)->iPlayer != -1) {
             lppl->uGuesses = RawLoad16(pb);
             pb += 2;
         }
         if (lppl->det <= detSome)
             goto LFinishBRecord;
-        if ((RawLoad16(&rgbCur[2]) >> 0xd & 1) != 0) {
+        if (((RTPLANET *)rgbCur)->fIncSurfMin != 0) {
             bMask = *pb;
             pb++;
             i = 0;
@@ -988,11 +982,11 @@ int16_t FReadPlanet(int16_t iPlayer, PLANET *lppl, int16_t fHistory, int16_t fPr
         }
         if (hdrCur.rt == rtPlanetB)
             goto LFinishBRecord;
-        if ((RawLoad16(&rgbCur[2]) >> 0xb & 1) != 0) {
+        if (((RTPLANET *)rgbCur)->fIncImp != 0) {
             fmemmove(lppl->rgbImp, pb, 8);
             pb += 8;
         } else {
-            lppl->fArtifact = RawLoad16(&rgbCur[2]) >> 0xc & 1;
+            lppl->fArtifact = ((RTPLANET *)rgbCur)->fIsArtifact;
             lppl->iScanner = 31;
             lppl->cDefenses = 0;
         }
@@ -1478,17 +1472,14 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     fFileErrSilent = fSilentSav;
     ids = idsGameFileAppearsCorruptUnableLoadFile;
     ReadRt();
-    if (hdrCur.rt != rtBOF || (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2 || (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49 ||
-        (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84) {
+    if (hdrCur.rt != rtBOF || ((RTBOF *)rgbCur)->verMajor != 2 || ((RTBOF *)rgbCur)->verMinor < 49 || ((RTBOF *)rgbCur)->verMinor >= 84) {
         if (hdrCur.rt == rtBOF) {
-            FileError((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) > 84)
-                          ? 714
-                          : 1235);
+            FileError(((RTBOF *)rgbCur)->verMajor > 2 || (((RTBOF *)rgbCur)->verMajor == 2 && ((RTBOF *)rgbCur)->verMinor > 84) ? 714 : 1235);
         } else {
             FileError(idmColonistsDroppedDestroyedSpiritedFighting);
         }
     } else {
-        rtbof = *(RTBOF *)rgbCur;
+        rtbof = *((RTBOF *)rgbCur);
         if (rtbof.iPlayer != iPlayer) {
             FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
         } else {
@@ -1631,8 +1622,8 @@ void ReadRt() {
         RgFromStream(rgbCur, hdrCur.cb);
     }
     if (hdrCur.rt == rtBOF) {
-        SetFileXorStream(RawLoad32(&rgbCur[4]), (int16_t)RawLoad16(&rgbCur[12]) >> 5, RawLoad16(&rgbCur[10]), (int16_t)(RawLoad16(&rgbCur[12]) << 0xb) >> 0xb,
-                         RawLoad16(&rgbCur[14]) >> 0xc & 1);
+        SetFileXorStream(((RTBOF *)rgbCur)->lidGame, ((RTBOF *)rgbCur)->lSaltTime, ((RTBOF *)rgbCur)->turn, ((RTBOF *)rgbCur)->iPlayer,
+                         ((RTBOF *)rgbCur)->fCrippled);
     } else if (hdrCur.rt != rtEOF) {
         XorFileBuf(rgbCur, hdrCur.cb);
     }

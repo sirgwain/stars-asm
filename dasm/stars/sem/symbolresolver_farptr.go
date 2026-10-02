@@ -92,7 +92,7 @@ func (sr *symbolResolver) symbolFromFarPointerWordPair(segment machine.Value, of
 	}
 	if addr, ok := sr.addressFromSplitFarPointer(segment, offset, 0); ok {
 		if sym, ok := sr.symbolPathFromAddressValue(addr, expected); ok {
-			return sym, true
+			return wholePointerView(sym, expected), true
 		}
 	}
 	seg, segOK := sr.symbolFromValue(segment)
@@ -128,7 +128,7 @@ func (sr *symbolResolver) symbolFromNativePointerMemory(mem machine.MemoryAddres
 	if !ok {
 		return nil, false
 	}
-	base = sr.messagePointerView(base)
+	base = sr.pointerView(base)
 	if !typeinfo.IsPointer(base.Type()) {
 		return nil, false
 	}
@@ -160,7 +160,7 @@ func (sr *symbolResolver) addressFromSplitFarPointer(segment machine.Value, offs
 	}
 
 	return resolvedAddress{
-		base:      sr.messagePointerView(root),
+		base:      sr.pointerView(root),
 		baseValue: lowWord,
 		offset:    fixed,
 		terms:     terms,
@@ -246,7 +246,7 @@ func (sr *symbolResolver) symbolFromFarPointer(seg *machine.FarPointer, off mach
 	if !ok {
 		return nil, false
 	}
-	base = sr.messagePointerView(base)
+	base = sr.pointerView(base)
 	if !typeinfo.IsPointer(base.Type()) {
 		return nil, false
 	}

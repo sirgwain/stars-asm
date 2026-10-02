@@ -135,6 +135,9 @@ func (b *builder) switchNode(x machine.BlockID, index ir.Expr, groups []caseGrou
 	})
 
 	join, hasJoin := b.facts.PostDom.IDom(x)
+	if continuation, ok := b.switchContinuation(x, groups); ok {
+		join, hasJoin = continuation, true
+	}
 	cases := make([]Case, len(groups))
 	for i, g := range groups {
 		dst := b.g.byLabel[g.label]
@@ -149,6 +152,42 @@ func (b *builder) switchNode(x machine.BlockID, index ir.Expr, groups []caseGrou
 		out = append(out, &Goto{Label: b.g.blocks[join].Label})
 	}
 	return out
+}
+
+// switchContinuation finds the common continuation of the ordinary cases
+// when the default only returns. It remains a single block after the switch;
+// the returning default prevents unmatched values from falling into it.
+func (b *builder) switchContinuation(x machine.BlockID, groups []caseGroup) (machine.BlockID, bool) {
+	var starts []machine.BlockID
+	defaultID := ExitID
+	for _, group := range groups {
+		id := b.g.byLabel[group.label]
+		if group.isDefault {
+			defaultID = id
+			stmts := b.g.blocks[id].Stmts
+			if len(stmts) != 1 {
+				return 0, false
+			}
+			if _, ok := stmts[0].(*ir.Return); !ok {
+				return 0, false
+			}
+		} else {
+			starts = append(starts, id)
+		}
+	}
+	if defaultID == ExitID || len(starts) < 2 {
+		return 0, false
+	}
+	for candidate, ok := b.facts.PostDom.IDom(starts[0]); ok && candidate != ExitID; candidate, ok = b.facts.PostDom.IDom(candidate) {
+		if candidate == defaultID || !slices.Contains(b.children[x], candidate) {
+			continue
+		}
+		if slices.ContainsFunc(starts, func(id machine.BlockID) bool { return !b.facts.PostDom.Dominates(candidate, id) }) {
+			continue
+		}
+		return candidate, true
+	}
+	return 0, false
 }
 
 // branch emits the jump from src to dst. dst is inlined when src is its only

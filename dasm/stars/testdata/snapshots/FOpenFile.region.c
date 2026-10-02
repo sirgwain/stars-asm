@@ -28,17 +28,14 @@ int16_t FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     fFileErrSilent = fSilentSav;
     ids = idsGameFileAppearsCorruptUnableLoadFile;
     ReadRt();
-    if (hdrCur.rt != rtBOF || (RawLoad16(&rgbCur[8]) >> 0xc & 0xf) != 2 || (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) < 49 ||
-        (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) >= 84) {
+    if (hdrCur.rt != rtBOF || ((RTBOF *)rgbCur)->verMajor != 2 || ((RTBOF *)rgbCur)->verMinor < 49 || ((RTBOF *)rgbCur)->verMinor >= 84) {
         if (hdrCur.rt == rtBOF) {
-            FileError((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) > 2 || ((RawLoad16(&rgbCur[8]) >> 0xc & 0xf) == 2 && (RawLoad16(&rgbCur[8]) >> 5 & 0x7f) > 84)
-                          ? 714
-                          : 1235);
+            FileError(((RTBOF *)rgbCur)->verMajor > 2 || (((RTBOF *)rgbCur)->verMajor == 2 && ((RTBOF *)rgbCur)->verMinor > 84) ? 714 : 1235);
         } else {
             FileError(idmColonistsDroppedDestroyedSpiritedFighting);
         }
     } else {
-        rtbof = *(RTBOF *)rgbCur;
+        rtbof = *((RTBOF *)rgbCur);
         if (rtbof.iPlayer != iPlayer) {
             FileError(idmGroundTroopsValiantlyDestroyedAttackingBarbarian);
         } else {

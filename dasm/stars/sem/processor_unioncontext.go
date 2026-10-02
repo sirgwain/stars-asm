@@ -241,6 +241,12 @@ func (p *unionContextProcessor) addExternalDiscriminatorAliases(state *unionFlow
 		if !ok {
 			continue
 		}
+		// a byte buffer selects the union of the record its view reads
+		if rootSymbol, isRoot := root.(*symresolve.SymbolRoot); isRoot {
+			if view := p.ctx.symbols.arrayBufferView(rootSymbol.Symbol); view != nil {
+				root = view
+			}
+		}
 		target := unionAliasTarget{
 			Key:    unionAliasTargetKey(root, alias.Rule),
 			Root:   root,

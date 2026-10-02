@@ -9,6 +9,34 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/stars/machine"
 )
 
+// TestBuildSwitchReturningDefault verifies cases break to one shared
+// continuation and an unmatched value returns without running that work.
+func TestBuildSwitchReturningDefault(t *testing.T) {
+	const top, next, last, a, b, c, continuation, done machine.BlockID = 0x10, 0x20, 0x25, 0x30, 0x40, 0x48, 0x50, 0x60
+	x := &ir.Var{Name: "x"}
+	test := func(k uint64, tl, fl machine.BlockID) *ir.IfGoto {
+		return &ir.IfGoto{Cond: &ir.Binary{Op: "==", LHS: x, RHS: &ir.IntConst{Value: k}}, TrueLabel: tl.String(), FalseLabel: fl.String()}
+	}
+	fn := ir.Func{Name: "ReturningDefault", Blocks: []ir.Block{
+		testBlock(top, test(1, a, next)),
+		testBlock(next, test(2, b, last)),
+		testBlock(last, test(3, c, done)),
+		testBlock(a, testIncrement("a"), &ir.Goto{Label: continuation.String()}),
+		testBlock(b, testIncrement("b"), &ir.Goto{Label: continuation.String()}),
+		testBlock(c, testIncrement("c"), &ir.Goto{Label: continuation.String()}),
+		testBlock(continuation, testIncrement("shared")),
+		testBlock(done, &ir.Return{}),
+	}}
+	got, err := Build(fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "switch x { case 1: a=a+1; break; case 2: b=b+1; break; case 3: c=c+1; break; default: return; } shared=shared+1; return;"
+	if actual := sketchNodes(got.Body); actual != want {
+		t.Fatalf("got %s; want %s", actual, want)
+	}
+}
+
 // TestBuildIfElseThenLoop verifies that Build turns an if/else diamond and a
 // while loop into structured nodes with no gotos or labels left.
 func TestBuildIfElseThenLoop(t *testing.T) {

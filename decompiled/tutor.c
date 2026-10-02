@@ -2762,17 +2762,14 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
     HS      hs;
     HS      hs1;
     HS      hs4;
-    int16_t t_merge_81d4_0001;
     int16_t t_call_7c62;
 
     switch (itutsbAction) {
     default:
-        t_merge_81d4_0001 = 0;
-        break;
+        return 0;
     case tutsbDelete:
         TutorError(idsTutorialShouldDeleteShipDesignPointTutorial);
-        t_merge_81d4_0001 = 0;
-        break;
+        return 0;
     case tutsbCopy:
         switch (game.turn) {
         default:
@@ -2782,84 +2779,70 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
                 goto NoCustom;
             if (rgplr[0].cShDef == 7) {
                 TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             if (FCheckShipBuilder(1, 7) != 0)
-                goto L_7c40;
+                break;
             TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 20:
             if (tutor.idt != idtReadFirstTwoMessagesSendArmedProbe)
                 goto NoCustom;
             if (rgplr[0].cshdefSB == 2) {
                 TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             if (FCheckShipBuilder(0, 0) != 0 && fStarbaseMode != 0)
-                goto L_7c40;
+                break;
             TutorError(idsTutorialHaveTriedCopyWrongShipDesign);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 22:
             if (tutor.idt != idtAddTeamsterStoveTopsQueue)
                 goto NoCustom;
             if (rgplr[0].cShDef == 8) {
                 TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             if (FCheckShipBuilder(1, 3) != 0)
-                goto L_7c40;
+                break;
             TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 27:
             if (tutor.idt != idtWeWantPowerfulWeAlsoWantWeigh)
                 goto NoCustom;
             if (rgplr[0].cShDef == 9) {
                 TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             if (FCheckShipBuilder(1, 4) != 0)
-                goto L_7c40;
+                break;
             TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 29:
             if (tutor.idt != idtLetsFinishOffBerserkersOnceBuildingBombing)
                 goto NoCustom;
             if (rgplr[0].cShDef == 10) {
                 TutorError(idsTutorialHaveAlreadyCopiedAppropriateShipDesign);
-                t_merge_81d4_0001 = 0;
-            } else {
-                if (FCheckShipBuilder(1, 8) != 0)
-                    goto L_7c40;
+                return 0;
+            }
+            if (FCheckShipBuilder(1, 8) == 0) {
                 TutorError(idsTutorialDontHaveCorrectHullSelectedHull);
-                t_merge_81d4_0001 = 0;
+                return 0;
             }
         }
-        break;
-    L_7c40:
-        t_merge_81d4_0001 = 1;
-        break;
+        return 1;
     case tutsbEdit:
         if (game.turn != 25 || tutor.idt != idtReadFirstTwoMessages)
-            goto NoCustom;
+            break;
         t_call_7c62 = FCheckShipBuilder(0, 2);
         if (t_call_7c62 != 0) {
-            t_merge_81d4_0001 = t_call_7c62;
-            break;
+            return t_call_7c62;
         }
         TutorError(idsTutorialDontHaveCorrectShipSelectedShip);
-        t_merge_81d4_0001 = 0;
-        break;
+        return 0;
     case tutsbAccept:
         if ((uint16_t)(game.turn - 13) > 16)
-            goto NoCustom;
+            break;
         switch (game.turn) {
         case 14:
         case 15:
@@ -2885,15 +2868,13 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
             hs3.cItem = 1;
             if (tutor.idt != idtShipDesignNameImageJustFine) {
                 TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             if (FCheckBuilderPart(0, &hs2, 1) != 0 && FCheckBuilderPart(1, &hs, 1) != 0 && FCheckBuilderPart(2, &hs3, 1) != 0 &&
                 FCheckBuilderPart(3, &hs3, 1) != 0)
-                goto L_818e;
+                break;
             TutorError(idsTutorialDontHaveRightPartsDesignVerify);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 20:
             if (tutor.idt == idtReadFirstTwoMessagesSendArmedProbe) {
                 hs.grhst = hstSpecialSB;
@@ -2901,23 +2882,19 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
                 hs.cItem = 1;
                 if (FCheckBuilderPart(0, &hs, 1) == 0) {
                     TutorError(idsTutorialHaventAddedRightPartDesignVerify);
-                    t_merge_81d4_0001 = 0;
-                    break;
+                    return 0;
                 }
                 if (fstricmp(PszGetCompressedString(idsGater), lpshdefBuild->hul.szClass) != 0) {
                     TutorError(idsTutorialNameDesignEditboxMustGaterChange);
-                    t_merge_81d4_0001 = 0;
-                    break;
+                    return 0;
                 }
                 if (lpshdefBuild->hul.ibmp == 137)
-                    goto L_818e;
+                    break;
                 TutorError(idsTutorialHaventPickedCorrectImageDesignPress);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 22:
             if (tutor.idt == idtAddTeamsterStoveTopsQueue) {
                 hs.grhst = hstEngine;
@@ -2928,18 +2905,15 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
                 hs1.cItem = 3;
                 if (FCheckBuilderPart(0, &hs, 1) == 0 || FCheckBuilderPart(2, &hs1, 3) == 0) {
                     TutorError(idsTutorialDontHaveRightPartsDesignVerify2);
-                    t_merge_81d4_0001 = 0;
-                    break;
+                    return 0;
                 }
                 if (fstricmp(PszGetCompressedString(idsMineLayer), lpshdefBuild->hul.szClass) == 0)
-                    goto L_818e;
+                    break;
                 TutorError(idsTutorialNameDesignEditboxMustMineLayer);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 25:
             hs.grhst = hstEngine;
             hs.iItem = 4;
@@ -2948,10 +2922,9 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
             hs2.iItem = 0;
             hs2.cItem = 1;
             if (FCheckBuilderPart(0, &hs, 1) != 0 && FCheckBuilderPart(1, &hs2, 1) != 0)
-                goto L_818e;
+                break;
             TutorError(idsTutorialDontHaveRightPartsDesignVerify);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 27:
             if (tutor.idt == idtWeWantPowerfulWeAlsoWantWeigh) {
                 hs.grhst = hstEngine;
@@ -2973,52 +2946,43 @@ int16_t FTutorialEnabledShipBuilder(TutorShipBuilderAction itutsbAction) {
                     FCheckBuilderPart(3, &hs3, 1) == 0 || FCheckBuilderPart(4, &hs4, 2) == 0 || FCheckBuilderPart(5, &hs1, 1) == 0 ||
                     FCheckBuilderPart(6, &hs2, 1) == 0) {
                     TutorError(idsTutorialVerifyHaveRadiatingHydroRamScoop);
-                    t_merge_81d4_0001 = 0;
-                    break;
+                    return 0;
                 }
                 if (lpshdefBuild->hul.ibmp == 25)
-                    goto L_818e;
+                    break;
                 TutorError(idsTutorialHaventPickedCorrectImageDesignPress);
-                t_merge_81d4_0001 = 0;
-                break;
+                return 0;
             }
             TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
-            t_merge_81d4_0001 = 0;
-            break;
+            return 0;
         case 29:
-            if (tutor.idt == idtLetsFinishOffBerserkersOnceBuildingBombing) {
-                hs.grhst = hstEngine;
-                hs.iItem = 10;
-                hs.cItem = 2;
-                hs1.grhst = hstSpecialM;
-                hs1.iItem = 5;
-                hs1.cItem = 1;
-                hs2.grhst = hstBomb;
-                hs2.iItem = 1;
-                hs2.cItem = 4;
-                if (FCheckBuilderPart(0, &hs, 2) != 0 && FCheckBuilderPart(1, &hs2, 4) != 0 && FCheckBuilderPart(2, &hs2, 4) != 0 &&
-                    FCheckBuilderPart(3, &hs1, 1) != 0)
-                    goto L_818e;
-                TutorError(idsTutorialDontHaveRightPartsDesignVerify3);
-                t_merge_81d4_0001 = 0;
-            } else {
+            if (tutor.idt != idtLetsFinishOffBerserkersOnceBuildingBombing) {
                 TutorError(idsTutorialHaventYetFinishedCreatingNewDesign);
-                t_merge_81d4_0001 = 0;
+                return 0;
+            }
+            hs.grhst = hstEngine;
+            hs.iItem = 10;
+            hs.cItem = 2;
+            hs1.grhst = hstSpecialM;
+            hs1.iItem = 5;
+            hs1.cItem = 1;
+            hs2.grhst = hstBomb;
+            hs2.iItem = 1;
+            hs2.cItem = 4;
+            if (FCheckBuilderPart(0, &hs, 2) == 0 || FCheckBuilderPart(1, &hs2, 4) == 0 || FCheckBuilderPart(2, &hs2, 4) == 0 ||
+                FCheckBuilderPart(3, &hs1, 1) == 0) {
+                TutorError(idsTutorialDontHaveRightPartsDesignVerify3);
+                return 0;
             }
         }
-        break;
-    L_818e:
-        t_merge_81d4_0001 = 1;
-        break;
+        return 1;
     case tutsbCancelEdit:
         TutorError(idsTutorialMustFinishTutorialTasksBeforeExiting);
-        t_merge_81d4_0001 = 0;
+        return 0;
     }
-    return t_merge_81d4_0001;
 NoCustom:
     TutorError(idsTutorialShouldCustomizeShipDesignPointTutorial);
-    t_merge_81d4_0001 = 0;
-    return t_merge_81d4_0001;
+    return 0;
 }
 
 int16_t FOKMergeDialog() {

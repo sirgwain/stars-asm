@@ -8,6 +8,50 @@ import (
 	"github.com/sirgwain/stars-asm/dasm/typeinfo"
 )
 
+// TestForwardTempCopyAcrossBranches verifies a copied call result stays in
+// its existing local across a diamond, while a write on either path blocks it.
+func TestForwardTempCopyAcrossBranches(t *testing.T) {
+	for _, mode := range []string{"stable local", "branch writes local", "branch writes partial local"} {
+		t.Run(mode, func(t *testing.T) {
+			clobber := mode != "stable local"
+			cfg := cfgForReturnSinkTest(t, []asm.DecodedInst{
+				jccForReturnSinkTest(0x1000, 0x1004),
+				jmpForReturnSinkTest(0x1002, 0x1006),
+				jmpForReturnSinkTest(0x1004, 0x1006),
+				retForReturnSinkTest(0x1006),
+			})
+			local := testLocal("cplr", typeinfo.I16)
+			temp := &Temp{Name: "t_call", TypeInfo: typeinfo.I16}
+			fn := &typeinfo.Function{Name: "CountPlayers", Ret: typeinfo.I16}
+			call := &Call{Function: fn, Target: &FunctionRef{Function: fn}}
+			flag := testLocal("flag", typeinfo.I16)
+			f := &Func{CFG: cfg, Blocks: []Block{
+				{ID: 0x1000, Effects: []Effect{&CallEffect{Call: call, Result: temp}, &Assign{Dst: local, Src: temp}, &Branch{Cond: &Compare{Op: CompareNE, LHS: flag, RHS: &Const{TypeInfo: typeinfo.I16}}, TrueBlock: 0x1004, FalseBlock: 0x1002}}},
+				{ID: 0x1002, Effects: []Effect{&Jump{To: 0x1006}}},
+				{ID: 0x1004, Effects: []Effect{&Jump{To: 0x1006}}},
+				{ID: 0x1006, Effects: []Effect{&Return{Value: temp}}},
+			}}
+			if clobber {
+				var dst LValue = local
+				if mode == "branch writes partial local" {
+					dst = &Part{Base: local, Width: 1, TypeInfo: typeinfo.U8}
+				}
+				f.Blocks[2].Effects = append([]Effect{&Assign{Dst: dst, Src: &Const{TypeInfo: typeinfo.I16, U64: 7}}}, f.Blocks[2].Effects...)
+			}
+			p := forwardTempsProcessor{fs: &typeinfo.Function{Name: "Caller", Ret: typeinfo.I16}, writes: writesAnything}
+			p.ProcessFunc(nil, f)
+			result := f.Blocks[0].Effects[0].(*CallEffect)
+			ret := f.Blocks[3].Effects[0].(*Return)
+			if !clobber && (!sameExpr(result.Result, local) || !sameExpr(ret.Value, local) || len(f.Blocks[0].Effects) != 2) {
+				t.Fatal("stable copy not reused")
+			}
+			if clobber && (!sameExpr(result.Result, temp) || !sameExpr(ret.Value, temp)) {
+				t.Fatal("copy forwarded across a local mutation")
+			}
+		})
+	}
+}
+
 // writesAnything reports that every call may store to any memory.
 func writesAnything(*typeinfo.Function) machine.Writes {
 	return machine.Writes{Any: true}

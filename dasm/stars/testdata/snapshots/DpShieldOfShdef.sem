@@ -37,11 +37,7 @@ L_0f93:
     branch lphs->cItem <= 0 ? L_0feb : L_0faa
 
 L_0faa:
-    part.hs.grhst = lphs->grhst
-    t_fields_1 = &part.hs
-    t_fields_3 = lphs->cItem
-    t_fields_1->iItem = lphs->iItem
-    t_fields_1->cItem = t_fields_3
+    part.hs = *lphs
     call FLookupPart(&part) -> callresult(int16_t)
     dpShdef = (dpShdef + (uint32_t)(part.pshield->dp * lphs->cItem))
     goto L_0f69

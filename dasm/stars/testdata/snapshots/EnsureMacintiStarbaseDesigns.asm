@@ -80,7 +80,7 @@ MOV       ax, 0x0002
 L_777d:
 PUSH      ax                  
 PUSH      [bp-i]                    ; [bp-0xa]
-CALLF     FCreateAiStarbase         ; int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, isbhull isb)
+CALLF     FCreateAiStarbase         ; int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, AiStarbaseRecipeOffset aisb, isbhull isb)
 ADD       sp, 0x0008          
 CMP       ax, 0x0000          
 JZ        L_779f              
@@ -392,7 +392,7 @@ IMUL      [bp-i]                    ; [bp-0xa]
 ADD       ax, 0x0004          
 ADD       ax, [bp-j]                ; ax, [bp-0xc]
 PUSH      ax                  
-CALLF     FCreateAiStarbase         ; int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, isbhull isb)
+CALLF     FCreateAiStarbase         ; int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, AiStarbaseRecipeOffset aisb, isbhull isb)
 ADD       sp, 0x0008          
 CMP       ax, 0x0000          
 JNZ       L_7a71              

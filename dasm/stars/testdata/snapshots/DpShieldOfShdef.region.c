@@ -1,12 +1,10 @@
 int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
-    int16_t  chs;
-    HS      *lphs;
-    int16_t  ihs;
-    int32_t  dpShdef;
-    HUL     *lphul;
-    PART     part;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
+    int16_t chs;
+    HS     *lphs;
+    int16_t ihs;
+    int32_t dpShdef;
+    HUL    *lphul;
+    PART    part;
 
     dpShdef = 0;
     lphul = &lpshdef->hul;
@@ -15,11 +13,7 @@ int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
     ihs = 0;
     while (ihs < chs) {
         if (lphs->grhst == hstShield && lphs->cItem > 0) {
-            part.hs.grhst = lphs->grhst;
-            t_fields_1 = &part.hs;
-            t_fields_3 = lphs->cItem;
-            t_fields_1->iItem = lphs->iItem;
-            t_fields_1->cItem = t_fields_3;
+            part.hs = *lphs;
             FLookupPart(&part);
             dpShdef += (uint32_t)(part.pshield->dp * lphs->cItem);
         } else if (lphs->grhst == hstArmor && lphs->cItem > 0 && lphs->iItem == iarmorFieldedKelarium) {

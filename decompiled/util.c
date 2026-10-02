@@ -225,8 +225,7 @@ void SelectOursAtObject(POINT16 *ppt) {
         }
         pt = rgptPlan[ppt->y];
     } else {
-        pt.x = ppt->x;
-        pt.y = ppt->y;
+        pt = *ppt;
     }
     id = -1;
     for (ish = 0; ish < cFleet; ish++) {
@@ -322,14 +321,12 @@ int32_t LComputePower(SHDEF *lpshdef) {
 void ComputeShdefPowers() {
     int16_t iplr;
     int16_t ishdef;
-    int32_t t_call_0ed7;
 
     for (iplr = 0; iplr < game.cPlayer; iplr++) {
         if (rglpshdef[iplr] != 0) {
             for (ishdef = 0; ishdef < 16; ishdef++) {
                 if (rglpshdef[iplr][ishdef].fFree == 0) {
-                    t_call_0ed7 = LComputePower(rglpshdef[iplr] + ishdef);
-                    rglpshdef[iplr][ishdef].lPower = t_call_0ed7;
+                    rglpshdef[iplr][ishdef].lPower = LComputePower(rglpshdef[iplr] + ishdef);
                 }
             }
         }
@@ -338,14 +335,12 @@ void ComputeShdefPowers() {
 }
 
 int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
-    int16_t  chs;
-    HS      *lphs;
-    int16_t  ihs;
-    int32_t  dpShdef;
-    HUL     *lphul;
-    PART     part;
-    HS      *t_fields_1;
-    uint32_t t_fields_3;
+    int16_t chs;
+    HS     *lphs;
+    int16_t ihs;
+    int32_t dpShdef;
+    HUL    *lphul;
+    PART    part;
 
     dpShdef = 0;
     lphul = &lpshdef->hul;
@@ -354,11 +349,7 @@ int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr) {
     ihs = 0;
     while (ihs < chs) {
         if (lphs->grhst == hstShield && lphs->cItem > 0) {
-            part.hs.grhst = lphs->grhst;
-            t_fields_1 = &part.hs;
-            t_fields_3 = lphs->cItem;
-            t_fields_1->iItem = lphs->iItem;
-            t_fields_1->cItem = t_fields_3;
+            part.hs = *lphs;
             FLookupPart(&part);
             dpShdef += (uint32_t)(part.pshield->dp * lphs->cItem);
         } else if (lphs->grhst == hstArmor && lphs->cItem > 0 && lphs->iItem == iarmorFieldedKelarium) {
@@ -1398,8 +1389,7 @@ int16_t FFindNearestObject(POINT16 pt, GrobjClass grobj, SCAN *pscan) {
                 lTry += (uint32_t)(dy * dy);
                 if (lTry <= lSquare && (lSquare != lTry || lSquare == 0)) {
                     lSquare = lTry;
-                    scan.pt.x = ppt->x;
-                    scan.pt.y = ppt->y;
+                    scan.pt = *ppt;
                     scan.idpl = i;
                     scan.grobjFull = grobjPlanet;
                     scan.grobj = grobjPlanet;
@@ -2431,7 +2421,7 @@ int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate) {
         }
     }
     if (fUpdate != 0) {
-        lppl->iDeltaPop = LOWORD((uint32_t)DeltaCur);
+        lppl->iDeltaPop = (uint16_t)DeltaCur;
         lppl->rgwtMin[3] += lPopInc;
     }
     return lPopInc;

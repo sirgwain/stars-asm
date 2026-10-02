@@ -1,10 +1,93 @@
 #include "common.h"
 
-int32_t vrgAiPacketDist[2] = {7056, 50625};
-uint8_t vrgSBAip[85] = {34, 35, 37, 0,  17, 10, 11, 38, 19, 36, 34, 9,  34, 0,  17, 36, 37, 19, 0,  9,  4,  10, 11, 19, 38, 19, 35, 11, 0,
-                        37, 10, 19, 38, 20, 36, 20, 17, 36, 37, 19, 3,  34, 35, 11, 11, 37, 10, 19, 0,  20, 38, 34, 17, 19, 9,  20, 36, 19,
-                        35, 37, 0,  17, 10, 11, 38, 19, 36, 19, 9,  34, 35, 11, 0,  37, 10, 19, 38, 20, 36, 34, 17, 36, 37, 19, 3};
-uint8_t vrgSBMacAisb[6] = {17, 57, 25, 0, 69, 41};
+int32_t vrgAiPacketDist[2] = {aiPacketDistanceSquaredSingleMassDriver, aiPacketDistanceSquaredTwoMassDrivers};
+uint8_t vrgSBAip[85] = {aiPartMassDriverWithSpecialFallbacks,
+                        aiPartTorpedoMissilePreferArmageddon,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartTorpedo,
+                        aiPartArmorPreferMegaPolyShell,
+                        aiPartShieldPreferCompletePhase,
+                        aiPartBattleComputer,
+                        aiPartBeamPreferMegaDisruptor,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartMassDriverWithSpecialFallbacks,
+                        aiPartArmorPreferSuperlatanium,
+                        aiPartMassDriverWithSpecialFallbacks,
+                        aiPartTorpedo,
+                        aiPartArmorPreferMegaPolyShell,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartSpecialJammerComputer,
+                        aiPartTorpedo,
+                        aiPartArmorPreferSuperlatanium,
+                        aiPartBeamPreferStreamingPulverizer,
+                        aiPartShieldPreferCompletePhase,
+                        aiPartBattleComputer,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferMegaDisruptor,
+                        aiPartSpecialJammerComputer,
+                        aiPartTorpedoMissilePreferArmageddon,
+                        aiPartBattleComputer,
+                        aiPartTorpedo,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartShieldPreferCompletePhase,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferMegaDisruptor,
+                        aiPartSpecialCapacitorJammerPodComputer,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartSpecialCapacitorJammerPodComputer,
+                        aiPartArmorPreferMegaPolyShell,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferAntiMatterPulverizer,
+                        aiPartMassDriverWithSpecialFallbacks,
+                        aiPartTorpedoMissilePreferArmageddon,
+                        aiPartBattleComputer,
+                        aiPartBattleComputer,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartShieldPreferCompletePhase,
+                        aiPartSpecialJammerComputer,
+                        aiPartTorpedo,
+                        aiPartSpecialCapacitorJammerPodComputer,
+                        aiPartBeamPreferMegaDisruptor,
+                        aiPartMassDriverWithSpecialFallbacks,
+                        aiPartArmorPreferMegaPolyShell,
+                        aiPartSpecialJammerComputer,
+                        aiPartArmorPreferSuperlatanium,
+                        aiPartSpecialCapacitorJammerPodComputer,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartSpecialJammerComputer,
+                        aiPartTorpedoMissilePreferArmageddon,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartTorpedo,
+                        aiPartArmorPreferMegaPolyShell,
+                        aiPartShieldPreferCompletePhase,
+                        aiPartBattleComputer,
+                        aiPartBeamPreferMegaDisruptor,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartSpecialJammerComputer,
+                        aiPartArmorPreferSuperlatanium,
+                        aiPartMassDriverWithSpecialFallbacks,
+                        aiPartTorpedoMissilePreferArmageddon,
+                        aiPartBattleComputer,
+                        aiPartTorpedo,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartShieldPreferCompletePhase,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferMegaDisruptor,
+                        aiPartSpecialCapacitorJammerPodComputer,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartMassDriverWithSpecialFallbacks,
+                        aiPartArmorPreferMegaPolyShell,
+                        aiPartBeamPreferEitherPulverizer,
+                        aiPartShieldPreferLangstonShell,
+                        aiPartSpecialJammerComputer,
+                        aiPartBeamPreferAntiMatterPulverizer};
+uint8_t vrgSBMacAisb[6] = {aiSbRecipeMacSpaceDock, aiSbRecipeMacSpaceStation,     aiSbRecipeMacUltraStationEarly,
+                           aiSbRecipeSpaceStation, aiSbRecipeMacUltraStationLate, aiSbRecipeMacDeathStar};
 AIPART  vrgAiParts[150] = {{.ibit = 5, .iItem = 7, .cItem = 8},
                            {.ibit = 5, .iItem = 11, .cItem = 4},
                            {.ibit = 4, .iItem = 18, .cItem = 1},
@@ -208,7 +291,7 @@ int16_t FCreateAiShdef(int16_t ishdef, HulDef ihul, uint8_t *rgaip) {
     return FChangeAiShdef(&shdef, ishdef);
 }
 
-int16_t FGetAIPart(int16_t aip, PART *ppart) {
+int16_t FGetAIPart(AiPartPreference aip, PART *ppart) {
     int16_t cTry;
     int16_t iOffset;
     int16_t i;
@@ -216,7 +299,7 @@ int16_t FGetAIPart(int16_t aip, PART *ppart) {
     PART    part;
 
     iOffset = 0;
-    for (i = 0; i < aip; i++) {
+    for (i = 0; i < (int16_t)aip; i++) {
         iOffset += vrgcAiParts[i];
     }
     cTry = vrgcAiParts[aip];
@@ -691,7 +774,7 @@ void AddMinesToBlockedQueues() {
                             sel.pl.lpplprod->iprodMac--;
                             fmemmove(sel.pl.lpplprod->rgprod, &sel.pl.lpplprod->rgprod[1], sel.pl.lpplprod->iprodMac * sizeof(PROD));
                         } else {
-                            sel.pl.lpplprod->rgprod[0].cItem = LOWORD((uint32_t)LOWORD(cBuild));
+                            sel.pl.lpplprod->rgprod[0].cItem = LOWORD(cBuild);
                         }
                     }
                 }
@@ -1540,75 +1623,75 @@ int16_t FIsAiTransport(FLEET *lpfl) {
 }
 
 void ValidateStarbaseHistory() {
-    int16_t  iWrite;
-    int16_t  iBest;
-    PLANET  *lpplMac;
-    POINT16  pt;
-    int16_t  id;
-    int16_t  dy;
-    int16_t  cFr2;
-    PLANET  *lppl;
-    int16_t  ifl;
-    FLEET   *lpfl;
-    int16_t  i;
-    int16_t  j;
-    int16_t  ipl;
-    int16_t  cFr;
-    int16_t  dx;
-    int32_t  lBest;
-    int32_t  l;
-    uint16_t t_scratch_m32_4;
-    uint16_t t_5568;
-    uint16_t t_scratch_m32_5;
-    uint16_t t_569b;
+    int16_t iWrite;
+    int16_t iBest;
+    PLANET *lpplMac;
+    POINT16 pt;
+    int16_t id;
+    int16_t dy;
+    int16_t cFr2;
+    PLANET *lppl;
+    int16_t ifl;
+    FLEET  *lpfl;
+    int16_t i;
+    int16_t j;
+    int16_t ipl;
+    int16_t cFr;
+    int16_t dx;
+    int32_t lBest;
+    int32_t l;
+    int16_t t_scratch_m32_4;
+    int16_t t_5568;
+    int16_t t_scratch_m32_5;
+    int16_t t_569b;
 
     if (rgplr[idPlayer].idAi != idAiCybertron && rgplr[idPlayer].idAi != idAiMacinti) {
-        if (RawLoad16(vlpbAiData) <= 2) {
-            RawStore16((uint8_t *)vlpbAiData + 0x2, 0);
+        if (((AIHIST *)vlpbAiData)->cbAiHist <= 2) {
+            ((AIHIST *)vlpbAiData)->cStarbase = 0;
         }
         if (game.turn >= 20) {
             iWrite = 0;
-            if ((int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) < 0 || (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) > 64) {
-                RawStore16((uint8_t *)vlpbAiData + 0x2, 0);
+            if (((AIHIST *)vlpbAiData)->cStarbase < 0 || ((AIHIST *)vlpbAiData)->cStarbase > 64) {
+                ((AIHIST *)vlpbAiData)->cStarbase = 0;
             }
-            for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                if ((int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) < 0 || (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) > 8) {
-                    RawStore16(vlpbAiData + (i * 20 + 6), 0);
+            for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                if (((AIHIST *)vlpbAiData)->rgasb[i].cFreighter < 0 || ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter > 8) {
+                    ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter = 0;
                 }
-                lppl = LpplFromId(RawLoad16(vlpbAiData + (i * 20 + 4)));
+                lppl = LpplFromId(((AIHIST *)vlpbAiData)->rgasb[i].idPlanet);
                 if (lppl != 0 && lppl->iPlayer == idPlayer) {
                     if (iWrite != i) {
-                        fmemmove(vlpbAiData + (iWrite * 20 + 4), vlpbAiData + (i * 20 + 4), 20);
+                        ((AIHIST *)vlpbAiData)->rgasb[iWrite] = ((AIHIST *)vlpbAiData)->rgasb[i];
                     }
                     iWrite++;
                 }
             }
-            RawStore16((uint8_t *)vlpbAiData + 0x2, iWrite);
+            ((AIHIST *)vlpbAiData)->cStarbase = iWrite;
             for (ipl = 0; ipl < vclpplAi; ipl++) {
                 lppl = vrglpplAi[ipl];
                 if (vrglpplAi[ipl] == 0)
                     break;
                 if (lppl->fStarbase != 0) {
-                    for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) && RawLoad16(vlpbAiData + (i * 20 + 4)) != lppl->id; i++) {
+                    for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase && ((AIHIST *)vlpbAiData)->rgasb[i].idPlanet != lppl->id; i++) {
                     }
-                    if (i == RawLoad16((uint8_t *)vlpbAiData + 0x2) && i < 64) {
-                        RawStore16(vlpbAiData + (i * 20 + 4), lppl->id);
-                        RawStore16(vlpbAiData + (i * 20 + 6), 0);
-                        RawStore16((uint8_t *)vlpbAiData + 0x2, RawLoad16((uint8_t *)vlpbAiData + 0x2) + 1);
+                    if (i == ((AIHIST *)vlpbAiData)->cStarbase && i < 64) {
+                        ((AIHIST *)vlpbAiData)->rgasb[i].idPlanet = lppl->id;
+                        ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter = 0;
+                        ((AIHIST *)vlpbAiData)->cStarbase++;
                     }
                 }
             }
             lppl = lpPlanets;
             lpplMac = lpPlanets + cPlanet;
-            for (; lppl < lpplMac && (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) < 64; lppl++) {
+            for (; lppl < lpplMac && ((AIHIST *)vlpbAiData)->cStarbase < 64; lppl++) {
                 if (lppl->iPlayer == idPlayer && lppl->fStarbase == 0 && lppl->rgwtMin[3] >= 80) {
                     l = 0;
                     for (i = 0; i < 3; i++) {
                         l += (int32_t)((uint32_t)((uint32_t)lppl->rgMinConc[i] * (uint32_t)lppl->rgMinConc[i]) * 4) + lppl->rgwtMin[i];
                     }
                     if (l >= 7000 && lppl->cMines >= 20 && lppl->cFactories >= 20) {
-                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            id = RawLoad16(vlpbAiData + (i * 20 + 4));
+                        for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                            id = ((AIHIST *)vlpbAiData)->rgasb[i].idPlanet;
                             if (id == lppl->id)
                                 break;
                             if (rgplr[idPlayer].idAi == idAiRobotoid) {
@@ -1620,10 +1703,10 @@ void ValidateStarbaseHistory() {
                                     break;
                             }
                         }
-                        if (i >= (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
-                            RawStore16(vlpbAiData + (RawLoad16((uint8_t *)vlpbAiData + 0x2) * 20 + 4), lppl->id);
-                            RawStore16(vlpbAiData + (RawLoad16((uint8_t *)vlpbAiData + 0x2) * 20 + 6), 0);
-                            RawStore16((uint8_t *)vlpbAiData + 0x2, RawLoad16((uint8_t *)vlpbAiData + 0x2) + 1);
+                        if (i >= ((AIHIST *)vlpbAiData)->cStarbase) {
+                            ((AIHIST *)vlpbAiData)->rgasb[((AIHIST *)vlpbAiData)->cStarbase].idPlanet = lppl->id;
+                            ((AIHIST *)vlpbAiData)->rgasb[((AIHIST *)vlpbAiData)->cStarbase].cFreighter = 0;
+                            ((AIHIST *)vlpbAiData)->cStarbase++;
                         }
                     }
                 }
@@ -1633,18 +1716,18 @@ void ValidateStarbaseHistory() {
                 if (rglpfl[ifl] == 0)
                     break;
                 if (lpfl->iPlayer == idPlayer && FIsAiTransport(lpfl) != 0) {
-                    for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                        for (j = 0; j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) && RawLoad16(vlpbAiData + (i * 20 + j * 2 + 8)) != lpfl->id; j++) {
+                    for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                        for (j = 0; j < ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter && ((AIHIST *)vlpbAiData)->rgasb[i].rgflid[j] != lpfl->id; j++) {
                         }
-                        if (j < (int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)))
+                        if (j < ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter)
                             break;
                     }
-                    if (i == RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
+                    if (i == ((AIHIST *)vlpbAiData)->cStarbase) {
                         iBest = -1;
                         lBest = 10000000;
-                        for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                            if ((int16_t)RawLoad16(vlpbAiData + (i * 20 + 6)) < 8) {
-                                pt = rgptPlan[RawLoad16(vlpbAiData + (i * 20 + 4))];
+                        for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                            if (((AIHIST *)vlpbAiData)->rgasb[i].cFreighter < 8) {
+                                pt = rgptPlan[((AIHIST *)vlpbAiData)->rgasb[i].idPlanet];
                                 dx = pt.x - lpfl->pt.x;
                                 dy = pt.y - lpfl->pt.y;
                                 l = (uint32_t)(dx * dx) + (uint32_t)(dy * dy);
@@ -1656,31 +1739,31 @@ void ValidateStarbaseHistory() {
                         }
                         if (iBest != -1) {
                             t_scratch_m32_4 = lpfl->id;
-                            t_5568 = RawLoad16(vlpbAiData + (iBest * 20 + 6));
-                            RawStore16(vlpbAiData + (iBest * 20 + 6), RawLoad16(vlpbAiData + (iBest * 20 + 6)) + 1);
-                            RawStore16(vlpbAiData + (iBest * 20 + t_5568 * 2 + 8), t_scratch_m32_4);
+                            t_5568 = ((AIHIST *)vlpbAiData)->rgasb[iBest].cFreighter;
+                            ((AIHIST *)vlpbAiData)->rgasb[iBest].cFreighter++;
+                            ((AIHIST *)vlpbAiData)->rgasb[iBest].rgflid[t_5568] = t_scratch_m32_4;
                         }
                     }
                 }
             }
-            for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); i++) {
-                cFr = RawLoad16(vlpbAiData + (i * 20 + 6));
+            for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase; i++) {
+                cFr = ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter;
                 if (cFr < 4) {
-                    for (j = 0; j < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2); j++) {
-                        cFr2 = RawLoad16(vlpbAiData + (j * 20 + 6));
+                    for (j = 0; j < ((AIHIST *)vlpbAiData)->cStarbase; j++) {
+                        cFr2 = ((AIHIST *)vlpbAiData)->rgasb[j].cFreighter;
                         if (cFr2 >= cFr + 2)
                             break;
                     }
-                    if (j < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2)) {
-                        RawStore16(vlpbAiData + (j * 20 + 6), RawLoad16(vlpbAiData + (j * 20 + 6)) - 1);
-                        t_scratch_m32_5 = RawLoad16(vlpbAiData + (j * 20 + RawLoad16(vlpbAiData + (j * 20 + 6)) * 2 + 8));
-                        t_569b = RawLoad16(vlpbAiData + (i * 20 + 6));
-                        RawStore16(vlpbAiData + (i * 20 + 6), RawLoad16(vlpbAiData + (i * 20 + 6)) + 1);
-                        RawStore16(vlpbAiData + (i * 20 + t_569b * 2 + 8), t_scratch_m32_5);
+                    if (j < ((AIHIST *)vlpbAiData)->cStarbase) {
+                        ((AIHIST *)vlpbAiData)->rgasb[j].cFreighter--;
+                        t_scratch_m32_5 = ((AIHIST *)vlpbAiData)->rgasb[j].rgflid[((AIHIST *)vlpbAiData)->rgasb[j].cFreighter];
+                        t_569b = ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter;
+                        ((AIHIST *)vlpbAiData)->rgasb[i].cFreighter++;
+                        ((AIHIST *)vlpbAiData)->rgasb[i].rgflid[t_569b] = t_scratch_m32_5;
                     }
                 }
             }
-            RawStore16(vlpbAiData, RawLoad16((uint8_t *)vlpbAiData + 0x2) * 20 + 4);
+            ((AIHIST *)vlpbAiData)->cbAiHist = ((AIHIST *)vlpbAiData)->cStarbase * 20 + 4;
         }
     }
     return;
@@ -2280,14 +2363,14 @@ void EnsureAiStarbaseDesigns() {
     int16_t  iSetLast;
 
     if (rglpshdefSB[idPlayer][2].fFree != 0) {
-        FCreateAiStarbase(2, 2, -1, isbhullAuto);
-        FCreateAiStarbase(4, 3, -1, isbhullAuto);
+        FCreateAiStarbase(2, 2, aiSbRecipeAuto, isbhullAuto);
+        FCreateAiStarbase(4, 3, aiSbRecipeAuto, isbhullAuto);
     }
     if (rglpshdefSB[idPlayer][1].fFree != 0) {
-        FCreateAiStarbase(1, 1, -1, isbhullAuto);
+        FCreateAiStarbase(1, 1, aiSbRecipeAuto, isbhullAuto);
     }
     if (rglpshdefSB[idPlayer][3].fFree != 0) {
-        FCreateAiStarbase(3, 2, -1, isbhullAuto);
+        FCreateAiStarbase(3, 2, aiSbRecipeAuto, isbhullAuto);
     }
     if (game.turn >= 50) {
         iSetLast = -1;
@@ -2307,9 +2390,9 @@ void EnsureAiStarbaseDesigns() {
                 if (rglpshdefSB[idPlayer][i].fFree == 0 && rglpshdefSB[idPlayer][i].cExist > 0)
                     goto LOrbital;
             }
-            FCreateAiStarbase(iSetNew, 1, -1, isbhullAuto);
-            FCreateAiStarbase(iSetNew + 2, 2, -1, isbhullAuto);
-            FCreateAiStarbase(iSetNew + 4, 3, -1, isbhullAuto);
+            FCreateAiStarbase(iSetNew, 1, aiSbRecipeAuto, isbhullAuto);
+            FCreateAiStarbase(iSetNew + 2, 2, aiSbRecipeAuto, isbhullAuto);
+            FCreateAiStarbase(iSetNew + 4, 3, aiSbRecipeAuto, isbhullAuto);
         }
     LOrbital:
         iSetLast = -1;
@@ -2327,8 +2410,8 @@ void EnsureAiStarbaseDesigns() {
             iSetNew = iSetLast <= 4 ? 6 : 1;
             if ((rglpshdefSB[idPlayer][iSetNew].fFree != 0 || rglpshdefSB[idPlayer][iSetNew].cExist <= 0) &&
                 (rglpshdefSB[idPlayer][iSetNew + 2].fFree != 0 || rglpshdefSB[idPlayer][iSetNew + 2].cExist <= 0)) {
-                FCreateAiStarbase(iSetNew, 1, -1, isbhullAuto);
-                FCreateAiStarbase(iSetNew + 2, 2, -1, isbhullAuto);
+                FCreateAiStarbase(iSetNew, 1, aiSbRecipeAuto, isbhullAuto);
+                FCreateAiStarbase(iSetNew + 2, 2, aiSbRecipeAuto, isbhullAuto);
             }
         }
     }
@@ -2416,29 +2499,29 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
     return;
 }
 
-int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, isbhull isb) {
+int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, AiStarbaseRecipeOffset aisb, isbhull isb) {
     int16_t i;
     SHDEF   shdef;
     HS     *lphs;
 
-    if (aisb < 0) {
+    if (aisb < aiSbRecipeSpaceStation) {
         switch (ishdef) {
         case 1:
         case 3:
         case 6:
         case 8:
-            aisb = 12;
+            aisb = aiSbRecipeOrbitalFort;
             isb = isbhullOrbitalFort;
             if (iLevel != 2)
                 break;
             iLevel++;
             break;
         default:
-            aisb = 0;
+            aisb = aiSbRecipeSpaceStation;
             isb = isbhullSpaceStation;
         }
     }
-    if (FCreateAiShdef(-1, isb, &vrgSBAip[aisb]) == 0) {
+    if (FCreateAiShdef(-1, isb, (uint8_t *)&vrgSBAip[aisb]) == 0) {
         return 0;
     }
     shdef = shdefBuild;
@@ -2581,9 +2664,9 @@ void QueueAiStarbases(PROD *rgprod, int16_t ishdefSBLatest) {
             } else {
                 if (lppl->iPlayer != idPlayer || ((lppl->fStarbase != 0 && lppl->isb <= 9) || lppl->rgwtMin[3] < 80 || vlpbAiPlanet[lppl->id * 16 + 2] != 0))
                     continue;
-                for (i = 0; i < (int16_t)RawLoad16((uint8_t *)vlpbAiData + 0x2) && RawLoad16(vlpbAiData + (i * 20 + 4)) != lppl->id; i++) {
+                for (i = 0; i < ((AIHIST *)vlpbAiData)->cStarbase && ((AIHIST *)vlpbAiData)->rgasb[i].idPlanet != lppl->id; i++) {
                 }
-                if (i == RawLoad16((uint8_t *)vlpbAiData + 0x2))
+                if (i == ((AIHIST *)vlpbAiData)->cStarbase)
                     continue;
             }
             ChangeMainObjSel(grobjPlanet, lppl->id);

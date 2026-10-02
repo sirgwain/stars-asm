@@ -151,6 +151,13 @@ func scratchTypeForWidth(width int) typeinfo.Type {
 // symbolFromVarAccess resolves a byte range within a local or global variable
 // into the most specific symbolic field path available.
 func (sr *symbolResolver) symbolFromVarAccess(v typeinfo.Var, fieldOff int, width int) (symresolve.SymbolPath, bool) {
+	if view := sr.arrayBufferView(v); view != nil {
+		// Only a field of the viewed record takes the view; the buffer as a
+		// whole, as in pb - rgb, stays the array.
+		if path, ok := sr.symbolFromResolvedAccess(view, fieldOff, width); ok && isBufferViewField(path) {
+			return path, true
+		}
+	}
 	root := symresolve.SymbolPath(&symresolve.SymbolRoot{Symbol: v})
 	typ := v.VarType()
 
@@ -354,6 +361,8 @@ func symbolPathHasDeclaredRoot(path symresolve.SymbolPath) bool {
 	case *symresolve.SymbolOffset:
 		return symbolPathHasDeclaredRoot(path.Base)
 	case *symresolve.SymbolTerm:
+		return symbolPathHasDeclaredRoot(path.Base)
+	case *symresolve.SymbolCast:
 		return symbolPathHasDeclaredRoot(path.Base)
 	default:
 		return false

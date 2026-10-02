@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <windows.h>
 
-extern uint16_t vrgMacIshAip[31];
-extern uint8_t  vrgMacAip[248];
-extern uint8_t  vrgAiMacintiResOrder[8];
+extern MacintiRecipeOffset vrgMacIshAip[31];
+extern uint8_t             vrgMacAip[248];
+extern uint8_t             vrgAiMacintiResOrder[8];
 
 void    DoMacintiAiTurn(PROD *rgprod);
 void    EnsureMacintiShdefs();

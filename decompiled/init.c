@@ -217,8 +217,6 @@ int16_t FCreateFonts(HDC hdc) {
 int16_t InitInstance(int16_t nCmdShow) {
     int16_t sw;
     RECT    rc;
-    HACCEL  t_call_0e11;
-    HACCEL  t_call_0e33;
 
     ini.fWait = 0;
     ini.fStartupFile = 0;
@@ -230,14 +228,12 @@ int16_t InitInstance(int16_t nCmdShow) {
     if (hwndFrame == 0) {
         return 0;
     }
-    t_call_0e11 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_MAIN));
-    hAccel = t_call_0e11;
-    if (t_call_0e11 == 0) {
+    hAccel = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_MAIN));
+    if (hAccel == 0) {
         return 0;
     }
-    t_call_0e33 = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_TITLE));
-    hAccelTitle = t_call_0e33;
-    if (t_call_0e33 == 0) {
+    hAccelTitle = LoadAccelerators(hInst, MAKEINTRESOURCE(IDA_TITLE));
+    if (hAccelTitle == 0) {
         return 0;
     }
     if (nCmdShow != 1) {
