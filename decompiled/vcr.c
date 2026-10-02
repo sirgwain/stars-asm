@@ -307,8 +307,6 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT ps;
     int16_t     iStep;
     int16_t     dStep;
-    POINT       t_pt_107d;
-    POINT       t_pt_108c_1;
 
     switch (message) {
     case WM_INITDIALOG:
@@ -347,11 +345,8 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
         FillRect((HDC)wParam, &rc, hbrButtonFace);
         return 1;
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_107d);
-        pt = PointTo16(t_pt_107d);
-        t_pt_108c_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_108c_1);
-        pt = PointTo16(t_pt_108c_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (pt.x > 8 && pt.x < (dxyVCRSquare + 3) * 10 + 8 && pt.y >= 8 && pt.y < (dxyVCRSquare + 3) * 10 + 8) {
             SetCursor(hcurHand);
             return 1;

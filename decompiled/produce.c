@@ -254,8 +254,6 @@ INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
     FARPROC            lpProc;
     int16_t            fRet;
     HCURSOR            hcs;
-    POINT              t_pt_188d;
-    POINT              t_pt_189c_1;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -389,11 +387,8 @@ INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
             break;
         case WM_SETCURSOR:
             hcs = 0;
-            GetCursorPos(&t_pt_188d);
-            pt = PointTo16(t_pt_188d);
-            t_pt_189c_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_189c_1);
-            pt = PointTo16(t_pt_189c_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwnd, &pt);
             if (PtInRect(&rcProdDiamond, PointFrom16(pt)) == 0)
                 break;
             SetCursor(hcurArrowHelp);
@@ -1275,11 +1270,11 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             if (vrgZipProd[iBase].fValid != 0) {
                 pszT = szWork;
                 psz = vrgZipProd[iBase].szName;
-                while ((int16_t)(int8_t)*psz != 0) {
+                while (*psz != 0) {
                     t_55d5 = psz;
                     psz++;
                     *pszT++ = *t_55d5;
-                    if ((int16_t)(int8_t)*t_55d5 == '&') {
+                    if (*t_55d5 == '&') {
                         *pszT++ = '&';
                     }
                 }
@@ -1327,17 +1322,17 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
                 if (iResTechNow != Energy) {
                     if (DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc) == 0)
                         goto L_5ce2;
-                    if ((int16_t)(int8_t)szWork[0] == 0) {
+                    if (szWork[0] == 0) {
                         _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
                     }
                     strcpy(vrgZipProd[iResTechNow].szName, szWork);
                     pszT = &szWork[64];
                     psz = szWork;
-                    while ((int16_t)(int8_t)*psz != 0) {
+                    while (*psz != 0) {
                         t_5a67 = psz;
                         psz++;
                         *pszT++ = *t_5a67;
-                        if ((int16_t)(int8_t)*t_5a67 == '&') {
+                        if (*t_5a67 == '&') {
                             *pszT++ = '&';
                         }
                     }

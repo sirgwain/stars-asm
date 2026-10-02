@@ -44,7 +44,7 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {
         pb = pbStore + 8;
     }
     cOut = 31;
-    if ((int16_t)(int8_t)pplr->szName[0] != 0 && FCompressUserString(pplr->szName, pb + 1, &cOut) != 0) {
+    if (pplr->szName[0] != 0 && FCompressUserString(pplr->szName, pb + 1, &cOut) != 0) {
         *pb = LOBYTE(cOut);
         pb += 1 + cOut;
     } else {
@@ -53,7 +53,7 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {
         pb += 2 + strlen(pplr->szName);
     }
     cOut = 31;
-    if ((int16_t)(int8_t)pplr->szNames[0] != 0 && FCompressUserString(pplr->szNames, pb + 1, &cOut) != 0) {
+    if (pplr->szNames[0] != 0 && FCompressUserString(pplr->szNames, pb + 1, &cOut) != 0) {
         *pb = LOBYTE(cOut);
         pb += 1 + cOut;
     } else {
@@ -93,7 +93,7 @@ void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore) {
         fstrcpy(szHulName, LphuldefFromId(lpshdef->hul.ihuldef)->hul.szClass);
     }
     cOut = 31;
-    if ((int16_t)(int8_t)szHulName[0] != 0 && FCompressUserString(szHulName, pb + 1, &cOut) != 0) {
+    if (szHulName[0] != 0 && FCompressUserString(szHulName, pb + 1, &cOut) != 0) {
         *pb = LOBYTE(cOut);
         pb += 1 + cOut;
     } else {
@@ -862,7 +862,7 @@ void WriteRtString(char *lpsz) {
     uint8_t rgb[33];
     int16_t cOut;
 
-    if (lpsz != 0 && (int16_t)(int8_t)*lpsz != 0) {
+    if (lpsz != 0 && *lpsz != 0) {
         cOut = 31;
         if (FCompressUserString(lpsz, &rgb[1], &cOut) != 0) {
             rgb[0] = LOBYTE(cOut);
@@ -911,7 +911,7 @@ void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog) {
         pb = &rgb[4];
         fstrcpy(szPlanName, lpbtlplan->szName);
         cOut = 31;
-        if ((int16_t)(int8_t)szPlanName[0] != 0 && FCompressUserString(szPlanName, pb + 1, &cOut) != 0) {
+        if (szPlanName[0] != 0 && FCompressUserString(szPlanName, pb + 1, &cOut) != 0) {
             *pb = LOBYTE(cOut);
             pb += 1 + cOut;
         } else {
@@ -1100,7 +1100,7 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, MdMark mdMark, int16_t f) {
                     do {
                         GetFileSeeds(&lSeedSav1, &lSeedSav2);
                         ReadRt();
-                    } while (hdrCur.rt != rtPlr || (int16_t)(int8_t)rgbCur[0] != iPlayer);
+                    } while (hdrCur.rt != rtPlr || rgbCur[0] != iPlayer);
                     if ((RawLoad16(&rgbCur[6]) >> 9 & 1) != f) {
                         if ((RawLoad16(&rgbCur[6]) >> 9 & 1) != 0) {
                             if ((RawLoad16(&rgbCur[6]) >> 0xd & 7) != 7)

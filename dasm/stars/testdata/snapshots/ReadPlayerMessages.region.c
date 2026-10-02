@@ -29,7 +29,7 @@ void ReadPlayerMessages() {
         cMsg++;
         u = lpmh->grWord;
         lpb += 4;
-        iMax = (int16_t)(int8_t)rgcMsgArgs[lpmh->iMsg];
+        iMax = rgcMsgArgs[lpmh->iMsg];
         for (i = 0; i < iMax; i++) {
             lpb += 1 + ((u & 1) == 1 ? 1 : 0);
             u >>= 1;

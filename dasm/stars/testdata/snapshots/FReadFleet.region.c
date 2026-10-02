@@ -120,7 +120,7 @@ int16_t FReadFleet(FLEET *lpfl) {
         }
         ReadRt();
         if (hdrCur.rt == rtString) {
-            cch = (int16_t)(int8_t)rgbCur[0];
+            cch = rgbCur[0];
             if (cch == 0) {
                 lpfl->lpszName = LpAlloc(strlen(&rgbCur[1]) + 1, htString);
                 fstrcpy(lpfl->lpszName, &rgbCur[1]);

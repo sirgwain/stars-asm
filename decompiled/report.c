@@ -391,8 +391,6 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
     char       *psz;
     int16_t     iSel;
     int16_t     cch;
-    POINT       t_pt_1082;
-    POINT       t_pt_1091_1;
 
     switch (message) {
     case WM_INITDIALOG:
@@ -423,11 +421,8 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         if (gd.fScoreVictory != 2) {
             return 0;
         }
-        GetCursorPos(&t_pt_1082);
-        pt = PointTo16(t_pt_1082);
-        t_pt_1091_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_1091_1);
-        pt = PointTo16(t_pt_1091_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (pt.y >= dyArial10 + dyArial8 - 2 || pt.y <= 2) {
             return 0;
         }
@@ -1713,8 +1708,8 @@ char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears) {
         if (pcYears != 0) {
             psz = szWork;
             c = 0;
-            for (; (int16_t)(int8_t)*psz >= '0' && (int16_t)(int8_t)*psz <= '9'; psz++) {
-                c = 10 * c + ((int16_t)(int8_t)*psz - 48);
+            for (; *psz >= '0' && *psz <= '9'; psz++) {
+                c = 10 * c + (*psz - 48);
             }
             if (c == 0) {
                 c = 32000;
@@ -2592,7 +2587,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
     }
     ReleaseDC(hwndReportDlg, hdc);
     for (i = 0; i < cItems; i++) {
-        if ((int16_t)(int8_t)rgsz[i][0] != 0) {
+        if (rgsz[i][0] != 0) {
             psz[i] = rgsz[i];
         } else {
             psz[i] = 0;
@@ -2981,8 +2976,8 @@ void DumpPlanets() {
             j = gd.fPerPlayerDumps + 2;
             for (i = 0; i < j; i++) {
                 cch = CchGetString(i + 1244, szForm);
-                for (psz = szForm; (int16_t)(int8_t)*psz != 0; psz++) {
-                    if ((int16_t)(int8_t)*psz == '*') {
+                for (psz = szForm; *psz != 0; psz++) {
+                    if (*psz == '*') {
                         *psz = '\t';
                     }
                 }
@@ -3207,8 +3202,8 @@ void DumpFleets() {
             j = gd.fPerPlayerDumps + 2;
             for (i = 0; i < j; i++) {
                 cch = CchGetString(i + 1247, szForm);
-                for (psz = szForm; (int16_t)(int8_t)*psz != 0; psz++) {
-                    if ((int16_t)(int8_t)*psz == '*') {
+                for (psz = szForm; *psz != 0; psz++) {
+                    if (*psz == '*') {
                         *psz = '\t';
                     }
                 }
@@ -3380,13 +3375,12 @@ INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                     for (i = 0; i < 2; i++) {
                         hwndEdit = GetDlgItem(hwnd, i + 268);
                         GetWindowText(hwndEdit, szWork, 10);
-                        if ((int16_t)(int8_t)szWork[0] == 0 || (int16_t)(int8_t)szWork[1] != 0 || (int16_t)(int8_t)szWork[0] <= '0' ||
-                            (int16_t)(int8_t)szWork[0] > '9') {
+                        if (szWork[0] == 0 || szWork[1] != 0 || szWork[0] <= '0' || szWork[0] > '9') {
                             AlertSz(PszFormatIds(idsMustSpecifyNumberBetween19, NULL), MB_ICONHAND);
                             SetFocus(hwndEdit);
                             break;
                         }
-                        vrgcPrintMapPage[i] = (int16_t)(int8_t)szWork[0] - 48;
+                        vrgcPrintMapPage[i] = szWork[0] - 48;
                     }
                 }
                 StickyDlgPos(hwnd, &ptStickyPrintMapDlg, 0);
@@ -3399,7 +3393,7 @@ INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
             case IDC_PRINT_MAP_PAGES_Y:
                 if (GET_WM_COMMAND_CMD(wParam, lParam) == 0x400) {
                     GetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), szWork, 10);
-                    if ((int16_t)(int8_t)szWork[0] != 0 && ((int16_t)(int8_t)szWork[0] <= '0' || (int16_t)(int8_t)szWork[0] > '9')) {
+                    if (szWork[0] != 0 && (szWork[0] <= '0' || szWork[0] > '9')) {
                         MessageBeep(MB_OK);
                         SetWindowText(GET_WM_COMMAND_HWND(wParam, lParam), &szWork[1]);
                     }

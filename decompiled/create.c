@@ -557,7 +557,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
     memset(grUsed, 0, 128);
     for (i = 0; i < cPlanMax; i++) {
         dx = Random(999);
-        while (((int16_t)(int8_t)grUsed[dx >> 3] & bitTbl[dx & 7]) != 0) {
+        while ((grUsed[dx >> 3] & bitTbl[dx & 7]) != 0) {
             dx++;
             if (dx >= game.fTutorial + 999) {
                 dx = 0;
@@ -1433,7 +1433,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
             lpbDef[cb] = 0;
             lpb = lpbDef;
             lpbStart = PszGetLine(&lpb);
-            if ((int16_t)(int8_t)*lpbStart == 0 || fstrlen(lpbStart) > 31) {
+            if (*lpbStart == 0 || fstrlen(lpbStart) > 31) {
                 AlertSz(PszFormatIds(idsIllegalGameTitle, NULL), MB_ICONHAND);
             } else {
                 fstrcpy(game.szName, lpbStart);
@@ -1501,7 +1501,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                 lpbStart = PszGetLine(&lpb);
                                 if (lpb >= lpbDefMac)
                                     goto LUniDefShort;
-                                if (i > 0 && (int16_t)(int8_t)*lpbStart == '#') {
+                                if (i > 0 && *lpbStart == '#') {
                                     cNum = CParseNumbers(lpbStart + 1, rgl, 2);
                                     idAi = LOWORD(rgl[0]);
                                     lvlAi = LOWORD(rgl[1]);
@@ -1628,8 +1628,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                             }
                                                             lpbStart = PszGetLine(&lpb);
                                                             lpb = lpbStart + (-1 + fstrlen(lpbStart));
-                                                            if (lpb - lpbStart >= 3 && (int16_t)(int8_t)*lpb == 'y' && (int16_t)(int8_t)lpb[-1] == 'x' &&
-                                                                (int16_t)(int8_t)lpb[-2] == '.') {
+                                                            if (lpb - lpbStart >= 3 && *lpb == 'y' && lpb[-1] == 'x' && lpb[-2] == '.') {
                                                                 lpb[-2] = 0;
                                                             }
                                                             fstrcpy(szBase, lpbStart);
@@ -1641,7 +1640,7 @@ int16_t GenNewGameFromFile(char *pszFile) {
                                                                     rgplr[i] = vrgplrDef[0];
                                                                     rgplr[i].wFlags = (rgplr[i].wFlags & 0xffef) | 0x10;
                                                                 }
-                                                                if ((int16_t)(int8_t)rgplr[i].szName[0] == 0) {
+                                                                if (rgplr[i].szName[0] == 0) {
                                                                     CchGetString(Random(24) + 1390, rgplr[i].szName);
                                                                     _wsprintf(rgplr[i].szNames, "%ss", rgplr[i].szName);
                                                                 }
@@ -1970,10 +1969,10 @@ Finish:
                     rgplr[i] = vrgplrDef[0];
                     rgplr[i].wFlags = (rgplr[i].wFlags & 0xffef) | 0x10;
                 }
-                if ((int16_t)(int8_t)rgplr[i].szName[0] == 0) {
+                if (rgplr[i].szName[0] == 0) {
                     CchGetString(Random(24) + 1390, rgplr[i].szName);
                 }
-                if ((int16_t)(int8_t)rgplr[i].szNames[0] == 0) {
+                if (rgplr[i].szNames[0] == 0) {
                     _wsprintf(rgplr[i].szNames, "%ss", rgplr[i].szName);
                 }
             }
@@ -2217,8 +2216,8 @@ int16_t FGetNewGameName(char *szFileSuggest) {
         szFile[0] = 0;
     }
     CchGetString(idsStarsGameFilesXy, szFilter);
-    for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-        if ((int16_t)(int8_t)szFilter[i] == '|') {
+    for (i = 0; szFilter[i] != 0; i++) {
+        if (szFilter[i] == '|') {
             szFilter[i] = 0;
         }
     }
@@ -2555,9 +2554,6 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT       *prcSav;
     HDC         hdc;
     PAINTSTRUCT ps;
-    POINT       t_pt_89ee;
-    POINT       t_pt_89fd_1;
-    POINT       t_pt_8b1f_1;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -2606,11 +2602,8 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     case WM_SETCURSOR:
         if (fRCWReadOnly != 0)
             break;
-        GetCursorPos(&t_pt_89ee);
-        pt = PointTo16(t_pt_89ee);
-        t_pt_89fd_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_89fd_1);
-        pt = PointTo16(t_pt_89fd_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (pt.x < xNewGameDiamond || pt.x >= xNewGameDiamond + dyArial8 + 1 || pt.y < 6)
             break;
         iDiamond = (int16_t)(pt.y - 6) / (dyArial8 + 4);
@@ -2630,9 +2623,7 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         if (iDiamond >= 16 || (int16_t)(pt.y - 6) % (dyArial8 + 4) >= dyArial8 + 1)
             break;
         iCurVal = vrgplrTypeNew[iDiamond];
-        t_pt_8b1f_1 = PointFrom16(pt);
-        ClientToScreen(hwnd, &t_pt_8b1f_1);
-        pt = PointTo16(t_pt_8b1f_1);
+        ClientToScreen16(hwnd, &pt);
         rghmenuSubPopup[0] = CreatePopupMenu();
         for (i = 0; i < 6; i++) {
             iChecked = iCurVal == i * 4 + 1 ? 8 : 0;
@@ -2862,11 +2853,11 @@ void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw) {
                 _wsprintf(szWork, szT, PszGetCompressedString(iPlr + 1383));
                 break;
             case 2:
-                if (fRCWReadOnly == 0 && gd.fNoHostNames != 0 && (int16_t)(int8_t)vrgszFileNew[iPlr * 13] != 0) {
+                if (fRCWReadOnly == 0 && gd.fNoHostNames != 0 && vrgszFileNew[iPlr * 13] != 0) {
                     _wsprintf(szWork, " %s", vrgszFileNew + iPlr * 13);
                     break;
                 }
-                if ((int16_t)(int8_t)vrgszFileNew[iPlr * 13] != 0) {
+                if (vrgszFileNew[iPlr * 13] != 0) {
                     _wsprintf(szWork, PszGetCompressedString(fRCWReadOnly == 0 ? idsSS2 : idsS), vrgplrNew[iPlr].szNames, vrgszFileNew + iPlr * 13);
                     break;
                 }
@@ -2895,8 +2886,6 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     HDC         hdc;
     PAINTSTRUCT ps;
     HWND        t_call_9a24;
-    POINT       t_pt_9b4c;
-    POINT       t_pt_9b5b_1;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -2931,11 +2920,8 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
         StickyDlgPos(hwnd, &ptStickyNewDlg, 1);
         return 1;
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_9b4c);
-        pt = PointTo16(t_pt_9b4c);
-        t_pt_9b5b_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_9b5b_1);
-        pt = PointTo16(t_pt_9b5b_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (IrcRaceDlgHitTest(pt) < 0)
             break;
         SetCursor(hcurHand);
@@ -3018,13 +3004,13 @@ void DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw) {
         }
         xLeft += LOWORD(GetTextExtent(hdc, szWork, cch));
         for (j = 0; j < 2; j++) {
-            dxItem = abs((int16_t)(int8_t)rgNG3Width[i][j]) * dxDig;
+            dxItem = abs(rgNG3Width[i][j]) * dxDig;
             if (dxItem == 0) {
                 ids++;
                 break;
             }
             _wsprintf(szWork, PCTD, GetVCVal(&game, vcCur, 0));
-            if ((int16_t)(int8_t)rgNG3Width[i][j] < 0) {
+            if (rgNG3Width[i][j] < 0) {
                 dxItem += (int16_t)(3 * dxDig) / 2;
                 strcat(szWork, "%");
             }

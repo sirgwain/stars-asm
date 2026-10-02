@@ -15,13 +15,13 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
     iMineral = -1;
     pParams = pParamsReal;
     pch = szMsgBuf;
-    for (; (int16_t)(int8_t)*pszFormat != 0; pszFormat++) {
-        if ((int16_t)(int8_t)*pszFormat != '\\') {
+    for (; *pszFormat != 0; pszFormat++) {
+        if (*pszFormat != '\\') {
             *pch++ = *pszFormat;
         } else {
             pszFormat++;
-            if ((uint16_t)((int16_t)(int8_t)*pszFormat - 69) <= 53) {
-                switch ((int16_t)(int8_t)*pszFormat) {
+            if ((uint16_t)(*pszFormat - 69) <= 53) {
+                switch (*pszFormat) {
                 case 'w':
                     strcpy(pch, szWork);
                     pch += strlen(szWork);
@@ -33,7 +33,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                 case 'y':
                     strcpy(pch, szBase);
                     pch += strlen(szBase);
-                    switch ((int16_t)(int8_t)*pszFormat) {
+                    switch (*pszFormat) {
                     case 'f':
                         if (idPlayer != -1) {
                             c = _wsprintf(pch, ".x%d", idPlayer + 1);
@@ -70,8 +70,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     goto DoInt;
                 case 'L':
                 case 'l':
-                    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1,
-                                         (*pParams & 0x20) == 0 ? 0 : 1, (*pParams & 0xc0) >> 6, NULL);
+                    pchT = PszPlayerName(*pParams & 0xf, *pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1, (*pParams & 0x20) == 0 ? 0 : 1,
+                                         (*pParams & 0xc0) >> 6, NULL);
                     goto FinishString;
                 case 'Z':
                     w = *pParams;
@@ -123,10 +123,10 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pchT = rgszMineField[*pParams];
                     goto FinishString;
                 case 'P':
-                    if ((long double)(int16_t)((int16_t)*pParams / 100) >= (long double)10.0) {
-                        c = _wsprintf(pch, PCTDPCTPCT, (int16_t)*pParams / 100);
+                    if ((long double)(int16_t)(*pParams / 100) >= (long double)10.0) {
+                        c = _wsprintf(pch, PCTDPCTPCT, *pParams / 100);
                     } else {
-                        c = _wsprintf(pch, PCTDXPCTDPCTPCT, (int16_t)*pParams / 100, *pParams - (int16_t)*pParams / 100 * 100);
+                        c = _wsprintf(pch, PCTDXPCTDPCTPCT, *pParams / 100, *pParams - *pParams / 100 * 100);
                     }
                     pch += c;
                     pParams++;
@@ -201,9 +201,9 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pParams += 2;
                     c = _wsprintf(pch, PCTLD, l);
                     pch += c;
-                    if ((int16_t)(int8_t)*pszFormat == 'v')
+                    if (*pszFormat == 'v')
                         break;
-                    if ((int16_t)(int8_t)*pszFormat == 'V') {
+                    if (*pszFormat == 'V') {
                         iMineral = *pParams;
                     }
                     pchT = vrgszUnits[iMineral];

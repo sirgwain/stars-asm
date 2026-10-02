@@ -22,14 +22,25 @@ var outputPointFuncs = map[string]bool{
 	"GetCursorPos": true,
 }
 
+// point16Funcs are the Win32 functions taking POINT * that have a
+// win16defines.h wrapper of the same name with 16 appended, which takes the
+// Stars POINT16 * directly.
+var point16Funcs = map[string]bool{
+	"ClientToScreen":  true,
+	"GetCursorPos":    true,
+	"MapWindowPoints": true,
+	"ScreenToClient":  true,
+}
+
 // nativePointsProcessor converts points where they cross between Stars and
 // the Win32 API, which C does not do implicitly between the two structs:
 //
 //   - a POINT16 passed as a POINT argument becomes PointFrom16(pt).
-//   - the address of a POINT16 passed as a POINT * argument, such as
-//     ScreenToClient(hwnd, &pt), goes through a POINT temp that is filled
-//     before the call and copied back after it. A function that only writes
-//     the point, such as GetCursorPos, leaves the temp unfilled.
+//   - the address of a POINT16 passed as a POINT * argument calls the
+//     function's POINT16 wrapper, as in ScreenToClient16(hwnd, &pt), or else
+//     goes through a POINT temp that is filled before the call and copied
+//     back after it. A function that only writes the point, such as
+//     GetCaretPos, leaves the temp unfilled.
 //   - a RECT corner passed as a Stars POINT16 *, as in
 //     LogicalToScan((POINT *)&rc.right), goes through a POINT16 temp
 //     holding copies of the corner's fields.
@@ -100,6 +111,9 @@ func copyPointArgs(call *CallEffect) ([]Effect, bool) {
 	if call.Call == nil || call.Call.Function == nil {
 		return nil, false
 	}
+	if wrapped, ok := callPoint16Wrapper(call); ok {
+		return []Effect{wrapped}, true
+	}
 	var before, after []Effect
 	var args []Expr
 	for i, arg := range call.Call.Args {
@@ -158,6 +172,53 @@ func copyPointArgs(call *CallEffect) ([]Effect, bool) {
 	next := *call
 	next.Call = &nextCall
 	return append(append(before, &next), after...), true
+}
+
+// callPoint16Wrapper calls the POINT16 wrapper of a point16Funcs function
+// given the address of a POINT16, passing that address unconverted.
+func callPoint16Wrapper(call *CallEffect) (Effect, bool) {
+	fn := call.Call.Function
+	if !point16Funcs[fn.Name] {
+		return nil, false
+	}
+	var params []typeinfo.FunctionVar
+	var args []Expr
+	for i, arg := range call.Call.Args {
+		if i >= len(fn.Params) {
+			break
+		}
+		param, ok := fn.Params[i].Type.(*typeinfo.Pointer)
+		if !ok || !isPointStruct(param.Elem, nativePointTypedef) {
+			continue
+		}
+		// Call argument conversion already cast &pt to the parameter type.
+		if cast, ok := arg.(*Cast); ok {
+			arg = cast.Value
+		}
+		addr, ok := arg.(*AddressOf)
+		if !ok || !isPointStruct(addr.Target.ExprType(), win16PointTypedef) {
+			return nil, false
+		}
+		if params == nil {
+			params = append([]typeinfo.FunctionVar(nil), fn.Params...)
+			args = append([]Expr(nil), call.Call.Args...)
+		}
+		point16 := &typeinfo.Pointer{Elem: addr.Target.ExprType(), Class: param.Class}
+		params[i].Type = point16
+		args[i] = &AddressOf{Target: addr.Target, TypeInfo: point16}
+	}
+	if params == nil {
+		return nil, false
+	}
+	wrapper := *fn
+	wrapper.Name = fn.Name + "16"
+	wrapper.Params = params
+	nextCall := *call.Call
+	nextCall.Function = &wrapper
+	nextCall.Args = args
+	next := *call
+	next.Call = &nextCall
+	return &next, true
 }
 
 // rectCornerFields returns the x and y fields of the RECT corner target

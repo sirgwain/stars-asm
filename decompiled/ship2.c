@@ -40,7 +40,7 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 SetTextColor(hdc, 0);
                 iAction = vrgZip[iResTechNow].txp.rgia[i].iAction;
                 cch = CchGetString(iAction + 109, szWork);
-                if ((int16_t)(int8_t)szWork[cch - 1] == '.') {
+                if (szWork[cch - 1] == '.') {
                     _wsprintf(&szWork[cch - 3], " %dkT", vrgZip[iResTechNow].txp.rgia[i].cQuan);
                 }
                 TextOut(hdc, xCtr + 6, rcGBox.top, szWork, strlen(szWork));
@@ -78,11 +78,11 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             if (vrgZip[i - 1073].fValid != 0) {
                 pszT = szWork;
                 psz = vrgZip[i - 1073].szName;
-                while ((int16_t)(int8_t)*psz != 0) {
+                while (*psz != 0) {
                     t_00bd = psz;
                     psz++;
                     *pszT++ = *t_00bd;
-                    if ((int16_t)(int8_t)*t_00bd == '&') {
+                    if (*t_00bd == '&') {
                         *pszT++ = '&';
                     }
                 }
@@ -128,17 +128,17 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 }
                 lpProc = MakeProcInstance(RenameZipDlg, hInst);
                 if (DialogBox(hInst, MAKEINTRESOURCE(IDD_RENAME), hwndFrame, lpProc) != 0) {
-                    if ((int16_t)(int8_t)szWork[0] == 0) {
+                    if (szWork[0] == 0) {
                         _wsprintf(szWork, PszGetCompressedString(idsCustomD), iResTechNow);
                     }
                     strcpy(vrgZip[iResTechNow].szName, szWork);
                     pszT = &szWork[64];
                     psz = szWork;
-                    while ((int16_t)(int8_t)*psz != 0) {
+                    while (*psz != 0) {
                         t_065c = psz;
                         psz++;
                         *pszT++ = *t_065c;
-                        if ((int16_t)(int8_t)*t_065c == '&') {
+                        if (*t_065c == '&') {
                             *pszT++ = '&';
                         }
                     }

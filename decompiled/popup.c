@@ -246,7 +246,6 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     char    szTB[40];
     int16_t dxName;
     int16_t dxCoord;
-    POINT   t_pt_0c9b_1;
     int16_t t_merge_126d_0001;
     int16_t t_call_1265;
     int16_t t_merge_12a3_0001;
@@ -258,9 +257,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
 
     pt.x = x;
     pt.y = y;
-    t_pt_0c9b_1 = PointFrom16(pt);
-    ClientToScreen(hwnd, &t_pt_0c9b_1);
-    pt = PointTo16(t_pt_0c9b_1);
+    ClientToScreen16(hwnd, &pt);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
     if ((uint16_t)(GlobalPD.grPopup - 1) <= 13) {
@@ -421,7 +418,6 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
     MSG     msg;
     int16_t fChecked;
     int16_t fCheckedCur;
-    POINT   t_pt_1391_1;
     char   *t_1545;
     char   *t_16d0;
     char   *t_17e3;
@@ -430,9 +426,7 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
     hmenuSub = 0;
     pt.x = x;
     pt.y = y;
-    t_pt_1391_1 = PointFrom16(pt);
-    ClientToScreen(hwnd, &t_pt_1391_1);
-    pt = PointTo16(t_pt_1391_1);
+    ClientToScreen16(hwnd, &pt);
     hmenuPopup = CreatePopupMenu();
     iPopMenuSel = -1;
     for (i = 0; i < cString; i++) {
@@ -452,11 +446,11 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
                     psz = PszGetPlanetName(LOWORD(rgids[i]));
                 }
                 pszT = szTemp;
-                while ((int16_t)(int8_t)*psz != 0) {
+                while (*psz != 0) {
                     t_1545 = psz;
                     psz++;
                     *pszT++ = *t_1545;
-                    if ((int16_t)(int8_t)*t_1545 == '&') {
+                    if (*t_1545 == '&') {
                         *pszT++ = '&';
                     }
                 }
@@ -474,16 +468,16 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
                 } else {
                     fCheckedCur = LOWORD(rgids[i]);
                 }
-                if ((int16_t)(int8_t)*rgsz[i] == -1 && (int16_t)(int8_t)rgsz[i][1] == 0) {
+                if (*rgsz[i] == -1 && rgsz[i][1] == 0) {
                     AppendMenu(hmenuSub, MF_SEPARATOR, 0, NULL);
                 } else {
                     pszT = szTemp;
                     psz = rgsz[i];
-                    while ((int16_t)(int8_t)*psz != 0) {
+                    while (*psz != 0) {
                         t_16d0 = psz;
                         psz++;
                         *pszT++ = *t_16d0;
-                        if ((int16_t)(int8_t)*t_16d0 == '&') {
+                        if (*t_16d0 == '&') {
                             *pszT++ = '&';
                         }
                     }
@@ -492,16 +486,16 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
                 }
             }
             AppendMenu(hmenuPopup, (fChecked == 0 ? 0 : 8) | 0x10, (UINT_PTR)hmenuSub, pszTitle);
-        } else if ((int16_t)(int8_t)*rgsz[i] == -1 && (int16_t)(int8_t)rgsz[i][1] == 0) {
+        } else if (*rgsz[i] == -1 && rgsz[i][1] == 0) {
             AppendMenu(hmenuPopup, MF_SEPARATOR, 0, NULL);
         } else {
             pszT = szTemp;
             psz = rgsz[i];
-            while ((int16_t)(int8_t)*psz != 0) {
+            while (*psz != 0) {
                 t_17e3 = psz;
                 psz++;
                 *pszT++ = *t_17e3;
-                if ((int16_t)(int8_t)*t_17e3 == '&') {
+                if (*t_17e3 == '&') {
                     *pszT++ = '&';
                 }
             }

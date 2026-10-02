@@ -713,21 +713,27 @@ func lowerBinaryOp(op sem.Op) (string, bool) {
 // variable, field, element, or call result, or a typed raw load, whose type is
 // a signed integer exactly FromBits wide, and the destination must be a signed
 // integer no wider than int. Arithmetic parents are excluded because their
-// casts preserve 16-bit wraparound, and char because its signedness is
-// implementation-defined.
+// casts preserve 16-bit wraparound. A plain char source counts as signed: the
+// original MSC build and the native build (-fsigned-char) both sign it.
 func signExtendsImplicitly(e *sem.SignExtend, v Expr) bool {
 	var from typeinfo.Type
 	switch p := v.(type) {
 	case *Deref:
 		from = p.Type
+		if from == nil {
+			// a plain *p reads the pointee's declared type
+			if deref, ok := e.Parent.(*sem.Deref); ok {
+				from = deref.ExprType()
+			}
+		}
 	case *Var, *Field, *Index, *Call:
 		switch e.Parent.(type) {
-		case *sem.Local, *sem.Global, *sem.FieldAccess, *sem.ArrayIndex, *sem.Call, *sem.CallResult:
+		case *sem.Local, *sem.Global, *sem.FieldAccess, *sem.ArrayIndex, *sem.Deref, *sem.Call, *sem.CallResult:
 			from = e.Parent.ExprType()
 		}
 	}
 	src, ok := from.(*typeinfo.Primitive)
-	if !ok || src.TypeKind != typeinfo.KInt || !src.Signed || src.Name == "char" || src.Size*8 != e.FromBits {
+	if !ok || src.TypeKind != typeinfo.KInt || !src.Signed && src.Name != "char" || src.Size*8 != e.FromBits {
 		return false
 	}
 	dst, ok := e.ExprType().(*typeinfo.Primitive)

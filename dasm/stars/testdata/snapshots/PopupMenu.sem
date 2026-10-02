@@ -33,9 +33,7 @@ L_136c:
     hmenuSub = 0
     pt.x = x
     pt.y = y
-    t_pt_1391_1 = PointFrom16(pt)
-    call ClientToScreen(hwnd, &t_pt_1391_1) -> callresult(void)
-    pt = PointTo16(t_pt_1391_1)
+    call ClientToScreen16(hwnd, &pt) -> callresult(void)
     hmenuPopup = CreatePopupMenu()
     iPopMenuSel = -1
     i = 0

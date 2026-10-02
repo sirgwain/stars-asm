@@ -291,8 +291,8 @@ INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
                     GetDlgItemText(hwnd, IDC_EDIT1, szValue, 32);
                     pch = szValue;
                     dw = 0;
-                    for (; isdigit((int16_t)(int8_t)*pch) != 0; pch++) {
-                        dw = (uint32_t)(dw * 10) + (int16_t)((int16_t)(int8_t)*pch - 48);
+                    for (; isdigit(*pch) != 0; pch++) {
+                        dw = (uint32_t)(dw * 10) + (int16_t)(*pch - 48);
                     }
                     if (dw == 0) {
                         return 1;
@@ -411,7 +411,7 @@ char *PszGetCompressedPlanet(int16_t id) {
     if (id >= 999) {
         id %= 999;
     }
-    if (id == (int16_t)(int8_t)iLastGet) {
+    if (id == iLastGet) {
         return szLastGet;
     }
     iChunk = id >> 6;
@@ -440,10 +440,10 @@ char *PszGetCompressedPlanet(int16_t id) {
         iBuild += i;
         if (i != 15) {
             *pszOut = rgPNLookupTable[iBuild];
-            if (fCap != 0 && (int16_t)(int8_t)*pszOut >= 'a' && (int16_t)(int8_t)*pszOut <= 'z') {
+            if (fCap != 0 && *pszOut >= 'a' && *pszOut <= 'z') {
                 *pszOut -= ' ';
             }
-            if ((int16_t)(int8_t)*pszOut == ' ' || (int16_t)(int8_t)*pszOut == '-') {
+            if (*pszOut == ' ' || *pszOut == '-') {
                 fCap = 1;
             } else {
                 fCap = 0;
@@ -532,7 +532,7 @@ int16_t CchGetString(StringId ids, char *psz) {
 
     pszTT = psz;
     pszT = PszGetCompressedString(ids);
-    while ((int16_t)(int8_t)*pszT != 0) {
+    while (*pszT != 0) {
         *psz++ = *pszT++;
     }
     *psz = 0;
@@ -611,7 +611,7 @@ int16_t CommaFormatLong(char *psz, int32_t l) {
     while (cSkip-- > 0) {
         *pchOut++ = *pch++;
     }
-    while ((int16_t)(int8_t)*pch != 0) {
+    while (*pch != 0) {
         cSkip = 3;
         *pchOut++ = ',';
         while (cSkip-- > 0) {
@@ -707,27 +707,27 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
 }
 
 void AddBackTrailingSpaces(char **ppch, char *pchEnd) {
-    while (*ppch < pchEnd && (int16_t)(int8_t)**ppch == ' ') {
+    while (*ppch < pchEnd && **ppch == ' ') {
         (*ppch)++;
     }
     return;
 }
 
 void ChopLastWord(char *pBeg, char **ppEnd) {
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
+    while (*ppEnd > pBeg && (*ppEnd)[-1] == ' ') {
         (*ppEnd)--;
     }
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] != ' ') {
+    while (*ppEnd > pBeg && (*ppEnd)[-1] != ' ') {
         (*ppEnd)--;
     }
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
+    while (*ppEnd > pBeg && (*ppEnd)[-1] == ' ') {
         (*ppEnd)--;
     }
     return;
 }
 
 void ChopTrailingSpaces(char *pBeg, char **ppEnd) {
-    while (*ppEnd > pBeg && (int16_t)(int8_t)(*ppEnd)[-1] == ' ') {
+    while (*ppEnd > pBeg && (*ppEnd)[-1] == ' ') {
         (*ppEnd)--;
     }
     return;
@@ -1364,8 +1364,8 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
 
     fHalf = 0;
     pchOut = szWork;
-    for (; (int16_t)(int8_t)*szIn != 0; szIn++) {
-        iNyb = NybbleFromCh((int16_t)(int8_t)*szIn);
+    for (; *szIn != 0; szIn++) {
+        iNyb = NybbleFromCh(*szIn);
         if (iNyb < 11) {
             cNyb = 1;
         } else if ((iNyb & 0xf) != 0xf) {
@@ -1410,31 +1410,31 @@ int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcO
     pchOut = szWork;
     while (cIn > 0) {
         if (fHalf != 0) {
-            iNyb = (int16_t)(int8_t)*szIn & 0xf;
+            iNyb = *szIn & 0xf;
             cIn--;
             szIn++;
             if (iNyb == 15 && cIn == 0)
                 break;
         } else {
-            iNyb = (int16_t)(int8_t)*szIn >> 4 & 0xf;
+            iNyb = *szIn >> 4 & 0xf;
         }
         fHalf = fHalf == 0 ? 1 : 0;
         if (iNyb >= 11) {
             if (fHalf != 0) {
-                iNyb |= ((int16_t)(int8_t)*szIn & 0xf) << 4;
+                iNyb |= (*szIn & 0xf) << 4;
                 cIn--;
                 szIn++;
             } else {
-                iNyb |= (int16_t)(int8_t)*szIn & 0xf0;
+                iNyb |= *szIn & 0xf0;
             }
             fHalf = fHalf == 0 ? 1 : 0;
             if ((iNyb & 0xf) == 0xf) {
                 if (fHalf != 0) {
-                    iNyb |= ((int16_t)(int8_t)*szIn & 0xf) << 8;
+                    iNyb |= (*szIn & 0xf) << 8;
                     cIn--;
                     szIn++;
                 } else {
-                    iNyb |= ((int16_t)(int8_t)*szIn & 0xf0) << 4;
+                    iNyb |= (*szIn & 0xf0) << 4;
                 }
                 fHalf = fHalf == 0 ? 1 : 0;
             }
@@ -1843,7 +1843,7 @@ int16_t FCheckPassword() {
     if (lSaltCur == 0 || lSaltLast == lSaltCur || fAi != 0) {
         return 1;
     }
-    if ((int16_t)(int8_t)vszDefPass[0] != 0) {
+    if (vszDefPass[0] != 0) {
         lSaltDef = LSaltFromSz(vszDefPass);
         if (lSaltDef == lSaltCur) {
             return 1;
@@ -1862,14 +1862,14 @@ int32_t LSaltFromSz(char *psz) {
     int32_t lSalt;
 
     lSalt = 0;
-    if ((int16_t)(int8_t)*psz == 0) {
+    if (*psz == 0) {
         return 0;
     }
-    while ((int16_t)(int8_t)*psz != 0) {
-        lSalt += (int16_t)(int8_t)*psz;
+    while (*psz != 0) {
+        lSalt += (int16_t)*psz;
         psz++;
-        if ((int16_t)(int8_t)*psz != 0) {
-            lSalt = (uint32_t)(lSalt * (int16_t)(int8_t)*psz);
+        if (*psz != 0) {
+            lSalt = (uint32_t)(lSalt * (int16_t)*psz);
             psz++;
         }
     }
@@ -2015,11 +2015,11 @@ uint32_t GetDiskSerialNumber() {
         l = 0;
         uDate = 0;
         if (GetDriveType(i + 2) == 3 && dos_findfirst(fn, 8, &fi) == 0) {
-            for (j = 0; j < 8 && (int16_t)(int8_t)fi.name[j] != 0; j++) {
+            for (j = 0; j < 8 && fi.name[j] != 0; j++) {
                 if (i == 0) {
-                    l = (int32_t)(l << 4) | (int16_t)((int16_t)(int8_t)fi.name[j] & 0xf);
+                    l = (int32_t)(l << 4) | (int16_t)(fi.name[j] & 0xf);
                 } else {
-                    l = (int32_t)(l << 3) | (int16_t)((int16_t)(int8_t)fi.name[j] & 7);
+                    l = (int32_t)(l << 3) | (int16_t)(fi.name[j] & 7);
                 }
             }
             if (i == 0) {
@@ -2220,11 +2220,11 @@ char *PszGetLine(char **ppszBeg) {
     char *pszStart;
     char *psz;
 
-    for (psz = *ppszBeg; (int16_t)(int8_t)*psz == ' '; psz++) {
+    for (psz = *ppszBeg; *psz == ' '; psz++) {
     }
     pszStart = psz;
     while (1) {
-        switch ((int16_t)(int8_t)*psz) {
+        switch (*psz) {
         default:
             psz++;
             continue;
@@ -2235,7 +2235,7 @@ char *PszGetLine(char **ppszBeg) {
         }
         break;
     }
-    if ((int16_t)(int8_t)*psz == '\r' && (int16_t)(int8_t)psz[1] == '\n') {
+    if (*psz == '\r' && psz[1] == '\n') {
         *ppszBeg = psz + 2;
     } else {
         *ppszBeg = psz + 1;
@@ -2252,13 +2252,13 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
     iRead = 0;
     lNum = 0;
     fValid = 0;
-    for (; iRead < cMax && (int16_t)(int8_t)*psz != 0; psz++) {
-        if ((int16_t)(int8_t)*psz != ' ' && ((int16_t)(int8_t)*psz < '0' || (int16_t)(int8_t)*psz > '9')) {
+    for (; iRead < cMax && *psz != 0; psz++) {
+        if (*psz != ' ' && (*psz < '0' || *psz > '9')) {
             return -1;
         }
-        if ((int16_t)(int8_t)*psz != ' ') {
+        if (*psz != ' ') {
             fValid = 1;
-            lNum = (uint32_t)(lNum * 10) + (int16_t)((int16_t)(int8_t)*psz - 48);
+            lNum = (uint32_t)(lNum * 10) + (int16_t)(*psz - 48);
         } else if (fValid != 0) {
             pl[iRead++] = lNum;
             lNum = 0;

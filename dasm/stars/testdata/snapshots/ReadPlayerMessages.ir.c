@@ -53,7 +53,7 @@ L_99fa:
     cMsg++;
     u = lpmh->grWord;
     lpb += 4;
-    iMax = (int16_t)(int8_t)rgcMsgArgs[lpmh->iMsg];
+    iMax = rgcMsgArgs[lpmh->iMsg];
     i = 0;
     goto L_9abf;
 

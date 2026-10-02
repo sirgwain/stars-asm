@@ -266,10 +266,12 @@ func commandOutput(name string, args ...string) (string, error) {
 // status for one C file. GCC's default warnings stay on, since some
 // extraction bugs, such as comparing a pointer with a constant address, only
 // warn; -Wpointer-sign is off because integer pointees differing only in sign
-// intentionally keep plain decay.
+// intentionally keep plain decay. -fsigned-char matches the original MSC build
+// and the native build, which the decompiler relies on to drop char casts.
 func compileFile(cc, sourceDir, file string) ([]diagnostic, bool, error) {
 	cmd := exec.Command(cc,
 		"-std=gnu11",
+		"-fsigned-char",
 		"-fsyntax-only",
 		"-fdiagnostics-format=json",
 		"-fdiagnostics-color=never",

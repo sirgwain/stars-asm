@@ -2097,7 +2097,7 @@ void BreedColonistsInTransit() {
             lpfl = rglpfl[ifl];
             if (rglpfl[ifl] == 0)
                 break;
-            if (lpfl->fDead == 0 && (int16_t)(int8_t)grfBreeder[lpfl->iPlayer] != 0 && lpfl->rgwtMin[3] != 0) {
+            if (lpfl->fDead == 0 && grfBreeder[lpfl->iPlayer] != 0 && lpfl->rgwtMin[3] != 0) {
                 lColGain = (int32_t)(lpfl->rgwtMin[3] * (int16_t)rgplr[lpfl->iPlayer].pctIdealGrowth) / 200;
                 if (lColGain <= 0) {
                     if (Random(3) != 0)
@@ -2204,7 +2204,7 @@ void UpdateResearchStatus(int16_t fUsePool) {
                     lSpent -= l;
                     rgplr[i].rgTech[iT]++;
                     TechLevel = rgplr[i].rgTech[iT];
-                    if ((int16_t)(int8_t)TechLevel == 26 && iTechNext == 6) {
+                    if (TechLevel == 26 && iTechNext == 6) {
                         iTechNext = 7;
                     }
                     if (iTechCur == iT && iTechNext != 6) {
@@ -2221,7 +2221,7 @@ void UpdateResearchStatus(int16_t fUsePool) {
                         fChgNow = 1;
                     }
                     FSendPlrMsg(i, fGeneral == 0 ? idmScientistsHaveCompletedResearchTechLevelWill : idmScientistsHaveCompletedResearchTechLevelPrimary,
-                                gotoResearch, (int16_t)(int8_t)TechLevel, iT, iTechNext2, 0, 0, 0, 0);
+                                gotoResearch, TechLevel, iT, iTechNext2, 0, 0, 0, 0);
                     grbitCur = hstEngine;
                     ibitCur = 0;
                     while (grbitCur != hstNone) {

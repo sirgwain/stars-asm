@@ -9,14 +9,6 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     int16_t  iSel;
     uint16_t grbitSh;
     int16_t  ish;
-    POINT    t_pt_0fca;
-    POINT    t_pt_0fda_1;
-    POINT    t_pt_11b2;
-    POINT    t_pt_11c2_1;
-    POINT    t_pt_141e;
-    POINT    t_pt_142e_1;
-    POINT    t_pt_15ad;
-    POINT    t_pt_15bd_1;
 
     gd.fChgScanner = 1;
     if ((uint16_t)itb <= tbShipCounts) {
@@ -79,11 +71,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 CchGetString(i + 1280, &szWork[i * 30]);
                 rgszScan[c++] = &szWork[i * 30];
             }
-            GetCursorPos(&t_pt_0fca);
-            pt = PointTo16(t_pt_0fca);
-            t_pt_0fda_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_0fda_1);
-            pt = PointTo16(t_pt_0fda_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel == -1)
                 break;
@@ -123,11 +112,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 ish++;
                 grbitSh *= 2;
             }
-            GetCursorPos(&t_pt_11b2);
-            pt = PointTo16(t_pt_11b2);
-            t_pt_11c2_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_11c2_1);
-            pt = PointTo16(t_pt_11c2_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel == -1)
                 break;
@@ -177,11 +163,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 CchGetString(i + 381, &szWork[i * 25]);
                 rgszScan[c++] = &szWork[i * 25];
             }
-            GetCursorPos(&t_pt_141e);
-            pt = PointTo16(t_pt_141e);
-            t_pt_142e_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_142e_1);
-            pt = PointTo16(t_pt_142e_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel == -1)
                 break;
@@ -214,11 +197,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 _wsprintf(&szWork[i * 8], PCTDPCTPCT, vrgpctZoom[i]);
                 rgszScan[c++] = &szWork[i * 8];
             }
-            GetCursorPos(&t_pt_15ad);
-            pt = PointTo16(t_pt_15ad);
-            t_pt_15bd_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_15bd_1);
-            pt = PointTo16(t_pt_15bd_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel != -1) {
                 CommandHandler(hwndFrame, iSel + 3901);

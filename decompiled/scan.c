@@ -28,8 +28,6 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     int16_t     d;
     int16_t     dy;
     int16_t     dx;
-    POINT       t_pt_027c;
-    POINT       t_pt_028c_1;
     int16_t     t_08b4;
     int32_t    *t_assign_1;
     int32_t    *t_assign_2;
@@ -97,11 +95,8 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         EndPaint(hwnd, &ps);
         break;
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_027c);
-        pt = PointTo16(t_pt_027c);
-        t_pt_028c_1 = PointFrom16(pt);
-        ScreenToClient(hwndScanner, &t_pt_028c_1);
-        pt = PointTo16(t_pt_028c_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwndScanner, &pt);
         GetClientRect(hwnd, &rc);
         if (PtInRect(&rc, PointFrom16(pt)) == 0)
             goto Default;
@@ -474,7 +469,6 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
     int16_t  iRel;
     int32_t  lPop;
     COLORREF cr;
-    POINT    t_pt_1245_1;
     HGDIOBJ  t_merge_34aa_0001;
     HGDIOBJ  t_merge_34da_0001;
     HGDIOBJ  t_merge_359c_0001;
@@ -511,9 +505,7 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
             SetWindowOrg(hdc, prc->left & 0xfff8, prc->top & 0xfff8);
             pt.y = 0;
             pt.x = 0;
-            t_pt_1245_1 = PointFrom16(pt);
-            ClientToScreen(hwndScanner, &t_pt_1245_1);
-            pt = PointTo16(t_pt_1245_1);
+            ClientToScreen16(hwndScanner, &pt);
             ptOrigin.x = ptOrigin.x + 8 - (pt.x & 7) & 7;
             ptOrigin.y = ptOrigin.y + 8 - (pt.y & 7) & 7;
             rcDraw = *prc;
@@ -1209,9 +1201,9 @@ int16_t DrawScanner(HDC hdc, RECT *prc) {
                     yBmp = lpflT->iPlayer == idPlayer ? 0 : 1;
                     fSelected = lpflT->pt.x == ptSelMain.x && lpflT->pt.y == ptSelMain.y;
                     if (idP != -1) {
-                        if ((int16_t)(int8_t)rgWhatsHere[idP] != 3 && (int16_t)(int8_t)rgWhatsHere[idP] != yBmp + 1 && mdScanBase <= scanViewMineralConc) {
+                        if (rgWhatsHere[idP] != 3 && rgWhatsHere[idP] != yBmp + 1 && mdScanBase <= scanViewMineralConc) {
                             rgWhatsHere[idP] += LOBYTE(yBmp + 1);
-                            yBmp = (int16_t)(int8_t)rgWhatsHere[idP] - 1;
+                            yBmp = rgWhatsHere[idP] - 1;
                             if (fSelected != 0) {
                                 BitBlt(hdc, pt.x - 9, pt.y - 9, 19, 19, hdcMem, 29, 69, SRCAND);
                                 BitBlt(hdc, pt.x - 9, pt.y - 9, 19, 19, hdcMem, 29, 19 * yBmp, SRCPAINT);
@@ -1912,7 +1904,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw) {
         }
         if (pt.x != -1 && pt2.x != -1 && (pt.x != pt2.x || pt.y != pt2.y)) {
             strcpy(szBuf, PszGetDistance(pt.x, pt.y, pt2.x, pt2.y));
-            for (psz = szBuf; (int16_t)(int8_t)*psz != ' '; psz++) {
+            for (psz = szBuf; *psz != ' '; psz++) {
             }
             CchGetString((rc.right < 350 ? 0 : 1) + 1366, psz + 1);
             if (psbar == 0 || psbar->pscan == 0) {
@@ -2881,18 +2873,18 @@ int16_t FSelectSz(char *szName) {
         } else {
             pch = szName;
         }
-        for (; (int16_t)(int8_t)*pch == ' '; pch++) {
+        for (; *pch == ' '; pch++) {
         }
-        if ((int16_t)(int8_t)*pch == '#') {
+        if (*pch == '#') {
             pch++;
         }
-        for (; (int16_t)(int8_t)*pch == ' '; pch++) {
+        for (; *pch == ' '; pch++) {
         }
-        if ((int16_t)(int8_t)*pch >= '1' && (int16_t)(int8_t)*pch <= '9') {
-            ifl = (int16_t)(int8_t)*pch - 48;
+        if (*pch >= '1' && *pch <= '9') {
+            ifl = *pch - 48;
             pch++;
-            while (isdigit((int16_t)(int8_t)*pch) != 0) {
-                ifl = 10 * ifl + (int16_t)(int8_t)*pch - 48;
+            while (isdigit(*pch) != 0) {
+                ifl = 10 * ifl + *pch - 48;
                 pch++;
                 if (ifl > 512)
                     goto LNotAFleetId;

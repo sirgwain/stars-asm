@@ -13,8 +13,6 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT        rc2;
     int16_t     fDetonate;
     RTLOGTHING  rtlt;
-    POINT       t_pt_0104;
-    POINT       t_pt_0113_1;
 
     switch (message) {
     case WM_CREATE:
@@ -63,11 +61,8 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
             MineClick(LOWORD(lParam), HIWORD(lParam), message, wParam);
             break;
         case WM_SETCURSOR:
-            GetCursorPos(&t_pt_0104);
-            pt = PointTo16(t_pt_0104);
-            t_pt_0113_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_0113_1);
-            pt = PointTo16(t_pt_0113_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwnd, &pt);
             GetClientRect(hwnd, &rc);
             if (PtInRect(&rc, PointFrom16(pt)) == 0)
                 goto Default;

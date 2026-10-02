@@ -34,7 +34,7 @@ int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrit
             if (cpts >= 0) {
                 lSaltCur = LSaltFromSz(szRacePass);
                 lSaltLast = -5;
-                if (FCheckPassword() == 0 || FSaveRace((int16_t)(int8_t)szRaceFile[0] == 0 ? "stars.r1" : szRaceFile, &vplr) == 0)
+                if (FCheckPassword() == 0 || FSaveRace(szRaceFile[0] == 0 ? "stars.r1" : szRaceFile, &vplr) == 0)
                     continue;
                 return 1;
             }
@@ -221,7 +221,7 @@ INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         SetRCWTitle(hwnd, iPanelActive);
         SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
         SetDlgItemText(hwnd, IDC_RACE_PLURAL_NAME, vplr.szNames);
-        if ((int16_t)(int8_t)vplr.szName[0] == 0) {
+        if (vplr.szName[0] == 0) {
             GetDlgItemText(hwnd, IDC_RACE_HUMANOID, vplr.szName, 16);
             SetDlgItemText(hwnd, IDC_RACE_NAME, vplr.szName);
         }
@@ -375,8 +375,6 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     POINT16     pt;
     int16_t     iVar;
     uint16_t    t_scratch_m30;
-    POINT       t_pt_15a4;
-    POINT       t_pt_15b3_1;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -446,11 +444,8 @@ INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
         return 1;
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_15a4);
-        pt = PointTo16(t_pt_15a4);
-        t_pt_15b3_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_15b3_1);
-        pt = PointTo16(t_pt_15b3_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (IrcRaceDlgHitTest(pt) < 0)
             break;
         SetCursor(hcurHand);
@@ -794,8 +789,6 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     POINT16     pt;
     HDC         hdc;
     PAINTSTRUCT ps;
-    POINT       t_pt_28b3;
-    POINT       t_pt_28c2_1;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -819,11 +812,8 @@ INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             StickyDlgPos(hwnd, &ptStickyRaceDlg, 1);
             return 1;
         case WM_SETCURSOR:
-            GetCursorPos(&t_pt_28b3);
-            pt = PointTo16(t_pt_28b3);
-            t_pt_28c2_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_28c2_1);
-            pt = PointTo16(t_pt_28c2_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwnd, &pt);
             if (IrcRaceDlgHitTest(pt) < 0)
                 break;
             SetCursor(hcurHand);
@@ -916,9 +906,9 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
             TextOut(hdc, 6, yTop, szWork, cch);
         }
         dx = LOWORD(GetTextExtent(hdc, szWork, cch)) + 6;
-        dxItem = abs((int16_t)(int8_t)rgRW3Width[i]) * dxDig;
-        _wsprintf(szWork, PCTD, GetRaceStat(&vplr, (int16_t)(int8_t)rgRW3IStat[i]));
-        if ((int16_t)(int8_t)rgRW3Width[i] < 0 && (i > 0 || fMacintosh == 0)) {
+        dxItem = abs(rgRW3Width[i]) * dxDig;
+        _wsprintf(szWork, PCTD, GetRaceStat(&vplr, rgRW3IStat[i]));
+        if (rgRW3Width[i] < 0 && (i > 0 || fMacintosh == 0)) {
             dxItem += dxkT;
             if (i == 0) {
                 strcat(szWork, "00");
@@ -951,7 +941,7 @@ void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw) {
         }
         ids++;
         irc += 2;
-        yTop += (int16_t)((int16_t)(int8_t)rgRW3Spacing[i] * dyArial8) / 2;
+        yTop += (int16_t)(rgRW3Spacing[i] * dyArial8) / 2;
     }
     if (fMacintosh != 0) {
         crcRCW = 2;
@@ -993,8 +983,8 @@ int16_t FTrackRaceDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
         dShift = 3 * dShift;
     }
     while (FTrackBtn(&btnt) != 0) {
-        iStat = GetRaceStat(&vplr, (int16_t)(int8_t)rgRW3IStat[i]);
-        if (SetRaceStat(&vplr, (int16_t)(int8_t)rgRW3IStat[i], iStat + dShift) != iStat) {
+        iStat = GetRaceStat(&vplr, rgRW3IStat[i]);
+        if (SetRaceStat(&vplr, rgRW3IStat[i], iStat + dShift) != iStat) {
             DrawRace3(hwnd, btnt.hdc, i);
         }
     }
@@ -1004,11 +994,11 @@ int16_t FTrackRaceDlg3(HWND hwnd, POINT16 pt, int16_t kbd) {
 int16_t GetRaceStat(PLAYER *pplr, RaceStat iStat) { return pplr->rgAttr[iStat]; }
 
 int16_t SetRaceStat(PLAYER *pplr, RaceStat iStat, int16_t iVal) {
-    if (iVal < (int16_t)(int8_t)rgRaceStatMin[iStat]) {
-        iVal = (int16_t)(int8_t)rgRaceStatMin[iStat];
+    if (iVal < rgRaceStatMin[iStat]) {
+        iVal = rgRaceStatMin[iStat];
     }
-    if (iVal > (int16_t)(int8_t)rgRaceStatMax[iStat]) {
-        iVal = (int16_t)(int8_t)rgRaceStatMax[iStat];
+    if (iVal > rgRaceStatMax[iStat]) {
+        iVal = rgRaceStatMax[iStat];
     }
     pplr->rgAttr[iStat] = LOBYTE(iVal);
     return iVal;
@@ -1358,11 +1348,11 @@ void BoundsCheckPlayer(PLAYER *pplr) {
         pplr->fHacker = 1;
     }
     for (i = 0; i < 16; i++) {
-        if (pplr->rgAttr[i] < (int16_t)(int8_t)rgRaceStatMin[i]) {
+        if (pplr->rgAttr[i] < rgRaceStatMin[i]) {
             pplr->rgAttr[i] = rgRaceStatMin[i];
             pplr->fHacker = 1;
         }
-        if (pplr->rgAttr[i] > (int16_t)(int8_t)rgRaceStatMax[i]) {
+        if (pplr->rgAttr[i] > rgRaceStatMax[i]) {
             pplr->rgAttr[i] = rgRaceStatMax[i];
             pplr->fHacker = 1;
         }
@@ -1864,8 +1854,8 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr) {
     }
     szDirName[0] = 0;
     CchGetString(idsStarsRaceFilesR, szFilter);
-    for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-        if ((int16_t)(int8_t)szFilter[i] == '|') {
+    for (i = 0; szFilter[i] != 0; i++) {
+        if (szFilter[i] == '|') {
             szFilter[i] = 0;
         }
     }
@@ -1999,8 +1989,8 @@ void CreateRandomRace(PLAYER *pplr) {
         pplr->rgAttr[7] = LOBYTE(Random(5));
     } else {
         for (i = 0; i <= 7; i++) {
-            t_scratch_m16 = Random((int16_t)(int8_t)rgRaceStatMax[i] + 1 - (int16_t)(int8_t)rgRaceStatMin[i]);
-            pplr->rgAttr[i] = LOBYTE((int16_t)(int8_t)rgRaceStatMin[i] + t_scratch_m16);
+            t_scratch_m16 = Random(rgRaceStatMax[i] + 1 - rgRaceStatMin[i]);
+            pplr->rgAttr[i] = LOBYTE(rgRaceStatMin[i] + t_scratch_m16);
         }
     }
     if (strcmp(pplr->szName, PszGetCompressedString(idsRandom2)) == 0) {

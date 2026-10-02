@@ -313,7 +313,7 @@ L_3fdb:
         goto L_3ff3;
 
 L_3ff3:
-    cch = (int16_t)(int8_t)rgbCur[0];
+    cch = rgbCur[0];
     if (cch != 0)
         goto L_4047;
     else

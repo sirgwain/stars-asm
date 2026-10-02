@@ -69,7 +69,7 @@ void LogChangeName(GrobjClass grobj, int16_t id, char *szName) {
         if (lpfl->lpszName != 0) {
             FreeLp(lpfl->lpszName, htString);
         }
-        if (szName == 0 || (int16_t)(int8_t)*szName == 0) {
+        if (szName == 0 || *szName == 0) {
             rtchgname.rgb[0] = 0;
             rtchgname.rgb[1] = 0;
             cOut = 1;
@@ -176,7 +176,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
                         rtwp.iWaypt = iordNew;
                         rtwp.order = pflNew->lpplord->rgord[iordNew];
                         pbWp = (char *)&rtwp;
-                        while (cbWp-- > 0 && (int16_t)(int8_t)pbWp[cbWp] == 0) {
+                        while (cbWp-- > 0 && pbWp[cbWp] == 0) {
                         }
                         cbWp++;
                         WriteMemRt(rtLogFleetOrderInsert, cbWp, &rtwp);
@@ -190,7 +190,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
                         rtwp.iWaypt = iordNew;
                         rtwp.order = pflNew->lpplord->rgord[iordNew];
                         pbWp = (char *)&rtwp;
-                        while (cbWp-- > 0 && (int16_t)(int8_t)pbWp[cbWp] == 0) {
+                        while (cbWp-- > 0 && pbWp[cbWp] == 0) {
                         }
                         cbWp++;
                         WriteMemRt(rtLogFleetOrderUpdate, cbWp, &rtwp);

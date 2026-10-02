@@ -55,7 +55,7 @@ compile-check:
 # print MinGW syntax diagnostics to the terminal, using the same flags as compile-analysis
 compile:
 	@for f in $(FILES); do \
-		$(MINGW_CC) -std=gnu11 -fsyntax-only -fdiagnostics-color=always -fmax-errors=0 -Wno-pointer-sign -I$(SRC_DIR) $$f; \
+		$(MINGW_CC) -std=gnu11 -fsigned-char -fsyntax-only -fdiagnostics-color=always -fmax-errors=0 -Wno-pointer-sign -I$(SRC_DIR) $$f; \
 	done; true
 	@cd $(SRC_DIR)/res && $(MINGW_RC) stars.rc -O res -o /dev/null; true
 

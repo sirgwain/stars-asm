@@ -30,9 +30,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     lpT = lpCmdLine;
 L_0121:
-    while ((int16_t)(int8_t)*lpT != 0) {
+    while (*lpT != 0) {
         while (1) {
-            switch ((int16_t)(int8_t)*lpT) {
+            switch (*lpT) {
             case ' ':
                 lpT++;
                 continue;
@@ -45,9 +45,9 @@ L_0121:
             goto L_0121;
         }
     L_0164:
-        for (lpT++; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' '; lpT++) {
-            if ((uint16_t)((int16_t)(int8_t)*lpT - 65) <= 55) {
-                switch ((int16_t)(int8_t)*lpT) {
+        for (lpT++; *lpT != 0 && *lpT != ' '; lpT++) {
+            if ((uint16_t)(*lpT - 65) <= 55) {
+                switch (*lpT) {
                 case 'W':
                 case 'w':
                     ini.fWait = 1;
@@ -56,7 +56,7 @@ L_0121:
                 case 'd':
                     lpT++;
                     while (1) {
-                        switch ((int16_t)(int8_t)*lpT) {
+                        switch (*lpT) {
                         case 'F':
                         case 'f':
                             ini.fDumpFleets = 1;
@@ -84,12 +84,12 @@ L_0121:
                 case 'g':
                     ini.fGen = 1;
                     i = 0;
-                    while ((int16_t)(int8_t)lpT[1] >= '0' && (int16_t)(int8_t)lpT[1] <= '9') {
+                    while (lpT[1] >= '0' && lpT[1] <= '9') {
                         lpT++;
-                        i = 10 * i + (int16_t)(int8_t)*lpT - 48;
+                        i = 10 * i + *lpT - 48;
                         if (i > 1000) {
                             i = 1000;
-                            for (; (int16_t)(int8_t)lpT[1] >= '0' && (int16_t)(int8_t)lpT[1] <= '9'; lpT++) {
+                            for (; lpT[1] >= '0' && lpT[1] <= '9'; lpT++) {
                             }
                             break;
                         }
@@ -112,10 +112,10 @@ L_0121:
                     break;
                 case 'B':
                 case 'b':
-                    for (lpT++; (int16_t)(int8_t)*lpT == ' '; lpT++) {
+                    for (lpT++; *lpT == ' '; lpT++) {
                     }
                     pch = szBase;
-                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' '; lpT++) {
+                    for (; *lpT != 0 && *lpT != ' '; lpT++) {
                         *pch = *lpT;
                         pch++;
                     }
@@ -142,14 +142,14 @@ L_0121:
                     break;
                 case 'C':
                 case 'c':
-                    ini.fCmdLine = (int16_t)(int8_t)szBase[0] == 0 ? 0 : 1;
+                    ini.fCmdLine = szBase[0] == 0 ? 0 : 1;
                     break;
                 case 'P':
                 case 'p':
-                    for (lpT++; (int16_t)(int8_t)*lpT == ' '; lpT++) {
+                    for (lpT++; *lpT == ' '; lpT++) {
                     }
                     pch = szPassLast;
-                    for (; (int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' ' && pch < &szPassLast[15]; lpT++) {
+                    for (; *lpT != 0 && *lpT != ' ' && pch < &szPassLast[15]; lpT++) {
                         *pch = *lpT;
                         pch++;
                     }
@@ -162,7 +162,7 @@ L_0121:
         continue;
     L_0517:
         pch = szBase;
-        while ((int16_t)(int8_t)*lpT != 0 && (int16_t)(int8_t)*lpT != ' ') {
+        while (*lpT != 0 && *lpT != ' ') {
             *pch = *lpT;
             lpT++;
             pch++;
@@ -205,7 +205,7 @@ int16_t FSetUpBatchProcessing() {
         RgFromStream(lpchBatch, cb);
         lpchBatchMac = lpchBatch + cb;
         pch = szBase;
-        while ((int16_t)(int8_t)*lpchBatch != '\n' && lpchBatch != lpchBatchMac) {
+        while (*lpchBatch != '\n' && lpchBatch != lpchBatchMac) {
             *pch = *lpchBatch;
             lpchBatch++;
             pch++;
@@ -594,7 +594,6 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
     uint16_t      md;
     int16_t       iWarp;
     int16_t       iwp;
-    POINT         t_pt_1779;
 
     if (iMsg == WM_KEYDOWN) {
         if (iKey == VK_ESCAPE && hwndBrowser != 0 && GetActiveWindow() == hwndBrowser) {
@@ -616,8 +615,7 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
         }
     }
     if (iKey == VK_SHIFT && hwndScanner != 0) {
-        GetCursorPos(&t_pt_1779);
-        pt = PointTo16(t_pt_1779);
+        GetCursorPos16(&pt);
         hwndOver = WindowFromPoint(PointFrom16(pt));
         if (hwndOver == hwndScanner) {
             SendMessage(hwndOver, WM_SETCURSOR, (WPARAM)hwndOver, 0);

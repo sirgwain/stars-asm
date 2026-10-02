@@ -176,7 +176,7 @@ L_78b3:
     goto L_7913;
 
 L_78c8:
-    if ((int16_t)(int8_t)rgsz[i][0] == 0)
+    if (rgsz[i][0] == 0)
         goto L_78fe;
     else
         goto L_78e0;

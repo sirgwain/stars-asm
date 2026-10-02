@@ -18,13 +18,13 @@ L_85cc:
     pch = szMsgBuf;
 
 L_85ec:
-    if ((int16_t)(int8_t)*pszFormat == 0)
+    if (*pszFormat == 0)
         goto L_8f54;
     else
         goto L_85fa;
 
 L_85fa:
-    if ((int16_t)(int8_t)*pszFormat == '\\')
+    if (*pszFormat == '\\')
         goto L_861b;
     else
         goto L_8608;
@@ -82,31 +82,31 @@ L_870c:
     goto L_8f4d;
 
 L_8727:
-    if ((int16_t)(int8_t)*pszFormat == 'f')
+    if (*pszFormat == 'f')
         goto L_8674;
     else
         goto L_872f;
 
 L_872f:
-    if ((int16_t)(int8_t)*pszFormat == 'h')
+    if (*pszFormat == 'h')
         goto L_86d0;
     else
         goto L_8737;
 
 L_8737:
-    if ((int16_t)(int8_t)*pszFormat == 'r')
+    if (*pszFormat == 'r')
         goto L_86e8;
     else
         goto L_873f;
 
 L_873f:
-    if ((int16_t)(int8_t)*pszFormat == 't')
+    if (*pszFormat == 't')
         goto L_86a2;
     else
         goto L_8747;
 
 L_8747:
-    if ((int16_t)(int8_t)*pszFormat != 'y')
+    if (*pszFormat != 'y')
         goto L_8f4d;
     else
         goto L_874c;
@@ -135,8 +135,8 @@ DoInt:
     goto L_8f4d;
 
 L_87d7:
-    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1, (*pParams & 0x20) == 0 ? 0 : 1,
-                         (*pParams & 0xc0) >> 6, NULL);
+    pchT =
+        PszPlayerName(*pParams & 0xf, *pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1, (*pParams & 0x20) == 0 ? 0 : 1, (*pParams & 0xc0) >> 6, NULL);
     goto FinishString;
 
 L_8850:
@@ -242,17 +242,17 @@ L_8a21:
     goto FinishString;
 
 L_8a33:
-    if ((long double)(int16_t)((int16_t)*pParams / 100) < (long double)10.0)
+    if ((long double)(int16_t)(*pParams / 100) < (long double)10.0)
         goto L_8a89;
     else
         goto L_8a5f;
 
 L_8a5f:
-    c = _wsprintf(pch, PCTDPCTPCT, (int16_t)*pParams / 100);
+    c = _wsprintf(pch, PCTDPCTPCT, *pParams / 100);
     goto L_8aca;
 
 L_8a89:
-    c = _wsprintf(pch, PCTDXPCTDPCTPCT, (int16_t)*pParams / 100, *pParams - (int16_t)*pParams / 100 * 100);
+    c = _wsprintf(pch, PCTDXPCTDPCTPCT, *pParams / 100, *pParams - *pParams / 100 * 100);
 
 L_8aca:
     pch += c;
@@ -363,13 +363,13 @@ L_8cfd:
     pParams += 2;
     c = _wsprintf(pch, PCTLD, l);
     pch += c;
-    if ((int16_t)(int8_t)*pszFormat == 'v')
+    if (*pszFormat == 'v')
         goto L_8f4d;
     else
         goto L_8d71;
 
 L_8d71:
-    if ((int16_t)(int8_t)*pszFormat != 'V')
+    if (*pszFormat != 'V')
         goto L_8d88;
     else
         goto L_8d7f;
@@ -424,13 +424,13 @@ L_8eba:
     goto L_8f4d;
 
 L_8ecd:
-    if ((uint16_t)((int16_t)(int8_t)*pszFormat - 69) > 53)
+    if ((uint16_t)(*pszFormat - 69) > 53)
         goto L_8eba;
     else
         goto L_8ed8;
 
 L_8ed8:
-    switch (((int16_t)(int8_t)*pszFormat - 69) * 2) {
+    switch ((*pszFormat - 69) * 2) {
     case 0x0:
         goto L_8767;
     case 0x2:

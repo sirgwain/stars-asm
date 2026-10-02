@@ -409,7 +409,7 @@ char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t 
     if (pplr == 0) {
         pplr = &rgplr[iPlayer];
     }
-    if ((int16_t)(int8_t)pplr->szName[0] != 0) {
+    if (pplr->szName[0] != 0) {
         if (fThe != 0) {
             strcpy(szName, "the ");
             if (fCapital != 0) {
@@ -418,13 +418,13 @@ char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t 
         } else {
             szName[0] = 0;
         }
-        if (fPlural != 0 && (int16_t)(int8_t)pplr->szNames[0] != 0) {
+        if (fPlural != 0 && pplr->szNames[0] != 0) {
             strcat(szName, pplr->szNames);
         } else {
             strcat(szName, pplr->szName);
         }
         pchEnd = &szName[strlen(szName) - 1];
-        while ((int16_t)(int8_t)*pchEnd == ' ' && pchEnd >= szName) {
+        while (*pchEnd == ' ' && pchEnd >= szName) {
             t_12c7 = pchEnd;
             pchEnd--;
             *t_12c7 = 0;
@@ -432,9 +432,9 @@ char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t 
         if (pchEnd < szName) {
             CchGetString(idsName, szName);
         }
-        if (fPlural != 0 && (int16_t)(int8_t)pplr->szNames[0] == 0) {
+        if (fPlural != 0 && pplr->szNames[0] == 0) {
             pchEnd = &szName[strlen(szName) - 1];
-            if ((int16_t)(int8_t)*pchEnd != 's' && ((int16_t)(int8_t)*pchEnd != 'e' || (int16_t)(int8_t)pchEnd[-1] != 's')) {
+            if (*pchEnd != 's' && (*pchEnd != 'e' || pchEnd[-1] != 's')) {
                 strcat(szName, "s");
             }
         }
@@ -2108,10 +2108,10 @@ void DrawABunchOfStars(HDC hdc, RECT *prc) {
 int32_t LongFromSerialCh(char ch) {
     int32_t l;
 
-    if ((int16_t)(int8_t)ch >= 'A' && (int16_t)(int8_t)ch <= 'Z') {
-        l = (int16_t)((int16_t)(int8_t)ch - 65);
+    if (ch >= 'A' && ch <= 'Z') {
+        l = (int16_t)(ch - 65);
     } else {
-        l = (int16_t)((int16_t)(int8_t)ch - 22);
+        l = (int16_t)(ch - 22);
     }
     if (l >= 32) {
         return l;
@@ -2126,14 +2126,14 @@ int16_t FValidSerialNo(char *psz, int32_t *plSerial) {
     int32_t lSerial;
     int32_t l;
 
-    lSerial = LongFromSerialCh((int16_t)(int8_t)*psz);
+    lSerial = LongFromSerialCh(*psz);
     if (lSerial < 32) {
         lSerial ^= 0x15;
     }
-    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh((int16_t)(int8_t)psz[1]);
-    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh((int16_t)(int8_t)psz[4]);
-    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh((int16_t)(int8_t)psz[7]);
-    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh((int16_t)(int8_t)psz[3]);
+    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh(psz[1]);
+    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh(psz[4]);
+    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh(psz[7]);
+    lSerial = (uint32_t)(lSerial * 36) + LongFromSerialCh(psz[3]);
     if (plSerial != 0) {
         *plSerial = lSerial;
     }
@@ -2150,17 +2150,17 @@ int16_t FValidSerialNo(char *psz, int32_t *plSerial) {
         lCur = (int32_t)(lCur >> 4);
     }
     PopRandom();
-    l = LongFromSerialCh((int16_t)(int8_t)psz[2]);
+    l = LongFromSerialCh(psz[2]);
     if (l != (int32_t)(lBuild % 36)) {
         return 0;
     }
     lBuild = (int32_t)(lBuild / 36);
-    l = LongFromSerialCh((int16_t)(int8_t)psz[5]);
+    l = LongFromSerialCh(psz[5]);
     if (l != (int32_t)(lBuild % 36)) {
         return 0;
     }
     lBuild = (int32_t)(lBuild / 36);
-    l = LongFromSerialCh((int16_t)(int8_t)psz[6]);
+    l = LongFromSerialCh(psz[6]);
     if (l != (int32_t)(lBuild % 36)) {
         return 0;
     }

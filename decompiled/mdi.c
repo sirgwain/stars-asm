@@ -117,7 +117,7 @@ void CreateChildWindows() {
     char    szGame[15];
 
     if (idPlayer != -1) {
-        for (psz = &szBase[strlen(szBase) - 1]; psz > szBase && (int16_t)(int8_t)psz[-1] != '\\' && (int16_t)(int8_t)psz[-1] != ':'; psz--) {
+        for (psz = &szBase[strlen(szBase) - 1]; psz > szBase && psz[-1] != '\\' && psz[-1] != ':'; psz--) {
         }
         szGame[8] = 0;
         strncpy(szGame, psz, 8);
@@ -193,8 +193,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     POINT16      ptD;
     POINT16      ptStart;
     POINT16      ptChg;
-    POINT        t_pt_1a3c;
-    POINT        t_pt_1a4c_1;
 
     switch (msg) {
     case WM_CREATE:
@@ -282,7 +280,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                         }
                         DestroyCurGame();
                         pch = szBase;
-                        while ((int16_t)(int8_t)*lpchBatch != '\n' && lpchBatch != lpchBatchMac) {
+                        while (*lpchBatch != '\n' && lpchBatch != lpchBatchMac) {
                             *pch = *lpchBatch;
                             lpchBatch++;
                             pch++;
@@ -608,11 +606,8 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         hcs = 0;
         if (IsIconic(hwnd) != 0)
             goto Default;
-        GetCursorPos(&t_pt_1a3c);
-        pt = PointTo16(t_pt_1a3c);
-        t_pt_1a4c_1 = PointFrom16(pt);
-        ScreenToClient(hwndFrame, &t_pt_1a4c_1);
-        pt = PointTo16(t_pt_1a4c_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwndFrame, &pt);
         GetClientRect(hwnd, &rc);
         if (PtInRect(&rc, PointFrom16(pt)) == 0)
             goto Default;
@@ -1055,13 +1050,13 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn) {
     lTank = 0;
     for (i = 0; i < 21; i++) {
         while (cBits < 8) {
-            if ((int16_t)(int8_t)*pszIn >= 'A' && (int16_t)(int8_t)*pszIn <= 'Z') {
-                b64 = LOBYTE((int16_t)(int8_t)*pszIn - 65);
-            } else if ((int16_t)(int8_t)*pszIn >= 'a' && (int16_t)(int8_t)*pszIn <= 'z') {
-                b64 = LOBYTE((int16_t)(int8_t)*pszIn - 71);
-            } else if ((int16_t)(int8_t)*pszIn >= '0' && (int16_t)(int8_t)*pszIn <= '9') {
-                b64 = LOBYTE((int16_t)(int8_t)*pszIn + 4);
-            } else if ((int16_t)(int8_t)*pszIn == '-') {
+            if (*pszIn >= 'A' && *pszIn <= 'Z') {
+                b64 = LOBYTE(*pszIn - 65);
+            } else if (*pszIn >= 'a' && *pszIn <= 'z') {
+                b64 = LOBYTE(*pszIn - 71);
+            } else if (*pszIn >= '0' && *pszIn <= '9') {
+                b64 = LOBYTE(*pszIn + 4);
+            } else if (*pszIn == '-') {
                 b64 = 62;
             } else {
                 b64 = 63;
@@ -1247,7 +1242,7 @@ void CommandHandler(HWND hwnd, WPARAM wParam) {
         case IDM_FILE_MRU7:
         case IDM_FILE_MRU8:
         case IDM_FILE_MRU9:
-            if ((gd.fTutorial != 0 && FAskKillTutor() == 0) || vrgszMRU == 0 || (int16_t)(int8_t)vrgszMRU[(GET_WM_COMMAND_ID(wParam, 0) - 4300) * 256] == 0)
+            if ((gd.fTutorial != 0 && FAskKillTutor() == 0) || vrgszMRU == 0 || vrgszMRU[(GET_WM_COMMAND_ID(wParam, 0) - 4300) * 256] == 0)
                 break;
             iplrOld = idPlayer;
             fstrcpy(szT, vrgszMRU + 256 * (GET_WM_COMMAND_ID(wParam, 0) - 4300));
@@ -1916,18 +1911,18 @@ void InitializeMenu(HMENU hmenu) {
     for (i = 4300; i <= 4308; i++) {
         DeleteMenu(hmenuSub, i, MF_BYCOMMAND);
     }
-    for (i = 0; i < 9 && (int16_t)(int8_t)vrgszMRU[i * 256] != 0; i++) {
+    for (i = 0; i < 9 && vrgszMRU[i * 256] != 0; i++) {
         szWork[0] = '&';
         szWork[1] = LOBYTE(i + 49);
         szWork[2] = ' ';
         fstrcpy(&szWork[3], vrgszMRU + 256 * i);
         InsertMenu(hmenuSub, i + 9, MF_BYPOSITION, i + 4300, szWork);
     }
-    EnableMenuItem(hmenu, 106, (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
-    EnableMenuItem(hmenu, 105, (int16_t)(int8_t)szBase[0] == 0 ? MF_GRAYED | MF_DISABLED : MF_ENABLED);
-    EnableMenuItem(hmenu, 270, (int16_t)(int8_t)szBase[0] != 0 && (game.fSinglePlr == 0 || lSaltCur > 0) ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
-    EnableMenuItem(hmenu, 2014, (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
-    EnableMenuItem(hmenu, 3803, (int16_t)(int8_t)szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
+    EnableMenuItem(hmenu, 106, szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
+    EnableMenuItem(hmenu, 105, szBase[0] == 0 ? MF_GRAYED | MF_DISABLED : MF_ENABLED);
+    EnableMenuItem(hmenu, 270, szBase[0] != 0 && (game.fSinglePlr == 0 || lSaltCur > 0) ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
+    EnableMenuItem(hmenu, 2014, szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
+    EnableMenuItem(hmenu, 3803, szBase[0] != 0 && game.fSinglePlr == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
     hmenu = GetASubMenu(hwndFrame, menuView);
     CheckMenuItem(hmenu, IDM_VIEW_TOOLBAR, gd.fToolbar == 0 ? MF_UNCHECKED : MF_CHECKED);
     CheckMenuItem(hmenu, IDM_VIEW_PLAYER_COLORS, (grbitScan & grbitScanPlayerColors) == 0 ? MF_UNCHECKED : MF_CHECKED);
@@ -2035,8 +2030,8 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
     } else {
         szFile[0] = 0;
         CchGetString(fRaceOnly == 0 ? idsStarsGameFilesMHstRStars : idsStarsGameFilesRFiles, szFilter);
-        for (i = 0; (int16_t)(int8_t)szFilter[i] != 0; i++) {
-            if ((int16_t)(int8_t)szFilter[i] == '|') {
+        for (i = 0; szFilter[i] != 0; i++) {
+            if (szFilter[i] == '|') {
                 szFilter[i] = 0;
             }
         }
@@ -2503,9 +2498,6 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     HDC         hdc;
     PAINTSTRUCT ps;
     HWND        t_call_6c71;
-    POINT       t_pt_6dbd;
-    POINT       t_pt_6dcc_1;
-    POINT       t_pt_6fa5_1;
     HWND        t_call_715f;
     HWND        t_call_7203;
     HWND        t_call_74e0;
@@ -2560,11 +2552,8 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         case WM_SETCURSOR:
         case WM_LBUTTONDOWN:
         case WM_RBUTTONDOWN:
-            GetCursorPos(&t_pt_6dbd);
-            pt = PointTo16(t_pt_6dbd);
-            t_pt_6dcc_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_6dcc_1);
-            pt = PointTo16(t_pt_6dcc_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwnd, &pt);
             if (pt.x < 6 || pt.x >= dyArial8 + 7 || pt.y < 48)
                 break;
             iDiamond = (int16_t)(pt.y - 48) / (dyArial8 + 4);
@@ -2590,9 +2579,7 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                                                                                     : 3;
                 AppendMenu(hmenuPopup, (i == iSel ? 8 : 0) | mf, i + 15000, szWork);
             }
-            t_pt_6fa5_1 = PointFrom16(pt);
-            ClientToScreen(hwnd, &t_pt_6fa5_1);
-            pt = PointTo16(t_pt_6fa5_1);
+            ClientToScreen16(hwnd, &pt);
             tpm = message == WM_LBUTTONDOWN ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON;
             TrackPopupMenu(hmenuPopup, TPM_CENTERALIGN | tpm, pt.x, pt.y, 0, hwnd, NULL);
             DestroyMenu(hmenuPopup);
@@ -2818,7 +2805,7 @@ void SetWindowIniString(char *sz, HWND hwnd) {
         ch = 'R';
     }
     GetWindowRc(hwnd, &rc);
-    _wsprintf(szWork, PszGetCompressedString(idsC04d04d04d04d), (int16_t)(int8_t)ch, rc.left, rc.top, rc.right, rc.bottom);
+    _wsprintf(szWork, PszGetCompressedString(idsC04d04d04d04d), ch, rc.left, rc.top, rc.right, rc.bottom);
     return;
 }
 
@@ -2935,7 +2922,7 @@ void WriteIniSettings() {
     case grobjOther:
         ch = 'E';
     }
-    _wsprintf(szWork, PszGetCompressedString(idsCCD), (int16_t)(int8_t)ch, (int16_t)(int8_t)LOBYTE(idPlayer + 66), sel.id);
+    _wsprintf(szWork, PszGetCompressedString(idsCCD), ch, (int16_t)(int8_t)LOBYTE(idPlayer + 66), sel.id);
     WritePrivateProfileString(szSection, szEntry, szWork, szIniFile);
     CchGetString(idsMessage, szEntry);
     _wsprintf(szWork, PCTD, iMsgCur);
@@ -3223,7 +3210,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             psz = PszGetCompressedString(i + 479);
             rghwndBtnSplash[i] = CreateWindow("BUTTON", psz, WS_CHILD | WS_VISIBLE, xCur, rc.bottom - dy - (int16_t)(5 * dyArial8) / 2, dx, dy, hwnd,
                                               (HMENU)(uintptr_t)i, hInst, NULL);
-            if (i == 2 && ((int16_t)(int8_t)szBase[0] == 0 || access(szBase, 0) == -1)) {
+            if (i == 2 && (szBase[0] == 0 || access(szBase, 0) == -1)) {
                 EnableWindow(rghwndBtnSplash[2], 0);
             }
             if (rc.bottom < 500) {

@@ -16,7 +16,6 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
     char    szTB[40];
     int16_t dxName;
     int16_t dxCoord;
-    POINT   t_pt_0c9b_1;
     int16_t t_merge_126d_0001;
     int16_t t_call_1265;
     int16_t t_merge_12a3_0001;
@@ -29,9 +28,7 @@ void Popup(HWND hwnd, int16_t x, int16_t y) {
 L_0c7c:
     pt.x = x;
     pt.y = y;
-    t_pt_0c9b_1 = PointFrom16(pt);
-    ClientToScreen(hwnd, &t_pt_0c9b_1);
-    pt = PointTo16(t_pt_0c9b_1);
+    ClientToScreen16(hwnd, &pt);
     hdc = GetDC(hwnd);
     hfontSav = SelectObject(hdc, rghfontArial8[0]);
     goto L_11f5;

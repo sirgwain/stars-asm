@@ -111,8 +111,6 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
     PART               part;
     int16_t            cshQueued;
     int16_t            j;
-    POINT              t_pt_0900;
-    POINT              t_pt_090f_1;
     HWND               t_call_1152;
     HWND               t_call_11bb;
     int16_t            t_merge_1fe4_0001;
@@ -223,11 +221,8 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
         lpmis->itemHeight = 66;
         return 1;
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_0900);
-        pt = PointTo16(t_pt_0900);
-        t_pt_090f_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_090f_1);
-        pt = PointTo16(t_pt_090f_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (PtInRect(rgrcBuildSpin, PointFrom16(pt)) == 0 && PtInRect(&rgrcBuildSpin[1], PointFrom16(pt)) == 0)
             break;
         SetCursor(hcurHand);
@@ -854,8 +849,6 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     int16_t xLeft;
     int16_t dyStart;
     int16_t dxStart;
-    POINT   t_pt_33dc_1;
-    POINT   t_pt_340f_1;
 
     fFirst = 1;
     if (lpshdefBuild == 0) {
@@ -909,10 +902,10 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
             return 0;
         }
         SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)szWork);
-        ibmp = (int16_t)(int8_t)szWork[2] - 65 + ((int16_t)(int8_t)szWork[3] - 65) * 26;
+        ibmp = szWork[2] - 65 + (szWork[3] - 65) * 26;
         iSrc = -1;
-        hs.grhst = 1 << ((int16_t)(int8_t)szWork[0] - 0x41);
-        hs.iItem = (int16_t)(int8_t)szWork[1] - 65;
+        hs.grhst = 1 << (szWork[0] - 0x41);
+        hs.iItem = szWork[1] - 65;
         hs.cItem = 1;
         rcStart.left = 2;
         rcStart.right = 66;
@@ -920,15 +913,11 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
         rcStart.bottom = rcStart.top + 64;
         ClientToScreen(hwnd, (POINT *)&rcStart);
         ClientToScreen(hwnd, (POINT *)&rcStart.right);
-        t_pt_33dc_1 = PointFrom16(pt);
-        ClientToScreen(hwnd, &t_pt_33dc_1);
-        pt = PointTo16(t_pt_33dc_1);
+        ClientToScreen16(hwnd, &pt);
         hwnd = hwndSlotDlg;
         ScreenToClient(hwnd, (POINT *)&rcStart);
         ScreenToClient(hwnd, (POINT *)&rcStart.right);
-        t_pt_340f_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_340f_1);
-        pt = PointTo16(t_pt_340f_1);
+        ScreenToClient16(hwnd, &pt);
         x = pt.x;
         y = pt.y;
         if (hs.grhst == hstEngine && hs.iItem == iengineSettlersDelight && lpshdefBuild->hul.ihuldef != ihuldefMiniColonyShip) {
@@ -1105,8 +1094,8 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
                 goto Restore;
             SendMessage(GetDlgItem(hwndSlotDlg, IDC_DESIGNER_COMPONENT_LIST), LB_GETTEXT, iSel, (LPARAM)szWork);
             hsShip.cItem = 1;
-            hsShip.grhst = 1 << ((int16_t)(int8_t)szWork[0] - 0x41);
-            hsShip.iItem = (int16_t)(int8_t)szWork[1] - 65;
+            hsShip.grhst = 1 << (szWork[0] - 0x41);
+            hsShip.iItem = szWork[1] - 65;
         } else {
             if (lpshdefBuild == 0)
                 goto Restore;
@@ -1133,16 +1122,16 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
                     }
                     cch = CchGetString(rgidsCat[i], szWord);
                     if (fPlural == 0) {
-                        if ((int16_t)(int8_t)szWord[cch - 1] == 's') {
-                            if ((int16_t)(int8_t)szWord[cch - 2] == 'e' && (int16_t)(int8_t)szWord[cch - 3] == 'o') {
+                        if (szWord[cch - 1] == 's') {
+                            if (szWord[cch - 2] == 'e' && szWord[cch - 3] == 'o') {
                                 szWord[cch - 2] = 0;
                             } else {
                                 szWord[cch - 1] = 0;
                             }
                         } else {
-                            for (pch = &szWord[cch - 1]; pch > szWord && (int16_t)(int8_t)*pch != '('; pch--) {
+                            for (pch = &szWord[cch - 1]; pch > szWord && *pch != '('; pch--) {
                             }
-                            if ((int16_t)(int8_t)*pch == '(' && pch > &szWord[1] && (int16_t)(int8_t)pch[-1] == ' ' && (int16_t)(int8_t)pch[-2] == 's') {
+                            if (*pch == '(' && pch > &szWord[1] && pch[-1] == ' ' && pch[-2] == 's') {
                                 strcpy(pch + -2, pch + -1);
                             }
                         }
@@ -1645,7 +1634,7 @@ void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
     SendMessage(lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM)szWork);
     SelectPalette(lpdis->hDC, vhpal, 0);
     RealizePalette(lpdis->hDC);
-    ibmp = (int16_t)(int8_t)szWork[2] - 65 + ((int16_t)(int8_t)szWork[3] - 65) * 26;
+    ibmp = szWork[2] - 65 + (szWork[3] - 65) * 26;
     DibBlt(lpdis->hDC, rc.left, rc.top, 64, 64, rghdibInventory[ibmp >> 5], (ibmp & 7) * 0x40, (3 - (ibmp >> 3) & 3) * 0x40, 64, 64, 13369376);
     cr = (lpdis->itemState & ODS_FOCUS) != 0 ? crWindow : crWindow == 0 ? 0xffffff : 0;
     crForeSav = SetTextColor(lpdis->hDC, cr);
@@ -1904,16 +1893,11 @@ int16_t IEmptyBmpFromGrhst(int16_t grhst) {
 LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     POINT16 pt;
     int16_t iSel;
-    POINT   t_pt_6771;
-    POINT   t_pt_6780_1;
 
     switch (msg) {
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_6771);
-        pt = PointTo16(t_pt_6771);
-        t_pt_6780_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_6780_1);
-        pt = PointTo16(t_pt_6780_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (pt.x >= 64)
             goto L_6924;
         SetCursor(hcurHand);
@@ -1929,8 +1913,8 @@ LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     return 0;
                 }
                 SendMessage(hwnd, LB_GETTEXT, iSel, (LPARAM)szWork);
-                GlobalPD.part.hs.grhst = 1 << ((int16_t)(int8_t)szWork[0] - 0x41);
-                GlobalPD.part.hs.iItem = (int16_t)(int8_t)szWork[1] - 65;
+                GlobalPD.part.hs.grhst = 1 << (szWork[0] - 0x41);
+                GlobalPD.part.hs.iItem = szWork[1] - 65;
                 FLookupPart(&GlobalPD.part);
                 GlobalPD.grPopup = grPopupComponent;
                 Popup(hwnd, LOWORD(lParam), HIWORD(lParam));
@@ -1950,9 +1934,9 @@ void MakeNewName(char *lpsz) {
 
     cLen = fstrlen(lpsz);
     if (cLen <= 27) {
-        if ((int16_t)(int8_t)lpsz[cLen - 1] != ')' || isdigit((int16_t)(int8_t)lpsz[cLen - 2]) == 0 || (int16_t)(int8_t)lpsz[cLen - 3] != '(') {
+        if (lpsz[cLen - 1] != ')' || isdigit(lpsz[cLen - 2]) == 0 || lpsz[cLen - 3] != '(') {
             fstrcpy(lpsz + cLen, " (2)");
-        } else if ((int16_t)(int8_t)lpsz[cLen - 2] == '9') {
+        } else if (lpsz[cLen - 2] == '9') {
             lpsz[cLen - 2] = '0';
         } else {
             lpsz[cLen - 2] = lpsz[cLen - 2] + 1;

@@ -938,8 +938,6 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     FARPROC     lpProc;
     int16_t     fRet;
     int32_t     lSerial;
-    POINT       t_pt_6090;
-    POINT       t_pt_609f_1;
     uint16_t    t_scratch_m30;
     int16_t     t_62dd;
     char       *t_merge_66fb_0001;
@@ -1086,11 +1084,8 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         switch (message) {
         case WM_SETCURSOR:
             hcs = 0;
-            GetCursorPos(&t_pt_6090);
-            pt = PointTo16(t_pt_6090);
-            t_pt_609f_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_609f_1);
-            pt = PointTo16(t_pt_609f_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwnd, &pt);
             if (HtMsgBox(pt) == htMsgNone)
                 goto Default;
             SetCursor(hcurHand);
@@ -1422,10 +1417,10 @@ void SetMsgTitle(HWND hwnd) {
         } else {
             if (cMsgTot != 0) {
                 CchGetString(idsYearDCMessagesDD, szT);
-                _wsprintf(szWork, szT, game.turn + 2400, (int16_t)(int8_t)ch, iMsgCur + 1, cMsgTot);
+                _wsprintf(szWork, szT, game.turn + 2400, ch, iMsgCur + 1, cMsgTot);
             } else {
                 CchGetString(idsYearDCMessagesNone, szT);
-                _wsprintf(szWork, szT, game.turn + 2400, (int16_t)(int8_t)ch);
+                _wsprintf(szWork, szT, game.turn + 2400, ch);
             }
             EnableWindow(rghwndMsgBtn[0], IMsgPrev(0) == -1 ? 0 : 1);
             EnableWindow(rghwndMsgBtn[2], IMsgNext(0) == -1 ? 0 : 1);
@@ -1738,7 +1733,7 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, MsgGoto iObj, in
     rgArgs[6] = p7;
     pi = rgArgs;
     i = 0;
-    while (i < (int16_t)(int8_t)rgcMsgArgs[iMsg]) {
+    while (i < rgcMsgArgs[iMsg]) {
         if ((*pi & 0xff00) != 0) {
             t_scratch_m16_2 = (grbit << 9 | (lpmt->msghdr.iMsg | lpmt->msghdr.grWord << 9)) & 0xfe00;
             lpmt->msghdr.grWord = 0;
@@ -1787,7 +1782,7 @@ int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, MsgGoto iObj, int16_t
     rgArgs[1] = p2;
     pi = rgArgs;
     i = 0;
-    while (i < (int16_t)(int8_t)rgcMsgArgs[iMsg]) {
+    while (i < rgcMsgArgs[iMsg]) {
         if ((*pi & 0xff00) != 0) {
             t_scratch_m50_2 = (grbit << 9 | (pmsghdr->iMsg | pmsghdr->grWord << 9)) & 0xfe00;
             pmsghdr->grWord = 0;
@@ -1848,7 +1843,7 @@ int16_t FGetNMsgbig(MessageId iMsg, MSGBIG *pmb) {
             pmb->iMsg = lpmh->iMsg;
             pmb->wGoto = lpmh->wGoto;
         }
-        iMax = (int16_t)(int8_t)rgcMsgArgs[lpmh->iMsg];
+        iMax = rgcMsgArgs[lpmh->iMsg];
         for (i = 0; i < iMax; i++) {
             if (iMsg == idmColonistsDroppedMassacredGroundTroops) {
                 pmb->rgParam[i] = (u & 1) == 0 ? *lpb : RawLoad16(lpb);
@@ -1891,13 +1886,13 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
     iMineral = -1;
     pParams = pParamsReal;
     pch = szMsgBuf;
-    for (; (int16_t)(int8_t)*pszFormat != 0; pszFormat++) {
-        if ((int16_t)(int8_t)*pszFormat != '\\') {
+    for (; *pszFormat != 0; pszFormat++) {
+        if (*pszFormat != '\\') {
             *pch++ = *pszFormat;
         } else {
             pszFormat++;
-            if ((uint16_t)((int16_t)(int8_t)*pszFormat - 69) <= 53) {
-                switch ((int16_t)(int8_t)*pszFormat) {
+            if ((uint16_t)(*pszFormat - 69) <= 53) {
+                switch (*pszFormat) {
                 case 'w':
                     strcpy(pch, szWork);
                     pch += strlen(szWork);
@@ -1909,7 +1904,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                 case 'y':
                     strcpy(pch, szBase);
                     pch += strlen(szBase);
-                    switch ((int16_t)(int8_t)*pszFormat) {
+                    switch (*pszFormat) {
                     case 'f':
                         if (idPlayer != -1) {
                             c = _wsprintf(pch, ".x%d", idPlayer + 1);
@@ -1946,8 +1941,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     goto DoInt;
                 case 'L':
                 case 'l':
-                    pchT = PszPlayerName(*pParams & 0xf, (int16_t)(int8_t)*pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1,
-                                         (*pParams & 0x20) == 0 ? 0 : 1, (*pParams & 0xc0) >> 6, NULL);
+                    pchT = PszPlayerName(*pParams & 0xf, *pszFormat == 'L' ? 1 : 0, (*pParams & 0x10) == 0 ? 0 : 1, (*pParams & 0x20) == 0 ? 0 : 1,
+                                         (*pParams & 0xc0) >> 6, NULL);
                     goto FinishString;
                 case 'Z':
                     w = *pParams;
@@ -1999,10 +1994,10 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pchT = rgszMineField[*pParams];
                     goto FinishString;
                 case 'P':
-                    if ((long double)(int16_t)((int16_t)*pParams / 100) >= (long double)10.0) {
-                        c = _wsprintf(pch, PCTDPCTPCT, (int16_t)*pParams / 100);
+                    if ((long double)(int16_t)(*pParams / 100) >= (long double)10.0) {
+                        c = _wsprintf(pch, PCTDPCTPCT, *pParams / 100);
                     } else {
-                        c = _wsprintf(pch, PCTDXPCTDPCTPCT, (int16_t)*pParams / 100, *pParams - (int16_t)*pParams / 100 * 100);
+                        c = _wsprintf(pch, PCTDXPCTDPCTPCT, *pParams / 100, *pParams - *pParams / 100 * 100);
                     }
                     pch += c;
                     pParams++;
@@ -2077,9 +2072,9 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
                     pParams += 2;
                     c = _wsprintf(pch, PCTLD, l);
                     pch += c;
-                    if ((int16_t)(int8_t)*pszFormat == 'v')
+                    if (*pszFormat == 'v')
                         break;
-                    if ((int16_t)(int8_t)*pszFormat == 'V') {
+                    if (*pszFormat == 'V') {
                         iMineral = *pParams;
                     }
                     pchT = vrgszUnits[iMineral];
@@ -2205,7 +2200,7 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     SelectObject(hdc, rghfontArial8[1]);
     SetBkColor(hdc, crButtonFace);
     SetTextColor(hdc, 0);
-    cch = CchGetString((int16_t)(int8_t)szWork[200] + 1226, szT);
+    cch = CchGetString(szWork[200] + 1226, szT);
     DrawText(hdc, szT, cch, &rcEdit, DT_WORDBREAK | DT_NOPREFIX);
     EndPaint(hwnd, &ps);
     return 1;
@@ -2401,7 +2396,7 @@ void ReadPlayerMessages() {
         cMsg++;
         u = lpmh->grWord;
         lpb += 4;
-        iMax = (int16_t)(int8_t)rgcMsgArgs[lpmh->iMsg];
+        iMax = rgcMsgArgs[lpmh->iMsg];
         for (i = 0; i < iMax; i++) {
             lpb += 1 + ((u & 1) == 1 ? 1 : 0);
             u >>= 1;
@@ -2518,7 +2513,7 @@ char *PszGetCompressedMessage(MessageId idm) {
     int16_t  iChunk;
 
     iNibble = 0;
-    if (idm == (int16_t)(int8_t)iLastMsgGet) {
+    if (idm == iLastMsgGet) {
         return szLastMsgGet;
     }
     iChunk = idm >> 6;

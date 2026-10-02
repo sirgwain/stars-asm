@@ -94,7 +94,7 @@ void ReportColumnPopup(POINT16 pt, int16_t icol, int16_t fRightBtn) {
     }
     ReleaseDC(hwndReportDlg, hdc);
     for (i = 0; i < cItems; i++) {
-        if ((int16_t)(int8_t)rgsz[i][0] != 0) {
+        if (rgsz[i][0] != 0) {
             psz[i] = rgsz[i];
         } else {
             psz[i] = 0;

@@ -28,8 +28,6 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     FARPROC     lpProc;
     int16_t     fRet;
     int32_t     lSerial;
-    POINT       t_pt_6090;
-    POINT       t_pt_609f_1;
     uint16_t    t_scratch_m30;
     int16_t     t_62dd;
     char       *t_merge_66fb_0001;
@@ -176,11 +174,8 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         switch (message) {
         case WM_SETCURSOR:
             hcs = 0;
-            GetCursorPos(&t_pt_6090);
-            pt = PointTo16(t_pt_6090);
-            t_pt_609f_1 = PointFrom16(pt);
-            ScreenToClient(hwnd, &t_pt_609f_1);
-            pt = PointTo16(t_pt_609f_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwnd, &pt);
             if (HtMsgBox(pt) == htMsgNone)
                 goto Default;
             SetCursor(hcurHand);

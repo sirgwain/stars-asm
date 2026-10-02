@@ -38,9 +38,7 @@ Popup  (popup)
 L_0c7c:
     pt.x = x
     pt.y = y
-    t_pt_0c9b_1 = PointFrom16(pt)
-    call ClientToScreen(hwnd, &t_pt_0c9b_1) -> callresult(void)
-    pt = PointTo16(t_pt_0c9b_1)
+    call ClientToScreen16(hwnd, &pt) -> callresult(void)
     hdc = GetDC(hwnd)
     hfontSav = SelectObject(hdc, rghfontArial8[0])
     goto L_11f5

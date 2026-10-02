@@ -148,11 +148,8 @@ L_6059:
 
 L_6084:
     hcs = 0
-    call GetCursorPos(&t_pt_6090) -> callresult(void)
-    pt = PointTo16(t_pt_6090)
-    t_pt_609f_1 = PointFrom16(pt)
-    call ScreenToClient(hwnd, &t_pt_609f_1) -> callresult(void)
-    pt = PointTo16(t_pt_609f_1)
+    call GetCursorPos16(&pt) -> callresult(void)
+    call ScreenToClient16(hwnd, &pt) -> callresult(void)
     branch HtMsgBox(pt) == htMsgNone ? L_718a : L_60ba
 
 L_60ba:

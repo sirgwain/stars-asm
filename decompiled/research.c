@@ -22,8 +22,6 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     POINT16     pt;
     int16_t     iResTechNext;
     int16_t     fChg;
-    POINT       t_pt_05aa;
-    POINT       t_pt_05b9_1;
 
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
@@ -126,11 +124,8 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     case WM_LBUTTONDBLCLK:
         return FTrackResearchDlg(hwnd, LOWORD(lParam), HIWORD(lParam), wParam);
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_05aa);
-        pt = PointTo16(t_pt_05aa);
-        t_pt_05b9_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_05b9_1);
-        pt = PointTo16(t_pt_05b9_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         if (pt.x > 12 && pt.x < dxResLeft - 12 && pt.y >= yTopFutureTech && pt.y < cFutureTech * dyArial8 + yTopFutureTech) {
             SetCursor(hcurArrowHelp);
             return 1;
@@ -764,8 +759,6 @@ LRESULT CALLBACK BrowserWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     int16_t     i;
     PAINTSTRUCT ps;
     RECT        rc;
-    POINT       t_pt_28d7;
-    POINT       t_pt_28e6_1;
 
     switch (message) {
     case WM_PAINT:
@@ -775,11 +768,8 @@ LRESULT CALLBACK BrowserWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         EndPaint(hwnd, &ps);
         return 0;
     case WM_SETCURSOR:
-        GetCursorPos(&t_pt_28d7);
-        pt = PointTo16(t_pt_28d7);
-        t_pt_28e6_1 = PointFrom16(pt);
-        ScreenToClient(hwnd, &t_pt_28e6_1);
-        pt = PointTo16(t_pt_28e6_1);
+        GetCursorPos16(&pt);
+        ScreenToClient16(hwnd, &pt);
         break;
     case WM_ERASEBKGND:
         GetClientRect(hwnd, &rc);
@@ -1878,7 +1868,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 CtrTextOut(hdc, ((rcData.right - rcData.left) >> 1) + rcData.left, rcData.top, szWork, c);
                 rcData.top += dyArial8;
                 cch = LOBYTE(CchGetString(idsNum, szT));
-                dxStr = LOWORD(GetTextExtent(hdc, szT, (int16_t)(int8_t)cch));
+                dxStr = LOWORD(GetTextExtent(hdc, szT, cch));
                 dxQuan = (int16_t)(rcData.right - rcData.left - dxStr - 10) / 5;
                 dyPct = (int16_t)(rcData.bottom - rcData.top - dyArial8 - 8) / 5;
                 PatBlt(hdc, rcData.left + dxStr + 6, rcData.top, 1, rcData.bottom - rcData.top - dyArial8 - 4, BLACKNESS);
@@ -1887,10 +1877,10 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 y = rcData.bottom - dyArial8 - 4 - 5 * dyPct;
                 SetTextColor(hdc, 8323072);
                 cch = LOBYTE(CchGetString(idsStandard, szWork));
-                RightTextOut(hdc, rcData.right, rcData.bottom - 3 - 3 * dyArial8, szWork, (int16_t)(int8_t)cch, 0);
+                RightTextOut(hdc, rcData.right, rcData.bottom - 3 - 3 * dyArial8, szWork, cch, 0);
                 SetTextColor(hdc, 127);
                 cch = LOBYTE(CchGetString(idsSmart, szWork));
-                RightTextOut(hdc, rcData.right, rcData.bottom - 4 - dyArial8 * 2, szWork, (int16_t)(int8_t)cch, 0);
+                RightTextOut(hdc, rcData.right, rcData.bottom - 4 - dyArial8 * 2, szWork, cch, 0);
                 pct = 100;
                 SetTextColor(hdc, 0);
                 while (pct > 0) {
@@ -1908,7 +1898,7 @@ void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart) {
                 for (i = 0; i <= 5; i++) {
                     cch = LOBYTE(_wsprintf(szWork, PCTD, 20 * i));
                     t_merge_6105_0001 = i == 0 ? dxDigit >> 1 : i == 5 ? (int16_t)(3 * dxDigit) / 2 : dxDigit;
-                    TextOut(hdc, x - t_merge_6105_0001, y, szWork, (int16_t)(int8_t)cch);
+                    TextOut(hdc, x - t_merge_6105_0001, y, szWork, cch);
                     if (i > 0) {
                         PatBlt(hdc, x, y - 6, 1, 5, BLACKNESS);
                     }
@@ -2030,21 +2020,21 @@ int32_t CostOfDevelopingItem(char *rgTech) {
     fUnreachable = 0;
     lCost = 0;
     pTech = rgplr[idPlayer].rgTech;
-    for (i = 0; i < 6 && (int16_t)(int8_t)rgTech[i] <= 26; i++) {
+    for (i = 0; i < 6 && rgTech[i] <= 26; i++) {
     }
     if (i < 6) {
         return -1;
     }
     for (i = 0; i < 6; i++) {
         rgTechSav[i] = pTech[i];
-        if ((int16_t)(int8_t)rgTech[i] > (int16_t)(int8_t)pTech[i]) {
+        if (rgTech[i] > pTech[i]) {
             lSpent = rgplr[idPlayer].rgResSpent[i];
             if (game.fSlowTech != 0) {
                 lSpent = (int32_t)(lSpent * 2);
             }
             lCur = -lSpent;
-            while ((int16_t)(int8_t)rgTech[i] > (int16_t)(int8_t)pTech[i]) {
-                lCur += GetTechLevelCost(i, (int16_t)(int8_t)pTech[i] + 1, idPlayer);
+            while (rgTech[i] > pTech[i]) {
+                lCur += GetTechLevelCost(i, pTech[i] + 1, idPlayer);
                 pTech[i]++;
             }
             t_merge_6879_0001 = 0 <= lCur ? lCur : 0;

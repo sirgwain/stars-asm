@@ -157,11 +157,8 @@ L_0fba:
     branch i < 4 ? L_0f50 : L_0fc3
 
 L_0fc3:
-    call GetCursorPos(&t_pt_0fca) -> callresult(void)
-    pt = PointTo16(t_pt_0fca)
-    t_pt_0fda_1 = PointFrom16(pt)
-    call ScreenToClient(hwndTb, &t_pt_0fda_1) -> callresult(void)
-    pt = PointTo16(t_pt_0fda_1)
+    call GetCursorPos16(&pt) -> callresult(void)
+    call ScreenToClient16(hwndTb, &pt) -> callresult(void)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_1013
 
@@ -243,11 +240,8 @@ L_11a8:
     goto L_1125
 
 L_11ab:
-    call GetCursorPos(&t_pt_11b2) -> callresult(void)
-    pt = PointTo16(t_pt_11b2)
-    t_pt_11c2_1 = PointFrom16(pt)
-    call ScreenToClient(hwndTb, &t_pt_11c2_1) -> callresult(void)
-    pt = PointTo16(t_pt_11c2_1)
+    call GetCursorPos16(&pt) -> callresult(void)
+    call ScreenToClient16(hwndTb, &pt) -> callresult(void)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_11fe
 
@@ -351,11 +345,8 @@ L_140e:
     branch i < 8 ? L_13a4 : L_1417
 
 L_1417:
-    call GetCursorPos(&t_pt_141e) -> callresult(void)
-    pt = PointTo16(t_pt_141e)
-    t_pt_142e_1 = PointFrom16(pt)
-    call ScreenToClient(hwndTb, &t_pt_142e_1) -> callresult(void)
-    pt = PointTo16(t_pt_142e_1)
+    call GetCursorPos16(&pt) -> callresult(void)
+    call ScreenToClient16(hwndTb, &pt) -> callresult(void)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_1467
 
@@ -424,11 +415,8 @@ L_159d:
     branch i < 9 ? L_1526 : L_15a6
 
 L_15a6:
-    call GetCursorPos(&t_pt_15ad) -> callresult(void)
-    pt = PointTo16(t_pt_15ad)
-    t_pt_15bd_1 = PointFrom16(pt)
-    call ScreenToClient(hwndTb, &t_pt_15bd_1) -> callresult(void)
-    pt = PointTo16(t_pt_15bd_1)
+    call GetCursorPos16(&pt) -> callresult(void)
+    call ScreenToClient16(hwndTb, &pt) -> callresult(void)
     iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0)
     branch iSel == -1 ? L_167a : L_15f6
 

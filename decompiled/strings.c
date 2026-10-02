@@ -1153,7 +1153,7 @@ char *PszGetCompressedString(StringId ids) {
     int16_t  fHigh;
 
     iNibble = 0;
-    if (ids == (int16_t)(int8_t)iLastStrGet) {
+    if (ids == iLastStrGet) {
         return szLastStrGet;
     }
     iChunk = ids >> 6;

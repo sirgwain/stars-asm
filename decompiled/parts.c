@@ -3866,10 +3866,10 @@ int16_t TechStatus(char *rgTech) {
     fAlmost = 0;
     fInAWhile = 0;
     for (i = 0; i < 6; i++) {
-        if (rgplr[idPlayer].rgTech[i] < (int16_t)(int8_t)rgTech[i]) {
+        if (rgplr[idPlayer].rgTech[i] < rgTech[i]) {
             cMiss++;
             if (i == (rgplr[idPlayer].iTechCur & 0xf)) {
-                if (rgplr[idPlayer].rgTech[i] + 1 == (int16_t)(int8_t)rgTech[i]) {
+                if (rgplr[idPlayer].rgTech[i] + 1 == rgTech[i]) {
                     fAlmost = 1;
                 } else {
                     fInAWhile = i + 1;
@@ -3884,7 +3884,7 @@ int16_t TechStatus(char *rgTech) {
         return 2;
     }
     if (cMiss == 1 && fInAWhile != 0) {
-        return (int16_t)(int8_t)rgTech[fInAWhile - 1] - rgplr[idPlayer].rgTech[fInAWhile - 1] + 1;
+        return rgTech[fInAWhile - 1] - rgplr[idPlayer].rgTech[fInAWhile - 1] + 1;
     }
     return 99;
 }

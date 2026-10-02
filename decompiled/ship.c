@@ -1588,9 +1588,6 @@ INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
     RECT        rcBtn;
     int16_t     dx;
     RECT        rc;
-    POINT       t_pt_5774_1;
-    POINT       t_pt_57d7_1;
-    POINT       t_pt_583a_1;
 
     switch (message) {
     case WM_INITDIALOG:
@@ -1609,9 +1606,7 @@ INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 GetWindowRect(hwndBtn, &rcBtn);
                 pt.x = rcBtn.left;
                 pt.y = rcBtn.top;
-                t_pt_5774_1 = PointFrom16(pt);
-                ScreenToClient(hwnd, &t_pt_5774_1);
-                pt = PointTo16(t_pt_5774_1);
+                ScreenToClient16(hwnd, &pt);
                 pt.y += dyMore;
                 pt.x -= dx;
                 SetWindowPos(hwndBtn, NULL, pt.x, pt.y, 0, 0, SWP_NOSIZE);
@@ -1619,9 +1614,7 @@ INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 GetWindowRect(hwndBtn, &rcBtn);
                 pt.x = rcBtn.left;
                 pt.y = rcBtn.top;
-                t_pt_57d7_1 = PointFrom16(pt);
-                ScreenToClient(hwnd, &t_pt_57d7_1);
-                pt = PointTo16(t_pt_57d7_1);
+                ScreenToClient16(hwnd, &pt);
                 pt.y += dyMore;
                 pt.x -= dx;
                 SetWindowPos(hwndBtn, NULL, pt.x, pt.y, 0, 0, SWP_NOSIZE);
@@ -1629,9 +1622,7 @@ INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 GetWindowRect(hwndBtn, &rcBtn);
                 pt.x = rcBtn.left;
                 pt.y = rcBtn.top;
-                t_pt_583a_1 = PointFrom16(pt);
-                ScreenToClient(hwnd, &t_pt_583a_1);
-                pt = PointTo16(t_pt_583a_1);
+                ScreenToClient16(hwnd, &pt);
                 pt.y += dyMore;
                 pt.x -= dx;
                 SetWindowPos(hwndBtn, NULL, pt.x, pt.y, 0, 0, SWP_NOSIZE);

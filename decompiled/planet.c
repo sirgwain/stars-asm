@@ -15,8 +15,6 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
     PLANET            *lpplMac;
     PLANET            *lppl;
     FLEET             *lpfl;
-    POINT              t_pt_05b0;
-    POINT              t_pt_05c0_1;
 
     switch (message) {
     case WM_CREATE:
@@ -89,11 +87,8 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
                 return 0;
             case WM_SETCURSOR:
                 hcs = 0;
-                GetCursorPos(&t_pt_05b0);
-                pt = PointTo16(t_pt_05b0);
-                t_pt_05c0_1 = PointFrom16(pt);
-                ScreenToClient(hwnd, &t_pt_05c0_1);
-                pt = PointTo16(t_pt_05c0_1);
+                GetCursorPos16(&pt);
+                ScreenToClient16(hwnd, &pt);
                 GetClientRect(hwnd, &rc);
                 if (PtInRect(&rc, PointFrom16(pt)) == 0)
                     break;
@@ -1964,7 +1959,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
     rc = rcIn;
     if (fSelected == 0) {
         hbr = hbrWindow;
-        switch ((int16_t)(int8_t)*psz) {
+        switch (*psz) {
         default:
             cr = 0xff;
             break;
@@ -1980,7 +1975,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
             break;
         case 'P':
             fDoubleDraw = 1;
-            pctDmg = (int16_t)(int8_t)psz[1];
+            pctDmg = psz[1];
         case 'Q':
             fFleet = 1;
             goto LDefCase;
@@ -1995,7 +1990,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         }
     } else {
         cr = crWindow;
-        switch ((int16_t)(int8_t)*psz) {
+        switch (*psz) {
         default:
             hbr = hbrRed;
             break;
@@ -2011,7 +2006,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
             break;
         case 'P':
             fDoubleDraw = 1;
-            pctDmg = (int16_t)(int8_t)psz[1];
+            pctDmg = psz[1];
         case 'Q':
             fFleet = 1;
             goto LDefCaseSel;
@@ -2045,7 +2040,7 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         ich = 7;
     } else {
         ich = 6;
-        if (((int16_t)(int8_t)psz[1] - 0x20 & 2) != 0) {
+        if ((psz[1] - 0x20 & 2) != 0) {
             fItalic = 1;
         }
     }
@@ -2065,8 +2060,8 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
         SelectObject(hdc, hfntSav);
     }
     if (ich >= 6) {
-        if (((int16_t)(int8_t)psz[ich - 5] - 0x20 & 2) != 0) {
-            if ((int16_t)(int8_t)psz[ich - 1] == '*') {
+        if ((psz[ich - 5] - 0x20 & 2) != 0) {
+            if (psz[ich - 1] == '*') {
                 ich = CchGetString(idsNeeded, szT);
                 goto LRightOut;
             }
@@ -2075,11 +2070,11 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
             szT[0] = 0;
         }
         ich = strlen(szT);
-        for (ichT = 2 - fFleet; ichT < 6 && (int16_t)(int8_t)psz[ichT + fFleet] == ' '; ichT++) {
+        for (ichT = 2 - fFleet; ichT < 6 && psz[ichT + fFleet] == ' '; ichT++) {
         }
         strncpy(&szT[ich], psz + (ichT + fFleet), 6 - ichT);
         ich += 6 - ichT;
-        if (fFleet == 0 && ((int16_t)(int8_t)psz[fDoubleDraw + 1] - 0x20 & 1) != 0) {
+        if (fFleet == 0 && (psz[fDoubleDraw + 1] - 0x20 & 1) != 0) {
             szT[ich++] = '%';
         }
     LRightOut:
@@ -2151,7 +2146,7 @@ NoMsg:
                 ch = '!';
             }
             cItem = lpprod->cItem;
-            _wsprintf(szTemp, "%c%5d%s", (int16_t)(int8_t)ch, cItem, psz);
+            _wsprintf(szTemp, "%c%5d%s", ch, cItem, psz);
             if (lpprod->grobj == grobjPlanet) {
                 if (lpprod->iItem < mdIdleFactory) {
                     szTemp[1] += 2;

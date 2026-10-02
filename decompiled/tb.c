@@ -49,7 +49,6 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     RECT          rc;
     HWND          hwndCE;
     int16_t       pct;
-    POINT         t_pt_045f_2;
 
     switch (msg) {
     case WM_CREATE:
@@ -163,9 +162,7 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             pt.x = LOWORD(lParam);
             pt.y = HIWORD(lParam);
             if (hwnd != hwndTb) {
-                t_pt_045f_2 = PointFrom16(pt);
-                MapWindowPoints(hwnd, hwndTb, &t_pt_045f_2, 1);
-                pt = PointTo16(t_pt_045f_2);
+                MapWindowPoints16(hwnd, hwndTb, &pt, 1);
             }
             if (pt.x == vptTbLast.x && pt.y == vptTbLast.y)
                 break;
@@ -391,14 +388,6 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
     int16_t  iSel;
     uint16_t grbitSh;
     int16_t  ish;
-    POINT    t_pt_0fca;
-    POINT    t_pt_0fda_1;
-    POINT    t_pt_11b2;
-    POINT    t_pt_11c2_1;
-    POINT    t_pt_141e;
-    POINT    t_pt_142e_1;
-    POINT    t_pt_15ad;
-    POINT    t_pt_15bd_1;
 
     gd.fChgScanner = 1;
     if ((uint16_t)itb <= tbShipCounts) {
@@ -461,11 +450,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 CchGetString(i + 1280, &szWork[i * 30]);
                 rgszScan[c++] = &szWork[i * 30];
             }
-            GetCursorPos(&t_pt_0fca);
-            pt = PointTo16(t_pt_0fca);
-            t_pt_0fda_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_0fda_1);
-            pt = PointTo16(t_pt_0fda_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel == -1)
                 break;
@@ -505,11 +491,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 ish++;
                 grbitSh *= 2;
             }
-            GetCursorPos(&t_pt_11b2);
-            pt = PointTo16(t_pt_11b2);
-            t_pt_11c2_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_11c2_1);
-            pt = PointTo16(t_pt_11c2_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel == -1)
                 break;
@@ -559,11 +542,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 CchGetString(i + 381, &szWork[i * 25]);
                 rgszScan[c++] = &szWork[i * 25];
             }
-            GetCursorPos(&t_pt_141e);
-            pt = PointTo16(t_pt_141e);
-            t_pt_142e_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_142e_1);
-            pt = PointTo16(t_pt_142e_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel == -1)
                 break;
@@ -596,11 +576,8 @@ void ExecuteButton(ToolbarButton itb, int16_t fDown) {
                 _wsprintf(&szWork[i * 8], PCTDPCTPCT, vrgpctZoom[i]);
                 rgszScan[c++] = &szWork[i * 8];
             }
-            GetCursorPos(&t_pt_15ad);
-            pt = PointTo16(t_pt_15ad);
-            t_pt_15bd_1 = PointFrom16(pt);
-            ScreenToClient(hwndTb, &t_pt_15bd_1);
-            pt = PointTo16(t_pt_15bd_1);
+            GetCursorPos16(&pt);
+            ScreenToClient16(hwndTb, &pt);
             iSel = PopupMenu(hwndTb, pt.x, pt.y, c, rgid, rgszScan, -2, 0);
             if (iSel != -1) {
                 CommandHandler(hwndFrame, iSel + 3901);
@@ -633,10 +610,10 @@ void TerminateToolbarFocus(int16_t fCancel) {
         GetWindowText(hwndTBRadar, szWork, 20);
         psz = szWork;
         pct = 0;
-        for (; (int16_t)(int8_t)*psz >= '0' && (int16_t)(int8_t)*psz <= '9'; psz++) {
-            pct = 10 * pct + ((int16_t)(int8_t)*psz - 48);
+        for (; *psz >= '0' && *psz <= '9'; psz++) {
+            pct = 10 * pct + (*psz - 48);
         }
-        if ((int16_t)(int8_t)*psz != 0 && (int16_t)(int8_t)*psz != '%') {
+        if (*psz != 0 && *psz != '%') {
             pct = 0;
         }
     } else {
@@ -707,10 +684,6 @@ LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     RECT        rc;
     int16_t     bkSav;
     int16_t     cch;
-    POINT       t_pt_1ace;
-    POINT       t_pt_1afb_1;
-    POINT       t_pt_1b28_1;
-    POINT       t_pt_1bc2;
 
     switch (msg) {
     case WM_CREATE:
@@ -747,18 +720,13 @@ LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             goto L_1d53;
         if (msg != WM_TIMER || IsWindowVisible(hwnd) == 0) {
             vtickTooltip1stVis = GetTickCount();
-            GetCursorPos(&t_pt_1ace);
-            pt = PointTo16(t_pt_1ace);
+            GetCursorPos16(&pt);
             if (PtInRect(&vrcTooltip, PointFrom16(pt)) != 0) {
-                t_pt_1afb_1 = PointFrom16(pt);
-                ScreenToClient(hwndFrame, &t_pt_1afb_1);
-                pt = PointTo16(t_pt_1afb_1);
+                ScreenToClient16(hwndFrame, &pt);
                 if (pt.x + dxTip > vfs.dx) {
                     pt.x = vfs.dx - dxTip - 5;
                 }
-                t_pt_1b28_1 = PointFrom16(pt);
-                ClientToScreen(hwndFrame, &t_pt_1b28_1);
-                pt = PointTo16(t_pt_1b28_1);
+                ClientToScreen16(hwndFrame, &pt);
                 SetWindowPos(hwnd, (HWND)-1, pt.x, (int16_t)(3 * dyArial8) / 2 + pt.y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOOWNERZORDER);
                 UpdateWindow(hwnd);
                 if (vidTimerTooltip != -1) {
@@ -773,8 +741,7 @@ LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             }
         } else {
             vtickTooltipLast = GetTickCount();
-            GetCursorPos(&t_pt_1bc2);
-            pt = PointTo16(t_pt_1bc2);
+            GetCursorPos16(&pt);
             if (PtInRect(&vrcTooltip, PointFrom16(pt)) != 0 && vtickTooltip1stVis + 10000 >= vtickTooltipLast) {
                 return 0;
             }

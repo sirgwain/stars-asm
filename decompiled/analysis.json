@@ -1,13 +1,13 @@
 {
   "OutDir": "./decompiled",
   "analysis": {
-    "temps": 347,
+    "temps": 289,
     "hiWords": 95,
     "loWords": 709,
     "branchHiWords": 30,
     "branchLoWords": 58,
     "ir": {
-      "numStatements": 32152
+      "numStatements": 32060
     }
   },
   "functions": {
@@ -119,11 +119,10 @@
       }
     },
     "BrowserWndProc": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 1,
       "ir": {
-        "numStatements": 27
+        "numStatements": 24
       }
     },
     "BtlDataGet": {
@@ -931,10 +930,10 @@
       }
     },
     "DrawScanner": {
-      "temps": 7,
+      "temps": 6,
       "loWords": 4,
       "ir": {
-        "numStatements": 502
+        "numStatements": 500
       }
     },
     "DrawScannerSBar": {
@@ -1197,9 +1196,8 @@
       }
     },
     "ExecuteButton": {
-      "temps": 8,
       "ir": {
-        "numStatements": 120
+        "numStatements": 108
       }
     },
     "ExecuteReportClick": {
@@ -1747,9 +1745,8 @@
       }
     },
     "FHandleKey": {
-      "temps": 1,
       "ir": {
-        "numStatements": 51
+        "numStatements": 50
       }
     },
     "FHandleMeasuringTape": {
@@ -2129,10 +2126,9 @@
       }
     },
     "FTrackSlot": {
-      "temps": 2,
       "loWords": 1,
       "ir": {
-        "numStatements": 144
+        "numStatements": 140
       }
     },
     "FTrackXfer": {
@@ -2223,12 +2219,11 @@
       }
     },
     "FakeListProc": {
-      "temps": 2,
       "hiWords": 2,
       "loWords": 3,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 21
+        "numStatements": 18
       }
     },
     "FileError": {
@@ -2325,11 +2320,11 @@
       }
     },
     "FrameWndProc": {
-      "temps": 3,
+      "temps": 1,
       "hiWords": 2,
       "loWords": 2,
       "ir": {
-        "numStatements": 243
+        "numStatements": 240
       }
     },
     "FreeHb": {
@@ -2567,9 +2562,9 @@
       }
     },
     "HostModeDialog": {
-      "temps": 12,
+      "temps": 9,
       "ir": {
-        "numStatements": 109
+        "numStatements": 104
       }
     },
     "HostOptionsDialog": {
@@ -3279,12 +3274,12 @@
       }
     },
     "MessageWndProc": {
-      "temps": 6,
+      "temps": 4,
       "hiWords": 2,
       "loWords": 2,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 201
+        "numStatements": 198
       }
     },
     "MeteorStrike": {
@@ -3304,12 +3299,11 @@
       }
     },
     "MineWndProc": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 2,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 44
+        "numStatements": 41
       }
     },
     "MoveFleets": {
@@ -3351,21 +3345,20 @@
       }
     },
     "NewGameDlg2": {
-      "temps": 3,
       "hiWords": 1,
       "loWords": 1,
       "branchHiWords": 1,
       "ir": {
-        "numStatements": 141
+        "numStatements": 136
       }
     },
     "NewGameDlg3": {
-      "temps": 3,
+      "temps": 1,
       "hiWords": 1,
       "loWords": 2,
       "branchHiWords": 1,
       "ir": {
-        "numStatements": 40
+        "numStatements": 37
       }
     },
     "NewGameWizard": {
@@ -3511,12 +3504,11 @@
       }
     },
     "PlanetWndProc": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 1,
       "branchLoWords": 2,
       "ir": {
-        "numStatements": 98
+        "numStatements": 95
       }
     },
     "PlanetaryClimateChange": {
@@ -3530,17 +3522,17 @@
       }
     },
     "Popup": {
-      "temps": 9,
+      "temps": 8,
       "loWords": 11,
       "ir": {
-        "numStatements": 91
+        "numStatements": 89
       }
     },
     "PopupMenu": {
-      "temps": 5,
+      "temps": 4,
       "loWords": 6,
       "ir": {
-        "numStatements": 60
+        "numStatements": 58
       }
     },
     "PopupMineralScanChoices": {
@@ -3581,12 +3573,11 @@
       }
     },
     "ProductionDlg": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 1,
       "branchHiWords": 1,
       "ir": {
-        "numStatements": 99
+        "numStatements": 96
       }
     },
     "ProgressGaugeDlg": {
@@ -3800,21 +3791,20 @@
       }
     },
     "RaceWizardDlg2": {
-      "temps": 3,
+      "temps": 1,
       "hiWords": 1,
       "loWords": 6,
       "branchHiWords": 1,
       "ir": {
-        "numStatements": 81
+        "numStatements": 78
       }
     },
     "RaceWizardDlg3": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 2,
       "branchHiWords": 1,
       "ir": {
-        "numStatements": 35
+        "numStatements": 32
       }
     },
     "RaceWizardDlg4": {
@@ -3976,12 +3966,11 @@
       }
     },
     "ResearchDlg": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 6,
       "branchHiWords": 1,
       "ir": {
-        "numStatements": 104
+        "numStatements": 101
       }
     },
     "ResetHb": {
@@ -4043,12 +4032,12 @@
       }
     },
     "ScannerWndProc": {
-      "temps": 4,
+      "temps": 2,
       "hiWords": 2,
       "loWords": 3,
       "branchLoWords": 1,
       "ir": {
-        "numStatements": 141
+        "numStatements": 138
       }
     },
     "ScoreFromGiveAndTakeAndTactic": {
@@ -4063,12 +4052,11 @@
       }
     },
     "ScoreXDlg": {
-      "temps": 2,
       "hiWords": 1,
       "loWords": 1,
       "branchHiWords": 2,
       "ir": {
-        "numStatements": 49
+        "numStatements": 46
       }
     },
     "ScrollScanner": {
@@ -4285,11 +4273,11 @@
       }
     },
     "SlotDlg": {
-      "temps": 7,
+      "temps": 5,
       "hiWords": 2,
       "loWords": 11,
       "ir": {
-        "numStatements": 303
+        "numStatements": 300
       }
     },
     "SortReportCache": {
@@ -4368,11 +4356,10 @@
       }
     },
     "TbWndProc": {
-      "temps": 1,
       "hiWords": 2,
       "loWords": 2,
       "ir": {
-        "numStatements": 85
+        "numStatements": 83
       }
     },
     "TechStatus": {
@@ -4397,9 +4384,8 @@
       }
     },
     "TooltipWndProc": {
-      "temps": 4,
       "ir": {
-        "numStatements": 48
+        "numStatements": 42
       }
     },
     "TossNonAutoBuildItems": {
@@ -4408,11 +4394,10 @@
       }
     },
     "TransferDlg": {
-      "temps": 3,
       "hiWords": 1,
       "loWords": 1,
       "ir": {
-        "numStatements": 58
+        "numStatements": 52
       }
     },
     "TransferStuff": {
@@ -4520,11 +4505,10 @@
       }
     },
     "VCRDlg": {
-      "temps": 2,
       "hiWords": 3,
       "loWords": 3,
       "ir": {
-        "numStatements": 114
+        "numStatements": 111
       }
     },
     "ValidateStarbaseHistory": {

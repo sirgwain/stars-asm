@@ -126,7 +126,7 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn) {
         iOff += pbIn[iOff] + 1;
     }
     if ((wVersFile >> 5 & 0x7f) < 55) {
-        psz = PszPlayerName(0, isupper((int16_t)(int8_t)pplr->szName[0]), 1, 0, 0, pplr);
+        psz = PszPlayerName(0, isupper(pplr->szName[0]), 1, 0, 0, pplr);
         strcpy(pplr->szNames, psz);
     } else if (pbIn[iOff] == 0) {
         strcpy(pplr->szNames, (char *)(pbIn + (iOff + 1)));
@@ -209,8 +209,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
             ReadRt();
             if (hdrCur.rt == rtEOF) {
                 StreamClose();
-                if (((int16_t)(int8_t)*pszExt == 'h' || (int16_t)(int8_t)*pszExt == 'H') &&
-                    ((int16_t)(int8_t)pszExt[1] == 's' || (int16_t)(int8_t)pszExt[1] == 'S')) {
+                if ((*pszExt == 'h' || *pszExt == 'H') && (pszExt[1] == 's' || pszExt[1] == 'S')) {
                     dt = 2;
                     iPlayer = -1;
                 } else {
@@ -255,7 +254,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                             ReadRt();
                         }
                         while (hdrCur.rt == rtPlr) {
-                            i = (int16_t)(int8_t)rgbCur[0];
+                            i = rgbCur[0];
                             ReadRtPlr(&rgplr[i], rgbCur);
                             rgplr[i].cPlanet = 0;
                             rgplr[i].cFleet = 0;
@@ -434,7 +433,7 @@ int16_t FLoadGame(char *pszFileName, char *pszExt) {
                         }
                     }
                     while (hdrCur.rt == rtPlr) {
-                        i = (int16_t)(int8_t)rgbCur[0];
+                        i = rgbCur[0];
                         ReadRtPlr(&rgplr[i], rgbCur);
                         cPlanet += rgplr[i].cPlanet;
                         rgplr[i].cPlanet = 0;
@@ -1168,7 +1167,7 @@ int16_t FReadFleet(FLEET *lpfl) {
         }
         ReadRt();
         if (hdrCur.rt == rtString) {
-            cch = (int16_t)(int8_t)rgbCur[0];
+            cch = rgbCur[0];
             if (cch == 0) {
                 lpfl->lpszName = LpAlloc(strlen(&rgbCur[1]) + 1, htString);
                 fstrcpy(lpfl->lpszName, &rgbCur[1]);
@@ -1611,7 +1610,7 @@ int16_t FCheckFile(DtFileType dt, int16_t iPlayer, MdMark md) {
         } else {
             do {
                 ReadRt();
-            } while (hdrCur.rt != rtPlr && (int16_t)(int8_t)rgbCur[0] != iPlayer);
+            } while (hdrCur.rt != rtPlr && rgbCur[0] != iPlayer);
             fReturn = RawLoad16(&rgbCur[6]) >> 9 & 1;
         }
     }

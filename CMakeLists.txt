@@ -50,9 +50,11 @@ target_include_directories(stars PRIVATE
     decompiled/res
 )
 
-# Match the existing MinGW compile-analysis flags.
+# Match the existing MinGW compile-analysis flags. Plain char is signed, as
+# in the original MSC build; the decompiler relies on it to drop char casts.
 target_compile_options(stars PRIVATE
     $<$<COMPILE_LANGUAGE:C>:-Wno-pointer-sign>
+    $<$<COMPILE_LANGUAGE:C>:-fsigned-char>
 )
 target_link_libraries(stars PRIVATE user32 gdi32 comdlg32)
 

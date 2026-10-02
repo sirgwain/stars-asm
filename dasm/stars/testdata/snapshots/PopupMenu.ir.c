@@ -11,7 +11,6 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
     MSG     msg;
     int16_t fChecked;
     int16_t fCheckedCur;
-    POINT   t_pt_1391_1;
     char   *t_1545;
     char   *t_16d0;
     char   *t_17e3;
@@ -21,9 +20,7 @@ L_136c:
     hmenuSub = 0;
     pt.x = x;
     pt.y = y;
-    t_pt_1391_1 = PointFrom16(pt);
-    ClientToScreen(hwnd, &t_pt_1391_1);
-    pt = PointTo16(t_pt_1391_1);
+    ClientToScreen16(hwnd, &pt);
     hmenuPopup = CreatePopupMenu();
     iPopMenuSel = -1;
     i = 0;
@@ -104,7 +101,7 @@ L_152e:
     pszT = szTemp;
 
 L_1536:
-    if ((int16_t)(int8_t)*psz == 0)
+    if (*psz == 0)
         goto L_1573;
     else
         goto L_1545;
@@ -113,7 +110,7 @@ L_1545:
     t_1545 = psz;
     psz++;
     *pszT++ = *t_1545;
-    if ((int16_t)(int8_t)*t_1545 != '&')
+    if (*t_1545 != '&')
         goto L_1536;
     else
         goto L_1564;
@@ -165,13 +162,13 @@ L_1649:
     fCheckedCur = LOWORD(rgids[i]);
 
 L_165e:
-    if ((int16_t)(int8_t)*rgsz[i] != -1)
+    if (*rgsz[i] != -1)
         goto L_16a9;
     else
         goto L_1675;
 
 L_1675:
-    if ((int16_t)(int8_t)rgsz[i][1] != 0)
+    if (rgsz[i][1] != 0)
         goto L_16a9;
     else
         goto L_168d;
@@ -185,7 +182,7 @@ L_16a9:
     psz = rgsz[i];
 
 L_16c1:
-    if ((int16_t)(int8_t)*psz == 0)
+    if (*psz == 0)
         goto L_16fe;
     else
         goto L_16d0;
@@ -194,7 +191,7 @@ L_16d0:
     t_16d0 = psz;
     psz++;
     *pszT++ = *t_16d0;
-    if ((int16_t)(int8_t)*t_16d0 != '&')
+    if (*t_16d0 != '&')
         goto L_16c1;
     else
         goto L_16ef;
@@ -223,13 +220,13 @@ L_1743:
     goto L_1883;
 
 L_1771:
-    if ((int16_t)(int8_t)*rgsz[i] != -1)
+    if (*rgsz[i] != -1)
         goto L_17bc;
     else
         goto L_1788;
 
 L_1788:
-    if ((int16_t)(int8_t)rgsz[i][1] != 0)
+    if (rgsz[i][1] != 0)
         goto L_17bc;
     else
         goto L_17a0;
@@ -243,7 +240,7 @@ L_17bc:
     psz = rgsz[i];
 
 L_17d4:
-    if ((int16_t)(int8_t)*psz == 0)
+    if (*psz == 0)
         goto L_1811;
     else
         goto L_17e3;
@@ -252,7 +249,7 @@ L_17e3:
     t_17e3 = psz;
     psz++;
     *pszT++ = *t_17e3;
-    if ((int16_t)(int8_t)*t_17e3 != '&')
+    if (*t_17e3 != '&')
         goto L_17d4;
     else
         goto L_1802;

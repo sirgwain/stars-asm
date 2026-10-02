@@ -156,7 +156,7 @@ void DrawTutorText(HWND hwnd) {
         cch = CchTutorString(rgch, tutor.idt + didt);
         if (cch == 1)
             break;
-        fPara = isupper((int16_t)(int8_t)rgch[0]);
+        fPara = isupper(rgch[0]);
         if (fPara != 0) {
             xLeft = rc.left;
             if (didt != 0) {

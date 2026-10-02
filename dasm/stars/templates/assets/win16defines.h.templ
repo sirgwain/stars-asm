@@ -309,6 +309,46 @@ static inline POINT16 PointTo16(POINT pt)
     return out;
 }
 
+// GetCursorPos16 stores the cursor position in a Stars point.
+static inline BOOL GetCursorPos16(POINT16 *ppt)
+{
+    POINT pt;
+    BOOL  ret = GetCursorPos(&pt);
+    *ppt      = PointTo16(pt);
+    return ret;
+}
+
+// ScreenToClient16 converts a Stars point from screen to client coordinates.
+static inline BOOL ScreenToClient16(HWND hwnd, POINT16 *ppt)
+{
+    POINT pt  = PointFrom16(*ppt);
+    BOOL  ret = ScreenToClient(hwnd, &pt);
+    *ppt      = PointTo16(pt);
+    return ret;
+}
+
+// ClientToScreen16 converts a Stars point from client to screen coordinates.
+static inline BOOL ClientToScreen16(HWND hwnd, POINT16 *ppt)
+{
+    POINT pt  = PointFrom16(*ppt);
+    BOOL  ret = ClientToScreen(hwnd, &pt);
+    *ppt      = PointTo16(pt);
+    return ret;
+}
+
+// MapWindowPoints16 maps c Stars points from one window's coordinates to
+// another's.
+static inline int MapWindowPoints16(HWND hwndFrom, HWND hwndTo, POINT16 *ppt, UINT c)
+{
+    int ret = 0;
+    for (UINT i = 0; i < c; i++) {
+        POINT pt = PointFrom16(ppt[i]);
+        ret      = MapWindowPoints(hwndFrom, hwndTo, &pt, 1);
+        ppt[i]   = PointTo16(pt);
+    }
+    return ret;
+}
+
 /*
  * Win16 window longs
  *

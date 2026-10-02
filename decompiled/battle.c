@@ -441,7 +441,7 @@ void SpankTheCheaters() {
             lpfl = rglpfl[ifl];
             if (rglpfl[ifl] == 0)
                 break;
-            if (lpfl->fDead == 0 && (int16_t)(int8_t)rgfCheater[lpfl->iPlayer] != 0) {
+            if (lpfl->fDead == 0 && rgfCheater[lpfl->iPlayer] != 0) {
                 if (Random(12) == 0) {
                     lpfl->fDead = 1;
                     FSendPlrMsg2(lpfl->iPlayer, idmHasDefectedRanksDueInabilityProjectLegitimate, gotoSerialNumber, lpfl->id, 0);
@@ -469,7 +469,7 @@ void SpankTheCheaters() {
         lppl = lpPlanets;
         lpplMac = lpPlanets + cPlanet;
         for (; lppl < lpplMac; lppl++) {
-            if (lppl->iPlayer != -1 && (int16_t)(int8_t)rgfCheater[lppl->iPlayer] != 0) {
+            if (lppl->iPlayer != -1 && rgfCheater[lppl->iPlayer] != 0) {
                 if (lppl->cMines > 0 && Random(8) == 0) {
                     pctSell = (int16_t)(Random(31) + 5);
                     lSell = (int32_t)(lppl->cMines * pctSell) / 100;
